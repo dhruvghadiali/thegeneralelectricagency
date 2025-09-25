@@ -37,9 +37,9 @@ export default function HomePage() {
           isPageLoaded 
             ? 'opacity-100 translate-y-0' 
             : 'opacity-0 translate-y-12'
-        }`}>
+        }`}> */}
           <HomeScreenComponent />
-        </div> */}
+        {/* </div> */}
 
       {/* Services section */}
       {/* <div className={`transition-all duration-1000 delay-600 ease-out  ${
@@ -93,8 +93,8 @@ export default function HomePage() {
             : 'opacity-0 translate-y-12'
         }`}>
           <AboutUsIntroComponent />
-        </div> 
-      </div>*/}
+        </div> */}
+      {/* </div> */}
     </div>
   );
 }

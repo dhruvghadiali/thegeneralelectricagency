@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 
 import ScreenLoaderComponent from "@Components/loader/screenLoader";
 import HomePage from "@/pages/HomePage";
+import AboutPage from "@/pages/AboutPage";
 
 function App() {
   // const [isLoading, setIsLoading] = useState(true);
@@ -34,6 +35,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
