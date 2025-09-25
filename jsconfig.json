@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "baseUrl": "./",
+        "paths": {
+            "@/*": [
+                "./src/*"
+            ],
+            "@ShadcnComponents/*": [
+                "./src/components/ui/*"
+            ],
+            "@Components/*": [
+                "./src/components/common/*"
+            ],
+            "@ScreenComponents/*": [
+                "./src/components/screen/*"
+            ],
+            "@Assets/*": [
+                "./src/assets/*"
+            ],
+        }
+    },
+    "include": ["./src/**/*"]
+}
