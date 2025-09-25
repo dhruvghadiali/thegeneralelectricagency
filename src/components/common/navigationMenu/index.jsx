@@ -46,7 +46,6 @@ const navigationLinks = [
     ],
   },
   { href: "#clients", label: "Clients" },
-  { href: "#equipment", label: "Equipment" },
   { href: "#awards", label: "Awards" },
   { href: "#projects", label: "Projects" },
   { href: "#about-us", label: "About us" },
