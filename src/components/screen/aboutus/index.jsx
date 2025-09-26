@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Users, Target, Award, Heart, Lightbulb, Shield, Globe, Handshake } from "lucide-react";
+import { Users, Target, Award, Heart, Lightbulb, Shield, Globe, Handshake, MapPin, Phone, Mail, Clock, Building2 } from "lucide-react";
 
 const teamMembers = [
   {
@@ -194,204 +194,143 @@ function AboutUsIntroComponent() {
               For over 15 years, Patel Construction has been at the forefront of foundation engineering, 
               delivering innovative solutions that build the infrastructure of tomorrow.
             </p>
-            <div className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-2xl p-8 sm:p-12 border-l-4 border-orange-500">
-              <p className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-gray-200 italic">
-                "Building foundations that last generations, with safety and innovation as our cornerstone principles."
-              </p>
-              <p className="text-lg text-orange-600 dark:text-orange-400 mt-4 font-medium">
-                - Pareshkumar Pipariya, Founder & CEO
-              </p>
-            </div>
+            
           </div>
         </div>
 
-        {/* Company Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 md:gap-12 mb-16 sm:mb-20 md:mb-24">
-          {companyStats.map((stat, index) => {
-            const IconComponent = stat.icon;
-            return (
-              <div
-                key={index}
-                className={`text-center transition-all duration-700 ease-out transform ${
-                  visibleElements.stats.includes(index)
-                    ? 'opacity-100 translate-y-0 scale-100'
-                    : 'opacity-0 translate-y-8 scale-95'
-                }`}
-                style={{ transitionDelay: `${index * 100}ms` }}
-              >
-                <div className="bg-orange-100 dark:bg-orange-900/30 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                  <IconComponent className="w-8 h-8 sm:w-10 sm:h-10 text-orange-600 dark:text-orange-400" />
-                </div>
-                <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-2">
-                  {stat.number}
-                </div>
-                <div className="text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-300 font-medium">
-                  {stat.label}
-                </div>
-              </div>
-            );
-          })}
-        </div>
 
-        {/* Company Values */}
-        <div className="mb-16 sm:mb-20 md:mb-24">
-          <div className={`text-center mb-12 transition-all duration-1000 ease-out ${
-            hasAnimated ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}>
-            <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Our Core <span className="text-orange-500">Values</span>
-            </h3>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              The principles that guide every decision we make and every project we undertake.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {companyValues.map((value, index) => {
-              const IconComponent = value.icon;
-              return (
-                <div
-                  key={index}
-                  className={`transition-all duration-700 ease-out transform ${
-                    visibleElements.values.includes(index)
-                      ? 'opacity-100 translate-y-0 scale-100'
-                      : 'opacity-0 translate-y-12 scale-95'
-                  }`}
-                  style={{ transitionDelay: `${index * 150}ms` }}
-                >
-                  <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-6 sm:p-8 h-full border border-gray-200 dark:border-gray-700 hover:border-orange-300 dark:hover:border-orange-600 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-                    <div className={`bg-gradient-to-r ${value.color} w-14 h-14 rounded-xl flex items-center justify-center mb-6`}>
-                      <IconComponent className="w-7 h-7 text-white" />
-                    </div>
-                    <h4 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                      {value.title}
-                    </h4>
-                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                      {value.description}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
 
-        {/* Team Section */}
-        <div className="mb-16 sm:mb-20 md:mb-24">
-          <div className={`text-center mb-12 transition-all duration-1000 ease-out ${
-            hasAnimated ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}>
-            <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Meet Our <span className="text-orange-500">Leadership Team</span>
-            </h3>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Experienced professionals leading the way in foundation engineering and construction excellence.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {teamMembers.map((member, index) => (
-              <div
-                key={index}
-                className={`transition-all duration-700 ease-out transform ${
-                  visibleElements.team.includes(index)
-                    ? 'opacity-100 translate-y-0 scale-100'
-                    : 'opacity-0 translate-y-12 scale-95'
-                }`}
-                style={{ transitionDelay: `${index * 150}ms` }}
-              >
-                <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 hover:border-orange-300 dark:hover:border-orange-600 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl text-center">
-                  <div className="text-6xl mb-4">{member.image}</div>
-                  <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                    {member.name}
-                  </h4>
-                  <p className="text-orange-600 dark:text-orange-400 font-semibold mb-2">
-                    {member.position}
-                  </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
-                    {member.experience} • {member.specialization}
-                  </p>
-                  <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
-                    {member.description}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Company Timeline */}
-        <div className="mb-16 sm:mb-20 md:mb-24">
-          <div className={`text-center mb-12 transition-all duration-1000 ease-out ${
-            hasAnimated ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}>
-            <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Our <span className="text-orange-500">Journey</span>
-            </h3>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Key milestones that have shaped our growth and success over the years.
-            </p>
-          </div>
-          
-          <div className="relative">
-            <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-orange-500"></div>
-            <div className="space-y-8">
-              {milestones.map((milestone, index) => (
-                <div
-                  key={index}
-                  className={`relative pl-12 transition-all duration-700 ease-out transform ${
-                    visibleElements.milestones.includes(index)
-                      ? 'opacity-100 translate-x-0'
-                      : 'opacity-0 -translate-x-8'
-                  }`}
-                  style={{ transitionDelay: `${index * 100}ms` }}
-                >
-                  <div className="absolute left-0 w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
-                    <div className="w-3 h-3 bg-white rounded-full"></div>
-                  </div>
-                  <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
-                    <div className="flex items-center mb-2">
-                      <span className="text-2xl font-bold text-orange-600 dark:text-orange-400 mr-4">
-                        {milestone.year}
-                      </span>
-                      <h4 className="text-xl font-bold text-gray-900 dark:text-white">
-                        {milestone.event}
-                      </h4>
-                    </div>
-                    <p className="text-gray-600 dark:text-gray-300">
-                      {milestone.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+       
 
-        {/* Bottom CTA Section */}
-        <div className={`text-center transition-all duration-1000 ease-out ${
+        {/* Contact Information Section */}
+        <div className={`grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16 transition-all duration-1000 ease-out ${
           hasAnimated ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
-          <div className="bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl p-8 sm:p-10 md:p-12 text-white">
-            <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
-              Partner with <span className="text-amber-200">Industry Leaders</span>
-            </h3>
-            <p className="text-lg sm:text-xl mb-6 sm:mb-8 opacity-90 max-w-3xl mx-auto">
-              Join the growing number of clients who trust Patel Machinery for their most critical 
-              foundation engineering projects. Experience the difference expertise makes.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <button className="bg-white text-orange-600 hover:bg-gray-100 font-bold py-4 px-8 sm:px-12 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl text-lg flex items-center">
-                <Users className="w-5 h-5 mr-2" />
-                Join Our Team
-              </button>
-              <button className="border-2 border-white text-white hover:bg-white hover:text-orange-600 font-bold py-4 px-8 sm:px-12 rounded-xl transition-all duration-300 text-lg flex items-center">
-                <Handshake className="w-5 h-5 mr-2" />
-                Contact Us
-              </button>
+          {/* Contact Details */}
+          <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-gradient-to-r from-primary to-secondary rounded-xl flex items-center justify-center">
+                <Phone className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900">Get In Touch</h3>
+            </div>
+            
+            <div className="space-y-6">
+              {/* Address */}
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <MapPin className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1">Head Office Address</h4>
+                  <p className="text-gray-600 leading-relaxed">
+                    Office No. 123, Business Complex,<br />
+                    Industrial Area, Phase-II,<br />
+                    Ahmedabad, Gujarat - 380015,<br />
+                    India
+                  </p>
+                </div>
+              </div>
+
+              {/* Phone */}
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <Phone className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1">Phone Numbers</h4>
+                  <p className="text-gray-600">
+                    +91 98765 43210<br />
+                    +91 79 2658 7412
+                  </p>
+                </div>
+              </div>
+
+              {/* Email */}
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <Mail className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1">Email Addresses</h4>
+                  <p className="text-gray-600">
+                    info@thegeneralelectricagency.com<br />
+                    support@thegeneralelectricagency.com
+                  </p>
+                </div>
+              </div>
+
+              {/* Business Hours */}
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <Clock className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1">Business Hours</h4>
+                  <p className="text-gray-600">
+                    Monday - Friday: 9:00 AM - 6:00 PM<br />
+                    Saturday: 9:00 AM - 1:00 PM<br />
+                    Sunday: Closed
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Company Information */}
+          <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-2xl shadow-xl p-8 border border-primary/10">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-gradient-to-r from-primary to-secondary rounded-xl flex items-center justify-center">
+                <Building2 className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900">Company Details</h3>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2">Established</h4>
+                <p className="text-gray-700 text-lg">Since 1999 - Over 25 Years of Excellence</p>
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2">GST Number</h4>
+                <p className="text-gray-700 font-mono">24XXXXX1234X1Z5</p>
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2">PAN Number</h4>
+                <p className="text-gray-700 font-mono">XXXXX1234X</p>
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2">Service Areas</h4>
+                <p className="text-gray-700">
+                  Gujarat, Rajasthan, Maharashtra, Madhya Pradesh, 
+                  and Pan India Service Network
+                </p>
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2">Certifications</h4>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">ISO 9001:2015</span>
+                  <span className="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-sm font-medium">CE Certified</span>
+                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">Authorized Dealer</span>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl p-4 mt-6">
+                <h4 className="font-semibold text-gray-900 mb-2">Quick Response Promise</h4>
+                <p className="text-gray-600 text-sm">
+                  We respond to all inquiries within 2 hours during business days 
+                  and provide 24/7 emergency support for critical electrical issues.
+                </p>
+              </div>
             </div>
           </div>
         </div>
+
       </div>
     </section>
   );

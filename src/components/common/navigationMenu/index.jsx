@@ -47,7 +47,7 @@ const navigationLinks = [
   },
   { href: "#clients", label: "Clients" },
   { href: "#awards", label: "Awards" },
-  { href: "#projects", label: "Projects" },
+  { href: "#partners", label: "Partners" },
   { href: "#about-us", label: "About us" },
 ];
 

@@ -46,18 +46,18 @@ export default function HomePage() {
           isPageLoaded 
             ? 'opacity-100 translate-y-0' 
             : 'opacity-0 translate-y-12'
-        }`}>
+        }`}> */}
           <ServicesIntroComponent />
-        </div> */}
+        {/* </div> */}
 
       {/* Clients section */}
       {/* <div className={`transition-all duration-1000 delay-800 ease-out  ${
           isPageLoaded 
             ? 'opacity-100 translate-y-0' 
             : 'opacity-0 translate-y-12'
-        }`}>
+        }`}> */}
           <ClientsIntroComponent />
-        </div> */}
+        {/* </div> */}
 
       {/* Equipment section */}
       {/* <div className={`transition-all duration-1000 delay-1000 ease-out  ${
@@ -73,9 +73,9 @@ export default function HomePage() {
           isPageLoaded 
             ? 'opacity-100 translate-y-0' 
             : 'opacity-0 translate-y-12'
-        }`}>
+        }`}>*/}
           <AwardsIntroComponent />
-        </div> */}
+        {/*</div> */}
 
       {/* Projects section */}
       {/* <div className={`transition-all duration-1000 delay-1400 ease-out  ${
@@ -91,9 +91,9 @@ export default function HomePage() {
           isPageLoaded 
             ? 'opacity-100 translate-y-0' 
             : 'opacity-0 translate-y-12'
-        }`}>
+        }`}>*/}
           <AboutUsIntroComponent />
-        </div> */}
+         {/*</div> */}
       {/* </div> */}
     </div>
   );
