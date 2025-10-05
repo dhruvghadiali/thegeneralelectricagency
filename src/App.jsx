@@ -35,7 +35,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/about" element={<AboutPage />} />
+          {/* <Route path="/about" element={<AboutPage />} /> */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>

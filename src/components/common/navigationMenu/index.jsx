@@ -46,7 +46,6 @@ const navigationLinks = [
     ],
   },
   { href: "#clients", label: "Clients" },
-  { href: "#awards", label: "Awards" },
   { href: "#partners", label: "Partners" },
   { href: "#about-us", label: "About us" },
 ];
@@ -64,7 +63,7 @@ function NavigationMenuComponent() {
 
           {/* Main nav */}
           <div className="relative flex items-center gap-6">
-            <Avatar className="bg-white h-14 w-14">
+            <Avatar className="bg-white h-12 w-12">
               <AvatarImage src={logoImage} />
               <AvatarFallback>GE</AvatarFallback>
             </Avatar>
