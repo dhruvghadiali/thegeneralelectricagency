@@ -22,8 +22,8 @@ const PartnersScreenComponent = () => {
       description: "Leading manufacturer of electrical equipment, power systems, and industrial solutions across India and global markets.",
       specialization: ["Power Transformers", "Industrial Motors", "Switchgear", "Railway Solutions"],
       partnership: "Authorized Dealer",
-      since: "2010",
-      products: "Motors, Drives, Transformers",
+      since: "1939",
+      products: "Motors, Drives, Pumps",
       coverage: "Pan India",
       highlights: [
         "₹8,000+ Cr Revenue Company",
@@ -54,7 +54,7 @@ const PartnersScreenComponent = () => {
       specialization: ["Power Cables", "Transmission Lines", "Railway Electrification", "Infrastructure EPC"],
       partnership: "Channel Partner",
       since: "2015",
-      products: "Cables, Transmission Equipment",
+      products: "Cables",
       coverage: "Western & Central India",
       highlights: [
         "₹12,000+ Cr Revenue Company",
@@ -85,7 +85,7 @@ const PartnersScreenComponent = () => {
       specialization: ["Gear Boxes", "Power Transmission", "Industrial Drives", "Automation Systems"],
       partnership: "Exclusive Distributor",
       since: "2018",
-      products: "Gear Boxes, Drives, Automation",
+      products: "Gear Boxes, Gear motors",
       coverage: "Gujarat & Rajasthan",
       highlights: [
         "Premium Quality Standards",

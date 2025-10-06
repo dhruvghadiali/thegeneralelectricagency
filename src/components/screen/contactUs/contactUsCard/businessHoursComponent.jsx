@@ -32,7 +32,7 @@ const BusinessHoursComponent = () => {
                   Monday - Saturday:
                 </span>
                 <span className="text-primary font-bold">
-                  9:00 AM - 6:00 PM
+                  9:30 AM - 6:00 PM
                 </span>
               </div>
               <div className="flex items-center justify-between">
@@ -59,7 +59,7 @@ const BusinessHoursComponent = () => {
                   Monday - Saturday:
                 </span>
                 <span className="text-primary font-bold">
-                  9:00 AM - 6:00 PM
+                  9:30 AM - 6:00 PM
                 </span>
               </div>
               <div className="flex items-center justify-between">
