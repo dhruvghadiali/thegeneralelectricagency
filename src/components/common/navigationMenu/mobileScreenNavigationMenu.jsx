@@ -11,7 +11,20 @@ import {
   PopoverTrigger,
 } from "@ShadcnComponents/popover";
 
-function MobileScreenNavigationMenuComponent({ navigationLinks }) {
+function MobileScreenNavigationMenuComponent({ navigationLinks, useLink }) {
+  const handleSectionScroll = (href) => {
+    // Extract the section ID from href (remove the # symbol)
+    const sectionId = href.replace('#', '');
+    const element = document.getElementById(sectionId);
+    
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+        inline: 'nearest'
+      });
+    }
+  };
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -57,8 +70,12 @@ function MobileScreenNavigationMenuComponent({ navigationLinks }) {
                       {link.items.map((item, itemIndex) => (
                         <li key={itemIndex}>
                           <NavigationMenuLink
-                            href={item.href}
-                            className="py-1.5 text-card-foreground hover:text-primary hover:bg-accent px-2 rounded transition-all duration-200"
+                            href={useLink ? item.href : undefined}
+                            onClick={useLink ? (e) => {
+                              e.preventDefault();
+                              handleSectionScroll(item.href);
+                            } : undefined}
+                            className="py-1.5 text-card-foreground hover:text-primary hover:bg-accent px-2 rounded transition-all duration-200 cursor-pointer"
                           >
                             {item.label}
                           </NavigationMenuLink>
@@ -67,7 +84,14 @@ function MobileScreenNavigationMenuComponent({ navigationLinks }) {
                     </ul>
                   </>
                 ) : (
-                  <NavigationMenuLink href={link.href} className="py-1.5 text-card-foreground hover:text-primary hover:bg-accent px-2 rounded transition-all duration-200">
+                  <NavigationMenuLink 
+                    href={useLink ? link.href : undefined}
+                    onClick={useLink ? (e) => {
+                      e.preventDefault();
+                      handleSectionScroll(link.href);
+                    } : undefined}
+                    className="py-1.5 text-card-foreground hover:text-primary hover:bg-accent px-2 rounded transition-all duration-200 cursor-pointer"
+                  >
                     {link.label}
                   </NavigationMenuLink>
                 )}

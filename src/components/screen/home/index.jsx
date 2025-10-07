@@ -3,7 +3,7 @@ import HomeIntroductionComponent from "@ScreenComponents/home/introductionCompon
 
 function HomeScreenComponent() {
   return (
-    <div className="bg-background">
+    <div className="bg-background" id="home">
       {/* Hero Introduction Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/10">
         <div className="container mx-auto px-4 py-16 lg:py-24">

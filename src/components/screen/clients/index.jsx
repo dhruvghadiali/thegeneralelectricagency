@@ -6,7 +6,7 @@ import ClientsLogoComponent from "@ScreenComponents/clients/clientsLogoComponent
 
 const Clients = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-white to-secondary/10">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-white to-secondary/10" id="clients">
       <ClientsIntroductionComponent />
       <ClientsIndustriesCardComponent />
       <ClientsLogoComponent/>

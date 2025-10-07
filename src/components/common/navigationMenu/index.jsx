@@ -31,26 +31,30 @@ const navigationLinks = [
       {
         href: "#services",
         label: "Gear Boxes",
-        description: "Premium transmission provides high quality, precision-engineered power transmission.",
+        description:
+          "Premium transmission provides high quality, precision-engineered power transmission.",
       },
       {
         href: "#services",
         label: "Cables",
-        description: "Effective way of transporting energy with maximum efficiency and minimum carbon footprint.",
+        description:
+          "Effective way of transporting energy with maximum efficiency and minimum carbon footprint.",
       },
       {
         href: "#services",
+        link: "/#services",
         label: "Spares",
-        description: "We provide genuine spare parts for all products we supply.",
+        description:
+          "We provide genuine spare parts for all products we supply.",
       },
     ],
   },
   { href: "#clients", label: "Clients" },
   { href: "#partners", label: "Partners" },
-  { href: "#about-us", label: "About us" },
+  { href: "#contact-us", label: "Contact us" },
 ];
 
-function NavigationMenuComponent() {
+function NavigationMenuComponent({ useLink }) {
   return (
     <header className="sticky top-0 bg-primary px-4 md:px-6 z-50 shadow-lg">
       <div className="flex h-16 items-center justify-between gap-4">
@@ -59,6 +63,7 @@ function NavigationMenuComponent() {
           {/* Mobile menu trigger */}
           <MobileScreenNavigationMenuComponent
             navigationLinks={navigationLinks}
+            useLink={useLink}
           />
 
           {/* Main nav */}
@@ -69,6 +74,7 @@ function NavigationMenuComponent() {
             </Avatar>
             {/* Navigation menu */}
             <LargeScreenNavigationMenuComponent
+              useLink={useLink}
               navigationLinks={navigationLinks}
             />
           </div>

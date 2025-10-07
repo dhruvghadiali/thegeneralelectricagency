@@ -9,13 +9,12 @@ import AboutUsScreenComponent from "@ScreenComponents/about";
 export default function HomePage() {
   return (
     <div>
-      <NavigationMenuComponent />
+      <NavigationMenuComponent useLink={false}/>
       <HomeScreenComponent />
       <ServicesIntroComponent />
       <ClientsIntroComponent />
       <PartnersScreenComponent />
       <ContactUsScreenComponent />
-      {/*<AboutUsScreenComponent /> */}
     </div>
   );
 }

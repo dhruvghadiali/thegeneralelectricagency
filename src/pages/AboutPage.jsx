@@ -4,7 +4,7 @@ import AboutScreenComponent from "@/components/screen/about";
 function AboutPage() {
   return (
     <>
-      <NavigationMenuComponent />
+      <NavigationMenuComponent useLink={true}/>
       <AboutScreenComponent />
     </>
   );
