@@ -10,25 +10,44 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@ShadcnComponents/popover";
+import { useNavigate } from "react-router-dom";
 
 function MobileScreenNavigationMenuComponent({ navigationLinks, useLink }) {
+  const navigate = useNavigate();
   const handleSectionScroll = (href) => {
     // Extract the section ID from href (remove the # symbol)
-    const sectionId = href.replace('#', '');
+    const sectionId = href.replace("#", "");
     const element = document.getElementById(sectionId);
-    
+
     if (element) {
       element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-        inline: 'nearest'
+        behavior: "smooth",
+        block: "start",
+        inline: "nearest",
       });
     }
   };
+
+  const handleNavigateAndScroll = (link) => {
+    console.log("Navigating and scrolling to:", link);
+    // First navigate to home page
+    navigate("/");
+
+    // Then scroll to the section after a brief delay to ensure page is loaded
+    setTimeout(() => {
+      console.log("Scrolling to section:", link.href);
+      handleSectionScroll(link.href);
+    }, 300);
+  };
+
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button className="group size-8 lg:hidden text-secondary hover:text-primary-foreground hover:bg-primary transition-all duration-200" variant="ghost" size="icon">
+        <Button
+          className="group size-8 lg:hidden text-secondary hover:text-primary-foreground hover:bg-primary transition-all duration-200"
+          variant="ghost"
+          size="icon"
+        >
           <svg
             className="pointer-events-none"
             width={16}
@@ -71,10 +90,14 @@ function MobileScreenNavigationMenuComponent({ navigationLinks, useLink }) {
                         <li key={itemIndex}>
                           <NavigationMenuLink
                             href={useLink ? item.href : undefined}
-                            onClick={useLink ? (e) => {
+                            onClick={(e) => {
                               e.preventDefault();
-                              handleSectionScroll(item.href);
-                            } : undefined}
+                              if (useLink) {
+                                handleNavigateAndScroll(item);
+                              } else {
+                                handleSectionScroll(item.href);
+                              }
+                            }}
                             className="py-1.5 text-card-foreground hover:text-primary hover:bg-accent px-2 rounded transition-all duration-200 cursor-pointer"
                           >
                             {item.label}
@@ -84,12 +107,16 @@ function MobileScreenNavigationMenuComponent({ navigationLinks, useLink }) {
                     </ul>
                   </>
                 ) : (
-                  <NavigationMenuLink 
+                  <NavigationMenuLink
                     href={useLink ? link.href : undefined}
-                    onClick={useLink ? (e) => {
+                    onClick={(e) => {
                       e.preventDefault();
-                      handleSectionScroll(link.href);
-                    } : undefined}
+                      if (useLink) {
+                        handleNavigateAndScroll(link);
+                      } else {
+                        handleSectionScroll(link.href);
+                      }
+                    }}
                     className="py-1.5 text-card-foreground hover:text-primary hover:bg-accent px-2 rounded transition-all duration-200 cursor-pointer"
                   >
                     {link.label}
