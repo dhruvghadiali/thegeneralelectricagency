@@ -7,7 +7,7 @@ import { services } from "@/utils/services";
 const Services = () => {
   return (
     <div
-      className="min-h-screen bg-gradient-to-br from-primary/5 via-white to-secondary/10"
+      className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/10 dark:from-primary/15 dark:via-gray-900 dark:to-secondary/20"
       id="services"
     >
       {/* Hero Section */}

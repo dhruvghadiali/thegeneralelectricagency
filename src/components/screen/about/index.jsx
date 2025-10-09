@@ -12,7 +12,7 @@ function AboutScreenComponent() {
   return (
     <div className="min-h-screen bg-background">
       {/* About Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/10">
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/10 dark:from-primary/15 dark:via-gray-900 dark:to-secondary/20">
         <div className="container mx-auto px-4 py-12 lg:py-24">
           <div className="max-w-4xl mx-auto text-center space-y-6 lg:space-y-8">
             <div className="space-y-4">

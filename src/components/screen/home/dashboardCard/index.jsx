@@ -5,7 +5,7 @@ import HomeDashboardCardProgressIndicator from "@ScreenComponents/home/dashboard
 const HomeDashboardCard = () => {
   return (
     <div className="relative">
-      <div className="relative z-10 bg-gradient-to-br from-primary/10 via-card to-secondary/10 border border-primary/20 rounded-2xl p-8 shadow-xl overflow-hidden">
+      <div className="relative z-10 bg-gradient-to-br from-primary/10 via-card to-secondary/10 dark:from-primary/15 dark:via-gray-800 dark:to-secondary/15 border border-primary/20 dark:border-primary/30 rounded-2xl p-8 shadow-xl overflow-hidden">
         {/* Floating Elements */}
         <HomeDashboardCardAnimationEffect />
 
@@ -19,7 +19,7 @@ const HomeDashboardCard = () => {
           {/* Interactive Elements */}
           <div className="space-y-4">
             {/* Animated Wave Pattern */}
-            <div className="relative h-14 bg-gradient-to-r from-primary/5 via-secondary/10 to-primary/5 rounded-lg overflow-hidden border border-primary/10">
+            <div className="relative h-14 bg-gradient-to-r from-primary/5 via-secondary/10 to-primary/5 dark:from-primary/10 dark:via-secondary/15 dark:to-primary/10 rounded-lg overflow-hidden border border-primary/10 dark:border-primary/20">
               <div className="absolute top-2  right-4">
                 <div className="text-xs text-primary font-medium">
                   PAN Number

@@ -13,9 +13,9 @@ const ContactUsCardComponent = () => {
       {/* Single Contact Card with All Information */}
       <div className="relative bg-white dark:bg-gray-800 rounded-3xl p-8 sm:p-10 lg:p-12 shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden">
         {/* Background Pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-transparent to-secondary/3 opacity-50"></div>
-        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-primary/10 to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-secondary/10 to-transparent rounded-full blur-2xl"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-transparent to-secondary/3 dark:from-primary/8 dark:to-secondary/8 opacity-50"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-primary/10 dark:from-primary/20 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-secondary/10 dark:from-secondary/20 to-transparent rounded-full blur-2xl"></div>
 
         {/* Content */}
         <div className="relative z-10">

@@ -17,7 +17,7 @@ const AddressComponent = () => {
         {/* Main Office Address */}
         <div className="group dark:hover:bg-primary/10 rounded-2xl p-4 sm:p-6 transition-all duration-300 border border-transparent">
           <div className="flex flex-col lg:flex-row lg:items-start gap-4 lg:gap-5">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/10 dark:from-primary/30 dark:to-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
               <MapPin className="w-6 h-6 text-primary" />
             </div>
             <div className="flex-1 space-y-4">
@@ -64,7 +64,7 @@ const AddressComponent = () => {
         {/* Branch Office Address */}
         <div className="group dark:hover:bg-primary/10 rounded-2xl p-4 sm:p-6 transition-all duration-300 border border-transparent">
           <div className="flex flex-col lg:flex-row lg:items-start gap-4 lg:gap-5">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/10 dark:from-primary/30 dark:to-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
               <MapPin className="w-6 h-6 text-primary" />
             </div>
             <div className="flex-1 space-y-4">

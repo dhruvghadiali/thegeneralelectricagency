@@ -20,13 +20,13 @@ const ClientsLogoComponent = () => {
         {clientLogos.map((client, index) => (
           <div
             key={index}
-            className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col items-center justify-center h-28 group hover:-translate-y-2 border border-gray-100 hover:border-primary/20"
+            className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col items-center justify-center h-28 group hover:-translate-y-2 border border-gray-100 dark:border-gray-700 hover:border-primary/20 dark:hover:border-primary/40"
           >
             <div className="w-full h-full flex flex-col items-center justify-center">
-              <div className="text-lg font-bold text-gray-800 mb-1 group-hover:text-primary transition-colors duration-300">
+              <div className="text-lg font-bold text-gray-800 dark:text-white mb-1 group-hover:text-primary transition-colors duration-300">
                 {client.name}
               </div>
-              <div className="text-xs text-gray-500 font-medium">
+              <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">
                 {client.category}
               </div>
             </div>

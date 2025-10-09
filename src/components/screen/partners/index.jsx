@@ -108,7 +108,7 @@ const PartnersScreenComponent = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background" id="partners">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/10 dark:from-primary/15 dark:via-gray-900 dark:to-secondary/20" id="partners">
       {/* Hero Section */}
       <PartnersIntroductionComponent/>
 
@@ -123,7 +123,7 @@ const PartnersScreenComponent = () => {
                 className={`flex items-center gap-3 px-4 sm:px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
                   activePartner === index
                     ? 'bg-primary text-white shadow-lg'
-                    : 'bg-secondary text-gray-600 hover:bg-primary/10 hover:text-primary'
+                    : 'bg-secondary dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-primary'
                 }`}
               >
                 <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center p-1">
@@ -161,7 +161,7 @@ const PartnersScreenComponent = () => {
                 style={{ display: activePartner === index ? 'block' : 'none' }}
               >
                 {/* Partner Header */}
-                <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-2xl p-4 sm:p-6 lg:p-8 mb-8 border border-primary/10">
+                <div className="bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-primary/15 dark:to-secondary/15 rounded-2xl p-4 sm:p-6 lg:p-8 mb-8 border border-primary/10 dark:border-primary/20">
                   <div className="grid grid-cols-1 lg:grid-cols-1 gap-6 lg:gap-8 items-center">
                     <div>
                       <div className="flex items-center gap-4 mb-4">
@@ -195,33 +195,33 @@ const PartnersScreenComponent = () => {
                 {/* Partnership Details */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 lg:gap-8 mb-8">
                   {/* Partnership Info */}
-                  <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg border border-gray-100">
+                  <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg border border-gray-100 dark:border-gray-700">
                     <div className="flex items-center gap-3 mb-4">
                       <Award className="w-5 sm:w-6 h-5 sm:h-6 text-primary" />
                       <h3 className="text-lg sm:text-xl font-bold text-foreground">Partnership Details</h3>
                     </div>
                     <div className="space-y-3">
                       <div className="flex justify-between items-start">
-                        <span className="text-muted-foreground text-sm">Type:</span>
+                        <span className="text-muted-foreground dark:text-gray-400 text-sm">Type:</span>
                         <span className="font-medium text-primary text-sm text-right">{partner.partnership}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground text-sm">Since:</span>
-                        <span className="font-medium text-sm">{partner.since}</span>
+                        <span className="text-muted-foreground dark:text-gray-400 text-sm">Since:</span>
+                        <span className="font-medium text-sm dark:text-gray-300">{partner.since}</span>
                       </div>
                       <div className="flex justify-between items-start">
-                        <span className="text-muted-foreground text-sm">Coverage:</span>
-                        <span className="font-medium text-sm text-right">{partner.coverage}</span>
+                        <span className="text-muted-foreground dark:text-gray-400 text-sm">Coverage:</span>
+                        <span className="font-medium text-sm dark:text-gray-300 text-right">{partner.coverage}</span>
                       </div>
-                      <div className="pt-2 border-t">
-                        <span className="text-muted-foreground text-sm">Products:</span>
-                        <p className="font-medium text-sm mt-1">{partner.products}</p>
+                      <div className="pt-2 border-t dark:border-gray-600">
+                        <span className="text-muted-foreground dark:text-gray-400 text-sm">Products:</span>
+                        <p className="font-medium text-sm dark:text-gray-300 mt-1">{partner.products}</p>
                       </div>
                     </div>
                   </div>
 
                   {/* Specializations */}
-                  <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg border border-gray-100">
+                  <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg border border-gray-100 dark:border-gray-700">
                     <div className="flex items-center gap-3 mb-4">
                       <Zap className="w-5 sm:w-6 h-5 sm:h-6 text-secondary" />
                       <h3 className="text-lg sm:text-xl font-bold text-foreground">Specializations</h3>
@@ -230,7 +230,7 @@ const PartnersScreenComponent = () => {
                       {partner.specialization.map((spec, idx) => (
                         <div key={idx} className="flex items-center gap-2">
                           <div className="w-2 h-2 bg-secondary rounded-full"></div>
-                          <span className="text-sm text-muted-foreground">{spec}</span>
+                          <span className="text-sm text-muted-foreground dark:text-gray-400">{spec}</span>
                         </div>
                       ))}
                     </div>

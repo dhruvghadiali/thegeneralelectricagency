@@ -2,9 +2,9 @@ import { Phone } from "lucide-react";
 
 const ContactNumberComponent = () => {
   return (
-    <div className="mt-12 pt-8 border-t border-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent">
+    <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-600">
       <div className="flex items-start gap-3 sm:gap-5 mb-6 sm:mb-8">
-        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl flex items-center justify-center flex-shrink-0">
+        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary/20 to-secondary/20 dark:from-primary/30 dark:to-secondary/30 rounded-xl flex items-center justify-center flex-shrink-0">
           <Phone className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
         </div>
         <div>
