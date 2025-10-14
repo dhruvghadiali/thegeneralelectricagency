@@ -1,8 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const ServicesCardComponent = ({ service }) => {
   const IconComponent = service.icon;
+  const navigate = useNavigate();
+
+  const handleLearnMore = () => {
+    if (service.url) {
+      navigate(service.url);
+    }
+  };
   
   return (
     <div
@@ -65,6 +73,7 @@ const ServicesCardComponent = ({ service }) => {
         {/* CTA Button */}
         <div className="text-center">
           <Button
+            onClick={handleLearnMore}
             className="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white shadow-lg hover:shadow-xl transition-all duration-300 group/btn"
             size="lg"
           >
