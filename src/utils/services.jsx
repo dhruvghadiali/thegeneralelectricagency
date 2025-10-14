@@ -26,6 +26,7 @@ const services = [
       "Infrastructure",
       "Commercial Buildings",
     ],
+    linkURL: "/motors",
   },
   {
     id: "drives",
@@ -45,6 +46,7 @@ const services = [
       "Pumps & Fans",
       "Industrial Automation",
     ],
+    linkURL: "/drives",
   },
   {
     id: "pumps",
@@ -64,6 +66,7 @@ const services = [
       "Industrial Processing",
       "Building Services",
     ],
+    linkURL: "/pumps",
   },
   {
     id: "gear-boxes",
@@ -78,6 +81,7 @@ const services = [
       "Compact design",
     ],
     applications: ["Conveyors", "Mixers", "Crushers", "Material Handling"],
+    linkURL: "/gear-boxes",
   },
   {
     id: "cables",
@@ -97,6 +101,7 @@ const services = [
       "Instrumentation",
       "Building Wiring",
     ],
+    linkURL: "/cables",
   },
   {
     id: "spares",
@@ -116,6 +121,7 @@ const services = [
       "Equipment Upgrades",
       "Performance Enhancement",
     ],
+    linkURL: "/spares",
   },
 ];
 
