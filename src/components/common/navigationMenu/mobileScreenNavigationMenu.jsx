@@ -89,15 +89,7 @@ function MobileScreenNavigationMenuComponent({ navigationLinks, useLink }) {
                       {link.items.map((item, itemIndex) => (
                         <li key={itemIndex}>
                           <NavigationMenuLink
-                            href={useLink ? item.href : undefined}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              if (useLink) {
-                                handleNavigateAndScroll(item);
-                              } else {
-                                handleSectionScroll(item.href);
-                              }
-                            }}
+                            href={item.href}
                             className="py-1.5 text-card-foreground hover:text-primary hover:bg-accent px-2 rounded transition-all duration-200 cursor-pointer"
                           >
                             {item.label}

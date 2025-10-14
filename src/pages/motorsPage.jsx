@@ -123,24 +123,10 @@ function MotorsPage() {
         {/* Hero Section */}
         <section className="relative py-16 lg:py-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Back Button */}
-            <div className="mb-8">
-              <Button
-                onClick={() => navigate(-1)}
-                variant="outline"
-                className="flex items-center gap-2 hover:bg-primary/10 dark:hover:bg-primary/20 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Back to Services
-              </Button>
-            </div>
+            
 
             {/* Page Header */}
             <div className="text-center max-w-4xl mx-auto mb-16">
-              <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-foreground text-sm font-medium mb-6 border border-primary/20 dark:border-primary/30">
-                <CircuitBoard className="w-4 h-4 mr-2" />
-                CG I2, I3 & I4 Series Motors
-              </div>
               
               <h1 className="text-4xl lg:text-6xl font-bold text-foreground dark:text-white leading-tight mb-6">
                 Industrial <span className="text-primary dark:text-primary">Motors</span>
