@@ -69,15 +69,15 @@ const LargeScreenNavigationMenuComponent = ({ navigationLinks, useLink }) => {
                       link.items.map((item, itemIndex) => (
                         <a
                           key={itemIndex}
-                          href={useLink ? item.href : undefined}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            if (useLink) {
-                              handleNavigateAndScroll(item);
-                            } else {
-                              handleSectionScroll(item.href);
-                            }
-                          }}
+                          href={item.href}
+                          // onClick={(e) => {
+                          //   e.preventDefault();
+                          //   if (useLink) {
+                          //     handleNavigateAndScroll(item);
+                          //   } else {
+                          //     handleSectionScroll(item.href);
+                          //   }
+                          // }}
                           className="block px-4 py-3 text-card-foreground hover:text-primary hover:bg-accent rounded-md font-medium transition-all duration-200 cursor-pointer"
                         >
                           <div className="flex flex-col">

@@ -14,35 +14,34 @@ const navigationLinks = [
     type: "description",
     items: [
       {
-        href: "#services",
+        href: "/motors",
         label: "Motors",
         description: "CG offers wide range of electrical motors.",
       },
       {
-        href: "#services",
+        href: "/drives",
         label: "Drives",
         description: "CG drives & automation offers complete drive solutions.",
       },
       {
-        href: "#services",
+        href: "/pumps",
         label: "Pumps",
         description: "CG offers wide range of energy efficient pumps.",
       },
       {
-        href: "#services",
+        href: "/gear-boxes",
         label: "Gear Boxes",
         description:
           "Premium transmission provides high quality, precision-engineered power transmission.",
       },
       {
-        href: "#services",
+        href: "/cables",
         label: "Cables",
         description:
           "Effective way of transporting energy with maximum efficiency and minimum carbon footprint.",
       },
       {
-        href: "#services",
-        link: "/#services",
+        href: "/spares",
         label: "Spares",
         description:
           "We provide genuine spare parts for all products we supply.",
