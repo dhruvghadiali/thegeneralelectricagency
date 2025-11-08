@@ -24,7 +24,7 @@ const LargeScreenNavigationMenuComponent = ({ navigationLinks, useLink }) => {
     console.log("Navigating and scrolling to:", link);
     // First navigate to home page
     navigate("/");
-    
+
     // Then scroll to the section after a brief delay to ensure page is loaded
     setTimeout(() => {
       console.log("Scrolling to section:", link.href);
@@ -69,15 +69,16 @@ const LargeScreenNavigationMenuComponent = ({ navigationLinks, useLink }) => {
                       link.items.map((item, itemIndex) => (
                         <a
                           key={itemIndex}
-                          href={item.href}
-                          // onClick={(e) => {
-                          //   e.preventDefault();
-                          //   if (useLink) {
-                          //     handleNavigateAndScroll(item);
-                          //   } else {
-                          //     handleSectionScroll(item.href);
-                          //   }
-                          // }}
+                          // href={item.href}
+                          onClick={(e) => {
+                            navigate(item.href);
+                            // e.preventDefault();
+                            // if (useLink) {
+                            //   handleNavigateAndScroll(item);
+                            // } else {
+                            //   handleSectionScroll(item.href);
+                            // }
+                          }}
                           className="block px-4 py-3 text-card-foreground hover:text-primary hover:bg-accent rounded-md font-medium transition-all duration-200 cursor-pointer"
                         >
                           <div className="flex flex-col">
@@ -116,6 +117,6 @@ const LargeScreenNavigationMenuComponent = ({ navigationLinks, useLink }) => {
       </ul>
     </nav>
   );
-}
+};
 
 export default LargeScreenNavigationMenuComponent;
