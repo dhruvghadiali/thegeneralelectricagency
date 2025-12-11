@@ -1,6 +1,8 @@
 import HomeDashboardCardTimelineDots from "@ScreenComponents/home/dashboardCard/timelineDots";
 import HomeDashboardCardAnimationEffect from "@ScreenComponents/home/dashboardCard/animationEffect";
 import HomeDashboardCardProgressIndicator from "@ScreenComponents/home/dashboardCard/progressIndicator";
+import { Button } from "@ShadcnComponents/button";
+import { Link } from "react-router-dom";
 
 const HomeDashboardCard = () => {
   return (
@@ -79,6 +81,27 @@ const HomeDashboardCard = () => {
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* Sign In CTA */}
+            <div className="mt-2 flex items-center justify-between">
+              <Link to="/sign-in" className="text-xs text-primary underline-offset-4 hover:underline">
+                Sign in to manage orders
+              </Link>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2 rounded-full px-4 backdrop-blur bg-background/60 hover:bg-background/80 ring-1 ring-border/60"
+                asChild
+              >
+                <Link to="/sign-in" aria-label="Go to Sign In">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" className="size-4 text-primary">
+                    <path d="M10 7l5 5-5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M4 12h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <span>Sign In</span>
+                </Link>
+              </Button>
             </div>
           </div>
         </div>

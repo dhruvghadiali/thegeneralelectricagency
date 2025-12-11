@@ -16,6 +16,7 @@ import GearBoxesPage from "@/pages/gearBoxesPage";
 import MotorsPage from "@/pages/motorsPage";
 import PumpsPage from "@/pages/pumpsPage";
 import SparesPage from "@/pages/sparesPage";
+import SignInPage from "@/pages/signInPage";
 
 function App() {
   // const [isLoading, setIsLoading] = useState(true);
@@ -48,6 +49,7 @@ function App() {
           <Route path="/gear-boxes" element={<GearBoxesPage />} />
           <Route path="/cables" element={<CablesPage />} />
           <Route path="/spares" element={<SparesPage />} />
+          <Route path="/sign-in" element={<SignInPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
