@@ -77,7 +77,7 @@ export default function SignInPage() {
 							<StaggeredAnimation delay={40}>
 								<div className="flex items-center gap-3">
 									<img src={logo} alt="GEA" className="h-12 w-12 rounded-sm " />
-									<span className="font-medium tracking-wide text-4xl text-primary">The General Electric Agency</span>
+									<span className="font-medium tracking-wide text-4xl text-primary">The General Electric Stores</span>
 								</div>
 							</StaggeredAnimation>
 
@@ -106,7 +106,7 @@ export default function SignInPage() {
 							<div className="mb-8 lg:hidden">
 								<div className="flex items-center gap-3">
 									<img src={logo} alt="GEA" className="h-8 w-8 rounded-sm" />
-									<span className="text-base font-medium text-muted-foreground">The General Electric Agency</span>
+									<span className="text-base font-medium text-muted-foreground">The General Electric Stores</span>
 								</div>
 								<h1 className="mt-3 text-2xl sm:text-3xl font-semibold text-foreground tracking-tight">
 									Welcome back
@@ -183,4 +183,3 @@ export default function SignInPage() {
 		</div>
 	);
 }
-

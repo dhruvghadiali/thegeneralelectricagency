@@ -46,7 +46,7 @@ function AboutScreenComponent() {
               </h2>
               <p className="text-xl text-muted-foreground">
                 From humble beginnings to industry leadership - the story of The
-                General Electric Agency
+                General Electric Stores
               </p>
             </div>
 
@@ -108,7 +108,7 @@ function AboutScreenComponent() {
                       </h4>
                       <p className="text-card-foreground leading-relaxed text-sm lg:text-sm">
                         In 1989, the name evolved to{" "}
-                        <strong>General Electric Agency</strong>, expanding its
+                        <strong>General Electric Stores</strong>, expanding its
                         operations to Ankleshwar, Gujarat by{" "}
                         <strong>Late Shri Navinchandra Mafatlal Patel</strong>.
                         The subsequent management of the agency was entrusted to
@@ -245,7 +245,7 @@ function AboutScreenComponent() {
                         Remarkable Achievement
                       </h4>
                       <p className="text-card-foreground leading-relaxed text-sm lg:text-sm">
-                        <strong>The General Electric Agency</strong> which was
+                        <strong>The General Electric Stores</strong> which was
                         started from scratch has reached to
                         <strong>
                           INR 0.50 crores (INR 5 Million) turnover company

@@ -34,7 +34,7 @@ const HomeIntroductionComponent = () => {
 
         <div className="mb-4">
           <h2 className="text-2xl lg:text-3xl font-semibold text-primary mb-2">
-            The General Electric Agency
+            The General Electric Stores
           </h2>
         </div>
 

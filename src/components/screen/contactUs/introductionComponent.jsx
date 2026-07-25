@@ -11,7 +11,7 @@ const ContactUsIntroductionComponent = () => {
           Contact <span className="text-primary">Us</span>
         </h2>
         <p className="text-lg sm:text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed mb-8">
-          {`For over ${yearsInBusiness} years, The General Electric Agency has been a trusted partner in 
+          {`For over ${yearsInBusiness} years, The General Electric Stores has been a trusted partner in
           electrical solutions, providing premium motors, drives, pumps, and industrial equipment 
           that power the industries of today and tomorrow.`}
         </p>
