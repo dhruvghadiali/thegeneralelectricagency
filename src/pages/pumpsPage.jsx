@@ -1,8 +1,6 @@
 import NavigationMenuComponent from "@Components/navigationMenu";
-import { ArrowLeft, Droplets, Zap, Settings, Award, Download, Phone, Mail } from "lucide-react";
+import { Droplets, Zap, Settings, Award, Download, Phone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
-
 import pump1 from "@Assets/images/cg-aow-pump.jpg";
 import pump2 from "@Assets/images/cg-xmb-pump.jpg";
 import pump3 from "@Assets/images/cg-dmb-pump.jpg";
@@ -11,7 +9,6 @@ import pump5 from "@Assets/images/cg-stp-pump.jpg";
 import pump6 from "@Assets/images/cg-mini-pump.jpg";
 
 function PumpsPage() {
-  const navigate = useNavigate();
 
   const pumpsData = [
     {
@@ -272,7 +269,7 @@ function PumpsPage() {
         <section className="pb-16 lg:pb-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
-              {pumpsData.map((pump, index) => (
+              {pumpsData.map((pump) => (
                 <div
                   key={pump.id}
                   className="group bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-3xl transition-all duration-300 hover:-translate-y-2"

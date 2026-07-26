@@ -1,5 +1,6 @@
 import { ThemeSwitch } from "@/components/ui/theme-switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useEffect, useState } from "react";
 
 import logoImage from "@Assets/images/logo.png";
 import LargeScreenNavigationMenuComponent from "@Components/navigationMenu/largeScreenNavigationMenu";
@@ -54,6 +55,40 @@ const navigationLinks = [
 ];
 
 function NavigationMenuComponent({ useLink }) {
+  const [activeSection, setActiveSection] = useState("home");
+
+  useEffect(() => {
+    const sectionIds = ["home", "services", "clients", "partners", "contact-us"];
+
+    const updateActiveSection = () => {
+      const scrollPosition = window.scrollY + window.innerHeight * 0.38;
+      const currentSection = sectionIds
+        .map((id) => {
+          const element = document.getElementById(id);
+          return element ? { id, top: element.offsetTop } : null;
+        })
+        .filter(Boolean)
+        .reduce((active, section) => {
+          if (section.top <= scrollPosition && section.top >= active.top) {
+            return section;
+          }
+
+          return active;
+        }, { id: "home", top: Number.NEGATIVE_INFINITY });
+
+      setActiveSection(currentSection.id);
+    };
+
+    updateActiveSection();
+    window.addEventListener("scroll", updateActiveSection, { passive: true });
+    window.addEventListener("resize", updateActiveSection, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", updateActiveSection);
+      window.removeEventListener("resize", updateActiveSection);
+    };
+  }, []);
+
   return (
     <header className="sticky top-0 bg-primary px-4 md:px-6 z-50 shadow-lg">
       <div className="flex h-16 items-center justify-between gap-4">
@@ -63,6 +98,7 @@ function NavigationMenuComponent({ useLink }) {
           <MobileScreenNavigationMenuComponent
             navigationLinks={navigationLinks}
             useLink={useLink}
+            activeSection={activeSection}
           />
 
           {/* Main nav */}
@@ -75,6 +111,7 @@ function NavigationMenuComponent({ useLink }) {
             <LargeScreenNavigationMenuComponent
               useLink={useLink}
               navigationLinks={navigationLinks}
+              activeSection={activeSection}
             />
           </div>
         </div>

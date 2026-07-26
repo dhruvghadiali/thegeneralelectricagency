@@ -1,17 +1,86 @@
+import { ArrowUpRight, Clock, Mail, MapPin, Phone, Send } from "lucide-react";
+import { useEffect, useState } from "react";
 
-import ContactUsIntroductionComponent from "@ScreenComponents/contactUs/introductionComponent";
-import ContactUsCardComponent from "@ScreenComponents/contactUs/contactUsCard";
+import ContactActionButton from "./ContactActionButton";
+import ContactDetailSheet from "./ContactDetailSheet";
+import { CONTACT_SHEET_TYPE } from "./contactShowcase.constants";
 
 function ContactUsScreenComponent() {
-  return (
-    <section className="py-16 sm:py-20 md:py-24 lg:py-28 bg-gradient-to-br from-primary/5 via-background to-secondary/10 dark:from-primary/15 dark:via-gray-900 dark:to-secondary/20" id="contact-us">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20">
-        {/* Header Section */}
-        <ContactUsIntroductionComponent />
+  const [activeContactSheet, setActiveContactSheet] = useState(null);
 
-        {/* Contact Information Section */}
-        <ContactUsCardComponent/>
+  useEffect(() => {
+    if (!activeContactSheet) {
+      return undefined;
+    }
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setActiveContactSheet(null);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [activeContactSheet]);
+
+  return (
+    <section className="contact-showcase" id="contact-us" aria-label="Contact us">
+      <div className="contact-showcase__shell">
+        <div className="contact-showcase__home-surface">
+          <div className="contact-showcase__eyebrow">
+            <Send size={15} strokeWidth={2.4} />
+            Contact Us
+          </div>
+
+          <div className="contact-showcase__frame-label">
+            <MapPin size={18} strokeWidth={2.4} />
+            <span>Ankleshwar & Bharuch</span>
+          </div>
+
+          <h2 className="contact-showcase__title">
+            Reach our industrial supply team.
+          </h2>
+
+          <div className="contact-showcase__home-actions">
+            <ContactActionButton
+              label="Directions"
+              mobileLabel="Get Directions"
+              TrailingIcon={ArrowUpRight}
+              onClick={() => setActiveContactSheet(CONTACT_SHEET_TYPE.DIRECTIONS)}
+            />
+            <ContactActionButton
+              label="Email"
+              Icon={Mail}
+              onClick={() => setActiveContactSheet(CONTACT_SHEET_TYPE.EMAIL)}
+            />
+            <ContactActionButton
+              label="Phone"
+              Icon={Phone}
+              onClick={() => setActiveContactSheet(CONTACT_SHEET_TYPE.PHONE)}
+            />
+          </div>
+
+          <div className="contact-showcase__home-details">
+            <div
+              className="contact-showcase__home-detail contact-showcase__home-detail--time"
+              style={{ "--home-card-index": 0 }}
+            >
+              <Clock size={17} strokeWidth={2.4} />
+              <span>Office Time</span>
+              <strong>Mon - Sat, 9:30 AM - 6:00 PM</strong>
+              <small>Sunday closed</small>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <ContactDetailSheet
+        activeContactSheet={activeContactSheet}
+        onClose={() => setActiveContactSheet(null)}
+      />
     </section>
   );
 }

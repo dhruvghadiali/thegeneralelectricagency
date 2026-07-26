@@ -12,7 +12,9 @@ import {
 } from "@ShadcnComponents/popover";
 import { useNavigate } from "react-router-dom";
 
-function MobileScreenNavigationMenuComponent({ navigationLinks, useLink }) {
+const getSectionId = (href) => (href?.startsWith("#") ? href.replace("#", "") : "");
+
+function MobileScreenNavigationMenuComponent({ navigationLinks, useLink, activeSection }) {
   const navigate = useNavigate();
   const handleSectionScroll = (href) => {
     // Extract the section ID from href (remove the # symbol)
@@ -82,15 +84,23 @@ function MobileScreenNavigationMenuComponent({ navigationLinks, useLink }) {
               <NavigationMenuItem key={index} className="w-full">
                 {link.submenu ? (
                   <>
-                    <div className="text-muted-foreground px-2 py-1.5 text-xs font-medium">
+                    <button
+                      type="button"
+                      onClick={() => handleSectionScroll("#services")}
+                      className={`mb-1 w-full rounded px-2 py-1.5 text-left text-xs font-semibold transition-all duration-200 ${
+                        activeSection === "services"
+                          ? "bg-primary text-primary-foreground"
+                          : "text-muted-foreground hover:bg-accent hover:text-primary"
+                      }`}
+                    >
                       {link.label}
-                    </div>
+                    </button>
                     <ul>
                       {link.items.map((item, itemIndex) => (
                         <li key={itemIndex}>
                           <NavigationMenuLink
                             // href={item.href}
-                            onClick={(e) => {
+                            onClick={() => {
                               navigate(item.href);
                               // e.preventDefault();
                               // if (useLink) {
@@ -118,7 +128,11 @@ function MobileScreenNavigationMenuComponent({ navigationLinks, useLink }) {
                         handleSectionScroll(link.href);
                       }
                     }}
-                    className="py-1.5 text-card-foreground hover:text-primary hover:bg-accent px-2 rounded transition-all duration-200 cursor-pointer"
+                    className={`py-1.5 px-2 rounded transition-all duration-200 cursor-pointer ${
+                      activeSection === getSectionId(link.href)
+                        ? "bg-primary text-primary-foreground"
+                        : "text-card-foreground hover:text-primary hover:bg-accent"
+                    }`}
                   >
                     {link.label}
                   </NavigationMenuLink>

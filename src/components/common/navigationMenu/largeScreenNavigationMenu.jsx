@@ -2,7 +2,9 @@ import { ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const LargeScreenNavigationMenuComponent = ({ navigationLinks, useLink }) => {
+const getSectionId = (href) => href?.startsWith("#") ? href.replace("#", "") : "";
+
+const LargeScreenNavigationMenuComponent = ({ navigationLinks, useLink, activeSection }) => {
   const navigate = useNavigate();
   const [openDropdown, setOpenDropdown] = useState(null);
 
@@ -51,7 +53,14 @@ const LargeScreenNavigationMenuComponent = ({ navigationLinks, useLink }) => {
                 onMouseEnter={() => handleMouseEnter(index)}
                 onMouseLeave={handleMouseLeave}
               >
-                <button className="flex items-center text-secondary hover:text-primary-foreground hover:bg-primary bg-transparent px-3 py-2 font-medium transition-all duration-200 rounded-md">
+                <button
+                  onClick={() => handleSectionScroll("#services")}
+                  className={`flex items-center bg-transparent px-3 py-2 font-medium transition-all duration-200 rounded-md ${
+                    activeSection === "services"
+                      ? "bg-secondary text-primary shadow-sm"
+                      : "text-secondary hover:text-primary-foreground hover:bg-primary"
+                  }`}
+                >
                   {link.label}
                   <ChevronDownIcon className="ml-1 h-4 w-4 transition-transform duration-200" />
                 </button>
@@ -70,7 +79,7 @@ const LargeScreenNavigationMenuComponent = ({ navigationLinks, useLink }) => {
                         <a
                           key={itemIndex}
                           // href={item.href}
-                          onClick={(e) => {
+                          onClick={() => {
                             navigate(item.href);
                             // e.preventDefault();
                             // if (useLink) {
@@ -107,7 +116,11 @@ const LargeScreenNavigationMenuComponent = ({ navigationLinks, useLink }) => {
                     handleSectionScroll(link.href);
                   }
                 }}
-                className="text-secondary hover:text-primary-foreground hover:bg-primary px-3 py-2 font-medium transition-all duration-200 rounded-md cursor-pointer"
+                className={`px-3 py-2 font-medium transition-all duration-200 rounded-md cursor-pointer ${
+                  activeSection === getSectionId(link.href)
+                    ? "bg-secondary text-primary shadow-sm"
+                    : "text-secondary hover:text-primary-foreground hover:bg-primary"
+                }`}
               >
                 {link.label}
               </a>

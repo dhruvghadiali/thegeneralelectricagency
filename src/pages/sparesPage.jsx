@@ -1,11 +1,9 @@
 import NavigationMenuComponent from "@Components/navigationMenu";
-import { ArrowLeft, Package, Wrench, Download, Inbox } from "lucide-react";
+import { Package, Wrench, Download, Inbox } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 import sparesImg from "@Assets/images/spares.png";
 
 function SparesPage() {
-  const navigate = useNavigate();
 
   const sparesData = [
     {

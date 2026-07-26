@@ -1,11 +1,9 @@
 import NavigationMenuComponent from "@Components/navigationMenu";
-import { ArrowLeft, Cable, Download } from "lucide-react";
+import { Cable, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 import cableImg from "@Assets/images/cables.jpg";
 
 function CablesPage() {
-  const navigate = useNavigate();
 
   const cablesData = [
     {

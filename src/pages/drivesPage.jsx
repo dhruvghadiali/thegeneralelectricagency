@@ -1,10 +1,8 @@
 import NavigationMenuComponent from "@Components/navigationMenu";
-import { ArrowLeft, Cpu, Zap, Settings, Award, Download } from "lucide-react";
+import { Cpu, Zap, Settings, Award, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 import cgDrives from "@Assets/images/cg-drives.jpg";
 function DrivesPage() {
-  const navigate = useNavigate();
 
   // Data: CG Power and Industrial Solutions - Drives Portfolio
   const drivesData = [

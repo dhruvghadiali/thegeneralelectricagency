@@ -26,7 +26,7 @@ export default function SignInPage() {
 			console.log({ email, password });
 			// On success, navigate as needed
 			// navigate("/");
-		} catch (err) {
+		} catch {
 			setError("Sign in failed. Please try again.");
 		} finally {
 			setSubmitting(false);

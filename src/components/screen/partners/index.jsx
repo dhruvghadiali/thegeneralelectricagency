@@ -1,248 +1,132 @@
-import { useState } from 'react';
-import { Building2, Award, Users, Zap, Globe, Phone, Mail, MapPin } from 'lucide-react';
+import cgIcon from "@/assets/images/cg-icon.png";
+import kegIcon from "@/assets/images/keg-icon.png";
+import premiumIcon from "@/assets/images/premium-transmission-icon.png";
+import { Award, BadgeCheck, Globe2, PackageCheck } from "lucide-react";
+import { useState } from "react";
 
-import PartnersIntroductionComponent from '@ScreenComponents/partners/introductionComponent';
+const partners = [
+  {
+    name: "CG Power and Industrial Solutions",
+    shortName: "CG Power",
+    type: "Power & Industrial Solutions",
+    logo: "CG",
+    image: cgIcon,
+    partnership: "Authorized Dealer",
+    since: "1939",
+    products: "Motors, Drives, Pumps",
+    coverage: "Pan India",
+    description:
+      "Electrical equipment, power systems, and industrial solutions for demanding plant operations.",
+    specialization: ["Industrial Motors", "Drives", "Pumps", "Switchgear"],
+  },
+  {
+    name: "RPG Cables KEC International Ltd",
+    shortName: "RPG KEC",
+    type: "Cables & Infrastructure",
+    logo: "RPG",
+    image: kegIcon,
+    partnership: "Channel Partner",
+    since: "2015",
+    products: "Power & Control Cables",
+    coverage: "Western & Central India",
+    description:
+      "Infrastructure and cable solutions for power transmission, industrial wiring, and electrification projects.",
+    specialization: ["Power Cables", "Control Cables", "Infrastructure", "EPC"],
+  },
+  {
+    name: "Premium Transmission Limited",
+    shortName: "Premium",
+    type: "Transmission Solutions",
+    logo: "PTL",
+    image: premiumIcon,
+    partnership: "Exclusive Distributor",
+    since: "2018",
+    products: "Gear Boxes, Gear Motors",
+    coverage: "Gujarat & Rajasthan",
+    description:
+      "Transmission products and drive solutions for mechanical systems, automation, and industrial motion.",
+    specialization: ["Gear Boxes", "Gear Motors", "Industrial Drives", "Automation"],
+  },
+];
 
-// Import partner company icons
-import cgIcon from '@/assets/images/cg-icon.png';
-import kegIcon from '@/assets/images/keg-icon.png';
-import premiumIcon from '@/assets/images/premium-transmission-icon.png';
-
-const PartnersScreenComponent = () => {
-  const [activePartner, setActivePartner] = useState(0);
-
-  const partners = [
-    {
-      id: 1,
-      name: "CG Power and Industrial Solutions",
-      shortName: "CG Power",
-      type: "Power & Industrial Solutions",
-      logo: "CG",
-      image: cgIcon,
-      description: "Leading manufacturer of electrical equipment, power systems, and industrial solutions across India and global markets.",
-      specialization: ["Power Transformers", "Industrial Motors", "Switchgear", "Railway Solutions"],
-      partnership: "Authorized Dealer",
-      since: "1939",
-      products: "Motors, Drives, Pumps",
-      coverage: "Pan India",
-      highlights: [
-        "₹8,000+ Cr Revenue Company",
-        "60+ Manufacturing Locations",
-        "Global Presence in 30+ Countries",
-        "ISO 9001:2015 Certified"
-      ],
-      contact: {
-        website: "www.cgglobal.com",
-        phone: "+91-11-4243-4243",
-        email: "info@cgpower.com"
-      },
-      stats: {
-        revenue: "8000+ Cr",
-        locations: "60+",
-        countries: "30+",
-        experience: "100+ Years"
-      }
-    },
-    {
-      id: 2,
-      name: "RPG Cables KEC International Ltd",
-      shortName: "RPG KEC",
-      type: "Cables & Infrastructure",
-      logo: "RPG",
-      image: kegIcon,
-      description: "Premier infrastructure EPC company specializing in power transmission, cables, and railway electrification projects.",
-      specialization: ["Power Cables", "Transmission Lines", "Railway Electrification", "Infrastructure EPC"],
-      partnership: "Channel Partner",
-      since: "2015",
-      products: "Cables",
-      coverage: "Western & Central India",
-      highlights: [
-        "₹12,000+ Cr Revenue Company",
-        "Global Infrastructure Projects",
-        "Advanced Cable Technology",
-        "Green Energy Solutions"
-      ],
-      contact: {
-        website: "www.kecrpg.com",
-        phone: "+91-22-6661-1111",
-        email: "info@kecrpg.com"
-      },
-      stats: {
-        revenue: "12000+ Cr",
-        projects: "1000+",
-        countries: "25+",
-        experience: "50+ Years"
-      }
-    },
-    {
-      id: 3,
-      name: "Premium Transmission Limited",
-      shortName: "Premium",
-      type: "Transmission Solutions",
-      logo: "PTL",
-      image: premiumIcon,
-      description: "Specialized transmission equipment manufacturer focusing on power distribution and industrial automation solutions.",
-      specialization: ["Gear Boxes", "Power Transmission", "Industrial Drives", "Automation Systems"],
-      partnership: "Exclusive Distributor",
-      since: "2018",
-      products: "Gear Boxes, Gear motors",
-      coverage: "Gujarat & Rajasthan",
-      highlights: [
-        "Premium Quality Standards",
-        "Advanced Manufacturing",
-        "Custom Solutions",
-        "24/7 Technical Support"
-      ],
-      contact: {
-        website: "www.premiumtransmission.com",
-        phone: "+91-79-2658-5555",
-        email: "info@premiumtransmission.com"
-      },
-      stats: {
-        products: "500+",
-        clients: "200+",
-        states: "5+",
-        experience: "15+ Years"
-      }
-    }
-  ];
+function PartnersScreenComponent() {
+  const [activePartnerIndex, setActivePartnerIndex] = useState(0);
+  const activePartner = partners[activePartnerIndex];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/10 dark:from-primary/15 dark:via-gray-900 dark:to-secondary/20" id="partners">
-      {/* Hero Section */}
-      <PartnersIntroductionComponent/>
+    <div className="partners-carousel-showcase" id="partners">
+      <section
+        className="partners-carousel-showcase__shell"
+        aria-label="Partner showcase"
+      >
+        <div className="partners-carousel-showcase__panel">
+          <div className="partners-carousel-showcase__stage">
+            {partners.map((partner, index) => {
+              const distance = index - activePartnerIndex;
+              const absDistance = Math.abs(distance);
+              const isActive = index === activePartnerIndex;
 
-      {/* Partners Navigation */}
-      <section className="">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-4">
-            {partners.map((partner, index) => (
-              <button
-                key={partner.id}
-                onClick={() => setActivePartner(index)}
-                className={`flex items-center gap-3 px-4 sm:px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
-                  activePartner === index
-                    ? 'bg-primary text-white shadow-lg'
-                    : 'bg-secondary dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-primary'
-                }`}
-              >
-                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center p-1">
-                  <img 
-                    src={partner.image} 
-                    alt={`${partner.shortName} icon`}
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                      e.target.nextSibling.style.display = 'flex';
-                    }}
-                  />
-                  <div className="hidden w-full h-full items-center justify-center text-primary text-xs font-bold">
-                    {partner.logo}
+              return (
+                <article
+                  className={`partners-carousel-showcase__card ${
+                    isActive ? "partners-carousel-showcase__card--active" : ""
+                  }`}
+                  key={partner.name}
+                  style={{
+                    "--partner-card-distance": distance,
+                    "--partner-card-abs-distance": absDistance,
+                  }}
+                  onClick={() => setActivePartnerIndex(index)}
+                >
+                  <div className="partners-carousel-showcase__logo">
+                    <img src={partner.image} alt={`${partner.shortName} logo`} />
+                    <span>{partner.logo}</span>
                   </div>
-                </div>
-                <span className="hidden sm:inline">{partner.shortName}</span>
-                <span className="sm:hidden text-xs">{partner.logo}</span>
-              </button>
-            ))}
+                  <div className="partners-carousel-showcase__card-copy">
+                    <span>{partner.type}</span>
+                    <h2>{partner.shortName}</h2>
+                    <p>{partner.description}</p>
+                  </div>
+                </article>
+              );
+            })}
           </div>
-        </div>
-      </section>
 
-      {/* Active Partner Details */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            {partners.map((partner, index) => (
-              <div
-                key={partner.id}
-                className={`transition-all duration-500 ${
-                  activePartner === index ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 absolute'
-                }`}
-                style={{ display: activePartner === index ? 'block' : 'none' }}
-              >
-                {/* Partner Header */}
-                <div className="bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-primary/15 dark:to-secondary/15 rounded-2xl p-4 sm:p-6 lg:p-8 mb-8 border border-primary/10 dark:border-primary/20">
-                  <div className="grid grid-cols-1 lg:grid-cols-1 gap-6 lg:gap-8 items-center">
-                    <div>
-                      <div className="flex items-center gap-4 mb-4">
-                        <div className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 bg-white rounded-xl flex items-center justify-center shadow-lg border border-gray-100 p-2">
-                          <img 
-                            src={partner.image} 
-                            alt={`${partner.name} logo`}
-                            className="w-full h-full object-contain max-w-full max-h-full"
-                            style={{ imageRendering: 'auto' }}
-                            onError={(e) => {
-                              // Fallback to text logo if image fails
-                              console.log('Partner image failed to load:', partner.image);
-                              e.target.style.display = 'none';
-                              e.target.nextSibling.style.display = 'flex';
-                            }}
-                          />
-                          <div className="hidden w-full h-full items-center justify-center text-primary text-xl font-bold bg-primary/10 rounded-lg">
-                            {partner.logo}
-                          </div>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground leading-tight">{partner.name}</h2>
-                          <p className="text-primary font-medium text-sm sm:text-base">{partner.type}</p>
-                        </div>
-                      </div>
-                      <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">{partner.description}</p>
-                    </div>
-                  </div>
-                </div>
+          <div className="partners-carousel-showcase__details">
+            <div>
+              <span>Strategic Partner</span>
+              <h3>{activePartner.name}</h3>
+            </div>
 
-                {/* Partnership Details */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 lg:gap-8 mb-8">
-                  {/* Partnership Info */}
-                  <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg border border-gray-100 dark:border-gray-700">
-                    <div className="flex items-center gap-3 mb-4">
-                      <Award className="w-5 sm:w-6 h-5 sm:h-6 text-primary" />
-                      <h3 className="text-lg sm:text-xl font-bold text-foreground">Partnership Details</h3>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-start">
-                        <span className="text-muted-foreground dark:text-gray-400 text-sm">Type:</span>
-                        <span className="font-medium text-primary text-sm text-right">{partner.partnership}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground dark:text-gray-400 text-sm">Since:</span>
-                        <span className="font-medium text-sm dark:text-gray-300">{partner.since}</span>
-                      </div>
-                      <div className="flex justify-between items-start">
-                        <span className="text-muted-foreground dark:text-gray-400 text-sm">Coverage:</span>
-                        <span className="font-medium text-sm dark:text-gray-300 text-right">{partner.coverage}</span>
-                      </div>
-                      <div className="pt-2 border-t dark:border-gray-600">
-                        <span className="text-muted-foreground dark:text-gray-400 text-sm">Products:</span>
-                        <p className="font-medium text-sm dark:text-gray-300 mt-1">{partner.products}</p>
-                      </div>
-                    </div>
-                  </div>
+            <div className="partners-carousel-showcase__meta">
+              <span>
+                <Award size={15} strokeWidth={2.4} />
+                {activePartner.partnership}
+              </span>
+              <span>
+                <Globe2 size={15} strokeWidth={2.4} />
+                {activePartner.coverage}
+              </span>
+              <span>
+                <PackageCheck size={15} strokeWidth={2.4} />
+                {activePartner.products}
+              </span>
+              <span>
+                <BadgeCheck size={15} strokeWidth={2.4} />
+                Since {activePartner.since}
+              </span>
+            </div>
 
-                  {/* Specializations */}
-                  <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg border border-gray-100 dark:border-gray-700">
-                    <div className="flex items-center gap-3 mb-4">
-                      <Zap className="w-5 sm:w-6 h-5 sm:h-6 text-secondary" />
-                      <h3 className="text-lg sm:text-xl font-bold text-foreground">Specializations</h3>
-                    </div>
-                    <div className="space-y-2">
-                      {partner.specialization.map((spec, idx) => (
-                        <div key={idx} className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-secondary rounded-full"></div>
-                          <span className="text-sm text-muted-foreground dark:text-gray-400">{spec}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+            <div className="partners-carousel-showcase__chips">
+              {activePartner.specialization.map((item) => (
+                <span key={item}>{item}</span>
+              ))}
+            </div>
           </div>
         </div>
       </section>
     </div>
   );
-};
+}
 
 export default PartnersScreenComponent;

@@ -1,23 +1,148 @@
-import HomeDashboardCard from "@ScreenComponents/home/dashboardCard";
-import HomeIntroductionComponent from "@ScreenComponents/home/introductionComponent";
+import { Button } from "@/components/ui/button";
+import { BookOpen, ShieldCheck, Sparkles } from "lucide-react";
+import moment from "moment";
+import { useEffect, useState } from "react";
+
+import HomeStorySheet from "./HomeStorySheet";
+import {
+  HOME_ESTABLISHED_YEAR,
+  homeCapabilities,
+  homeIdentityDetails,
+  homeLeadText,
+  homeTitleLines,
+} from "./homeShowcase.constants";
+
+function renderAnimatedText(text, lineIndex) {
+  return text.split("").map((character, characterIndex) => {
+    const isSpace = character === " ";
+    const letterIndex = lineIndex * 18 + characterIndex;
+
+    return (
+      <span
+        aria-hidden="true"
+        className="home-motor-hero__letter"
+        key={`${text}-${characterIndex}`}
+        style={{
+          "--home-letter-index": letterIndex,
+          "--home-letter-offset": characterIndex - Math.floor(text.length / 2),
+        }}
+      >
+        {isSpace ? "\u00A0" : character}
+      </span>
+    );
+  });
+}
 
 function HomeScreenComponent() {
-  return (
-    <div className="bg-background" id="home">
-      {/* Hero Introduction Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/10 dark:from-primary/15 dark:via-gray-900 dark:to-secondary/20">
-        <div className="container mx-auto px-4 py-16 lg:py-24">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              {/* Content Column */}
-              <HomeIntroductionComponent />
+  const [isStoryOpen, setIsStoryOpen] = useState(false);
+  const currentYear = moment().year();
+  const yearsInBusiness = currentYear - HOME_ESTABLISHED_YEAR;
 
-              {/* Visual Column */}
-              <HomeDashboardCard />
+  useEffect(() => {
+    if (!isStoryOpen) {
+      return undefined;
+    }
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setIsStoryOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isStoryOpen]);
+
+  return (
+    <div className="home-motor-hero" id="home">
+      <section className="home-motor-hero__shell" aria-label="Home overview">
+        <div className="home-motor-hero__surface">
+          <div className="home-motor-hero__eyebrow">
+            <Sparkles size={15} strokeWidth={2.4} />
+            {`Est. 1939 | ${yearsInBusiness} years of industrial excellence`}
+          </div>
+
+          <div className="home-motor-hero__frame-label">
+            <ShieldCheck size={18} strokeWidth={2.4} />
+            <span>The General Electric Stores</span>
+          </div>
+
+          <h1 className="home-motor-hero__kinetic-title">
+            <span className="sr-only">
+              India's Largest Dealer in Rotating Machine and Drives
+            </span>
+            {homeTitleLines.map((line, index) => (
+              <span
+                aria-hidden="true"
+                className="home-motor-hero__title-word"
+                key={line}
+                style={{ "--home-word-index": index }}
+              >
+                {renderAnimatedText(line, index)}
+              </span>
+            ))}
+          </h1>
+
+          <p className="home-motor-hero__lead">
+            {homeLeadText}
+          </p>
+
+          <div className="home-motor-hero__capabilities">
+            {homeCapabilities.map((capability, index) => {
+              const Icon = capability.icon;
+
+              return (
+                <div
+                  className="home-motor-hero__capability"
+                  key={capability.value}
+                  style={{ "--home-card-index": index }}
+                >
+                  <Icon size={18} strokeWidth={2.35} />
+                  <span>{capability.label}</span>
+                  <strong>{capability.value}</strong>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="home-motor-hero__identity-list">
+            {homeIdentityDetails.map((detail, index) => (
+              <div
+                className="home-motor-hero__identity-item"
+                key={detail.label}
+                style={{ "--home-card-index": index + homeCapabilities.length }}
+              >
+                <span>{detail.label}</span>
+                <strong>{detail.value}</strong>
+              </div>
+            ))}
+          </div>
+
+          <div className="home-motor-hero__bottom">
+            <div className="home-motor-hero__actions">
+              <Button
+                variant="default"
+                size="lg"
+                className="home-motor-hero__story-trigger"
+                onClick={() => setIsStoryOpen(true)}
+              >
+                <BookOpen size={18} strokeWidth={2.35} />
+                Our Story
+              </Button>
             </div>
           </div>
         </div>
       </section>
+
+      {isStoryOpen && (
+        <HomeStorySheet
+          yearsInBusiness={yearsInBusiness}
+          onClose={() => setIsStoryOpen(false)}
+        />
+      )}
     </div>
   );
 }

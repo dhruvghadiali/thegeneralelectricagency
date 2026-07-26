@@ -1,14 +1,11 @@
 import NavigationMenuComponent from "@Components/navigationMenu";
-import { ArrowLeft, CircuitBoard, Zap, Settings, Award, Download, Phone, Mail } from "lucide-react";
+import { CircuitBoard, Zap, Settings, Award, Download, Phone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
-
 import motor1 from "@Assets/images/motor1.jpg";
 import motor2 from "@Assets/images/motor2.jpg";
 import motor3 from "@Assets/images/motor3.jpg";
 
 function MotorsPage() {
-  const navigate = useNavigate();
 
   const motorsData = [
     {
@@ -145,7 +142,7 @@ function MotorsPage() {
         <section className="pb-16 lg:pb-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
-              {motorsData.map((motor, index) => (
+              {motorsData.map((motor) => (
                 <div
                   key={motor.id}
                   className="group bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-3xl transition-all duration-300 hover:-translate-y-2"

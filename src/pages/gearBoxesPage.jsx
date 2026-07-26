@@ -1,11 +1,9 @@
 import NavigationMenuComponent from "@Components/navigationMenu";
-import { ArrowLeft, Cog, Settings, Award, Download } from "lucide-react";
+import { Cog, Settings, Award, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 import gearbox from "@Assets/images/premium-gearbox.jpg";
 
 function GearBoxesPage() {
-  const navigate = useNavigate();
 
   const gearBoxesData = [
     {
