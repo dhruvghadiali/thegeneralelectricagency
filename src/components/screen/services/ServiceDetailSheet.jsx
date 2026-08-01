@@ -1,4 +1,5 @@
 import { CheckCircle2, Layers3, X } from "lucide-react";
+import { createPortal } from "react-dom";
 
 import useScrollLock from "@/utils/useScrollLock";
 import { Typography } from "@/components/ui/typography";
@@ -17,7 +18,7 @@ function ServiceDetailSheet({
     return null;
   }
 
-  return (
+  return createPortal(
     <div
       className="service-detail-sheet"
       role="dialog"
@@ -117,7 +118,8 @@ function ServiceDetailSheet({
           </div>
         )}
       </section>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

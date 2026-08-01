@@ -1,4 +1,5 @@
 import { Sparkles, X } from "lucide-react";
+import { createPortal } from "react-dom";
 
 import useScrollLock from "@/utils/useScrollLock";
 import { storyMilestones } from "./homeShowcase.constants";
@@ -8,7 +9,7 @@ function HomeStorySheet({ yearsInBusiness, onClose }) {
   // This component only mounts while the sheet is open.
   useScrollLock(true);
 
-  return (
+  return createPortal(
     <div
       className="home-story-sheet"
       role="dialog"
@@ -61,7 +62,8 @@ function HomeStorySheet({ yearsInBusiness, onClose }) {
           ))}
         </div>
       </section>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

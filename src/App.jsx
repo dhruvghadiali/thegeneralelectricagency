@@ -24,14 +24,14 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/about" element={<AboutPage />} />
+            {/* <Route path="/about" element={<AboutPage />} />
             <Route path="/motors" element={<MotorsPage />} />
             <Route path="/drives" element={<DrivesPage />} />
             <Route path="/pumps" element={<PumpsPage />} />
             <Route path="/gear-boxes" element={<GearBoxesPage />} />
             <Route path="/cables" element={<CablesPage />} />
             <Route path="/spares" element={<SparesPage />} />
-            <Route path="/sign-in" element={<SignInPage />} />
+            <Route path="/sign-in" element={<SignInPage />} /> */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Router>
