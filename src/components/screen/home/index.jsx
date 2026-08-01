@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { BookOpen, ShieldCheck, Sparkles } from "lucide-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
+import { Typography } from "@/components/ui/typography";
 
 import HomeStorySheet from "./HomeStorySheet";
 import {
@@ -67,10 +68,10 @@ function HomeScreenComponent() {
 
           <div className="home-motor-hero__frame-label">
             <ShieldCheck size={18} strokeWidth={2.4} />
-            <span>The General Electric Stores</span>
+            <Typography as="span" variant="label">The General Electric Stores</Typography>
           </div>
 
-          <h1 className="home-motor-hero__kinetic-title">
+          <Typography as="h1" variant="display" className="home-motor-hero__kinetic-title">
             <span className="sr-only">
               India's Largest Dealer in Rotating Machine and Drives
             </span>
@@ -84,11 +85,11 @@ function HomeScreenComponent() {
                 {renderAnimatedText(line, index)}
               </span>
             ))}
-          </h1>
+          </Typography>
 
-          <p className="home-motor-hero__lead">
+          <Typography variant="bodyLarge" className="home-motor-hero__lead">
             {homeLeadText}
-          </p>
+          </Typography>
 
           <div className="home-motor-hero__capabilities">
             {homeCapabilities.map((capability, index) => {
@@ -101,8 +102,8 @@ function HomeScreenComponent() {
                   style={{ "--home-card-index": index }}
                 >
                   <Icon size={18} strokeWidth={2.35} />
-                  <span>{capability.label}</span>
-                  <strong>{capability.value}</strong>
+                  <Typography as="span" variant="caption">{capability.label}</Typography>
+                  <Typography as="strong" variant="label">{capability.value}</Typography>
                 </div>
               );
             })}
@@ -115,8 +116,8 @@ function HomeScreenComponent() {
                 key={detail.label}
                 style={{ "--home-card-index": index + homeCapabilities.length }}
               >
-                <span>{detail.label}</span>
-                <strong>{detail.value}</strong>
+                <Typography as="span" variant="caption">{detail.label}</Typography>
+                <Typography as="strong" variant="label">{detail.value}</Typography>
               </div>
             ))}
           </div>
@@ -130,7 +131,7 @@ function HomeScreenComponent() {
                 onClick={() => setIsStoryOpen(true)}
               >
                 <BookOpen size={18} strokeWidth={2.35} />
-                Our Story
+                <Typography as="span" variant="label">Our Story</Typography>
               </Button>
             </div>
           </div>

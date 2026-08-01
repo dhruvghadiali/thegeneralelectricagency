@@ -12,6 +12,9 @@ const DEFAULT_FRAME_COUNT = 300;
 const FIRST_FRAME = 1;
 const MOBILE_FRAME_QUERY = "(max-width: 767px)";
 
+/** How many frames ahead of the playhead to pre-decode. */
+const FRAME_WARM_AHEAD = 3;
+
 function usePrefersReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
@@ -112,9 +115,14 @@ function drawImageToCanvas(canvas, image, objectFit = "contain") {
   const x = (canvasWidth - drawWidth) / 2;
   const y = (canvasHeight - drawHeight) / 2;
 
-  context.clearRect(0, 0, canvasWidth, canvasHeight);
-  context.fillStyle = "#f7f9fb";
-  context.fillRect(0, 0, canvasWidth, canvasHeight);
+  // In cover mode the image already paints every pixel, so clearing and
+  // filling first is two full-canvas writes of pure waste on every frame.
+  if (objectFit !== "cover") {
+    context.clearRect(0, 0, canvasWidth, canvasHeight);
+    context.fillStyle = "#f7f9fb";
+    context.fillRect(0, 0, canvasWidth, canvasHeight);
+  }
+
   context.drawImage(image, x, y, drawWidth, drawHeight);
 }
 
@@ -145,6 +153,10 @@ function MotorScrollAnimation({
    * every frame, and re-fetching here would double the network cost.
    */
   preloadedImages,
+  /** Explicit frame URL list, matching `preloadedImages` index for index. */
+  frameUrls: providedFrameUrls,
+  /** Overrides the internal media query when the owner already resolved it. */
+  isMobileViewport,
 }) {
   const sectionRef = useRef(null);
   const stickyRef = useRef(null);
@@ -152,25 +164,31 @@ function MotorScrollAnimation({
   const ownFrameImagesRef = useRef([]);
   const frameImagesRef = preloadedImages ?? ownFrameImagesRef;
   const currentFrameRef = useRef(0);
+  const lastFrameIndexRef = useRef(0);
   const progressRef = useRef(0);
   const renderFrameRef = useRef(null);
   const resizeFrameRef = useRef(null);
   const scrollFrameRef = useRef(null);
   const [isPosterReady, setIsPosterReady] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
-  const useMobileFrames = useResponsiveFramePreference(mobileFrameQuery);
+  const detectedMobileFrames = useResponsiveFramePreference(mobileFrameQuery);
+  const useMobileFrames = isMobileViewport ?? detectedMobileFrames;
   const hasForegroundContent = Boolean(children);
   const canvasObjectFit = objectFit ?? (hasForegroundContent ? "cover" : "contain");
   const shouldShowIntroOverlay = showIntroOverlay ?? !hasForegroundContent;
   const activeFramePath = framePath ?? (useMobileFrames ? mobileFramePath : desktopFramePath);
 
-  const frameUrls = useMemo(
+  const derivedFrameUrls = useMemo(
     () =>
       Array.from({ length: frameCount }, (_, index) =>
         getFrameUrl(activeFramePath, index + FIRST_FRAME)
       ),
     [activeFramePath, frameCount]
   );
+
+  // The owner may supply a non-contiguous list (phones play every Nth frame),
+  // so never re-derive URLs from an index when they were handed to us.
+  const frameUrls = providedFrameUrls ?? derivedFrameUrls;
 
   useEffect(() => {
     // Frames already fetched by the loading gate - nothing to do here.
@@ -269,12 +287,36 @@ function MotorScrollAnimation({
       return undefined;
     }
 
+    /**
+     * Decode the frames just ahead of the playhead.
+     *
+     * `drawImage` on an image the browser has not decoded (or has evicted from
+     * its decoded cache) blocks the main thread until it finishes. Asking for
+     * the decode in advance moves that work off the critical path, so the draw
+     * itself is only a blit. Already-decoded frames resolve immediately, so
+     * calling this repeatedly is cheap.
+     */
+    const warmUpcomingFrames = (frameIndex, direction) => {
+      const images = frameImagesRef.current;
+
+      for (let step = 1; step <= FRAME_WARM_AHEAD; step += 1) {
+        const image = images[frameIndex + direction * step];
+
+        if (image?.src && typeof image.decode === "function") {
+          image.decode().catch(() => {});
+        }
+      }
+    };
+
     const renderFrame = (frameIndex) => {
       const image = frameImagesRef.current[frameIndex];
 
       if (!image) {
         return;
       }
+
+      warmUpcomingFrames(frameIndex, frameIndex >= lastFrameIndexRef.current ? 1 : -1);
+      lastFrameIndexRef.current = frameIndex;
 
       if (!image.src && frameUrls[frameIndex]) {
         image.src = frameUrls[frameIndex];
@@ -319,7 +361,11 @@ function MotorScrollAnimation({
 
     const resizeCanvas = () => {
       const bounds = stickyElement.getBoundingClientRect();
-      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2.5);
+      // Phones are pixel-dense but weak: a 2.5x backing store here means a
+      // multi-megapixel repaint on every scroll frame, which starves the main
+      // thread. 1.75x is indistinguishable for a soft-focus background.
+      const maxPixelRatio = useMobileFrames ? 1.75 : 2.5;
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, maxPixelRatio);
       const nextWidth = Math.max(1, Math.round(bounds.width * pixelRatio));
       const nextHeight = Math.max(1, Math.round(bounds.height * pixelRatio));
 
@@ -343,7 +389,7 @@ function MotorScrollAnimation({
       window.removeEventListener("resize", queueResize);
       window.cancelAnimationFrame(resizeFrameRef.current);
     };
-  }, []);
+  }, [useMobileFrames]);
 
   /**
    * The single place a progress value turns into a rendered frame. Writing the

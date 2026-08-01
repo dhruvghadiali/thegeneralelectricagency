@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import motor1 from "@Assets/images/motor1.jpg";
 import motor2 from "@Assets/images/motor2.jpg";
 import motor3 from "@Assets/images/motor3.jpg";
+import { Typography } from "@/components/ui/typography";
 
 function MotorsPage() {
 
@@ -125,15 +126,15 @@ function MotorsPage() {
             {/* Page Header */}
             <div className="text-center max-w-4xl mx-auto mb-16">
               
-              <h1 className="text-4xl lg:text-6xl font-bold text-foreground dark:text-white leading-tight mb-6">
+              <Typography as="h1" variant="display" className="mb-6 text-foreground dark:text-white">
                 Industrial <span className="text-primary dark:text-primary">Motors</span>
-              </h1>
+              </Typography>
               
-              <p className="text-xl text-muted-foreground dark:text-gray-300 leading-relaxed max-w-3xl mx-auto">
+              <Typography variant="bodyLarge" className="max-w-3xl mx-auto text-muted-foreground dark:text-gray-300">
                 Discover CG Power's comprehensive range of energy-efficient industrial motors. 
                 From IE2 to IE4 efficiency ratings, we provide solutions that deliver superior 
                 performance while reducing energy consumption and operating costs.
-              </p>
+              </Typography>
             </div>
           </div>
         </section>

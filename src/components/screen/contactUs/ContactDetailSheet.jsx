@@ -1,6 +1,8 @@
 import { ExternalLink, Mail, MapPin, Phone, X } from "lucide-react";
 import { createPortal } from "react-dom";
 
+import useScrollLock from "@/utils/useScrollLock";
+import { Typography } from "@/components/ui/typography";
 import {
   CONTACT_SHEET_TYPE,
   emailContacts,
@@ -42,8 +44,8 @@ function DirectionLocations() {
         >
           <div className="contact-directions-sheet__office">
             <MapPin size={17} strokeWidth={2.45} />
-            <span>{office.name}</span>
-            <strong>{office.address}</strong>
+            <Typography as="span" variant="label">{office.name}</Typography>
+            <Typography as="strong" variant="bodySmall">{office.address}</Typography>
           </div>
 
           <iframe
@@ -54,7 +56,7 @@ function DirectionLocations() {
           />
 
           <a href={office.directionUrl} target="_blank" rel="noreferrer">
-            Open in Google Maps
+            <Typography as="span" variant="label">Open in Google Maps</Typography>
             <ExternalLink size={15} strokeWidth={2.4} />
           </a>
         </article>
@@ -69,8 +71,8 @@ function EmailContactList() {
       {emailContacts.map((email) => (
         <a href={`mailto:${email}`} key={email}>
           <Mail size={18} strokeWidth={2.45} />
-          <span>Email</span>
-          <strong>{email}</strong>
+          <Typography as="span" variant="label">Email</Typography>
+          <Typography as="strong" variant="bodySmall">{email}</Typography>
           <ExternalLink size={15} strokeWidth={2.4} />
         </a>
       ))}
@@ -87,8 +89,8 @@ function PhoneContactList() {
           key={contact.label}
         >
           <Phone size={18} strokeWidth={2.45} />
-          <span>{contact.label}</span>
-          <strong>{contact.phone}</strong>
+          <Typography as="span" variant="label">{contact.label}</Typography>
+          <Typography as="strong" variant="bodySmall">{contact.phone}</Typography>
           <ExternalLink size={15} strokeWidth={2.4} />
         </a>
       ))}
@@ -97,6 +99,10 @@ function PhoneContactList() {
 }
 
 function ContactDetailSheet({ activeContactSheet, onClose }) {
+  // Hooks must run before the early return below, so the lock is conditional
+  // on there actually being a sheet to show.
+  useScrollLock(Boolean(activeContactSheet));
+
   if (!activeContactSheet) {
     return null;
   }
@@ -117,7 +123,10 @@ function ContactDetailSheet({ activeContactSheet, onClose }) {
         onClick={onClose}
       />
 
-      <section className="service-detail-sheet__content contact-directions-sheet__content">
+      <section
+        className="service-detail-sheet__content contact-directions-sheet__content"
+        data-lenis-prevent
+      >
         <div
           className="service-detail-sheet__handle contact-directions-sheet__handle"
           aria-hidden="true"
@@ -133,11 +142,11 @@ function ContactDetailSheet({ activeContactSheet, onClose }) {
         </button>
 
         <div className="contact-directions-sheet__header">
-          <span>
+          <Typography as="span" variant="overline">
             <Icon size={15} strokeWidth={2.4} />
             {label}
-          </span>
-          <h2 id="contact-directions-sheet-title">{title}</h2>
+          </Typography>
+          <Typography as="h2" variant="sheetTitle" id="contact-directions-sheet-title">{title}</Typography>
         </div>
 
         <div className="contact-directions-sheet__body">

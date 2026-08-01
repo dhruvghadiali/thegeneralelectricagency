@@ -4,6 +4,7 @@ import { Button } from "@ShadcnComponents/button";
 import { PageTransition, StaggeredAnimation } from "@ShadcnComponents/page-transitions";
 import logo from "@Assets/images/logo.png";
 import bgVisual from "@Assets/images/motor3.jpg";
+import { Typography } from "@/components/ui/typography";
 
 export default function SignInPage() {
 	const [email, setEmail] = useState("");
@@ -88,12 +89,12 @@ export default function SignInPage() {
 										<span className="size-1.5 rounded-full bg-primary animate-pulse" />
 										<span className="text-[11px] font-medium tracking-wide">Welcome!!</span>
 									</div>
-									<h1 className="text-4xl md:text-6xl font-semibold leading-tight text-primary">
+									<Typography as="h1" variant="display" tone="primary">
 										Powering projects with reliable motors, drives, and pumps
-									</h1>
-									<p className="mt-4 text-base md:text-lg text-black max-w-2xl">
+									</Typography>
+									<Typography variant="bodyLarge" className="mt-4 text-black max-w-2xl">
 										Sign in to manage orders, track deliveries, and access support — all in one streamlined dashboard.
-									</p>
+									</Typography>
 								</div>
 							</StaggeredAnimation>
 						</div>
@@ -108,13 +109,13 @@ export default function SignInPage() {
 									<img src={logo} alt="GEA" className="h-8 w-8 rounded-sm" />
 									<span className="text-base font-medium text-muted-foreground">The General Electric Stores</span>
 								</div>
-								<h1 className="mt-3 text-2xl sm:text-3xl font-semibold text-foreground tracking-tight">
+								<Typography as="h1" variant="sheetTitle" tone="foreground" className="mt-3 sm:text-3xl">
 									Welcome back
-								</h1>
+								</Typography>
 								<div className="mt-2 h-1 w-14 rounded-full bg-primary/60" />
-								<p className="mt-2 text-sm sm:text-base text-muted-foreground">
+								<Typography variant="bodySmall" tone="muted" className="mt-2 sm:text-base">
 									Sign in to continue
-								</p>
+								</Typography>
 							</div>
 
 							<div className="rounded-2xl border bg-card p-6 shadow-sm sm:p-8">

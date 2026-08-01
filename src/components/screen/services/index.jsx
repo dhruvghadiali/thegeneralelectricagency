@@ -8,6 +8,7 @@ import {
   serviceProductDetails,
 } from "./servicesShowcase.constants";
 import { useIsMobileServicesView } from "./useIsMobileServicesView";
+import { Typography } from "@/components/ui/typography";
 
 function getCircularDistance(index, activeIndex, itemCount) {
   const rawDistance = index - activeIndex;
@@ -103,7 +104,7 @@ function Services() {
               }
               onClick={() => setActiveServiceIndex(index)}
             >
-              {service.title}
+              <Typography as="span" variant="nav">{service.title}</Typography>
             </button>
           ))}
         </div>

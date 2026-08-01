@@ -542,6 +542,17 @@
   }
 }
 
+/*
+ * No CSS filter on phones.
+ *
+ * A filter on a full-screen canvas has to be re-applied by the compositor every
+ * time the canvas content changes, which is once per scroll frame. The grade it
+ * was adding here was marginal; the frame rate it costs is not.
+ */
+.motor-scroll-animation--mobile-frames .motor-scroll-animation__canvas {
+  filter: none;
+}
+
 .motor-scroll-animation--mobile-frames.motor-scroll-animation--with-foreground .motor-scroll-animation__content-veil {
   background:
     linear-gradient(180deg, rgba(247, 249, 251, 0.34), rgba(247, 249, 251, 0.02) 30%, rgba(247, 249, 251, 0.04) 66%, rgba(247, 249, 251, 0.32)),
@@ -5755,8 +5766,15 @@
   }
 }
 
-.motor-scroll-animation--with-foreground .motor-scroll-animation__canvas {
+.motor-scroll-animation--desktop-frames.motor-scroll-animation--with-foreground
+  .motor-scroll-animation__canvas {
   filter: contrast(1.22) saturate(1.08) brightness(1.02);
+}
+
+/* Phones get no canvas filter - see the note by the mobile-frames rule above. */
+.motor-scroll-animation--mobile-frames.motor-scroll-animation--with-foreground
+  .motor-scroll-animation__canvas {
+  filter: none;
 }
 
 .motor-scroll-animation--with-foreground .motor-scroll-animation__content-veil {
@@ -7210,6 +7228,27 @@
   background: linear-gradient(180deg, rgba(6, 18, 27, 0.22), rgba(6, 18, 27, 0.52));
   cursor: pointer;
   animation: home-story-overlay-in 220ms ease both;
+}
+
+/* ---------------------------------------------------------------------------
+   Sheet scroll containment
+
+   Hiding overflow on <html> stops the document scrolling, but touch drags and
+   wheel momentum still chain from the sheet out to the page behind it. These
+   rules keep the gesture inside the sheet.
+   --------------------------------------------------------------------------- */
+
+.home-story-sheet__overlay,
+.service-detail-sheet__overlay,
+.contact-directions-sheet__overlay {
+  touch-action: none;
+}
+
+.home-story-sheet__content,
+.service-detail-sheet__content,
+.contact-directions-sheet__content {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .service-detail-sheet__content {

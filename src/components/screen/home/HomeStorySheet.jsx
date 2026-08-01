@@ -1,8 +1,13 @@
 import { Sparkles, X } from "lucide-react";
 
+import useScrollLock from "@/utils/useScrollLock";
 import { storyMilestones } from "./homeShowcase.constants";
+import { Typography } from "@/components/ui/typography";
 
 function HomeStorySheet({ yearsInBusiness, onClose }) {
+  // This component only mounts while the sheet is open.
+  useScrollLock(true);
+
   return (
     <div
       className="home-story-sheet"
@@ -17,7 +22,7 @@ function HomeStorySheet({ yearsInBusiness, onClose }) {
         onClick={onClose}
       />
 
-      <section className="home-story-sheet__content">
+      <section className="home-story-sheet__content" data-lenis-prevent>
         <div className="home-story-sheet__handle" aria-hidden="true" />
 
         <button
@@ -30,16 +35,16 @@ function HomeStorySheet({ yearsInBusiness, onClose }) {
         </button>
 
         <div className="home-story-sheet__header">
-          <span>
+          <Typography as="span" variant="overline">
             <Sparkles size={15} strokeWidth={2.4} />
             Est. 1939 | {yearsInBusiness} years
-          </span>
-          <h2 id="home-story-sheet-title">The General Electric Stores</h2>
-          <p>
+          </Typography>
+          <Typography as="h2" variant="sheetTitle" id="home-story-sheet-title">The General Electric Stores</Typography>
+          <Typography variant="body">
             From a humble electrical store in Khambhat to a trusted name in
             rotating machines and drives, our journey has been built on family
             ownership, industrial relationships, and dependable service.
-          </p>
+          </Typography>
         </div>
 
         <div className="home-story-sheet__timeline">
@@ -49,9 +54,9 @@ function HomeStorySheet({ yearsInBusiness, onClose }) {
               key={milestone.year}
               style={{ "--story-card-index": index }}
             >
-              <strong>{milestone.year}</strong>
-              <span>{milestone.title}</span>
-              <p>{milestone.description}</p>
+              <Typography as="strong" variant="overline">{milestone.year}</Typography>
+              <Typography as="span" variant="cardTitle">{milestone.title}</Typography>
+              <Typography variant="bodySmall">{milestone.description}</Typography>
             </article>
           ))}
         </div>

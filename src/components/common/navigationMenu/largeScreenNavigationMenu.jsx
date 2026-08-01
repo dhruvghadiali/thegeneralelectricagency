@@ -1,6 +1,7 @@
 import { ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Typography } from "@/components/ui/typography";
 
 const getSectionId = (href) => href?.startsWith("#") ? href.replace("#", "") : "";
 
@@ -61,7 +62,7 @@ const LargeScreenNavigationMenuComponent = ({ navigationLinks, useLink, activeSe
                       : "text-secondary hover:text-primary-foreground hover:bg-primary"
                   }`}
                 >
-                  {link.label}
+                  <Typography as="span" variant="nav">{link.label}</Typography>
                   <ChevronDownIcon className="ml-1 h-4 w-4 transition-transform duration-200" />
                 </button>
 
@@ -91,13 +92,13 @@ const LargeScreenNavigationMenuComponent = ({ navigationLinks, useLink, activeSe
                           className="block px-4 py-3 text-card-foreground hover:text-primary hover:bg-accent rounded-md font-medium transition-all duration-200 cursor-pointer"
                         >
                           <div className="flex flex-col">
-                            <span className="font-semibold text-base">
+                            <Typography as="span" variant="cardTitle">
                               {item.label}
-                            </span>
+                            </Typography>
                             {item.description && (
-                              <span className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                              <Typography as="span" variant="bodySmall" tone="muted" className="mt-1">
                                 {item.description}
-                              </span>
+                              </Typography>
                             )}
                           </div>
                         </a>
@@ -122,7 +123,7 @@ const LargeScreenNavigationMenuComponent = ({ navigationLinks, useLink, activeSe
                     : "text-secondary hover:text-primary-foreground hover:bg-primary"
                 }`}
               >
-                {link.label}
+                <Typography as="span" variant="nav">{link.label}</Typography>
               </a>
             )}
           </li>

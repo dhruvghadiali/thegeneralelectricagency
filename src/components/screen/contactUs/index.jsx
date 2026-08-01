@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import ContactActionButton from "./ContactActionButton";
 import ContactDetailSheet from "./ContactDetailSheet";
 import { CONTACT_SHEET_TYPE } from "./contactShowcase.constants";
+import { Typography } from "@/components/ui/typography";
 
 function ContactUsScreenComponent() {
   const [activeContactSheet, setActiveContactSheet] = useState(null);
@@ -37,12 +38,12 @@ function ContactUsScreenComponent() {
 
           <div className="contact-showcase__frame-label">
             <MapPin size={18} strokeWidth={2.4} />
-            <span>Ankleshwar & Bharuch</span>
+            <Typography as="span" variant="label">Ankleshwar & Bharuch</Typography>
           </div>
 
-          <h2 className="contact-showcase__title">
+          <Typography as="h2" variant="sectionTitle" className="contact-showcase__title">
             Reach our industrial supply team.
-          </h2>
+          </Typography>
 
           <div className="contact-showcase__home-actions">
             <ContactActionButton
@@ -69,9 +70,9 @@ function ContactUsScreenComponent() {
               style={{ "--home-card-index": 0 }}
             >
               <Clock size={17} strokeWidth={2.4} />
-              <span>Office Time</span>
-              <strong>Mon - Sat, 9:30 AM - 6:00 PM</strong>
-              <small>Sunday closed</small>
+              <Typography as="span" variant="caption">Office Time</Typography>
+              <Typography as="strong" variant="label">Mon - Sat, 9:30 AM - 6:00 PM</Typography>
+              <Typography as="small" variant="caption">Sunday closed</Typography>
             </div>
           </div>
         </div>

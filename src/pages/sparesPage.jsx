@@ -2,6 +2,7 @@ import NavigationMenuComponent from "@Components/navigationMenu";
 import { Package, Wrench, Download, Inbox } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import sparesImg from "@Assets/images/spares.png";
+import { Typography } from "@/components/ui/typography";
 
 function SparesPage() {
 
@@ -50,12 +51,12 @@ function SparesPage() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             {/* Page Header */}
             <div className="text-center max-w-4xl mx-auto mb-16">
-              <h1 className="text-4xl lg:text-6xl font-bold text-foreground dark:text-white leading-tight mb-6">
+              <Typography as="h1" variant="display" className="mb-6 text-foreground dark:text-white">
                 Genuine <span className="text-primary dark:text-primary">Spares</span> & Accessories
-              </h1>
-              <p className="text-xl text-muted-foreground dark:text-gray-300 leading-relaxed max-w-3xl mx-auto">
+              </Typography>
+              <Typography variant="bodyLarge" className="max-w-3xl mx-auto text-muted-foreground dark:text-gray-300">
                 Ensure reliability, efficiency, and minimal downtime with genuine and compatible spares for motors, pumps, drives, and gearboxes.
-              </p>
+              </Typography>
             </div>
           </div>
         </section>

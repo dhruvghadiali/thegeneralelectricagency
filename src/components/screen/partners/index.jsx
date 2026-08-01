@@ -3,6 +3,7 @@ import kegIcon from "@/assets/images/keg-icon.png";
 import premiumIcon from "@/assets/images/premium-transmission-icon.png";
 import { Award, BadgeCheck, Globe2, PackageCheck } from "lucide-react";
 import { useState } from "react";
+import { Typography } from "@/components/ui/typography";
 
 const partners = [
   {
@@ -80,12 +81,12 @@ function PartnersScreenComponent() {
                 >
                   <div className="partners-carousel-showcase__logo">
                     <img src={partner.image} alt={`${partner.shortName} logo`} />
-                    <span>{partner.logo}</span>
+                    <Typography as="span" variant="label">{partner.logo}</Typography>
                   </div>
                   <div className="partners-carousel-showcase__card-copy">
-                    <span>{partner.type}</span>
-                    <h2>{partner.shortName}</h2>
-                    <p>{partner.description}</p>
+                    <Typography as="span" variant="overline">{partner.type}</Typography>
+                    <Typography as="h2" variant="sectionTitle">{partner.shortName}</Typography>
+                    <Typography variant="bodySmall">{partner.description}</Typography>
                   </div>
                 </article>
               );
@@ -94,32 +95,32 @@ function PartnersScreenComponent() {
 
           <div className="partners-carousel-showcase__details">
             <div>
-              <span>Strategic Partner</span>
-              <h3>{activePartner.name}</h3>
+              <Typography as="span" variant="overline">Strategic Partner</Typography>
+              <Typography as="h3" variant="cardTitle">{activePartner.name}</Typography>
             </div>
 
             <div className="partners-carousel-showcase__meta">
-              <span>
+              <Typography as="span" variant="label">
                 <Award size={15} strokeWidth={2.4} />
                 {activePartner.partnership}
-              </span>
-              <span>
+              </Typography>
+              <Typography as="span" variant="label">
                 <Globe2 size={15} strokeWidth={2.4} />
                 {activePartner.coverage}
-              </span>
-              <span>
+              </Typography>
+              <Typography as="span" variant="label">
                 <PackageCheck size={15} strokeWidth={2.4} />
                 {activePartner.products}
-              </span>
-              <span>
+              </Typography>
+              <Typography as="span" variant="label">
                 <BadgeCheck size={15} strokeWidth={2.4} />
                 Since {activePartner.since}
-              </span>
+              </Typography>
             </div>
 
             <div className="partners-carousel-showcase__chips">
               {activePartner.specialization.map((item) => (
-                <span key={item}>{item}</span>
+                <Typography as="span" variant="caption" key={item}>{item}</Typography>
               ))}
             </div>
           </div>

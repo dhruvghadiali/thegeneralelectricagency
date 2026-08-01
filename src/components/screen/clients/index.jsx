@@ -1,5 +1,6 @@
 import larsenToubroLogo from "@/assets/images/l&t.png";
 import relianceLogo from "@/assets/images/reliance.png";
+import { Typography } from "@/components/ui/typography";
 
 /**
  * Logos are bundled assets, never fetched at runtime.
@@ -53,12 +54,12 @@ function Clients() {
       >
         <div className="clients-logo-showcase__panel">
           <div className="clients-logo-showcase__summary">
-            <span>Trusted by Industry Leaders</span>
+            <Typography as="span" variant="overline">Trusted by Industry Leaders</Typography>
             <div className="clients-logo-showcase__stats">
               {clientStats.map((stat) => (
                 <div key={stat.label}>
-                  <strong>{stat.value}</strong>
-                  <small>{stat.label}</small>
+                  <Typography as="strong" variant="cardTitle">{stat.value}</Typography>
+                  <Typography as="small" variant="caption">{stat.label}</Typography>
                 </div>
               ))}
             </div>
@@ -86,12 +87,12 @@ function Clients() {
                             loading="lazy"
                           />
                         ) : (
-                          <span>{client.mark}</span>
+                          <Typography as="span" variant="label">{client.mark}</Typography>
                         )}
                       </div>
                       <div>
-                        <h3>{client.name}</h3>
-                        <p>{client.category}</p>
+                        <Typography as="h3" variant="cardTitle">{client.name}</Typography>
+                        <Typography variant="caption">{client.category}</Typography>
                       </div>
                     </article>
                   );

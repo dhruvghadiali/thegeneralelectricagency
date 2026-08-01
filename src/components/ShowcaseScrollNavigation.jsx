@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { showcaseSections } from "@/utils/showcaseSections";
 import "./ShowcaseScrollNavigation.css";
 import logoImage from "@Assets/images/logo.png";
+import { Typography } from "@/components/ui/typography";
 
 /**
  * Purely presentational. The active section is owned by the page so the
@@ -40,8 +41,8 @@ function ShowcaseScrollNavigation({
             className="motor-scroll-animation__logo"
           />
         </div>
-        <h2>The General Electric Stores</h2>
-        <p>India's Largest Dealer in Rotating Machine & Drives</p>
+        <Typography as="h2" variant="sectionTitle">The General Electric Stores</Typography>
+        <Typography variant="body">India's Largest Dealer in Rotating Machine & Drives</Typography>
       </div>
 
       <button
@@ -84,9 +85,9 @@ function ShowcaseScrollNavigation({
               <span className="showcase-scroll-nav__icon" aria-hidden="true">
                 <Icon size={18} strokeWidth={2.25} />
               </span>
-              <span className="showcase-scroll-nav__label">
+              <Typography as="span" variant="nav" className="showcase-scroll-nav__label">
                 {section.label}
-              </span>
+              </Typography>
             </button>
           );
         })}
@@ -95,4 +96,5 @@ function ShowcaseScrollNavigation({
   );
 }
 
-export default ShowcaseScrollNavigation;
+// Re-renders only when the active section or reveal state actually changes.
+export default memo(ShowcaseScrollNavigation);

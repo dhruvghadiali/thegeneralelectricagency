@@ -8,30 +8,39 @@ import PartnersScreenComponent from "@ScreenComponents/partners";
 import ContactUsScreenComponent from "@ScreenComponents/contactUs";
 import { SHOWCASE_FOREGROUND_FRAME_SCROLL_VH } from "@/utils/showcaseTimeline";
 import useShowcaseScrollState from "@/utils/useShowcaseScrollState";
+import useScrollLock from "@/utils/useScrollLock";
 import useFramePreloader, { PRELOAD_STATUS } from "@/utils/useFramePreloader";
 import {
   useMotorFrames,
   usePrefersReducedMotion,
 } from "@/utils/useMotorFrames";
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { lazy, memo, Suspense, useEffect, useRef, useState } from "react";
 
 const MotorScrollAnimation = lazy(
   () => import("@/components/MotorScrollAnimation"),
 );
 
+/**
+ * Memoised because none of them take props.
+ *
+ * Without this, every section change re-rendered all five mounted sections.
+ * On a phone that commit does not fit in a frame, so the navigation and content
+ * fall behind the canvas - which updates imperatively and stays pinned to the
+ * scroll. Memoising reduces a section change to five className swaps.
+ */
 const showcaseComponents = {
-  home: HomeScreenComponent,
-  services: ServicesIntroComponent,
-  clients: ClientsIntroComponent,
-  partners: PartnersScreenComponent,
-  "contact-us": ContactUsScreenComponent,
+  home: memo(HomeScreenComponent),
+  services: memo(ServicesIntroComponent),
+  clients: memo(ClientsIntroComponent),
+  partners: memo(PartnersScreenComponent),
+  "contact-us": memo(ContactUsScreenComponent),
 };
 
 export default function HomePage() {
   const showcaseRef = useRef(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
-  const { frameUrls, framePath, frameCount } = useMotorFrames();
+  const { frameUrls, framePath, frameCount, useMobileFrames } = useMotorFrames();
 
   /** Set when the visitor chooses to continue after a failed preload. */
   const [hasDismissedError, setHasDismissedError] = useState(false);
@@ -60,28 +69,21 @@ export default function HomePage() {
     preloadStatus === PRELOAD_STATUS.READY;
 
   /**
-   * Hold the page at the top and freeze scrolling behind the gate, otherwise
-   * the visitor can scroll the showcase timeline while it is still hidden and
-   * arrive mid-animation when the loader clears.
+   * Freeze scrolling behind the gate, otherwise the visitor can scroll the
+   * showcase timeline while it is still hidden and arrive mid-animation when
+   * the loader clears.
    */
+  useScrollLock(!isGateOpen);
+
+  // Start the showcase from the top once the gate lifts.
   useEffect(() => {
-    if (isGateOpen) {
-      return undefined;
+    if (!isGateOpen) {
+      window.scrollTo(0, 0);
+      return;
     }
 
-    const root = document.documentElement;
-    const previousOverflow = root.style.overflow;
-
-    root.style.overflow = "hidden";
-    window.__lenis?.stop();
+    window.__lenis?.scrollTo(0, { immediate: true });
     window.scrollTo(0, 0);
-
-    return () => {
-      root.style.overflow = previousOverflow;
-      window.__lenis?.start();
-      window.__lenis?.scrollTo(0, { immediate: true });
-      window.scrollTo(0, 0);
-    };
   }, [isGateOpen]);
 
   /**
@@ -154,7 +156,9 @@ export default function HomePage() {
         >
           <MotorScrollAnimation
             frameCount={frameCount}
+            frameUrls={frameUrls}
             framePath={framePath}
+            isMobileViewport={useMobileFrames}
             preloadedImages={shouldPreload ? preloadedImages : undefined}
             animationDurationVh={650}
             foregroundFrameScrollVh={SHOWCASE_FOREGROUND_FRAME_SCROLL_VH}

@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { Typography } from "@/components/ui/typography";
 
 function ServiceShowcaseCard({
   service,
@@ -33,18 +34,18 @@ function ServiceShowcaseCard({
 
       <div className="services-stack-showcase__content">
         <div>
-          <h3>{service.title}</h3>
+          <Typography as="h3" variant="cardTitle">{service.title}</Typography>
         </div>
-        <p>{service.description}</p>
+        <Typography variant="bodySmall">{service.description}</Typography>
 
         <div className="services-stack-showcase__tags">
           {service.applications.slice(0, 3).map((application) => (
-            <span key={application}>{application}</span>
+            <Typography as="span" variant="caption" key={application}>{application}</Typography>
           ))}
         </div>
 
         <Button type="button" variant="outline" onClick={onViewDetails}>
-          View Details
+          <Typography as="span" variant="label">View Details</Typography>
           <ArrowRight size={16} strokeWidth={2.4} />
         </Button>
       </div>

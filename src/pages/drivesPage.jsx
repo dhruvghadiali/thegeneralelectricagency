@@ -2,6 +2,7 @@ import NavigationMenuComponent from "@Components/navigationMenu";
 import { Cpu, Zap, Settings, Award, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import cgDrives from "@Assets/images/cg-drives.jpg";
+import { Typography } from "@/components/ui/typography";
 function DrivesPage() {
 
   // Data: CG Power and Industrial Solutions - Drives Portfolio
@@ -54,18 +55,18 @@ function DrivesPage() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             {/* Page Header */}
             <div className="text-center max-w-4xl mx-auto mb-16">
-              <h1 className="text-4xl lg:text-6xl font-bold text-foreground dark:text-white leading-tight mb-6">
+              <Typography as="h1" variant="display" className="mb-6 text-foreground dark:text-white">
                 Industrial{" "}
                 <span className="text-primary dark:text-primary">Drives</span>{" "}
                 Portfolio
-              </h1>
+              </Typography>
 
-              <p className="text-xl text-muted-foreground dark:text-gray-300 leading-relaxed max-w-3xl mx-auto">
+              <Typography variant="bodyLarge" className="max-w-3xl mx-auto text-muted-foreground dark:text-gray-300">
                 Explore CG Power's range of variable frequency drives (VFDs),
                 electronic soft starters, and servo drives designed for precise
                 control, reliability, and energy efficiency across industrial
                 applications.
-              </p>
+              </Typography>
             </div>
           </div>
         </section>

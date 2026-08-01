@@ -1,3 +1,5 @@
+import { Typography } from "@/components/ui/typography";
+
 function ContactActionButton({
   label,
   mobileLabel,
@@ -10,15 +12,15 @@ function ContactActionButton({
       {Icon && <Icon size={15} strokeWidth={2.5} />}
       {mobileLabel ? (
         <>
-          <span className="contact-showcase__action-label contact-showcase__action-label--desktop">
+          <Typography as="span" variant="label" className="contact-showcase__action-label contact-showcase__action-label--desktop">
             {label}
-          </span>
-          <span className="contact-showcase__action-label contact-showcase__action-label--mobile">
+          </Typography>
+          <Typography as="span" variant="label" className="contact-showcase__action-label contact-showcase__action-label--mobile">
             {mobileLabel}
-          </span>
+          </Typography>
         </>
       ) : (
-        <span>{label}</span>
+        <Typography as="span" variant="label">{label}</Typography>
       )}
       {TrailingIcon && <TrailingIcon size={15} strokeWidth={2.5} />}
     </button>

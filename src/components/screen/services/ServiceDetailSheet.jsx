@@ -1,11 +1,18 @@
 import { CheckCircle2, Layers3, X } from "lucide-react";
 
+import useScrollLock from "@/utils/useScrollLock";
+import { Typography } from "@/components/ui/typography";
+
 function ServiceDetailSheet({
   selectedService,
   productDetails,
   serviceImage,
   onClose,
 }) {
+  // Hooks must run before the early return below, so the lock is conditional
+  // on there actually being a service to show.
+  useScrollLock(Boolean(selectedService));
+
   if (!selectedService) {
     return null;
   }
@@ -24,7 +31,7 @@ function ServiceDetailSheet({
         onClick={onClose}
       />
 
-      <section className="service-detail-sheet__content">
+      <section className="service-detail-sheet__content" data-lenis-prevent>
         <div className="service-detail-sheet__handle" aria-hidden="true" />
 
         <button
@@ -42,33 +49,33 @@ function ServiceDetailSheet({
           </div>
 
           <div className="service-detail-sheet__summary">
-            <span>
+            <Typography as="span" variant="overline">
               <Layers3 size={15} strokeWidth={2.4} />
               Service details
-            </span>
-            <h2 id="service-detail-sheet-title">{selectedService.title}</h2>
-            <p>{selectedService.description}</p>
+            </Typography>
+            <Typography as="h2" variant="sheetTitle" id="service-detail-sheet-title">{selectedService.title}</Typography>
+            <Typography variant="body">{selectedService.description}</Typography>
           </div>
         </div>
 
         <div className="service-detail-sheet__grid">
           <div className="service-detail-sheet__panel">
-            <h3>Key features</h3>
+            <Typography as="h3" variant="cardTitle">Key features</Typography>
             <div className="service-detail-sheet__list">
               {selectedService.features.map((feature) => (
-                <span key={feature}>
+                <Typography as="span" variant="bodySmall" key={feature}>
                   <CheckCircle2 size={15} strokeWidth={2.45} />
                   {feature}
-                </span>
+                </Typography>
               ))}
             </div>
           </div>
 
           <div className="service-detail-sheet__panel">
-            <h3>Applications</h3>
+            <Typography as="h3" variant="cardTitle">Applications</Typography>
             <div className="service-detail-sheet__chips">
               {selectedService.applications.map((application) => (
-                <span key={application}>{application}</span>
+                <Typography as="span" variant="caption" key={application}>{application}</Typography>
               ))}
             </div>
           </div>
@@ -76,7 +83,7 @@ function ServiceDetailSheet({
 
         {productDetails && (
           <div className="service-detail-sheet__motor-series">
-            <h3>{productDetails.title}</h3>
+            <Typography as="h3" variant="cardTitle">{productDetails.title}</Typography>
             <div className="service-detail-sheet__motor-grid">
               {productDetails.products.map((product) => (
                 <article
@@ -88,19 +95,19 @@ function ServiceDetailSheet({
                   </div>
 
                   <div className="service-detail-sheet__motor-content">
-                    <span>{product.series}</span>
-                    <h4>{product.title}</h4>
-                    <strong>{product.highlight}</strong>
+                    <Typography as="span" variant="overline">{product.series}</Typography>
+                    <Typography as="h4" variant="cardTitle">{product.title}</Typography>
+                    <Typography as="strong" variant="label">{product.highlight}</Typography>
 
                     <div className="service-detail-sheet__motor-meta">
                       {product.meta.map((item) => (
-                        <p key={item}>{item}</p>
+                        <Typography variant="bodySmall" key={item}>{item}</Typography>
                       ))}
                     </div>
 
                     <div className="service-detail-sheet__motor-specs">
                       {product.specs.map((spec) => (
-                        <small key={spec}>{spec}</small>
+                        <Typography as="small" variant="caption" key={spec}>{spec}</Typography>
                       ))}
                     </div>
                   </div>

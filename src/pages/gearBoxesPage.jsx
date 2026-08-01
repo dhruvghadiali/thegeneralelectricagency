@@ -2,6 +2,7 @@ import NavigationMenuComponent from "@Components/navigationMenu";
 import { Cog, Settings, Award, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import gearbox from "@Assets/images/premium-gearbox.jpg";
+import { Typography } from "@/components/ui/typography";
 
 function GearBoxesPage() {
 
@@ -54,12 +55,12 @@ function GearBoxesPage() {
             {/* Page Header */}
             <div className="text-center max-w-4xl mx-auto mb-16">
               
-              <h1 className="text-4xl lg:text-6xl font-bold text-foreground dark:text-white leading-tight mb-6">
+              <Typography as="h1" variant="display" className="mb-6 text-foreground dark:text-white">
                 High Performance <span className="text-primary dark:text-primary">Gearboxes</span>
-              </h1>
-              <p className="text-xl text-muted-foreground dark:text-gray-300 leading-relaxed max-w-3xl mx-auto">
+              </Typography>
+              <Typography variant="bodyLarge" className="max-w-3xl mx-auto text-muted-foreground dark:text-gray-300">
                 Explore a comprehensive range of premium transmission gearboxes engineered for durability, precision, and efficient power delivery across industrial applications.
-              </p>
+              </Typography>
             </div>
           </div>
         </section>

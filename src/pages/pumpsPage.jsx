@@ -7,6 +7,7 @@ import pump3 from "@Assets/images/cg-dmb-pump.jpg";
 import pump4 from "@Assets/images/cg-down-pump.jpg";
 import pump5 from "@Assets/images/cg-stp-pump.jpg";
 import pump6 from "@Assets/images/cg-mini-pump.jpg";
+import { Typography } from "@/components/ui/typography";
 
 function PumpsPage() {
 
@@ -250,17 +251,17 @@ function PumpsPage() {
             <div className="text-center max-w-4xl mx-auto mb-16">
               
               
-              <h1 className="text-4xl lg:text-6xl font-bold text-foreground dark:text-white leading-tight mb-6">
+              <Typography as="h1" variant="display" className="mb-6 text-foreground dark:text-white">
                 Complete <span className="text-primary dark:text-primary">Pump</span> Solutions
-              </h1>
+              </Typography>
               
-              <p className="text-xl text-muted-foreground dark:text-gray-300 leading-relaxed max-w-3xl mx-auto">
+              <Typography variant="bodyLarge" className="max-w-3xl mx-auto text-muted-foreground dark:text-gray-300">
                 Explore CG's comprehensive pump range including CGXMB centrifugal pumps for 
                 surface applications, CGAOW submersible open well pumps, CGDMB domestic monoblock 
                 pumps for residential use, CG DOWN submersible borewell pumps for deep water extraction,
                 CG STP sewage treatment pumps for municipal and industrial wastewater applications,
                 and CG MINI compact pumps for small-scale and domestic applications.
-              </p>
+              </Typography>
             </div>
           </div>
         </section>

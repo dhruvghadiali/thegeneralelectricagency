@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import moment from "moment";
+import { Typography } from "@/components/ui/typography";
 
 // Import company logos
 import cgLogo from "@/assets/images/cg-icon.png";
@@ -16,21 +17,21 @@ function AboutScreenComponent() {
         <div className="container mx-auto px-4 py-12 lg:py-24">
           <div className="max-w-4xl mx-auto text-center space-y-6 lg:space-y-8">
             <div className="space-y-4">
-              <div className="inline-flex items-center px-3 lg:px-4 py-2 rounded-full bg-primary/10 text-primary text-xs lg:text-sm font-medium">
+              <Typography as="div" variant="overline" className="inline-flex items-center px-3 lg:px-4 py-2 rounded-full bg-primary/10 text-primary">
                 <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
                 Our Story
-              </div>
+              </Typography>
 
-              <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold text-foreground leading-tight">
+              <Typography as="h1" variant="pageTitle" tone="foreground">
                 Legacy of <span className="text-primary">Excellence</span>
-              </h1>
+              </Typography>
 
-              <p className="text-base lg:text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto">
+              <Typography variant="bodyLarge" tone="muted" className="max-w-3xl mx-auto">
                 A journey spanning four generations of dedicated service to
                 India's industrial sector, from a small store in Khambhat to
                 becoming the second-largest dealer in rotating machines and
                 drives in India.
-              </p>
+              </Typography>
             </div>
           </div>
         </div>
@@ -41,13 +42,13 @@ function AboutScreenComponent() {
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto text-center space-y-12">
             <div className="space-y-4">
-              <h2 className="text-3xl lg:text-4xl font-bold text-foreground">
+              <Typography as="h2" variant="sectionTitle" tone="foreground">
                 Our Journey Through Time
-              </h2>
-              <p className="text-xl text-muted-foreground">
+              </Typography>
+              <Typography variant="bodyLarge" tone="muted">
                 From humble beginnings to industry leadership - the story of The
                 General Electric Stores
-              </p>
+              </Typography>
             </div>
 
             {/* Timeline */}

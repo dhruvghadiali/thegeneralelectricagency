@@ -11,6 +11,7 @@ import {
   PopoverTrigger,
 } from "@ShadcnComponents/popover";
 import { useNavigate } from "react-router-dom";
+import { Typography } from "@/components/ui/typography";
 
 const getSectionId = (href) => (href?.startsWith("#") ? href.replace("#", "") : "");
 
@@ -93,7 +94,7 @@ function MobileScreenNavigationMenuComponent({ navigationLinks, useLink, activeS
                           : "text-muted-foreground hover:bg-accent hover:text-primary"
                       }`}
                     >
-                      {link.label}
+                      <Typography as="span" variant="nav">{link.label}</Typography>
                     </button>
                     <ul>
                       {link.items.map((item, itemIndex) => (
@@ -111,7 +112,7 @@ function MobileScreenNavigationMenuComponent({ navigationLinks, useLink, activeS
                             }}
                             className="py-1.5 text-card-foreground hover:text-primary hover:bg-accent px-2 rounded transition-all duration-200 cursor-pointer"
                           >
-                            {item.label}
+                            <Typography as="span" variant="nav">{item.label}</Typography>
                           </NavigationMenuLink>
                         </li>
                       ))}
@@ -134,7 +135,7 @@ function MobileScreenNavigationMenuComponent({ navigationLinks, useLink, activeS
                         : "text-card-foreground hover:text-primary hover:bg-accent"
                     }`}
                   >
-                    {link.label}
+                    <Typography as="span" variant="nav">{link.label}</Typography>
                   </NavigationMenuLink>
                 )}
                 {/* Add separator between different types of items */}
