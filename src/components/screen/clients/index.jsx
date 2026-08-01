@@ -1,64 +1,38 @@
+import larsenToubroLogo from "@/assets/images/l&t.png";
+import relianceLogo from "@/assets/images/reliance.png";
+
+/**
+ * Logos are bundled assets, never fetched at runtime.
+ *
+ * These used to come from logo.clearbit.com, which was retired after the
+ * HubSpot acquisition - the hostname no longer resolves, so every card fired a
+ * failed request on each render. Entries without a bundled `logo` fall back to
+ * their monogram, which needs no network at all.
+ *
+ * To add a real logo: drop the file in src/assets/images, import it above and
+ * set it as `logo` on the matching entry.
+ */
 const clientCompanies = [
-  {
-    name: "Tata Group",
-    category: "Conglomerate",
-    mark: "TG",
-    logoUrl: "https://logo.clearbit.com/tata.com",
-  },
+  { name: "Tata Group", category: "Conglomerate", mark: "TG" },
   {
     name: "Reliance",
     category: "Petrochemicals",
     mark: "R",
-    logoUrl: "https://logo.clearbit.com/ril.com",
+    logo: relianceLogo,
   },
   {
     name: "L&T",
     category: "Engineering",
     mark: "LT",
-    logoUrl: "https://logo.clearbit.com/larsentoubro.com",
+    logo: larsenToubroLogo,
   },
-  {
-    name: "Adani Group",
-    category: "Infrastructure",
-    mark: "AG",
-    logoUrl: "https://logo.clearbit.com/adani.com",
-  },
-  {
-    name: "Mahindra",
-    category: "Automotive",
-    mark: "M",
-    logoUrl: "https://logo.clearbit.com/mahindra.com",
-  },
-  {
-    name: "Godrej",
-    category: "Consumer Goods",
-    mark: "G",
-    logoUrl: "https://logo.clearbit.com/godrej.com",
-  },
-  {
-    name: "NTPC",
-    category: "Power",
-    mark: "NTPC",
-    logoUrl: "https://logo.clearbit.com/ntpc.co.in",
-  },
-  {
-    name: "BHEL",
-    category: "Heavy Engineering",
-    mark: "BHEL",
-    logoUrl: "https://logo.clearbit.com/bhel.com",
-  },
-  {
-    name: "ONGC",
-    category: "Oil & Gas",
-    mark: "ONGC",
-    logoUrl: "https://logo.clearbit.com/ongcindia.com",
-  },
-  {
-    name: "Indian Railways",
-    category: "Transportation",
-    mark: "IR",
-    logoUrl: "https://logo.clearbit.com/indianrailways.gov.in",
-  },
+  { name: "Adani Group", category: "Infrastructure", mark: "AG" },
+  { name: "Mahindra", category: "Automotive", mark: "M" },
+  { name: "Godrej", category: "Consumer Goods", mark: "G" },
+  { name: "NTPC", category: "Power", mark: "NTPC" },
+  { name: "BHEL", category: "Heavy Engineering", mark: "BHEL" },
+  { name: "ONGC", category: "Oil & Gas", mark: "ONGC" },
+  { name: "Indian Railways", category: "Transportation", mark: "IR" },
 ];
 
 const clientStats = [
@@ -93,31 +67,35 @@ function Clients() {
           <div className="clients-logo-showcase__rails">
             {[firstRail, secondRail].map((rail, railIndex) => (
               <div className="clients-logo-showcase__rail" key={railIndex}>
-                {[...rail, ...rail].map((client, index) => (
-                  <article
-                    className="clients-logo-showcase__logo-card"
-                    key={`${client.name}-${index}`}
-                  >
-                    <div className="clients-logo-showcase__logo-mark">
-                      <img
-                        src={client.logoUrl}
-                        alt={`${client.name} logo`}
-                        loading="lazy"
-                        onError={(event) => {
-                          event.currentTarget.style.display = "none";
-                          event.currentTarget.nextElementSibling?.removeAttribute(
-                            "hidden",
-                          );
-                        }}
-                      />
-                      <span hidden>{client.mark}</span>
-                    </div>
-                    <div>
-                      <h3>{client.name}</h3>
-                      <p>{client.category}</p>
-                    </div>
-                  </article>
-                ))}
+                {[...rail, ...rail].map((client, index) => {
+                  // The rail is duplicated to loop seamlessly; hide the second
+                  // copy from assistive tech so names are not announced twice.
+                  const isDuplicate = index >= rail.length;
+
+                  return (
+                    <article
+                      className="clients-logo-showcase__logo-card"
+                      key={`${client.name}-${index}`}
+                      aria-hidden={isDuplicate ? "true" : undefined}
+                    >
+                      <div className="clients-logo-showcase__logo-mark">
+                        {client.logo ? (
+                          <img
+                            src={client.logo}
+                            alt={`${client.name} logo`}
+                            loading="lazy"
+                          />
+                        ) : (
+                          <span>{client.mark}</span>
+                        )}
+                      </div>
+                      <div>
+                        <h3>{client.name}</h3>
+                        <p>{client.category}</p>
+                      </div>
+                    </article>
+                  );
+                })}
               </div>
             ))}
           </div>

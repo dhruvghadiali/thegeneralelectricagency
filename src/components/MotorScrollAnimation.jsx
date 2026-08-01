@@ -1,12 +1,16 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import logoImage from "@Assets/images/logo.png";
+import { getCurrentScrollY } from "@/utils/scrollPosition";
+import {
+  clamp,
+  getShowcaseViewportHeight,
+  SHOWCASE_FOREGROUND_FRAME_SCROLL_VH,
+} from "@/utils/showcaseTimeline";
 import "./MotorScrollAnimation.css";
 
 const DEFAULT_FRAME_COUNT = 300;
 const FIRST_FRAME = 1;
 const MOBILE_FRAME_QUERY = "(max-width: 767px)";
-
-const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
 function usePrefersReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -122,21 +126,36 @@ function MotorScrollAnimation({
   mobileFramePath = "/motor-frames/mobile",
   mobileFrameQuery = MOBILE_FRAME_QUERY,
   animationDurationVh = 500,
-  foregroundFrameScrollVh = 5.25,
+  foregroundFrameScrollVh = SHOWCASE_FOREGROUND_FRAME_SCROLL_VH,
   freezeAnimation = false,
   freezeFrameProgress = 0.14,
   objectFit,
   showIntroOverlay,
+  /**
+   * Optional external progress feed. When provided the component stops deriving
+   * its own scroll progress and renders exactly the frame the owner asks for,
+   * which is what keeps the motor locked to the foreground content.
+   */
+  progressSource,
+  /** Explicit pixel height for the scroll track (keeps JS and CSS on one ruler). */
+  sectionHeight,
+  /**
+   * Ref holding images already fetched by the preloader. When supplied this
+   * component does no fetching of its own - the loading gate has already pulled
+   * every frame, and re-fetching here would double the network cost.
+   */
+  preloadedImages,
 }) {
   const sectionRef = useRef(null);
   const stickyRef = useRef(null);
   const canvasRef = useRef(null);
-  const frameImagesRef = useRef([]);
+  const ownFrameImagesRef = useRef([]);
+  const frameImagesRef = preloadedImages ?? ownFrameImagesRef;
   const currentFrameRef = useRef(0);
+  const progressRef = useRef(0);
   const renderFrameRef = useRef(null);
   const resizeFrameRef = useRef(null);
   const scrollFrameRef = useRef(null);
-  const [progress, setProgress] = useState(0);
   const [isPosterReady, setIsPosterReady] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
   const useMobileFrames = useResponsiveFramePreference(mobileFrameQuery);
@@ -154,17 +173,32 @@ function MotorScrollAnimation({
   );
 
   useEffect(() => {
-    let isMounted = true;
-    const urlsToPreload = prefersReducedMotion ? frameUrls.slice(0, 1) : frameUrls;
+    // Frames already fetched by the loading gate - nothing to do here.
+    if (preloadedImages) {
+      setIsPosterReady(true);
+      return undefined;
+    }
 
-    frameImagesRef.current = [];
+    let isMounted = true;
+    let preloadIndex = 1;
+    let preloadTimer = 0;
+    const images = frameUrls.map(() => {
+      const image = new Image();
+      image.decoding = "async";
+      return image;
+    });
+
+    frameImagesRef.current = images;
     currentFrameRef.current = 0;
     setIsPosterReady(false);
 
-    urlsToPreload.forEach((src, index) => {
-      const image = new Image();
-      image.decoding = "async";
-      frameImagesRef.current[index] = image;
+    const loadFrameAtIndex = (index) => {
+      const image = images[index];
+      const src = frameUrls[index];
+
+      if (!image || !src || image.src) {
+        return image;
+      }
 
       if (index === 0) {
         image.onload = () => {
@@ -179,17 +213,54 @@ function MotorScrollAnimation({
 
       image.src = src;
 
-      if (index === 0 && image.complete && image.naturalWidth) {
+      if (index === 0 && isImageReady(image)) {
         setIsPosterReady(true);
         drawImageToCanvas(canvasRef.current, image, canvasObjectFit);
       }
-    });
+
+      return image;
+    };
+
+    loadFrameAtIndex(0);
+
+    const preloadNextBatch = () => {
+      if (!isMounted || prefersReducedMotion) {
+        return;
+      }
+
+      const batchSize = useMobileFrames ? 5 : 14;
+      const batchDelay = useMobileFrames ? 80 : 18;
+
+      for (
+        let loadedInBatch = 0;
+        preloadIndex < frameUrls.length && loadedInBatch < batchSize;
+        loadedInBatch += 1, preloadIndex += 1
+      ) {
+        loadFrameAtIndex(preloadIndex);
+      }
+
+      if (preloadIndex < frameUrls.length) {
+        preloadTimer = window.setTimeout(preloadNextBatch, batchDelay);
+      }
+    };
+
+    if (!prefersReducedMotion) {
+      preloadTimer = window.setTimeout(preloadNextBatch, useMobileFrames ? 80 : 18);
+    }
 
     return () => {
       isMounted = false;
+      window.clearTimeout(preloadTimer);
       frameImagesRef.current = [];
     };
-  }, [canvasObjectFit, frameUrls, prefersReducedMotion]);
+  }, [
+    canvasObjectFit,
+    frameImagesRef,
+    frameUrls,
+    preloadedImages,
+    prefersReducedMotion,
+    useMobileFrames,
+  ]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -205,7 +276,11 @@ function MotorScrollAnimation({
         return;
       }
 
-      if (!image.complete) {
+      if (!image.src && frameUrls[frameIndex]) {
+        image.src = frameUrls[frameIndex];
+      }
+
+      if (!isImageReady(image)) {
         const loadedFallbackIndex = findNearestLoadedFrame(frameImagesRef.current, frameIndex);
 
         if (loadedFallbackIndex !== -1) {
@@ -232,7 +307,7 @@ function MotorScrollAnimation({
     return () => {
       renderFrameRef.current = null;
     };
-  }, [canvasObjectFit]);
+  }, [canvasObjectFit, frameImagesRef, frameUrls]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -270,8 +345,54 @@ function MotorScrollAnimation({
     };
   }, []);
 
+  /**
+   * The single place a progress value turns into a rendered frame. Writing the
+   * overlay opacity and the debug attribute imperatively (instead of via state)
+   * keeps this on the same tick as the scroll event - a React re-render per
+   * frame is exactly what made the background lag behind the content.
+   */
+  const applyProgress = useCallback(
+    (rawProgress) => {
+      const nextProgress = freezeAnimation
+        ? clamp(freezeFrameProgress, 0, 1)
+        : clamp(rawProgress, 0, 1);
+
+      progressRef.current = nextProgress;
+
+      const section = sectionRef.current;
+
+      if (section) {
+        section.style.setProperty(
+          "--motor-overlay-opacity",
+          String(clamp(1 - nextProgress / 0.2, 0, 1)),
+        );
+      }
+
+      const nextFrame = Math.round(nextProgress * (frameCount - 1));
+
+      if (nextFrame === currentFrameRef.current) {
+        return;
+      }
+
+      currentFrameRef.current = nextFrame;
+      section?.setAttribute("data-active-frame", String(nextFrame + FIRST_FRAME));
+      renderFrameRef.current?.(nextFrame);
+    },
+    [frameCount, freezeAnimation, freezeFrameProgress],
+  );
+
+  // Externally driven: the owner of the timeline pushes progress to us.
   useEffect(() => {
-    if (prefersReducedMotion) {
+    if (!progressSource) {
+      return undefined;
+    }
+
+    return progressSource(applyProgress);
+  }, [applyProgress, progressSource]);
+
+  // Self driven fallback, for standalone use without a shared timeline.
+  useEffect(() => {
+    if (progressSource || prefersReducedMotion) {
       return undefined;
     }
 
@@ -282,27 +403,16 @@ function MotorScrollAnimation({
         return;
       }
 
-      const sectionTop = section.getBoundingClientRect().top + window.scrollY;
-      const naturalScrollableDistance = section.offsetHeight - window.innerHeight;
-      const animationScrollableDistance = hasForegroundContent
-        ? window.innerHeight * Math.max(foregroundFrameScrollVh, 1)
-        : window.innerHeight * Math.max(animationDurationVh / 100 - 1, 1);
-      const scrollableDistance = Math.min(naturalScrollableDistance, animationScrollableDistance);
-      const scrollProgress =
+      const viewportHeight = getShowcaseViewportHeight();
+      const scrollableDistance = hasForegroundContent
+        ? viewportHeight * Math.max(foregroundFrameScrollVh, 1)
+        : viewportHeight * Math.max(animationDurationVh / 100 - 1, 1);
+
+      applyProgress(
         scrollableDistance > 0
-          ? clamp((window.scrollY - sectionTop) / scrollableDistance, 0, 1)
-          : 0;
-      const nextProgress = freezeAnimation
-        ? clamp(freezeFrameProgress, 0, 1)
-        : scrollProgress;
-      const nextFrame = Math.round(nextProgress * (frameCount - 1));
-
-      if (nextFrame !== currentFrameRef.current) {
-        currentFrameRef.current = nextFrame;
-        renderFrameRef.current?.(nextFrame);
-      }
-
-      setProgress(nextProgress);
+          ? (getCurrentScrollY() - (section.offsetTop || 0)) / scrollableDistance
+          : 0,
+      );
     };
 
     const queueScrollUpdate = () => {
@@ -318,23 +428,40 @@ function MotorScrollAnimation({
 
     updateFrameFromScroll();
     window.addEventListener("scroll", queueScrollUpdate, { passive: true });
+    window.addEventListener("lenis-scroll", queueScrollUpdate, { passive: true });
     window.addEventListener("resize", queueScrollUpdate, { passive: true });
 
     return () => {
       window.removeEventListener("scroll", queueScrollUpdate);
+      window.removeEventListener("lenis-scroll", queueScrollUpdate);
       window.removeEventListener("resize", queueScrollUpdate);
       window.cancelAnimationFrame(scrollFrameRef.current);
     };
   }, [
-    activeFramePath,
     animationDurationVh,
+    applyProgress,
     foregroundFrameScrollVh,
-    frameCount,
-    freezeAnimation,
-    freezeFrameProgress,
     hasForegroundContent,
     prefersReducedMotion,
+    progressSource,
   ]);
+
+  // Re-render the current frame whenever the frame set or renderer changes so a
+  // freshly mounted canvas never shows frame 1 while the page is scrolled down.
+  useEffect(() => {
+    applyProgress(progressRef.current);
+  }, [applyProgress, canvasObjectFit, frameUrls]);
+
+  const trackStyle = useMemo(() => {
+    const style = { "--motor-overlay-opacity": 1 };
+
+    if (sectionHeight > 0) {
+      style.height = `${Math.round(sectionHeight)}px`;
+      style.minHeight = `${Math.round(sectionHeight)}px`;
+    }
+
+    return style;
+  }, [sectionHeight]);
 
   return (
     <section
@@ -344,9 +471,8 @@ function MotorScrollAnimation({
       } ${
         useMobileFrames ? "motor-scroll-animation--mobile-frames" : "motor-scroll-animation--desktop-frames"
       }`}
-      data-active-frame={currentFrameRef.current + FIRST_FRAME}
       data-frame-path={activeFramePath}
-      style={{ "--motor-overlay-opacity": clamp(1 - progress / 0.2, 0, 1) }}
+      style={trackStyle}
     >
       <div ref={stickyRef} className="motor-scroll-animation__sticky">
         <canvas

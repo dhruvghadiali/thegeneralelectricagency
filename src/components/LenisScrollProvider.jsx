@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 function LenisScrollBridge() {
   const lenis = useLenis(() => {
-    window.dispatchEvent(new Event("scroll"));
+    window.dispatchEvent(new Event("lenis-scroll"));
   });
 
   useEffect(() => {
@@ -29,20 +29,37 @@ function LenisScrollProvider({ children }) {
       ? false
       : window.matchMedia("(prefers-reduced-motion: reduce)").matches,
   );
+  const [shouldUseLenis, setShouldUseLenis] = useState(() =>
+    typeof window === "undefined"
+      ? false
+      : !window.matchMedia("(max-width: 1024px), (pointer: coarse)").matches,
+  );
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const updatePreference = () => setPrefersReducedMotion(mediaQuery.matches);
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const touchQuery = window.matchMedia("(max-width: 1024px), (pointer: coarse)");
+    const updatePreference = () => {
+      setPrefersReducedMotion(motionQuery.matches);
+      setShouldUseLenis(!touchQuery.matches);
+    };
 
     updatePreference();
-    mediaQuery.addEventListener("change", updatePreference);
+    motionQuery.addEventListener("change", updatePreference);
+    touchQuery.addEventListener("change", updatePreference);
 
     return () => {
-      mediaQuery.removeEventListener("change", updatePreference);
+      motionQuery.removeEventListener("change", updatePreference);
+      touchQuery.removeEventListener("change", updatePreference);
     };
   }, []);
 
-  if (prefersReducedMotion) {
+  useEffect(() => {
+    if (prefersReducedMotion || !shouldUseLenis) {
+      delete window.__lenis;
+    }
+  }, [prefersReducedMotion, shouldUseLenis]);
+
+  if (prefersReducedMotion || !shouldUseLenis) {
     return children;
   }
 
@@ -53,8 +70,8 @@ function LenisScrollProvider({ children }) {
         autoRaf: true,
         lerp: 0.09,
         wheelMultiplier: 0.9,
-        touchMultiplier: 1.15,
-        syncTouch: true,
+        smoothWheel: true,
+        syncTouch: false,
         anchors: true,
       }}
     >

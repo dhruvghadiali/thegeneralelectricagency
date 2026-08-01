@@ -1,90 +1,192 @@
 import ShowcaseScrollNavigation from "@/components/ShowcaseScrollNavigation";
+import LoadingScreen from "@/components/ui/loading-screen";
+import { showcaseSections } from "@/utils/showcaseSections";
 import HomeScreenComponent from "@ScreenComponents/home";
 import ServicesIntroComponent from "@ScreenComponents/services";
 import ClientsIntroComponent from "@ScreenComponents/clients";
 import PartnersScreenComponent from "@ScreenComponents/partners";
 import ContactUsScreenComponent from "@ScreenComponents/contactUs";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { SHOWCASE_FOREGROUND_FRAME_SCROLL_VH } from "@/utils/showcaseTimeline";
+import useShowcaseScrollState from "@/utils/useShowcaseScrollState";
+import useFramePreloader, { PRELOAD_STATUS } from "@/utils/useFramePreloader";
+import {
+  useMotorFrames,
+  usePrefersReducedMotion,
+} from "@/utils/useMotorFrames";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 
 const MotorScrollAnimation = lazy(
   () => import("@/components/MotorScrollAnimation"),
 );
 
-const showcaseSections = [
-  { id: "home", Component: HomeScreenComponent },
-  { id: "services", Component: ServicesIntroComponent },
-  { id: "clients", Component: ClientsIntroComponent },
-  { id: "partners", Component: PartnersScreenComponent },
-  { id: "contact-us", Component: ContactUsScreenComponent },
-];
+const showcaseComponents = {
+  home: HomeScreenComponent,
+  services: ServicesIntroComponent,
+  clients: ClientsIntroComponent,
+  partners: PartnersScreenComponent,
+  "contact-us": ContactUsScreenComponent,
+};
 
 export default function HomePage() {
-  const [activeShowcaseSection, setActiveShowcaseSection] = useState("home");
-  const [isShowcaseNavigationRevealed, setIsShowcaseNavigationRevealed] =
-    useState(false);
-  const [isHomeFreezeActive, setIsHomeFreezeActive] = useState(false);
-  const renderedShowcaseSection = isShowcaseNavigationRevealed
-    ? activeShowcaseSection
-    : null;
-  const ActiveShowcaseComponent = showcaseSections.find(
-    ({ id }) => id === renderedShowcaseSection,
-  )?.Component;
+  const showcaseRef = useRef(null);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
+  const { frameUrls, framePath, frameCount } = useMotorFrames();
+
+  /** Set when the visitor chooses to continue after a failed preload. */
+  const [hasDismissedError, setHasDismissedError] = useState(false);
+
+  /**
+   * Visitors who asked for reduced motion never see the scroll animation, so
+   * making them wait for 12MB of frames would be pure cost with no payoff.
+   */
+  const shouldPreload = !prefersReducedMotion;
+
+  const {
+    status: preloadStatus,
+    progress: preloadProgress,
+    loaded,
+    failed,
+    total,
+    images: preloadedImages,
+    retry,
+  } = useFramePreloader(frameUrls, { enabled: shouldPreload });
+
+  const hasPreloadError =
+    preloadStatus === PRELOAD_STATUS.ERROR && !hasDismissedError;
+  const isGateOpen =
+    !shouldPreload ||
+    hasDismissedError ||
+    preloadStatus === PRELOAD_STATUS.READY;
+
+  /**
+   * Hold the page at the top and freeze scrolling behind the gate, otherwise
+   * the visitor can scroll the showcase timeline while it is still hidden and
+   * arrive mid-animation when the loader clears.
+   */
   useEffect(() => {
-    let frameId = 0;
+    if (isGateOpen) {
+      return undefined;
+    }
 
-    const updateHomeFreeze = () => {
-      const shouldFreeze =
-        renderedShowcaseSection === "home" &&
-        window.scrollY <= window.innerHeight * 0.92;
+    const root = document.documentElement;
+    const previousOverflow = root.style.overflow;
 
-      setIsHomeFreezeActive(shouldFreeze);
-    };
-
-    const queueUpdate = () => {
-      window.cancelAnimationFrame(frameId);
-      frameId = window.requestAnimationFrame(updateHomeFreeze);
-    };
-
-    updateHomeFreeze();
-    window.addEventListener("scroll", queueUpdate, { passive: true });
-    window.addEventListener("resize", queueUpdate, { passive: true });
+    root.style.overflow = "hidden";
+    window.__lenis?.stop();
+    window.scrollTo(0, 0);
 
     return () => {
-      window.removeEventListener("scroll", queueUpdate);
-      window.removeEventListener("resize", queueUpdate);
-      window.cancelAnimationFrame(frameId);
+      root.style.overflow = previousOverflow;
+      window.__lenis?.start();
+      window.__lenis?.scrollTo(0, { immediate: true });
+      window.scrollTo(0, 0);
     };
-  }, [renderedShowcaseSection]);
+  }, [isGateOpen]);
+
+  /**
+   * Sections are mounted one step ahead of the scroll and never unmounted.
+   *
+   * Mounting on arrival used to replay every entry animation right as the user
+   * got there, so the content was always a few hundred milliseconds behind the
+   * motor. Warming the neighbours means a section is fully settled before it is
+   * ever revealed, and switching becomes an instant cross-fade.
+   */
+  const [mountedIndexes, setMountedIndexes] = useState(() => new Set([0, 1]));
+
+  const {
+    activeIndex,
+    isRevealed,
+    totalHeight,
+    subscribeToProgress,
+    scrollToSection,
+  } = useShowcaseScrollState(showcaseRef);
+
+  useEffect(() => {
+    setMountedIndexes((previous) => {
+      const required = [activeIndex - 1, activeIndex, activeIndex + 1].filter(
+        (index) => index >= 0 && index < showcaseSections.length,
+      );
+
+      if (required.every((index) => previous.has(index))) {
+        return previous;
+      }
+
+      const next = new Set(previous);
+      required.forEach((index) => next.add(index));
+
+      return next;
+    });
+  }, [activeIndex]);
+
+  const handleRetry = () => {
+    setHasDismissedError(false);
+    retry();
+  };
 
   return (
-    <div className="home-page-with-motor-background">
-      <ShowcaseScrollNavigation
-        activeSection={activeShowcaseSection}
-        onActiveSectionChange={setActiveShowcaseSection}
-        onNavigationRevealChange={setIsShowcaseNavigationRevealed}
-      />
-      <Suspense
-        fallback={<div className="h-screen bg-white" aria-hidden="true" />}
+    <>
+      {!isGateOpen && (
+        <LoadingScreen
+          progress={preloadProgress}
+          loaded={loaded}
+          failed={failed}
+          total={total}
+          hasError={hasPreloadError}
+          onRetry={handleRetry}
+          onContinue={() => setHasDismissedError(true)}
+        />
+      )}
+
+      <div
+        className="home-page-with-motor-background"
+        ref={showcaseRef}
+        aria-hidden={isGateOpen ? undefined : "true"}
+        inert={isGateOpen ? undefined : true}
       >
-        <MotorScrollAnimation
-          frameCount={300}
-          desktopFramePath="/motor-frames/desktop"
-          mobileFramePath="/motor-frames/mobile"
-          animationDurationVh={650}
-          freezeAnimation={isHomeFreezeActive}
-          freezeFrameProgress={0.14}
+        <ShowcaseScrollNavigation
+          activeIndex={activeIndex}
+          isRevealed={isRevealed}
+          onSelectSection={scrollToSection}
+        />
+        <Suspense
+          fallback={<div className="h-screen bg-white" aria-hidden="true" />}
         >
-          {ActiveShowcaseComponent ? (
-            <ActiveShowcaseComponent key={renderedShowcaseSection} />
-          ) : (
-            <div
-              className="motor-scroll-animation__foreground-idle"
-              aria-hidden="true"
-            />
-          )}
-        </MotorScrollAnimation>
-      </Suspense>
-    </div>
+          <MotorScrollAnimation
+            frameCount={frameCount}
+            framePath={framePath}
+            preloadedImages={shouldPreload ? preloadedImages : undefined}
+            animationDurationVh={650}
+            foregroundFrameScrollVh={SHOWCASE_FOREGROUND_FRAME_SCROLL_VH}
+            progressSource={subscribeToProgress}
+            sectionHeight={totalHeight}
+          >
+            <div className="showcase-stage">
+              {showcaseSections.map((section, index) => {
+                const Component = showcaseComponents[section.id];
+                const isActive = isRevealed && index === activeIndex;
+
+                if (!Component || !mountedIndexes.has(index)) {
+                  return null;
+                }
+
+                return (
+                  <div
+                    key={section.id}
+                    className={`showcase-stage__panel ${
+                      isActive ? "showcase-stage__panel--active" : ""
+                    }`}
+                    aria-hidden={isActive ? undefined : "true"}
+                    inert={isActive ? undefined : true}
+                  >
+                    <Component />
+                  </div>
+                );
+              })}
+            </div>
+          </MotorScrollAnimation>
+        </Suspense>
+      </div>
+    </>
   );
 }

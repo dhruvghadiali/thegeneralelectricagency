@@ -1,0 +1,490 @@
+/* ---------------------------------------------------------------------------
+   Showcase loading gate
+
+   Fixed, full viewport, above everything. Sized with clamp() throughout so the
+   same markup works from a 320px phone up to a large desktop without media
+   query jumps; only the layout-shape changes get breakpoints.
+   --------------------------------------------------------------------------- */
+
+.showcase-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  /* Scrolls rather than clips if the error card outgrows a short viewport. */
+  overflow-y: auto;
+  padding:
+    max(clamp(1rem, 4vw, 2.5rem), env(safe-area-inset-top, 0px))
+    max(clamp(1rem, 4vw, 2.5rem), env(safe-area-inset-right, 0px))
+    max(clamp(1rem, 4vw, 2.5rem), env(safe-area-inset-bottom, 0px))
+    max(clamp(1rem, 4vw, 2.5rem), env(safe-area-inset-left, 0px));
+  background:
+    radial-gradient(circle at 50% 38%, rgba(203, 213, 225, 0.55), transparent 46%),
+    linear-gradient(180deg, #eef4f8 0%, #f7f9fb 52%, #ffffff 100%);
+  overscroll-behavior: contain;
+  animation: showcase-loader-in 220ms ease both;
+}
+
+.showcase-loader__panel {
+  display: grid;
+  width: min(30rem, 100%);
+  /* Gap tracks viewport height so tall and short screens both stay balanced. */
+  gap: clamp(1rem, 3.5vh, 2.25rem);
+  justify-items: center;
+  text-align: center;
+}
+
+/* --- brand ---------------------------------------------------------------- */
+
+.showcase-loader__brand {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: clamp(0.7rem, 2.5vw, 1rem);
+  text-align: left;
+}
+
+.showcase-loader__logo-mark {
+  display: grid;
+  width: clamp(2.85rem, 11vw, 3.6rem);
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid rgba(15, 47, 70, 0.14);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.98), rgba(238, 244, 248, 0.92));
+  box-shadow:
+    0 14px 30px rgba(15, 23, 42, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.showcase-loader__logo-mark img {
+  display: block;
+  width: 74%;
+  height: auto;
+}
+
+.showcase-loader__brand strong {
+  display: block;
+  color: #0f2135;
+  font-size: clamp(0.98rem, 3.4vw, 1.18rem);
+  font-weight: 850;
+  line-height: 1.15;
+}
+
+.showcase-loader__brand > div > span {
+  display: block;
+  margin-top: 0.2rem;
+  color: rgba(51, 65, 85, 0.86);
+  font-size: clamp(0.72rem, 2.6vw, 0.84rem);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+/* --- progress state ------------------------------------------------------- */
+
+.showcase-loader__progress {
+  display: grid;
+  width: 100%;
+  gap: clamp(0.85rem, 2.5vh, 1.25rem);
+  justify-items: center;
+}
+
+/*
+ * The animation is 800x600. Sizing is bounded on BOTH axes so it never
+ * overflows a short window or a narrow one: whichever axis is tighter wins.
+ */
+.showcase-loader__lottie {
+  width: clamp(6.5rem, min(44vw, 34vh), 13.5rem);
+  aspect-ratio: 4 / 3;
+}
+
+.showcase-loader__lottie svg {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.showcase-loader__lottie-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------------------------------------------------------------------------
+   Reveal order
+
+   The animation leads. Everything else stays hidden until it is on screen, then
+   follows in a short stagger. Reserving the layout up front means nothing
+   shifts when the rest arrives.
+   --------------------------------------------------------------------------- */
+
+.showcase-loader__lottie,
+.showcase-loader__brand,
+.showcase-loader__percentage,
+.showcase-loader__bar,
+.showcase-loader__caption,
+.showcase-loader__error {
+  opacity: 0;
+  transform: translate3d(0, 0.4rem, 0);
+  transition:
+    opacity 260ms ease,
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.showcase-loader--revealed .showcase-loader__lottie,
+.showcase-loader--revealed .showcase-loader__brand,
+.showcase-loader--revealed .showcase-loader__percentage,
+.showcase-loader--revealed .showcase-loader__bar,
+.showcase-loader--revealed .showcase-loader__caption,
+.showcase-loader--revealed .showcase-loader__error {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.showcase-loader--revealed .showcase-loader__lottie {
+  transition-delay: 0ms;
+}
+
+.showcase-loader--revealed .showcase-loader__brand {
+  transition-delay: 130ms;
+}
+
+.showcase-loader--revealed .showcase-loader__percentage {
+  transition-delay: 190ms;
+}
+
+.showcase-loader--revealed .showcase-loader__bar {
+  transition-delay: 240ms;
+}
+
+.showcase-loader--revealed .showcase-loader__caption {
+  transition-delay: 290ms;
+}
+
+.showcase-loader--revealed .showcase-loader__error {
+  transition-delay: 60ms;
+}
+
+.showcase-loader__percentage {
+  display: flex;
+  align-items: baseline;
+  gap: 0.15rem;
+  color: #164863;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.showcase-loader__percentage strong {
+  font-size: clamp(2.1rem, 9vw, 3rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.showcase-loader__percentage span {
+  font-size: clamp(0.95rem, 3.6vw, 1.25rem);
+  font-weight: 800;
+  opacity: 0.72;
+}
+
+.showcase-loader__bar {
+  position: relative;
+  width: min(20rem, 100%);
+  height: 0.4rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(22, 72, 99, 0.12);
+}
+
+.showcase-loader__bar > span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #9bbec8, #164863);
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.showcase-loader__caption {
+  display: grid;
+  gap: 0.3rem;
+  color: #334155;
+  font-size: clamp(0.82rem, 3vw, 0.94rem);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.showcase-loader__caption span {
+  color: rgba(51, 65, 85, 0.68);
+  font-size: clamp(0.7rem, 2.6vw, 0.8rem);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- error state ---------------------------------------------------------- */
+
+.showcase-loader__error {
+  display: grid;
+  width: 100%;
+  gap: clamp(0.7rem, 2vh, 1rem);
+  justify-items: center;
+  border: 1px solid rgba(15, 47, 70, 0.12);
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.86);
+  padding: clamp(1.25rem, 5vw, 2rem);
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.14);
+  backdrop-filter: blur(16px) saturate(1.1);
+  -webkit-backdrop-filter: blur(16px) saturate(1.1);
+}
+
+.showcase-loader__error-icon {
+  display: grid;
+  width: clamp(3rem, 12vw, 3.75rem);
+  aspect-ratio: 1;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(190, 60, 60, 0.1);
+  color: #b23b3b;
+}
+
+.showcase-loader__error h1 {
+  color: #0f2135;
+  font-size: clamp(1.2rem, 5vw, 1.6rem);
+  font-weight: 880;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.showcase-loader__error > p {
+  max-width: 26rem;
+  color: #475569;
+  font-size: clamp(0.85rem, 3.1vw, 0.98rem);
+  font-weight: 550;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.showcase-loader__actions {
+  display: grid;
+  width: 100%;
+  gap: 0.6rem;
+  margin-top: 0.35rem;
+}
+
+.showcase-loader__button {
+  display: inline-flex;
+  min-height: 2.85rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(22, 72, 99, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  padding-inline: 1.2rem;
+  color: #0f2135;
+  cursor: pointer;
+  font-size: clamp(0.86rem, 3vw, 0.95rem);
+  font-weight: 800;
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.showcase-loader__button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(22, 72, 99, 0.34);
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.12);
+}
+
+.showcase-loader__button:focus-visible {
+  outline: 2px solid #164863;
+  outline-offset: 2px;
+}
+
+.showcase-loader__button--primary {
+  border-color: transparent;
+  background: #164863;
+  color: #ffffff;
+  box-shadow: 0 14px 30px rgba(22, 72, 99, 0.26);
+}
+
+.showcase-loader__button--primary:hover {
+  background: #123c53;
+  border-color: transparent;
+}
+
+.showcase-loader__note {
+  display: flex;
+  max-width: 25rem;
+  align-items: flex-start;
+  gap: 0.45rem;
+  margin-top: 0.15rem;
+  color: rgba(71, 85, 105, 0.86);
+  font-size: clamp(0.7rem, 2.6vw, 0.79rem);
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.showcase-loader__note svg {
+  flex: 0 0 auto;
+  margin-top: 0.12rem;
+  color: #b7791f;
+}
+
+@keyframes showcase-loader-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Side-by-side buttons once there is room for them. */
+@media (min-width: 30rem) {
+  .showcase-loader__actions {
+    grid-auto-flow: column;
+    justify-content: center;
+  }
+}
+
+/*
+ * Short and wide (landscape phones, split-screen windows).
+ *
+ * Rather than hiding the animation, lay the panel out horizontally: brand and
+ * animation on the left, progress readout on the right. Uses the width that is
+ * actually available instead of stacking into a scroll.
+ */
+@media (max-height: 33rem) and (min-width: 40rem) {
+  /* Panel becomes a horizontal band: brand | progress. */
+  .showcase-loader__panel {
+    width: min(52rem, 100%);
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(1.25rem, 4vw, 2.5rem);
+    text-align: left;
+  }
+
+  .showcase-loader__brand {
+    max-width: 15rem;
+  }
+
+  /* Inside progress: animation | readout. */
+  .showcase-loader__progress {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    justify-items: start;
+    gap: 0.4rem clamp(0.9rem, 3vw, 1.6rem);
+  }
+
+  .showcase-loader__lottie {
+    grid-row: 1 / span 3;
+    width: clamp(5rem, 24vh, 8rem);
+  }
+
+  .showcase-loader__percentage,
+  .showcase-loader__bar,
+  .showcase-loader__caption {
+    grid-column: 2;
+  }
+
+  .showcase-loader__caption {
+    justify-items: start;
+    text-align: left;
+  }
+
+  /* The error card needs the full width, so drop the brand column for it. */
+  .showcase-loader--error .showcase-loader__panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .showcase-loader__error {
+    justify-items: start;
+    gap: 0.5rem;
+    padding: clamp(0.9rem, 2.5vw, 1.35rem);
+    text-align: left;
+  }
+
+  .showcase-loader__error-icon {
+    display: none;
+  }
+
+  .showcase-loader__actions {
+    width: auto;
+    justify-content: start;
+  }
+}
+
+/* Very short viewports: the numbers matter more than the animation. */
+@media (max-height: 22rem) {
+  .showcase-loader__panel {
+    gap: 0.75rem;
+  }
+
+  .showcase-loader__lottie {
+    display: none;
+  }
+
+  .showcase-loader__error-icon,
+  .showcase-loader__note {
+    display: none;
+  }
+
+  .showcase-loader__error {
+    padding: 0.9rem;
+  }
+}
+
+/* Narrow phones: keep the brand lockup from crowding the edges. */
+@media (max-width: 22.5rem) {
+  .showcase-loader__brand {
+    gap: 0.6rem;
+  }
+
+  .showcase-loader__bar {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .showcase-loader {
+    animation: none;
+  }
+
+  .showcase-loader__bar > span {
+    transition: none;
+  }
+
+  .showcase-loader__button:hover {
+    transform: none;
+  }
+
+  /* Keep the ordering, drop the movement and the waiting. */
+  .showcase-loader__lottie,
+  .showcase-loader__brand,
+  .showcase-loader__percentage,
+  .showcase-loader__bar,
+  .showcase-loader__caption,
+  .showcase-loader__error {
+    transform: none;
+    transition: opacity 1ms linear;
+    transition-delay: 0ms !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .showcase-loader__error {
+    border-color: #0f2135;
+    background: #ffffff;
+  }
+
+  .showcase-loader__bar {
+    background: rgba(22, 72, 99, 0.3);
+  }
+}
