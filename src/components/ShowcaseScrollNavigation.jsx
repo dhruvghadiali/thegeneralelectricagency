@@ -95,6 +95,14 @@ function ShowcaseScrollNavigation({
     const targetTop =
       window.innerHeight * (CLICK_OFFSET_VH + targetIndex * SECTION_STEP_VH);
 
+    if (window.__lenis) {
+      window.__lenis.scrollTo(targetTop, {
+        duration: 1.05,
+        easing: (progress) => Math.min(1, 1.001 - 2 ** (-10 * progress)),
+      });
+      return;
+    }
+
     window.scrollTo({
       top: targetTop,
       behavior: "smooth",
