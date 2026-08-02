@@ -16,6 +16,22 @@ function readStoredAuth() {
   }
 }
 
+function persistAuthSession(username, token) {
+  try {
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ username, token }));
+  } catch {
+    // Storage can be unavailable (private browsing) - session stays in memory.
+  }
+}
+
+function clearAuthSession() {
+  try {
+    localStorage.removeItem(AUTH_STORAGE_KEY);
+  } catch {
+    // Nothing to clean up if storage was never available.
+  }
+}
+
 const stored = readStoredAuth();
 
 const initialState = {
@@ -40,14 +56,7 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
       state.isPasswordVisible = false;
 
-      try {
-        localStorage.setItem(
-          AUTH_STORAGE_KEY,
-          JSON.stringify({ username: action.payload.username, token: action.payload.token ?? null })
-        );
-      } catch {
-        // Storage can be unavailable (private browsing) - session stays in memory.
-      }
+      persistAuthSession(action.payload.username, action.payload.token ?? null);
     },
     loggedOut(state) {
       state.username = null;
@@ -55,11 +64,7 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.isPasswordVisible = false;
 
-      try {
-        localStorage.removeItem(AUTH_STORAGE_KEY);
-      } catch {
-        // Nothing to clean up if storage was never available.
-      }
+      clearAuthSession();
     },
   },
   extraReducers: (builder) => {
@@ -68,9 +73,18 @@ const authSlice = createSlice({
         state.isSigningIn = true;
         state.signInError = null;
       })
-      .addCase(signIn.fulfilled, (state) => {
+      .addCase(signIn.fulfilled, (state, action) => {
+        const username =
+          action.payload?.user?.username ?? action.payload?.username ?? null;
+        const token = action.payload?.token ?? null;
+
         state.isSigningIn = false;
         state.signInError = null;
+        state.username = username;
+        state.token = token;
+        state.isAuthenticated = Boolean(token);
+
+        persistAuthSession(username, token);
       })
       .addCase(signIn.rejected, (state, action) => {
         state.isSigningIn = false;

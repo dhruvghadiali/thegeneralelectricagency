@@ -8,6 +8,8 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 
 import HomePage from "@/pages/homePage";
 import SigninPage from "@/pages/signinPage";
+import PublicRoute from "@/routes/PublicRoute";
+import PrivateRoute from "@/routes/PrivateRoute";
 import LenisScrollProvider from "@/components/LenisScrollProvider";
 
 function App() {
@@ -16,9 +18,15 @@ function App() {
       <LenisScrollProvider>
         <Router>
           <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/signin" element={<SigninPage />} />
-            <Route path="/dashboard" element={<>Dashboard Content</>} />
+            <Route element={<PublicRoute />}>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/signin" element={<SigninPage />} />
+            </Route>
+
+            <Route element={<PrivateRoute />}>
+              <Route path="/dashboard" element={<>Dashboard Content</>} />
+            </Route>
+
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Router>
