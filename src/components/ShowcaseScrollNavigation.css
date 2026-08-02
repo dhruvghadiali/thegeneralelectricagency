@@ -34,10 +34,14 @@
   pointer-events: auto;
 }
 
-.showcase-scroll-nav__intro {
+/* Full-width bar so the intro block and the sign-in action can sit in the
+   opposite top corners. Specificity is raised above the
+   `.motor-scroll-animation__overlay` breakpoint rules it shares a class with. */
+.showcase-scroll-nav .showcase-scroll-nav__intro {
   top: clamp(0.75rem, 2vh, 1.25rem);
   left: clamp(0.75rem, 2vw, 1.5rem);
-  width: min(22rem, calc(100vw - 1.5rem));
+  right: clamp(0.75rem, 2vw, 1.5rem);
+  width: auto;
   padding: clamp(0.8rem, 1.4vw, 1.05rem);
   animation: showcase-intro-float 4.8s ease-in-out infinite;
   transition:
@@ -46,7 +50,7 @@
     visibility 260ms ease;
 }
 
-.showcase-scroll-nav__intro--hidden {
+.showcase-scroll-nav .showcase-scroll-nav__intro--hidden {
   animation: none;
   opacity: 0;
   visibility: hidden;
@@ -466,6 +470,7 @@
     max-width: calc(100vw - 2rem);
     scroll-snap-align: center;
   }
+
 
   .showcase-scroll-nav__item:hover,
   .showcase-scroll-nav__item:focus-visible,

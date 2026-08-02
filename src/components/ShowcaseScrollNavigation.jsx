@@ -1,8 +1,10 @@
 import { memo, useState } from "react";
+import { LogIn } from "lucide-react";
 import { showcaseSections } from "@/utils/showcaseSections";
 import "./ShowcaseScrollNavigation.css";
 import logoImage from "@Assets/images/logo.png";
 import { Typography } from "@/components/ui/typography";
+import { Button } from "@/components/ui/button";
 
 /**
  * Purely presentational. The active section is owned by the page so the
@@ -13,6 +15,7 @@ function ShowcaseScrollNavigation({
   activeIndex = 0,
   isRevealed = false,
   onSelectSection,
+  onSignIn,
 }) {
   const [previewIndex, setPreviewIndex] = useState(null);
   const expandedIndex = previewIndex ?? activeIndex;
@@ -30,19 +33,36 @@ function ShowcaseScrollNavigation({
       aria-label="Home showcase navigation"
     >
       <div
-        className={`motor-scroll-animation__overlay showcase-scroll-nav__intro ${
+        className={`motor-scroll-animation__overlay showcase-scroll-nav__intro flex items-start justify-between gap-4 ${
           isRevealed ? "showcase-scroll-nav__intro--hidden" : ""
         }`}
       >
-        <div className="motor-scroll-animation__logo-mark">
-          <img
-            src={logoImage}
-            alt="The General Electric Stores"
-            className="motor-scroll-animation__logo"
-          />
+        <div className="w-[min(22rem,100%)] shrink">
+          <div className="motor-scroll-animation__logo-mark">
+            <img
+              src={logoImage}
+              alt="The General Electric Stores"
+              className="motor-scroll-animation__logo"
+            />
+          </div>
+          <Typography as="h2" variant="sectionTitle">
+            The General Electric Stores
+          </Typography>
+          <Typography variant="body">
+            India's Largest Dealer in Rotating Machine & Drives
+          </Typography>
         </div>
-        <Typography as="h2" variant="sectionTitle">The General Electric Stores</Typography>
-        <Typography variant="body">India's Largest Dealer in Rotating Machine & Drives</Typography>
+        <div className="pointer-events-auto hidden shrink-0 lg:block">
+          <Button
+            type="button"
+            variant="outline"
+            className="bg-[#164863] text-white hover:bg-[#0f2f46] hover:text-white border-white/20 hover:cursor-pointer"
+            onClick={() => onSignIn?.()}
+          >
+            <LogIn />
+            Sign in
+          </Button>
+        </div>
       </div>
 
       <button
@@ -70,9 +90,7 @@ function ShowcaseScrollNavigation({
               type="button"
               className={`showcase-scroll-nav__item ${
                 isActive ? "showcase-scroll-nav__item--active" : ""
-              } ${
-                isExpanded ? "showcase-scroll-nav__item--expanded" : ""
-              }`}
+              } ${isExpanded ? "showcase-scroll-nav__item--expanded" : ""}`}
               style={{ "--showcase-nav-index": index }}
               onMouseEnter={() => setPreviewIndex(index)}
               onMouseLeave={() => setPreviewIndex(null)}
@@ -85,7 +103,11 @@ function ShowcaseScrollNavigation({
               <span className="showcase-scroll-nav__icon" aria-hidden="true">
                 <Icon size={18} strokeWidth={2.25} />
               </span>
-              <Typography as="span" variant="nav" className="showcase-scroll-nav__label">
+              <Typography
+                as="span"
+                variant="nav"
+                className="showcase-scroll-nav__label"
+              >
                 {section.label}
               </Typography>
             </button>

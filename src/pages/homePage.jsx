@@ -15,6 +15,7 @@ import {
   usePrefersReducedMotion,
 } from "@/utils/useMotorFrames";
 import { lazy, memo, Suspense, useEffect, useRef, useState } from "react";
+import {useNavigate} from "react-router-dom";
 
 const MotorScrollAnimation = lazy(
   () => import("@/components/MotorScrollAnimation"),
@@ -39,6 +40,7 @@ const showcaseComponents = {
 export default function HomePage() {
   const showcaseRef = useRef(null);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const navigate = useNavigate();
 
   const { frameUrls, framePath, frameCount, useMobileFrames } = useMotorFrames();
 
@@ -150,6 +152,7 @@ export default function HomePage() {
           activeIndex={activeIndex}
           isRevealed={isRevealed}
           onSelectSection={scrollToSection}
+          onSignIn={() => navigate("/signin")}
         />
         <Suspense
           fallback={<div className="h-screen bg-white" aria-hidden="true" />}
