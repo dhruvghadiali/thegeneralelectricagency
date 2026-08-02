@@ -25,6 +25,10 @@ function App() {
 
             <Route element={<PrivateRoute />}>
               <Route path="/dashboard" element={<>Dashboard Content</>} />
+              <Route path="/employees" element={<>Employees Content</>} />
+              <Route path="/products" element={<>Products Content</>} />
+              <Route path="/companies" element={<>Companies Content</>} />
+              <Route path="/settings" element={<>Settings Content</>} />
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />

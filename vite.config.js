@@ -14,6 +14,7 @@ export default defineConfig({
       "@ScreenComponents": path.resolve(__dirname, "./src/components/screen"),
       "@Assets": path.resolve(__dirname, "./src/assets"),
       "@Redux": path.resolve(__dirname, "./src/store"),
+      "@Enums": path.resolve(__dirname, "./src/enums"),
     },
   },
 });

@@ -21,6 +21,9 @@
             "@Redux/*": [
                 "./src/store/*"
             ],
+            "@Enums/*": [
+                "./src/enums/*"
+            ],
         }
     },
     "include": ["./src/**/*"]
