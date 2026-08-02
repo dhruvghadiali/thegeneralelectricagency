@@ -12,7 +12,7 @@ import { togglePasswordVisibility } from "@Redux/auth/authSlice";
 import { SIGNIN_INITIAL_VALUES } from "@/forms/signin/signin.initialValues";
 import { signinValidationSchema } from "@/forms/signin/signin.validationSchema";
 
-import FormErrorAlert from "@Components/alert/FormErrorAlert";
+import FormErrorAlert from "@Components/alert/formErrorAlert";
 
 function SigninForm() {
   const dispatch = useDispatch();
