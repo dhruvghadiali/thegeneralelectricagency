@@ -7,6 +7,7 @@ import {
 import { ThemeProvider } from "@/contexts/ThemeContext";
 
 import HomePage from "@/pages/homePage";
+import SigninPage from "@/pages/signinPage";
 import LenisScrollProvider from "@/components/LenisScrollProvider";
 
 function App() {
@@ -16,7 +17,8 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/signin" element={<div>Sign In Page</div>} />
+            <Route path="/signin" element={<SigninPage />} />
+            <Route path="/dashboard" element={<>Dashboard Content</>} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Router>

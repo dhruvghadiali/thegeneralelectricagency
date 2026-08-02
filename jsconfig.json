@@ -18,6 +18,9 @@
             "@Assets/*": [
                 "./src/assets/*"
             ],
+            "@Redux/*": [
+                "./src/store/*"
+            ],
         }
     },
     "include": ["./src/**/*"]

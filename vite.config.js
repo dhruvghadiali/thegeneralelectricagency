@@ -13,6 +13,7 @@ export default defineConfig({
       "@Components": path.resolve(__dirname, "./src/components/common"),
       "@ScreenComponents": path.resolve(__dirname, "./src/components/screen"),
       "@Assets": path.resolve(__dirname, "./src/assets"),
+      "@Redux": path.resolve(__dirname, "./src/store"),
     },
   },
 });
