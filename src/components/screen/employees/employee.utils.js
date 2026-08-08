@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 import { ROLE_OPTIONS, ROLE_PATHS } from "@Enums";
 
 export const ASSIGNABLE_ROLE_OPTIONS = ROLE_OPTIONS.filter(
@@ -18,7 +20,5 @@ export function employeeInitials(employee) {
 }
 
 export function roleLabel(value) {
-  return (
-    ASSIGNABLE_ROLE_OPTIONS.find((role) => role.value === value)?.label ?? value
-  );
+  return _.find(ASSIGNABLE_ROLE_OPTIONS, { value })?.label ?? value;
 }

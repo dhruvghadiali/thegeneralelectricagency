@@ -1,16 +1,15 @@
 import { BriefcaseBusiness, UserRoundCheck, UsersRound } from "lucide-react";
+import _ from "lodash";
 
 import { ROLE_PATHS } from "@Enums";
 
 import SummaryCard from "@/components/screen/employees/summaryCard";
 
 function EmployeeSummary({ employees }) {
-  const employeeCount = employees.filter(
-    (employee) => employee.role === ROLE_PATHS.EMPLOYEE,
-  ).length;
-  const warehouseManagerCount = employees.filter(
-    (employee) => employee.role === ROLE_PATHS.WAREHOUSE_MANAGER,
-  ).length;
+  const roleCounts = _.countBy(employees, "role");
+  const employeeCount = roleCounts[ROLE_PATHS.EMPLOYEE] ?? 0;
+  const warehouseManagerCount =
+    roleCounts[ROLE_PATHS.WAREHOUSE_MANAGER] ?? 0;
 
   return (
     <section className="grid gap-4 sm:grid-cols-3">

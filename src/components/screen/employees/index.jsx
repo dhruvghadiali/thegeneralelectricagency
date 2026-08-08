@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import _ from "lodash/filter";
 
 import { Card } from "@/components/ui/card";
 import {
@@ -35,7 +36,7 @@ function Employees() {
 
   const filteredEmployees = useMemo(
     () =>
-      employees.filter((employee) => {
+      _.filter(employees, (employee) => {
         const searchableData =
           `${fullName(employee)} ${employee.username} ${employee.email} ${roleLabel(employee.role)}`.toLowerCase();
         return (
