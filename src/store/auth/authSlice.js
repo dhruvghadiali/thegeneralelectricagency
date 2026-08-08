@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { ROLE_PATHS } from "@Enums/role.enum";
 import { signIn } from "@/store/auth/authAction";
 
 const AUTH_STORAGE_KEY = "auth";
@@ -81,10 +80,7 @@ const authSlice = createSlice({
         const username =
           action.payload?.user?.username ?? action.payload?.username ?? null;
         const token = action.payload?.token ?? null;
-        // Only the super-admin sign-in endpoint is wired up today - once
-        // employee/warehouse-manager sign-in exists, thread the actual role
-        // through the thunk's payload instead of hardcoding it here.
-        const role = ROLE_PATHS.SUPER_ADMIN;
+        const role = action.payload?.role ?? null;
 
         state.isSigningIn = false;
         state.signInError = null;

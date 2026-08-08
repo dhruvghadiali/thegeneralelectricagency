@@ -6,6 +6,7 @@ import {
 } from "@/forms/signin/signin.validationConstants";
 
 export const SIGNIN_VALIDATION_MESSAGES = {
+  ROLE_REQUIRED: "Role is required",
   USERNAME_REQUIRED: "Username is required",
   USERNAME_MIN: `Username must be at least ${SIGNIN_USERNAME_MIN_LENGTH} characters`,
   USERNAME_MAX: `Username must be at most ${SIGNIN_USERNAME_MAX_LENGTH} characters`,

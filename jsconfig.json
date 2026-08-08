@@ -24,6 +24,9 @@
             "@Enums/*": [
                 "./src/enums/*"
             ],
+            "@Enums": [
+                "./src/enums/index.js"
+            ],
         }
     },
     "include": ["./src/**/*"]

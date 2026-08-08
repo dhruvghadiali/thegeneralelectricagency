@@ -7,3 +7,9 @@ export const ROLE_PATHS = Object.freeze({
   EMPLOYEE: "employee",
   WAREHOUSE_MANAGER: "warehouse-manager",
 });
+
+export const ROLE_OPTIONS = Object.freeze([
+  { value: ROLE_PATHS.SUPER_ADMIN, label: "Super Admin" },
+  { value: ROLE_PATHS.EMPLOYEE, label: "Employee" },
+  { value: ROLE_PATHS.WAREHOUSE_MANAGER, label: "Warehouse Manager" },
+]);

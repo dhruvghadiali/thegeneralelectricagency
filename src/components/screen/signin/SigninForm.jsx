@@ -1,16 +1,31 @@
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { ErrorMessage, Field, Formik, Form as FormikForm } from "formik";
-import { Eye, EyeOff, Lock, ShieldCheck, User } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Lock,
+  ShieldCheck,
+  User,
+  UserRoundCog,
+} from "lucide-react";
 
 import { Input } from "@ShadcnComponents/input";
 import { Label } from "@ShadcnComponents/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@ShadcnComponents/select";
 import { signIn } from "@Redux/auth/authAction";
 import { Button } from "@ShadcnComponents/button";
 import { Typography } from "@ShadcnComponents/typography";
 import { togglePasswordVisibility } from "@Redux/auth/authSlice";
 import { SIGNIN_INITIAL_VALUES } from "@/forms/signin/signin.initialValues";
 import { signinValidationSchema } from "@/forms/signin/signin.validationSchema";
+import { ROLE_OPTIONS } from "@Enums";
 
 import FormErrorAlert from "@Components/alert/formErrorAlert";
 
@@ -25,7 +40,11 @@ function SigninForm() {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       await dispatch(
-        signIn({ username: values.username.trim(), password: values.password }),
+        signIn({
+          role: values.role,
+          username: values.username.trim(),
+          password: values.password,
+        }),
       ).unwrap();
 
       navigate("/dashboard");
@@ -42,7 +61,7 @@ function SigninForm() {
       validationSchema={signinValidationSchema}
       onSubmit={handleSubmit}
     >
-      {({ isSubmitting }) => (
+      {({ isSubmitting, setFieldTouched, setFieldValue, values }) => (
         <FormikForm className="flex flex-col gap-5" noValidate>
           <div className="flex flex-col gap-2">
             <Label htmlFor="signin-username" className="text-[#164863]">
@@ -112,6 +131,43 @@ function SigninForm() {
             />
           </div>
 
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="signin-role" className="text-[#164863]">
+              Sign in as
+            </Label>
+            <div className="relative">
+              <UserRoundCog
+                size={16}
+                strokeWidth={2.2}
+                className="pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 text-slate-400"
+              />
+              <Select
+                name="role"
+                value={values.role}
+                onValueChange={(value) => setFieldValue("role", value)}
+                onOpenChange={(open) => !open && setFieldTouched("role", true)}
+              >
+                <SelectTrigger
+                  id="signin-role"
+                  className="border-slate-200 bg-white pl-9 text-[#0f2f46] data-placeholder:text-slate-400 focus:border-[#164863] focus:ring-[#164863]/25"
+                >
+                  <SelectValue placeholder="Select your role" />
+                </SelectTrigger>
+                <SelectContent>
+                  {ROLE_OPTIONS.map((role) => (
+                    <SelectItem key={role.value} value={role.value}>
+                      {role.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <ErrorMessage
+              name="role"
+              component="p"
+              className="text-xs font-medium text-red-600"
+            />
+          </div>
           <FormErrorAlert message={signInError} />
 
           <Button

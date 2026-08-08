@@ -1,4 +1,4 @@
-export { ROLE_PATHS } from "@Enums/role.enum";
+export { ROLE_PATHS } from "@Enums";
 export { ENDPOINTS } from "@/api/endpoints";
 export { employeeAuthApi } from "@/api/employee/auth.api";
 export { superAdminAuthApi } from "@/api/superAdmin/auth.api";

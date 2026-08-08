@@ -1,13 +1,22 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { superAdminAuthApi } from "@/api/superAdmin/auth.api";
+import { ROLE_PATHS } from "@Enums";
 import { extractErrorMessage } from "@/api/client";
+import { employeeAuthApi, superAdminAuthApi, warehouseManagerAuthApi } from "@/api";
+
+const authApiByRole = {
+  [ROLE_PATHS.SUPER_ADMIN]: superAdminAuthApi,
+  [ROLE_PATHS.EMPLOYEE]: employeeAuthApi,
+  [ROLE_PATHS.WAREHOUSE_MANAGER]: warehouseManagerAuthApi,
+};
 
 export const signIn = createAsyncThunk(
   "auth/signIn",
   async (payload, { rejectWithValue }) => {
     try {
-      return await superAdminAuthApi.signIn(payload);
+      const { role, ...credentials } = payload;
+      const response = await authApiByRole[role].signIn(credentials);
+      return { ...response, role };
     } catch (error) {
       return rejectWithValue(extractErrorMessage(error));
     }

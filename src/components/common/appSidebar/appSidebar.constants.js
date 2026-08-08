@@ -1,6 +1,6 @@
 import { Boxes, Building2, Settings, Users, LucideHome } from "lucide-react";
 
-import { ROLE_PATHS } from "@Enums/role.enum";
+import { ROLE_PATHS } from "@Enums";
 
 /**
  * Sidebar nav items per role. Keyed by ROLE_PATHS so a role with no sign-in
