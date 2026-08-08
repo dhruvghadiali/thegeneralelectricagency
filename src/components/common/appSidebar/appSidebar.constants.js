@@ -1,4 +1,11 @@
-import { Boxes, Building2, Settings, Users, LucideHome } from "lucide-react";
+import {
+  Boxes,
+  Building2,
+  Settings,
+  Users,
+  LucideHome,
+  TrendingUp,
+} from "lucide-react";
 
 import { ROLE_PATHS } from "@Enums";
 
@@ -10,6 +17,7 @@ export const SIDEBAR_NAV_ITEMS_BY_ROLE = {
   [ROLE_PATHS.SUPER_ADMIN]: [
     { title: "Dashboard", url: "/dashboard", icon: LucideHome },
     { title: "Employees", url: "/employees", icon: Users },
+    { title: "Stocks", url: "/stocks", icon: TrendingUp },
     { title: "Settings", url: "/settings", icon: Settings },
   ],
   [ROLE_PATHS.EMPLOYEE]: [

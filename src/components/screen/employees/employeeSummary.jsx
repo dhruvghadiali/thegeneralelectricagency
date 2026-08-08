@@ -2,7 +2,7 @@ import { BriefcaseBusiness, UserRoundCheck, UsersRound } from "lucide-react";
 
 import { ROLE_PATHS } from "@Enums";
 
-import SummaryCard from "@/components/screen/employees/employeeSummary";
+import SummaryCard from "@/components/screen/employees/summaryCard";
 
 function EmployeeSummary({ employees }) {
   const employeeCount = employees.filter(
