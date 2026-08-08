@@ -39,18 +39,32 @@ function decodeJwtPayload(token) {
 }
 
 /**
+ * Returns the expiry encoded in a JWT, or null when the token is opaque or
+ * does not contain a usable `exp` claim.
+ */
+export function getTokenExpiration(token) {
+  const expiresAt = Number(decodeJwtPayload(token)?.exp);
+
+  if (!Number.isFinite(expiresAt) || expiresAt <= 0) {
+    return null;
+  }
+
+  return new Date(expiresAt * 1000);
+}
+
+/**
  * Opaque (non-JWT) tokens carry no `exp` claim we can read client-side, so
  * the absence of one is not treated as expired - only a claim that has
  * actually passed counts.
  */
 function isTokenExpired(token) {
-  const claims = decodeJwtPayload(token);
+  const expiresAt = getTokenExpiration(token);
 
-  if (!claims?.exp) {
+  if (!expiresAt) {
     return false;
   }
 
-  return Date.now() >= claims.exp * 1000;
+  return Date.now() >= expiresAt.getTime();
 }
 
 /**
