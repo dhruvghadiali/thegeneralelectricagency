@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import _ from "lodash/filter";
+import _ from "lodash";
 
 import { Card } from "@/components/ui/card";
 import {
