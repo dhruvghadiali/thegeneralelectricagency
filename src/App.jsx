@@ -6,10 +6,10 @@ import {
 } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 
-import HomePage from "@/pages/homePage";
-import SigninPage from "@/pages/signinPage";
-import PublicRoute from "@/routes/PublicRoute";
-import PrivateRoute from "@/routes/PrivateRoute";
+import HomePage from "@/pages/home.page";
+import SigninPage from "@/pages/signin.page";
+import PublicRoute from "@/routes/public.route";
+import PrivateRoute from "@/routes/private.route";
 import LenisScrollProvider from "@/components/LenisScrollProvider";
 
 function App() {

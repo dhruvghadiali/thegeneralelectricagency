@@ -1,7 +1,7 @@
 import _ from "lodash";
 
-import { apiClient } from "@/api/client";
-import { ENDPOINTS } from "@/api/endpoints";
+import { apiClient } from "@/api/client.api";
+import { ENDPOINTS } from "@/api/endpoints.constants";
 
 /**
  * All three roles share the same auth contract, just scoped under their own

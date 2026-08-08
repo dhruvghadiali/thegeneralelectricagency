@@ -4,8 +4,8 @@ import { Navigate, Outlet } from "react-router-dom";
 
 import AppSidebar from "@Components/appSidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { isAuthTokenValid } from "@/routes/isAuthTokenValid";
-import { loggedOut } from "@/store/auth/authSlice";
+import { isAuthTokenValid } from "@/routes/auth-token.util";
+import { loggedOut } from "@/store/auth/auth.slice";
 
 function PrivateRoute() {
   const dispatch = useDispatch();

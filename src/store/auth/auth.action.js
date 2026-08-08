@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { ROLE_PATHS } from "@Enums";
-import { extractErrorMessage } from "@/api/client";
+import { extractErrorMessage } from "@/api/client.api";
 import { employeeAuthApi, superAdminAuthApi, warehouseManagerAuthApi } from "@/api";
 
 const authApiByRole = {

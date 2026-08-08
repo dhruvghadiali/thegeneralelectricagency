@@ -3,7 +3,7 @@ import {
   SIGNIN_PASSWORD_MIN_LENGTH,
   SIGNIN_USERNAME_MAX_LENGTH,
   SIGNIN_USERNAME_MIN_LENGTH,
-} from "@/forms/signin/signin.validationConstants";
+} from "@/forms/signin/signin.validation.constants";
 
 export const SIGNIN_VALIDATION_MESSAGES = {
   ROLE_REQUIRED: "Role is required",

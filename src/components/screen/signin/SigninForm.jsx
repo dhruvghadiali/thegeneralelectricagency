@@ -19,12 +19,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@ShadcnComponents/select";
-import { signIn } from "@Redux/auth/authAction";
+import { signIn } from "@Redux/auth/auth.action";
 import { Button } from "@ShadcnComponents/button";
 import { Typography } from "@ShadcnComponents/typography";
-import { togglePasswordVisibility } from "@Redux/auth/authSlice";
+import { togglePasswordVisibility } from "@Redux/auth/auth.slice";
 import { SIGNIN_INITIAL_VALUES } from "@/forms/signin/signin.initialValues";
-import { signinValidationSchema } from "@/forms/signin/signin.validationSchema";
+import { signinValidationSchema } from "@/forms/signin/signin.validation.schema";
 import { ROLE_OPTIONS } from "@Enums";
 
 import FormErrorAlert from "@Components/alert/formErrorAlert";

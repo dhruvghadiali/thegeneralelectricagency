@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { signIn } from "@/store/auth/authAction";
+import { signIn } from "@/store/auth/auth.action";
 
 const AUTH_STORAGE_KEY = "auth";
 

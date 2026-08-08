@@ -15,7 +15,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Typography } from "@/components/ui/typography";
-import { loggedOut } from "@/store/auth/authSlice";
+import { loggedOut } from "@/store/auth/auth.slice";
 
 import { SIDEBAR_NAV_ITEMS_BY_ROLE } from "./appSidebar.constants";
 
