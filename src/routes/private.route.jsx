@@ -73,7 +73,7 @@ function PrivateRoute() {
             </div>
           </div>
         </header>
-        <div className="flex-1 p-4">
+        <div className="flex-1 bg-muted/20 p-4 sm:p-6">
           <Outlet />
         </div>
       </SidebarInset>
