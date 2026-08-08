@@ -11,6 +11,7 @@ import SigninPage from "@/pages/signin.page";
 import PublicRoute from "@/routes/public.route";
 import PrivateRoute from "@/routes/private.route";
 import DashboardPage from "@/pages/dashboard.page";
+import EmployeesPage from "@/pages/employees.page";
 import LenisScrollProvider from "@/components/LenisScrollProvider";
 
 function App() {
@@ -26,7 +27,7 @@ function App() {
 
             <Route element={<PrivateRoute />}>
               <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/employees" element={<>Employees Content</>} />
+              <Route path="/employees" element={<EmployeesPage />} />
               <Route path="/products" element={<>Products Content</>} />
               <Route path="/companies" element={<>Companies Content</>} />
               <Route path="/settings" element={<>Settings Content</>} />
