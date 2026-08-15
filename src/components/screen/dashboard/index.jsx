@@ -80,7 +80,7 @@ function Dashboard() {
   );
 
   return (
-    <main className="mx-auto w-full max-w-[1600px] space-y-6 pb-8">
+    <main className="w-full space-y-6 pb-8">
       <section className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
           <p className="text-sm font-medium text-primary">

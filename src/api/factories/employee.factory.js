@@ -6,16 +6,62 @@ import { ENDPOINTS } from "@/api/endpoints.constants";
 /**
  * Employee management is scoped under the acting role's path segment, the same
  * way auth is - e.g. /super-admin/employees. Only roles allowed to manage
- * people get a module built from this factory.
+ * people get modules built from these factories.
+ *
+ * Reads and writes are built separately: a role may be allowed to browse the
+ * directory without being allowed to change it, and keeping the two apart
+ * lets each role module take only the half it is entitled to.
  */
-export function createEmployeeApi(rolePath) {
+
+const employeesPath = (rolePath) => `/${rolePath}/${ENDPOINTS.EMPLOYEE.BASE}`;
+
+/**
+ * Every endpoint on this API answers with { status, message, data }, and on
+ * the employee routes `data` is an array wrapping the real payload. The
+ * client interceptor unwraps the envelope; this unwraps the array so callers
+ * only ever see the payload object.
+ */
+function unwrapPayload(data) {
+  return _.isArray(data) && data.length > 0 ? data[0] : (data ?? {});
+}
+
+/**
+ * Read side of the directory.
+ */
+export function createEmployeeListApi(rolePath) {
   return {
+    /**
+     * GET /:role/employees?page&limit&search&user_type&is_active
+     *
+     * Resolves to the { employees, pagination } object.
+     *
+     * `config` carries the AbortSignal, so a request made obsolete by fast
+     * typing or paging is cancelled rather than raced.
+     */
+    getEmployees: async (params = {}, config = {}) => {
+      const { data } = await apiClient.get(employeesPath(rolePath), {
+        params,
+        ...config,
+      });
+
+      return unwrapPayload(data);
+    },
+  };
+}
+
+/**
+ * Write side of the directory - update and delete join this one as their
+ * endpoints land.
+ */
+export function createEmployeeMutationApi(rolePath) {
+  return {
+    /**
+     * POST /:role/employees - resolves to the created employee record.
+     */
     createEmployee: async (payload) => {
-      const { data } = await apiClient.post(
-        `/${rolePath}/${ENDPOINTS.EMPLOYEE.BASE}`,
-        payload,
-      );
-      return _.isArray(data) && data.length > 0 ? data[0] : (data ?? {});
+      const { data } = await apiClient.post(employeesPath(rolePath), payload);
+
+      return unwrapPayload(data);
     },
   };
 }

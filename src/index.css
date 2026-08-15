@@ -1,6 +1,21 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/*
+ * "Roomy" = a window tall enough that pinning a table to it is worth doing.
+ * Below it (short laptops, and every phone) the table falls back to its
+ * natural height and the content area scrolls like an ordinary page, because
+ * a table squeezed down to two rows is worse than one you scroll to.
+ *
+ * The width floor matters as much as the height. A tablet cleared 768px but
+ * still gives up 256px to the sidebar, wraps every summary label, and left the
+ * table pinned to two rows - so both floors moved up together.
+ *
+ * ~800px tall is where the chrome around the table body - app header, page
+ * title, summary cards, toolbar, pager and padding - still leaves four rows.
+ */
+@custom-variant roomy (@media (min-width: 1024px) and (min-height: 800px));
+
 /* Smooth scroll behavior */
 html {
   scroll-behavior: smooth;

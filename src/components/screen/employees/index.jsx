@@ -1,53 +1,35 @@
-import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import _ from "lodash";
+import { UsersRound } from "lucide-react";
 
-import { Card } from "@/components/ui/card";
+import DataTable from "@/components/common/dataTable";
 import { createEmployee } from "@Redux/employee/employee.action";
+import { selectEmployeeDialogState } from "@Redux/employee/employee.selector";
 import {
   employeeDeleted,
   employeeDialogClosed,
   employeeDialogOpened,
-  employeeRoleFilterChanged,
-  employeeSearchChanged,
   employeeUpdated,
-} from "@/store/employee/employee.slice";
-import {
-  fullName,
-  roleLabel,
-} from "@/components/screen/employees/employee.utils";
+} from "@Redux/employee/employee.slice";
+import { EMPLOYEE_COLUMNS } from "@/components/screen/employees/employee.columns";
+import { useEmployeeList } from "@/components/screen/employees/useEmployeeList";
 
 import EmployeeHeader from "@/components/screen/employees/employeeHeader";
-import EmployeeSearch from "@/components/screen/employees/employeeSearch";
 import EmployeeSummary from "@/components/screen/employees/employeeSummary";
 import EmployeeDialogs from "@/components/screen/employees/employeeDialogs";
-import EmployeeEmptyState from "@/components/screen/employees/employeeEmptyState";
-import EmployeeMobileView from "@/components/screen/employees/employeeMobileView";
-import EmployeeDesktopTable from "@/components/screen/employees/employeeDesktopTable";
+import EmployeeActions from "@/components/screen/employees/employeeActions";
 
+/**
+ * Searching, sorting, filtering and paging are all done by the backend and
+ * driven by the shared table, so this screen is only what is specific to
+ * employees: the header, the summary cards, the row actions and the dialogs.
+ */
 function Employees() {
   const dispatch = useDispatch();
-  const {
-    items: employees,
-    search,
-    roleFilter,
-    dialog,
-    isCreating,
-    createError,
-  } = useSelector((state) => state.employees);
+  const table = useEmployeeList();
+  const { dialog, isCreating, createError } = useSelector(selectEmployeeDialogState);
 
-  const filteredEmployees = useMemo(
-    () =>
-      _.filter(employees, (employee) => {
-        const searchableData =
-          `${fullName(employee)} ${employee.username} ${employee.email} ${roleLabel(employee.role)}`.toLowerCase();
-        return (
-          searchableData.includes(search.trim().toLowerCase()) &&
-          (roleFilter === "all" || employee.role === roleFilter)
-        );
-      }),
-    [employees, roleFilter, search],
-  );
+  const openDialog = (type, employee) =>
+    dispatch(employeeDialogOpened({ type, ...(employee && { employee }) }));
 
   const saveEmployee = async (values) => {
     if (dialog?.type === "edit") {
@@ -60,6 +42,9 @@ function Employees() {
       // The slice closes the dialog on success; a failure keeps it open so the
       // error alert stays visible with the entered values intact.
       await dispatch(createEmployee(values)).unwrap();
+      // The new row lives wherever the current sort puts it, so the list is
+      // re-read rather than patched locally.
+      table.refresh();
     } catch {
       // createError in the store already has a display-ready message.
     }
@@ -69,47 +54,52 @@ function Employees() {
     if (dialog?.employee?.id) {
       dispatch(employeeDeleted(dialog.employee.id));
     }
+
     dispatch(employeeDialogClosed());
   };
 
-  const openDialog = (type, employee) =>
-    dispatch(employeeDialogOpened({ type, ...(employee && { employee }) }));
-  const hasFilters = Boolean(search.trim()) || roleFilter !== "all";
-
   return (
-    <main className="mx-auto w-full max-w-[1600px] space-y-6 pb-8">
+    <main className="flex w-full flex-col gap-6 pb-2 roomy:h-full roomy:min-h-0">
       <EmployeeHeader onAddEmployee={() => openDialog("add")} />
-      <EmployeeSummary employees={employees} />
+      <EmployeeSummary />
 
-      <Card className="gap-0 overflow-hidden shadow-none">
-        <EmployeeSearch
-          search={search}
-          onSearchChange={(value) => dispatch(employeeSearchChanged(value))}
-          roleFilter={roleFilter}
-          onRoleFilterChange={(value) =>
-            dispatch(employeeRoleFilterChanged(value))
-          }
-        />
-        {filteredEmployees.length > 0 ? (
-          <>
-            <EmployeeDesktopTable
-              employees={filteredEmployees}
-              onEdit={(employee) => openDialog("edit", employee)}
-              onDelete={(employee) => openDialog("delete", employee)}
-            />
-            <EmployeeMobileView
-              employees={filteredEmployees}
-              onEdit={(employee) => openDialog("edit", employee)}
-              onDelete={(employee) => openDialog("delete", employee)}
-            />
-          </>
-        ) : (
-          <EmployeeEmptyState hasFilters={hasFilters} />
+      <DataTable
+        columns={EMPLOYEE_COLUMNS}
+        rows={table.rows}
+        rowKey={(employee) => employee.id}
+        search={table.search}
+        sort={table.sort}
+        columnFilters={table.columnFilters}
+        pagination={table.pagination}
+        pageItems={table.pageItems}
+        rowRange={table.rowRange}
+        activeFilterCount={table.activeFilterCount}
+        isFiltered={table.isFiltered}
+        onSearchChange={table.changeSearch}
+        onSearchSubmit={table.submitSearch}
+        onSortChange={table.changeSort}
+        onColumnFilterChange={table.changeColumnFilter}
+        onClearFilters={table.clearFilters}
+        onPageChange={table.changePage}
+        onLimitChange={table.changeLimit}
+        onRetry={table.refresh}
+        isLoading={table.isLoading}
+        error={table.error}
+        rowActions={(employee) => (
+          <EmployeeActions
+            employee={employee}
+            onEdit={(row) => openDialog("edit", row)}
+            onDelete={(row) => openDialog("delete", row)}
+          />
         )}
-        <div className="border-t px-4 py-3 text-xs text-muted-foreground">
-          Showing {filteredEmployees.length} of {employees.length} employees
-        </div>
-      </Card>
+        searchPlaceholder="Search by name, username, or email..."
+        rowNoun="employees"
+        emptyIcon={UsersRound}
+        emptyTitle="No employees found"
+        emptyDescription="Add your first employee to start building the directory."
+        filteredEmptyDescription="Try changing your search or filters."
+        fillHeight
+      />
 
       <EmployeeDialogs
         dialog={dialog}

@@ -48,7 +48,10 @@ function PrivateRoute() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset>
+      {/* The shell is exactly one viewport tall, so the window itself never
+          scrolls. Anything taller scrolls in the content area below, and a
+          screen that opts into fillHeight hands that job to its own table. */}
+      <SidebarInset className="h-svh overflow-hidden">
         <header className="flex min-h-14 shrink-0 items-center justify-between gap-3 border-b px-3 py-2 sm:px-4">
           <div className="flex min-w-0 items-center gap-2 sm:gap-3">
             <SidebarTrigger className="shrink-0" />
@@ -61,10 +64,10 @@ function PrivateRoute() {
           <div className="flex shrink-0 items-center gap-3 text-xs text-muted-foreground sm:gap-5">
             <div className="flex items-center gap-1.5" title={`Signed in as ${roleLabel}`}>
               <ShieldCheck className="size-4" aria-hidden="true" />
-              <span className="hidden sm:inline">Role:</span>
+              <span className="hidden lg:inline">Role:</span>
               <span className="font-medium text-foreground">{roleLabel}</span>
             </div>
-            <div className="hidden items-center gap-1.5 md:flex" title={`Token expires ${expiryLabel}`}>
+            <div className="hidden items-center gap-1.5 xl:flex" title={`Token expires ${expiryLabel}`}>
               <Clock3 className="size-4" aria-hidden="true" />
               <span>Token expires:</span>
               <time className="font-medium text-foreground" dateTime={expiresAt?.toISOString()}>
@@ -73,7 +76,10 @@ function PrivateRoute() {
             </div>
           </div>
         </header>
-        <div className="flex-1 bg-muted/20 p-4 sm:p-6">
+        <div
+          data-lenis-prevent
+          className="flex min-h-0 flex-1 flex-col overflow-auto bg-muted/20 p-4 sm:p-6 xl:px-8 2xl:px-10"
+        >
           <Outlet />
         </div>
       </SidebarInset>
