@@ -23,3 +23,10 @@ export {
   EMPLOYEE_TABLE_DEFAULTS,
   EMPLOYEE_USER_TYPE_OPTIONS,
 } from "./employee.enum";
+
+export {
+  COMPANY_TABLE_DEFAULTS,
+  COMPANY_TYPE_OPTIONS,
+  COMPANY_TYPES,
+  CONTACT_POSITION_LABELS,
+} from "./company.enum";
