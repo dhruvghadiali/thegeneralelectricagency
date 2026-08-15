@@ -20,6 +20,8 @@ function EmployeeDialogs({
   dialog,
   isSaving,
   saveError,
+  isDeleting,
+  deleteError,
   onClose,
   onSave,
   onDelete,
@@ -59,7 +61,7 @@ function EmployeeDialogs({
 
       <Dialog
         open={dialog?.type === "delete"}
-        onOpenChange={(open) => !open && onClose()}
+        onOpenChange={(open) => !open && !isDeleting && onClose()}
       >
         <DialogContent className="max-w-md">
           <DialogHeader>
@@ -72,12 +74,20 @@ function EmployeeDialogs({
               from the employee directory. This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
+          <FormErrorAlert message={deleteError} />
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline" disabled={isDeleting}>
+                Cancel
+              </Button>
             </DialogClose>
-            <Button variant="destructive" onClick={onDelete}>
-              <Trash2 className="size-4" /> Delete employee
+            <Button
+              variant="destructive"
+              onClick={onDelete}
+              disabled={isDeleting}
+            >
+              <Trash2 className="size-4" />
+              {isDeleting ? "Deleting..." : "Delete employee"}
             </Button>
           </DialogFooter>
         </DialogContent>

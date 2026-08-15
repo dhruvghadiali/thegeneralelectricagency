@@ -8,7 +8,7 @@ import { buildColumnFilterParams, buildSortParams } from "@/utils/dataTable.util
  * All translation between the two lives here so neither the form nor the
  * store has to know about the other side's naming.
  */
-const CREATE_PAYLOAD_FIELDS = {
+const MUTATION_PAYLOAD_FIELDS = {
   first_name: "firstName",
   last_name: "lastName",
   email: "email",
@@ -54,7 +54,7 @@ function pickFields(source, fieldPaths) {
 }
 
 export function toEmployeeCreatePayload(values) {
-  const payload = _.mapValues(CREATE_PAYLOAD_FIELDS, (formField) =>
+  const payload = _.mapValues(MUTATION_PAYLOAD_FIELDS, (formField) =>
     _.trim(_.get(values, formField, "")),
   );
 
@@ -62,6 +62,13 @@ export function toEmployeeCreatePayload(values) {
   // not just its key: the form holds the hyphenated ROLE_PATHS value, the
   // backend stores the underscored user_type.
   return { ...payload, user_type: USER_TYPE_BY_ROLE[payload.user_type] };
+}
+
+// Create and update currently accept the same editable fields. Keeping a
+// separate export makes that endpoint contract explicit and leaves room for
+// either payload to diverge later without touching its thunk.
+export function toEmployeeUpdatePayload(values) {
+  return toEmployeeCreatePayload(values);
 }
 
 /**

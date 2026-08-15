@@ -50,8 +50,7 @@ export function createEmployeeListApi(rolePath) {
 }
 
 /**
- * Write side of the directory - update and delete join this one as their
- * endpoints land.
+ * Write side of the directory.
  */
 export function createEmployeeMutationApi(rolePath) {
   return {
@@ -60,6 +59,29 @@ export function createEmployeeMutationApi(rolePath) {
      */
     createEmployee: async (payload) => {
       const { data } = await apiClient.post(employeesPath(rolePath), payload);
+
+      return unwrapPayload(data);
+    },
+
+    /**
+     * PATCH /:role/employees/:id - resolves to the updated employee record.
+     */
+    updateEmployee: async (employeeId, payload) => {
+      const { data } = await apiClient.patch(
+        `${employeesPath(rolePath)}/${employeeId}`,
+        payload,
+      );
+
+      return unwrapPayload(data);
+    },
+
+    /**
+     * DELETE /:role/employees/:id.
+     */
+    deleteEmployee: async (employeeId) => {
+      const { data } = await apiClient.delete(
+        `${employeesPath(rolePath)}/${employeeId}`,
+      );
 
       return unwrapPayload(data);
     },

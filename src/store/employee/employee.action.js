@@ -6,6 +6,7 @@ import {
   fromEmployeeListResponse,
   toEmployeeCreatePayload,
   toEmployeeListParams,
+  toEmployeeUpdatePayload,
 } from "@/forms/employee/employee.payload";
 
 /**
@@ -61,6 +62,36 @@ export const createEmployee = createAsyncThunk(
       return await superAdminEmployeeApi.createEmployee(
         toEmployeeCreatePayload(values),
       );
+    } catch (error) {
+      return rejectWithValue(extractErrorMessage(error));
+    }
+  },
+);
+
+/**
+ * Persists edits for one employee. The id belongs in the URL while the form
+ * values are translated to the same snake_case contract as create.
+ */
+export const updateEmployee = createAsyncThunk(
+  "employees/updateEmployee",
+  async ({ id, values }, { rejectWithValue }) => {
+    try {
+      return await superAdminEmployeeApi.updateEmployee(
+        id,
+        toEmployeeUpdatePayload(values),
+      );
+    } catch (error) {
+      return rejectWithValue(extractErrorMessage(error));
+    }
+  },
+);
+
+export const deleteEmployee = createAsyncThunk(
+  "employees/deleteEmployee",
+  async (id, { rejectWithValue }) => {
+    try {
+      await superAdminEmployeeApi.deleteEmployee(id);
+      return id;
     } catch (error) {
       return rejectWithValue(extractErrorMessage(error));
     }

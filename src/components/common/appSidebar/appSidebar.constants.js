@@ -17,6 +17,7 @@ export const SIDEBAR_NAV_ITEMS_BY_ROLE = {
   [ROLE_PATHS.SUPER_ADMIN]: [
     { title: "Dashboard", url: "/dashboard", icon: LucideHome },
     { title: "Employees", url: "/employees", icon: Users },
+    { title: "Companies", url: "/companies", icon: Building2 },
     { title: "Stocks", url: "/stocks", icon: TrendingUp },
     { title: "Settings", url: "/settings", icon: Settings },
   ],

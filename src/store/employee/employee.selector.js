@@ -13,7 +13,23 @@ export const employeeTableSelectors = createTableSelectors(selectEmployeeState);
 
 export const selectEmployeeDialogState = createSelector(
   selectEmployeeState,
-  ({ dialog, isCreating, createError }) => ({ dialog, isCreating, createError }),
+  ({
+    dialog,
+    isCreating,
+    createError,
+    isUpdating,
+    updateError,
+    isDeleting,
+    deleteError,
+  }) => ({
+    dialog,
+    isCreating,
+    createError,
+    isUpdating,
+    updateError,
+    isDeleting,
+    deleteError,
+  }),
 );
 
 /**

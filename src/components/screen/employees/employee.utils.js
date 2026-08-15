@@ -30,5 +30,5 @@ export function statusLabel(employee) {
 }
 
 export function statusVariant(employee) {
-  return employee?.isActive ? "success" : "secondary";
+  return employee?.isActive ? "success" : "destructive";
 }

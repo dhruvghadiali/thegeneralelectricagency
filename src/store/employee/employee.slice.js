@@ -1,8 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import _ from "lodash";
 
 import { EMPLOYEE_TABLE_DEFAULTS } from "@Enums";
-import { createEmployee, fetchEmployees } from "@Redux/employee/employee.action";
+import {
+  createEmployee,
+  deleteEmployee,
+  fetchEmployees,
+  updateEmployee,
+} from "@Redux/employee/employee.action";
 import {
   createTableState,
   tableFetchCases,
@@ -16,7 +20,7 @@ import {
  * behaviour is defined once for every list in the app.
  *
  * What is left here is what is genuinely about employees: the add/edit/delete
- * dialog and the create request.
+ * dialog and the employee mutation requests.
  */
 const initialState = {
   ...createTableState({
@@ -26,6 +30,10 @@ const initialState = {
   dialog: null,
   isCreating: false,
   createError: null,
+  isUpdating: false,
+  updateError: null,
+  isDeleting: false,
+  deleteError: null,
 };
 
 const employeeSlice = createSlice({
@@ -33,23 +41,17 @@ const employeeSlice = createSlice({
   initialState,
   reducers: {
     ...TABLE_REDUCERS,
-    employeeUpdated(state, action) {
-      const index = _.findIndex(state.items, { id: action.payload.id });
-
-      if (index !== -1) {
-        state.items[index] = { ...state.items[index], ...action.payload };
-      }
-    },
-    employeeDeleted(state, action) {
-      state.items = _.reject(state.items, { id: action.payload });
-    },
     employeeDialogOpened(state, action) {
       state.dialog = action.payload;
       state.createError = null;
+      state.updateError = null;
+      state.deleteError = null;
     },
     employeeDialogClosed(state) {
       state.dialog = null;
       state.createError = null;
+      state.updateError = null;
+      state.deleteError = null;
     },
   },
   extraReducers: (builder) => {
@@ -73,16 +75,40 @@ const employeeSlice = createSlice({
       .addCase(createEmployee.rejected, (state, action) => {
         state.isCreating = false;
         state.createError = action.payload ?? "Unable to add employee.";
+      })
+      .addCase(updateEmployee.pending, (state) => {
+        state.isUpdating = true;
+        state.updateError = null;
+      })
+      .addCase(updateEmployee.fulfilled, (state) => {
+        state.isUpdating = false;
+        state.updateError = null;
+        state.dialog = null;
+      })
+      .addCase(updateEmployee.rejected, (state, action) => {
+        state.isUpdating = false;
+        state.updateError = action.payload ?? "Unable to update employee.";
+      })
+      .addCase(deleteEmployee.pending, (state) => {
+        state.isDeleting = true;
+        state.deleteError = null;
+      })
+      .addCase(deleteEmployee.fulfilled, (state) => {
+        state.isDeleting = false;
+        state.deleteError = null;
+        state.dialog = null;
+      })
+      .addCase(deleteEmployee.rejected, (state, action) => {
+        state.isDeleting = false;
+        state.deleteError = action.payload ?? "Unable to delete employee.";
       });
   },
 });
 
 export const {
   columnFilterChanged,
-  employeeDeleted,
   employeeDialogClosed,
   employeeDialogOpened,
-  employeeUpdated,
   filtersApplied,
   filtersCleared,
   limitChanged,

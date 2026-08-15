@@ -2,13 +2,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { UsersRound } from "lucide-react";
 
 import DataTable from "@/components/common/dataTable";
-import { createEmployee } from "@Redux/employee/employee.action";
+import {
+  createEmployee,
+  deleteEmployee,
+  updateEmployee,
+} from "@Redux/employee/employee.action";
 import { selectEmployeeDialogState } from "@Redux/employee/employee.selector";
 import {
-  employeeDeleted,
   employeeDialogClosed,
   employeeDialogOpened,
-  employeeUpdated,
 } from "@Redux/employee/employee.slice";
 import { EMPLOYEE_COLUMNS } from "@/components/screen/employees/employee.columns";
 import { useEmployeeList } from "@/components/screen/employees/useEmployeeList";
@@ -26,36 +28,46 @@ import EmployeeActions from "@/components/screen/employees/employeeActions";
 function Employees() {
   const dispatch = useDispatch();
   const table = useEmployeeList();
-  const { dialog, isCreating, createError } = useSelector(selectEmployeeDialogState);
+  const {
+    dialog,
+    isCreating,
+    createError,
+    isUpdating,
+    updateError,
+    isDeleting,
+    deleteError,
+  } = useSelector(selectEmployeeDialogState);
 
   const openDialog = (type, employee) =>
     dispatch(employeeDialogOpened({ type, ...(employee && { employee }) }));
 
   const saveEmployee = async (values) => {
-    if (dialog?.type === "edit") {
-      dispatch(employeeUpdated({ ...values, id: dialog.employee.id }));
-      dispatch(employeeDialogClosed());
-      return;
-    }
-
     try {
-      // The slice closes the dialog on success; a failure keeps it open so the
-      // error alert stays visible with the entered values intact.
-      await dispatch(createEmployee(values)).unwrap();
-      // The new row lives wherever the current sort puts it, so the list is
-      // re-read rather than patched locally.
+      if (dialog?.type === "edit") {
+        await dispatch(
+          updateEmployee({ id: dialog.employee.id, values }),
+        ).unwrap();
+      } else {
+        await dispatch(createEmployee(values)).unwrap();
+      }
+
+      // A changed row may move out of the current filtered or sorted page, so
+      // both mutations re-read the authoritative server list.
       table.refresh();
     } catch {
-      // createError in the store already has a display-ready message.
+      // The store keeps the dialog open with a display-ready error.
     }
   };
 
-  const deleteEmployee = () => {
-    if (dialog?.employee?.id) {
-      dispatch(employeeDeleted(dialog.employee.id));
-    }
+  const deleteSelectedEmployee = async () => {
+    if (!dialog?.employee?.id) return;
 
-    dispatch(employeeDialogClosed());
+    try {
+      await dispatch(deleteEmployee(dialog.employee.id)).unwrap();
+      table.refresh();
+    } catch {
+      // The store keeps the dialog open with a display-ready error.
+    }
   };
 
   return (
@@ -103,11 +115,13 @@ function Employees() {
 
       <EmployeeDialogs
         dialog={dialog}
-        isSaving={isCreating}
-        saveError={createError}
+        isSaving={dialog?.type === "edit" ? isUpdating : isCreating}
+        saveError={dialog?.type === "edit" ? updateError : createError}
+        isDeleting={isDeleting}
+        deleteError={deleteError}
         onClose={() => dispatch(employeeDialogClosed())}
         onSave={saveEmployee}
-        onDelete={deleteEmployee}
+        onDelete={deleteSelectedEmployee}
       />
     </main>
   );
