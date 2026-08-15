@@ -12,20 +12,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import DataTableDatePicker from "@/components/common/dataTable/dataTableDatePicker";
 
 /**
- * A date column filters on a calendar day, a datetime column filters on an
- * instant - which is exactly the difference between the two native inputs.
+ * Number ranges remain plain inputs. Date and datetime ranges use the
+ * shadcn calendar picker below.
  */
 const RANGE_INPUT_TYPE = {
   [COLUMN_TYPES.NUMBER]: "number",
-  [COLUMN_TYPES.DATE]: "date",
-  [COLUMN_TYPES.DATE_TIME]: "datetime-local",
 };
 
 const RANGE_BOUNDS = {
   [COLUMN_TYPES.NUMBER]: { start: "min", end: "max", startLabel: "Min", endLabel: "Max" },
-  RANGE: { start: "from", end: "to", startLabel: "From", endLabel: "To" },
 };
 
 /**
@@ -81,18 +79,43 @@ function DataTableColumnFilter({ column, value, onChange, compact = false }) {
     );
   }
 
-  if (column.type === COLUMN_TYPES.NUMBER || isDateColumn(column.type)) {
-    const bounds =
-      column.type === COLUMN_TYPES.NUMBER
-        ? RANGE_BOUNDS[COLUMN_TYPES.NUMBER]
-        : RANGE_BOUNDS.RANGE;
+  if (isDateColumn(column.type)) {
+    const range = _.isPlainObject(value) ? value : emptyFilterValue(column.type);
+    const updateBound = (bound) => (next) =>
+      onChange({ ...range, [bound]: next }, { immediate: true });
+
+    return withLabel(
+      <div className="flex min-w-0 items-center gap-1.5">
+        <DataTableDatePicker
+          value={range.from}
+          type={column.type}
+          bound="from"
+          label={filterLabel}
+          controlHeight={controlHeight}
+          compact={compact}
+          onChange={updateBound("from")}
+        />
+        <span className="shrink-0 text-xs text-muted-foreground">–</span>
+        <DataTableDatePicker
+          value={range.to}
+          type={column.type}
+          bound="to"
+          label={filterLabel}
+          controlHeight={controlHeight}
+          compact={compact}
+          onChange={updateBound("to")}
+        />
+      </div>,
+    );
+  }
+
+  if (column.type === COLUMN_TYPES.NUMBER) {
+    const bounds = RANGE_BOUNDS[COLUMN_TYPES.NUMBER];
     const range = _.isPlainObject(value) ? value : emptyFilterValue(column.type);
     const inputType = RANGE_INPUT_TYPE[column.type];
-    // Dates apply on pick; a number range is typed, so it waits.
-    const immediate = isDateColumn(column.type);
 
     const updateBound = (bound) => (event) =>
-      onChange({ ...range, [bound]: event.target.value }, { immediate });
+      onChange({ ...range, [bound]: event.target.value });
 
     return withLabel(
       <div className="flex items-center gap-1.5">
