@@ -1,4 +1,3 @@
-import { ThemeSwitch } from "@/components/ui/theme-switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
 
@@ -114,10 +113,6 @@ function NavigationMenuComponent({ useLink }) {
               activeSection={activeSection}
             />
           </div>
-        </div>
-        {/* Right side */}
-        <div className="flex items-center gap-2">
-          <ThemeSwitch />
         </div>
       </div>
     </header>

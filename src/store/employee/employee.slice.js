@@ -1,6 +1,25 @@
 import { createSlice } from "@reduxjs/toolkit";
+import _ from "lodash";
 
 import { ROLE_PATHS } from "@Enums";
+import { createEmployee } from "@Redux/employee/employee.action";
+import { fromEmployeeResponse } from "@/forms/employee/employee.payload";
+
+/**
+ * The backend returns the created record; only some deployments echo back a
+ * `joined` date, so it is derived locally when missing to keep the table
+ * rendering consistent.
+ */
+function formatJoinedDate(value) {
+  const date = value ? new Date(value) : new Date();
+  const safeDate = Number.isNaN(date.getTime()) ? new Date() : date;
+
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(safeDate);
+}
 
 const initialState = {
   items: [
@@ -14,26 +33,14 @@ const initialState = {
   search: "",
   roleFilter: "all",
   dialog: null,
+  isCreating: false,
+  createError: null,
 };
 
 const employeeSlice = createSlice({
   name: "employees",
   initialState,
   reducers: {
-    employeeAdded: {
-      reducer(state, action) {
-        state.items.unshift(action.payload);
-      },
-      prepare(employee) {
-        const joined = new Intl.DateTimeFormat("en-GB", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        }).format(new Date());
-
-        return { payload: { ...employee, id: Date.now(), joined } };
-      },
-    },
     employeeUpdated(state, action) {
       const index = state.items.findIndex(
         (employee) => employee.id === action.payload.id,
@@ -55,15 +62,41 @@ const employeeSlice = createSlice({
     },
     employeeDialogOpened(state, action) {
       state.dialog = action.payload;
+      state.createError = null;
     },
     employeeDialogClosed(state) {
       state.dialog = null;
+      state.createError = null;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(createEmployee.pending, (state) => {
+        state.isCreating = true;
+        state.createError = null;
+      })
+      .addCase(createEmployee.fulfilled, (state, action) => {
+        const created = fromEmployeeResponse(action.payload ?? {});
+
+        state.isCreating = false;
+        state.createError = null;
+        state.dialog = null;
+        // The submitted values back-fill anything the response omits.
+        state.items.unshift({
+          ...action.meta.arg,
+          ..._.omitBy(created, (value) => _.isNil(value) || value === ""),
+          id: created.id ?? Date.now(),
+          joined: formatJoinedDate(created.joined),
+        });
+      })
+      .addCase(createEmployee.rejected, (state, action) => {
+        state.isCreating = false;
+        state.createError = action.payload ?? "Unable to add employee.";
+      });
   },
 });
 
 export const {
-  employeeAdded,
   employeeDeleted,
   employeeDialogClosed,
   employeeDialogOpened,

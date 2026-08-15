@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import _ from "lodash";
 
 import { Card } from "@/components/ui/card";
+import { createEmployee } from "@Redux/employee/employee.action";
 import {
-  employeeAdded,
   employeeDeleted,
   employeeDialogClosed,
   employeeDialogOpened,
@@ -32,6 +32,8 @@ function Employees() {
     search,
     roleFilter,
     dialog,
+    isCreating,
+    createError,
   } = useSelector((state) => state.employees);
 
   const filteredEmployees = useMemo(
@@ -47,13 +49,20 @@ function Employees() {
     [employees, roleFilter, search],
   );
 
-  const saveEmployee = (values) => {
+  const saveEmployee = async (values) => {
     if (dialog?.type === "edit") {
       dispatch(employeeUpdated({ ...values, id: dialog.employee.id }));
-    } else {
-      dispatch(employeeAdded(values));
+      dispatch(employeeDialogClosed());
+      return;
     }
-    dispatch(employeeDialogClosed());
+
+    try {
+      // The slice closes the dialog on success; a failure keeps it open so the
+      // error alert stays visible with the entered values intact.
+      await dispatch(createEmployee(values)).unwrap();
+    } catch {
+      // createError in the store already has a display-ready message.
+    }
   };
 
   const deleteEmployee = () => {
@@ -104,6 +113,8 @@ function Employees() {
 
       <EmployeeDialogs
         dialog={dialog}
+        isSaving={isCreating}
+        saveError={createError}
         onClose={() => dispatch(employeeDialogClosed())}
         onSave={saveEmployee}
         onDelete={deleteEmployee}

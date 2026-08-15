@@ -31,12 +31,14 @@ function FormField({ id, label, error, children }) {
   );
 }
 
-function EmployeeForm({ employee, onSubmit, submitLabel }) {
+function EmployeeForm({ employee, onSubmit, submitLabel, isSubmitting }) {
   const formik = useFormik({
     initialValues: employee,
     validationSchema: employeeValidationSchema,
     onSubmit: (values) => onSubmit(employeeValidationSchema.cast(values)),
   });
+
+  const isBusy = isSubmitting || formik.isSubmitting;
 
   const fieldError = (field) =>
     formik.touched[field] && formik.errors[field] ? formik.errors[field] : null;
@@ -148,12 +150,12 @@ function EmployeeForm({ employee, onSubmit, submitLabel }) {
 
       <DialogFooter className="mt-2">
         <DialogClose asChild>
-          <Button type="button" variant="outline">
+          <Button type="button" variant="outline" disabled={isBusy}>
             Cancel
           </Button>
         </DialogClose>
-        <Button type="submit" disabled={formik.isSubmitting}>
-          {submitLabel}
+        <Button type="submit" disabled={isBusy}>
+          {isBusy ? "Saving..." : submitLabel}
         </Button>
       </DialogFooter>
     </form>

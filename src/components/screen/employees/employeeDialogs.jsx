@@ -13,9 +13,17 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
+import FormErrorAlert from "@Components/alert/formErrorAlert";
 import EmployeeForm from "@/components/screen/employees/employeeForm";
 
-function EmployeeDialogs({ dialog, onClose, onSave, onDelete }) {
+function EmployeeDialogs({
+  dialog,
+  isSaving,
+  saveError,
+  onClose,
+  onSave,
+  onDelete,
+}) {
   const isFormOpen = dialog?.type === "add" || dialog?.type === "edit";
 
   return (
@@ -33,14 +41,18 @@ function EmployeeDialogs({ dialog, onClose, onSave, onDelete }) {
             </DialogDescription>
           </DialogHeader>
           {isFormOpen && (
-            <EmployeeForm
-              key={`${dialog.type}-${dialog.employee?.id ?? "new"}`}
-              employee={dialog.employee ?? EMPLOYEE_INITIAL_VALUES}
-              onSubmit={onSave}
-              submitLabel={
-                dialog.type === "edit" ? "Save changes" : "Add employee"
-              }
-            />
+            <>
+              <FormErrorAlert message={saveError} />
+              <EmployeeForm
+                key={`${dialog.type}-${dialog.employee?.id ?? "new"}`}
+                employee={dialog.employee ?? EMPLOYEE_INITIAL_VALUES}
+                onSubmit={onSave}
+                isSubmitting={isSaving}
+                submitLabel={
+                  dialog.type === "edit" ? "Save changes" : "Add employee"
+                }
+              />
+            </>
           )}
         </DialogContent>
       </Dialog>

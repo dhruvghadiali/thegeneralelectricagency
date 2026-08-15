@@ -7,4 +7,7 @@ export const ENDPOINTS = {
   AUTH: {
     SIGN_IN: "auth/signin",
   },
+  EMPLOYEE: {
+    BASE: "employees",
+  },
 };
