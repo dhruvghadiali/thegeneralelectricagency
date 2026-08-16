@@ -10,4 +10,7 @@ export const ENDPOINTS = {
   EMPLOYEE: {
     BASE: "employees",
   },
+  COMPANY: {
+    BASE: "companies",
+  },
 };

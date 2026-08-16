@@ -9,10 +9,6 @@ import {
 
 import { COLUMN_TYPES, COMPANY_TYPE_OPTIONS, MOBILE_SLOTS } from "@Enums";
 import { Badge } from "@/components/ui/badge";
-import {
-  companyTypeLabel,
-  companyTypeVariant,
-} from "@/components/screen/companies/company.utils";
 
 export const COMPANY_COLUMNS = [
   {
@@ -39,8 +35,9 @@ export const COMPANY_COLUMNS = [
     allOptionLabel: "All company types",
     mobile: MOBILE_SLOTS.BADGE,
     render: (company) => (
-      <Badge variant={companyTypeVariant(company.type)}>
-        {companyTypeLabel(company.type)}
+      <Badge variant="outline">
+        {COMPANY_TYPE_OPTIONS.find((option) => option.value === company.type)
+          ?.label ?? company.type}
       </Badge>
     ),
   },

@@ -24,7 +24,7 @@ export const SIDEBAR_NAV_ITEMS_BY_ROLE = {
   [ROLE_PATHS.EMPLOYEE]: [
     { title: "Dashboard", url: "/dashboard", icon: LucideHome },
     { title: "Products", url: "/products", icon: Boxes },
-    { title: "Company Details", url: "/company-details", icon: Building2 },
+    { title: "Companies", url: "/companies", icon: Building2 },
     { title: "Settings", url: "/settings", icon: Settings },
   ],
   [ROLE_PATHS.WAREHOUSE_MANAGER]: [

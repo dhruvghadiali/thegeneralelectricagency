@@ -1,7 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+import { employeeCompanyApi } from "@Api";
 import { getDummyCompanyList } from "@/components/screen/companies/company.data";
-import { fromCompanyListResponse } from "@/forms/company/company.payload";
+import {
+  fromCompanyCreateError,
+  fromCompanyListResponse,
+  toCompanyCreatePayload,
+} from "@Forms/company/company.payload";
 
 /**
  * Temporary list source with the same thunk boundary as the future GET API.
@@ -20,5 +25,18 @@ export const fetchCompanies = createAsyncThunk(
     });
 
     return fromCompanyListResponse(response, requested);
+  },
+);
+
+export const createCompany = createAsyncThunk(
+  "companies/createCompany",
+  async (values, { rejectWithValue }) => {
+    try {
+      return await employeeCompanyApi.createCompany(
+        toCompanyCreatePayload(values),
+      );
+    } catch (error) {
+      return rejectWithValue(fromCompanyCreateError(error));
+    }
   },
 );

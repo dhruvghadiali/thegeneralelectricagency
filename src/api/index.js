@@ -1,7 +1,8 @@
 export { ROLE_PATHS } from "@Enums";
-export { ENDPOINTS } from "@/api/endpoints.constants";
-export { employeeAuthApi } from "@/api/employee/auth.api";
-export { superAdminAuthApi } from "@/api/superAdmin/auth.api";
-export { superAdminEmployeeApi } from "@/api/superAdmin/employee.api";
-export { warehouseManagerAuthApi } from "@/api/warehouseManager/auth.api";
-export { apiClient, API_BASE_URL, extractErrorMessage } from "@/api/client.api";
+export { ENDPOINTS } from "@Api/endpoints.constants";
+export { employeeAuthApi } from "@Api/employee/auth.api";
+export { superAdminAuthApi } from "@Api/superAdmin/auth.api";
+export { employeeCompanyApi } from "@Api/employee/company.api";
+export { superAdminEmployeeApi } from "@Api/superAdmin/employee.api";
+export { warehouseManagerAuthApi } from "@Api/warehouseManager/auth.api";
+export { apiClient, API_BASE_URL, extractErrorMessage } from "@Api/client.api";

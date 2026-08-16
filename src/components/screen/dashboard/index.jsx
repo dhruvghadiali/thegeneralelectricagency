@@ -31,6 +31,7 @@ import InventoryTable from "@/components/screen/dashboard/inventoryTable";
 import TopCompaniesCard from "@/components/screen/dashboard/topCompaniesCard";
 import PerformanceChart from "@/components/screen/dashboard/performanceChart";
 import DamagedStockTable from "@/components/screen/dashboard/damagedStockTable";
+import PageBreadcrumb from "@/components/common/pageBreadcrumb";
 
 // Remove when API will return the data
 import { monthlyPerformance } from "./dashboard.data";
@@ -81,6 +82,7 @@ function Dashboard() {
 
   return (
     <main className="w-full space-y-6 pb-8">
+      <PageBreadcrumb items={[{ label: "Dashboard" }]} />
       <section className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
           <p className="text-sm font-medium text-primary">

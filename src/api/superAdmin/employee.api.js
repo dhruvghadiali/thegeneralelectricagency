@@ -2,7 +2,7 @@ import { ROLE_PATHS } from "@Enums";
 import {
   createEmployeeListApi,
   createEmployeeMutationApi,
-} from "@/api/factories/employee.factory";
+} from "@Api/factories/employee.factory";
 
 /**
  * The super admin can both browse and change the directory, so its module is

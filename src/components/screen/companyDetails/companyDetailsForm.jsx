@@ -1,17 +1,17 @@
-import { useState } from "react";
-import { useFormik } from "formik";
+import { createElement, useState } from "react";
+import { getIn, useFormik } from "formik";
 import {
-  BadgeCheck,
   Building2,
-  CheckCircle2,
   ContactRound,
   FileText,
   LoaderCircle,
   MapPin,
+  Plus,
   Save,
-  ShieldCheck,
+  Trash2,
 } from "lucide-react";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -31,33 +31,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { COMPANY_DETAILS_INITIAL_VALUES } from "@/forms/company/company-details.initialValues";
-import { companyDetailsValidationSchema } from "@/forms/company/company-details.validation.schema";
-
-const COMPANY_TYPES = [
-  "Private Limited",
-  "Public Limited",
-  "Partnership",
-  "Limited Liability Partnership",
-  "Proprietorship",
-  "Other",
-];
-
-function getStorageKey(username) {
-  return `employee-company-details:${username ?? "unknown"}`;
-}
-
-function readSavedCompany(username) {
-  try {
-    return JSON.parse(localStorage.getItem(getStorageKey(username)) ?? "null");
-  } catch {
-    return null;
-  }
-}
+import {
+  COMPANY_DETAILS_INITIAL_VALUES,
+  EMPTY_COMPANY_ADDRESS,
+  EMPTY_COMPANY_CONTACT,
+} from "@Forms/company/company-details.initialValues";
+import { companyDetailsValidationSchema } from "@Forms/company/company-details.validation.schema";
+import { COMPANY_TYPE_OPTIONS, CONTACT_POSITION_OPTIONS } from "@Enums";
+import PageBreadcrumb from "@/components/common/pageBreadcrumb";
+import { createCompany } from "@Redux/company/company.action";
 
 function Field({ id, label, error, optional = false, children }) {
   return (
-    <div className="grid gap-2">
+    <div className="grid content-start gap-2 self-start">
       <div className="flex items-center justify-between gap-2">
         <Label htmlFor={id}>{label}</Label>
         {optional && <span className="text-xs text-muted-foreground">Optional</span>}
@@ -72,11 +58,11 @@ function Field({ id, label, error, optional = false, children }) {
   );
 }
 
-function SectionHeading({ icon: Icon, title, description }) {
+function SectionHeading({ icon, title, description }) {
   return (
     <div className="flex items-start gap-3 border-b pb-4">
       <div className="rounded-lg bg-primary/10 p-2 text-primary">
-        <Icon className="size-4" aria-hidden="true" />
+        {createElement(icon, { className: "size-4", "aria-hidden": true })}
       </div>
       <div>
         <h3 className="font-semibold">{title}</h3>
@@ -87,36 +73,41 @@ function SectionHeading({ icon: Icon, title, description }) {
 }
 
 function CompanyDetailsForm() {
-  const username = useSelector((state) => state.auth.username);
-  const savedCompany = readSavedCompany(username);
-  const [savedAt, setSavedAt] = useState(savedCompany?.savedAt ?? null);
-  const [showSuccess, setShowSuccess] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [saveError, setSaveError] = useState(null);
 
   const formik = useFormik({
-    initialValues: { ...COMPANY_DETAILS_INITIAL_VALUES, ...savedCompany?.details },
+    initialValues: COMPANY_DETAILS_INITIAL_VALUES,
     validationSchema: companyDetailsValidationSchema,
     onSubmit: async (values, helpers) => {
-      const details = companyDetailsValidationSchema.cast(values);
-      const timestamp = new Date().toISOString();
-
-      localStorage.setItem(
-        getStorageKey(username),
-        JSON.stringify({ details, savedAt: timestamp }),
-      );
-      setSavedAt(timestamp);
-      setShowSuccess(true);
-      helpers.resetForm({ values: details });
+      try {
+        const details = companyDetailsValidationSchema.cast(values);
+        await dispatch(createCompany(details)).unwrap();
+        helpers.resetForm({ values: COMPANY_DETAILS_INITIAL_VALUES });
+        navigate("/companies", { replace: true });
+      } catch (error) {
+        Object.entries(error?.fieldErrors ?? {}).forEach(([field, message]) => {
+          helpers.setFieldError(field, message);
+          helpers.setFieldTouched(field, true, false);
+        });
+        setSaveError(
+          error?.message ?? "Unable to save the company. Please try again.",
+        );
+      }
     },
   });
 
-  const errorFor = (name) =>
-    formik.touched[name] && formik.errors[name] ? formik.errors[name] : null;
+  const errorFor = (name) => {
+    const error = getIn(formik.errors, name);
+    return getIn(formik.touched, name) && typeof error === "string" ? error : null;
+  };
 
   const inputProps = (name) => ({
     name,
-    value: formik.values[name],
+    value: getIn(formik.values, name) ?? "",
     onChange: (event) => {
-      setShowSuccess(false);
+      setSaveError(null);
       formik.handleChange(event);
     },
     onBlur: formik.handleBlur,
@@ -124,39 +115,59 @@ function CompanyDetailsForm() {
     "aria-describedby": errorFor(name) ? `${name}-error` : undefined,
   });
 
+  const addAddress = () => {
+    setSaveError(null);
+    formik.setFieldValue("addresses", [
+      ...formik.values.addresses,
+      { ...EMPTY_COMPANY_ADDRESS, company_employees: [{ ...EMPTY_COMPANY_CONTACT }] },
+    ]);
+  };
+
+  const removeAddress = (addressIndex) => {
+    formik.setFieldValue(
+      "addresses",
+      formik.values.addresses.filter((_, index) => index !== addressIndex),
+      true,
+    );
+  };
+
+  const addContact = (addressIndex) => {
+    const contactsPath = `addresses[${addressIndex}].company_employees`;
+    const contacts = getIn(formik.values, contactsPath) ?? [];
+    formik.setFieldValue(contactsPath, [...contacts, { ...EMPTY_COMPANY_CONTACT }]);
+  };
+
+  const removeContact = (addressIndex, contactIndex) => {
+    const contactsPath = `addresses[${addressIndex}].company_employees`;
+    const contacts = getIn(formik.values, contactsPath) ?? [];
+    formik.setFieldValue(
+      contactsPath,
+      contacts.filter((_, index) => index !== contactIndex),
+      true,
+    );
+  };
+
   return (
     <main className="mx-auto w-full max-w-6xl space-y-6 pb-8">
-      <section className="overflow-hidden rounded-2xl border bg-gradient-to-br from-primary via-primary to-primary/85 px-5 py-6 text-primary-foreground shadow-sm sm:px-8">
-        <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
-          <div className="max-w-2xl">
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium ring-1 ring-white/20">
-              <ShieldCheck className="size-3.5" />
-              Employee workspace
-            </div>
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-              Add your company details
-            </h2>
-            <p className="mt-2 text-sm leading-6 text-primary-foreground/75">
-              Complete the company profile once so your business information is ready for orders, invoices, and account verification.
-            </p>
-          </div>
-          <div className="hidden rounded-2xl bg-white/10 p-4 ring-1 ring-white/15 sm:block">
-            <Building2 className="size-10" aria-hidden="true" />
-          </div>
+      <section className="space-y-5">
+        <PageBreadcrumb
+          items={[
+            { label: "Companies", href: "/companies" },
+            { label: "Add company" },
+          ]}
+        />
+        <div className="max-w-3xl">
+          <p className="text-sm font-medium text-primary">Business directory</p>
+          <h2 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
+            Add company
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Enter the company profile, compliance details, primary contact, and registered address.
+          </p>
         </div>
       </section>
 
-      {showSuccess && (
-        <div role="status" className="flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-900">
-          <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-600" />
-          <div>
-            <p className="text-sm font-semibold">Company details saved</p>
-            <p className="mt-0.5 text-sm text-emerald-800">Your company profile has been updated successfully.</p>
-          </div>
-        </div>
-      )}
-
-      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
+      <div>
         <Card className="shadow-none">
           <CardHeader className="border-b">
             <CardTitle>Company profile</CardTitle>
@@ -167,28 +178,47 @@ function CompanyDetailsForm() {
               <section className="space-y-5">
                 <SectionHeading icon={Building2} title="Business information" description="Basic information used to identify your company." />
                 <div className="grid gap-5 sm:grid-cols-2">
-                  <Field id="companyName" label="Company name" error={errorFor("companyName")}>
-                    <Input id="companyName" placeholder="e.g. Apex Industrial Solutions" autoComplete="organization" {...inputProps("companyName")} />
+                  <Field id="company_name" label="Company name" error={errorFor("company_name")}>
+                    <Input id="company_name" placeholder="e.g. Apex Industrial Solutions" autoComplete="organization" {...inputProps("company_name")} />
                   </Field>
-                  <Field id="companyType" label="Company type" error={errorFor("companyType")}>
+                  <Field id="company_type" label="Company type" error={errorFor("company_type")}>
                     <Select
-                      value={formik.values.companyType}
+                      value={formik.values.company_type}
                       onValueChange={(value) => {
-                        setShowSuccess(false);
-                        formik.setFieldValue("companyType", value, true);
+                        setSaveError(null);
+                        formik.setFieldValue("company_type", value, true);
                       }}
-                      onOpenChange={(open) => !open && formik.setFieldTouched("companyType", true, true)}
+                      onOpenChange={(open) => !open && formik.setFieldTouched("company_type", true, true)}
                     >
-                      <SelectTrigger id="companyType" aria-invalid={Boolean(errorFor("companyType"))}>
+                      <SelectTrigger id="company_type" aria-invalid={Boolean(errorFor("company_type"))}>
                         <SelectValue placeholder="Select company type" />
                       </SelectTrigger>
                       <SelectContent>
-                        {COMPANY_TYPES.map((type) => <SelectItem key={type} value={type}>{type}</SelectItem>)}
+                        {COMPANY_TYPE_OPTIONS.map((type) => (
+                          <SelectItem key={type.value} value={type.value}>
+                            {type.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </Field>
-                  <Field id="industry" label="Industry" error={errorFor("industry")}>
-                    <Input id="industry" placeholder="e.g. Industrial manufacturing" {...inputProps("industry")} />
+                  <Field id="email" label="Business email" error={errorFor("email")}>
+                    <Input id="email" type="email" placeholder="accounts@company.com" autoComplete="email" {...inputProps("email")} />
+                  </Field>
+                  <Field id="phone_number" label="Phone number" error={errorFor("phone_number")}>
+                    <Input id="phone_number" type="tel" placeholder="+91 98765 43210" autoComplete="tel" {...inputProps("phone_number")} />
+                  </Field>
+                </div>
+              </section>
+
+              <section className="space-y-5">
+                <SectionHeading icon={FileText} title="Tax & registration" description="Legal identifiers used for billing and compliance." />
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <Field id="gst_number" label="GSTIN" error={errorFor("gst_number")}>
+                    <Input id="gst_number" placeholder="22AAAAA0000A1Z5" className="uppercase" maxLength={15} {...inputProps("gst_number")} />
+                  </Field>
+                  <Field id="pan_number" label="PAN number" error={errorFor("pan_number")}>
+                    <Input id="pan_number" placeholder="AAAAA0000A" className="uppercase" maxLength={10} {...inputProps("pan_number")} />
                   </Field>
                   <Field id="website" label="Website" optional error={errorFor("website")}>
                     <Input id="website" type="url" placeholder="www.company.com" autoComplete="url" {...inputProps("website")} />
@@ -197,92 +227,145 @@ function CompanyDetailsForm() {
               </section>
 
               <section className="space-y-5">
-                <SectionHeading icon={FileText} title="Tax & registration" description="Legal identifiers used for billing and compliance." />
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <Field id="gstNumber" label="GSTIN" error={errorFor("gstNumber")}>
-                    <Input id="gstNumber" placeholder="22AAAAA0000A1Z5" className="uppercase" maxLength={15} {...inputProps("gstNumber")} />
-                  </Field>
-                  <Field id="panNumber" label="PAN number" error={errorFor("panNumber")}>
-                    <Input id="panNumber" placeholder="AAAAA0000A" className="uppercase" maxLength={10} {...inputProps("panNumber")} />
-                  </Field>
+                <div className="flex flex-col gap-4 border-b pb-4 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="flex items-start gap-3">
+                    <div className="rounded-lg bg-primary/10 p-2 text-primary">
+                      <MapPin className="size-4" aria-hidden="true" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Addresses & contact persons</h3>
+                      <p className="mt-1 text-sm text-muted-foreground">Add every company address and the contacts assigned to it.</p>
+                    </div>
+                  </div>
+                  <Button type="button" variant="outline" size="sm" onClick={addAddress}>
+                    <Plus className="size-4" />
+                    Add address
+                  </Button>
                 </div>
-              </section>
 
-              <section className="space-y-5">
-                <SectionHeading icon={ContactRound} title="Primary contact" description="Who should we contact about this company account?" />
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <Field id="contactName" label="Contact person" error={errorFor("contactName")}>
-                    <Input id="contactName" placeholder="Full name" autoComplete="name" {...inputProps("contactName")} />
-                  </Field>
-                  <Field id="contactDesignation" label="Designation" optional error={errorFor("contactDesignation")}>
-                    <Input id="contactDesignation" placeholder="e.g. Purchase manager" autoComplete="organization-title" {...inputProps("contactDesignation")} />
-                  </Field>
-                  <Field id="email" label="Business email" error={errorFor("email")}>
-                    <Input id="email" type="email" placeholder="accounts@company.com" autoComplete="email" {...inputProps("email")} />
-                  </Field>
-                  <Field id="phone" label="Phone number" error={errorFor("phone")}>
-                    <Input id="phone" type="tel" placeholder="+91 98765 43210" autoComplete="tel" {...inputProps("phone")} />
-                  </Field>
-                </div>
-              </section>
+                {typeof formik.errors.addresses === "string" && formik.touched.addresses && (
+                  <p className="text-xs font-medium text-destructive">{formik.errors.addresses}</p>
+                )}
 
-              <section className="space-y-5">
-                <SectionHeading icon={MapPin} title="Registered address" description="The official address associated with the company." />
-                <Field id="addressLine" label="Street address" error={errorFor("addressLine")}>
-                  <Textarea id="addressLine" placeholder="Building, street, area or landmark" autoComplete="street-address" {...inputProps("addressLine")} />
-                </Field>
-                <div className="grid gap-5 sm:grid-cols-3">
-                  <Field id="city" label="City" error={errorFor("city")}>
-                    <Input id="city" placeholder="Ahmedabad" autoComplete="address-level2" {...inputProps("city")} />
-                  </Field>
-                  <Field id="state" label="State" error={errorFor("state")}>
-                    <Input id="state" placeholder="Gujarat" autoComplete="address-level1" {...inputProps("state")} />
-                  </Field>
-                  <Field id="postalCode" label="PIN code" error={errorFor("postalCode")}>
-                    <Input id="postalCode" inputMode="numeric" placeholder="380001" maxLength={6} autoComplete="postal-code" {...inputProps("postalCode")} />
-                  </Field>
+                <div className="space-y-5">
+                  {formik.values.addresses.map((address, addressIndex) => (
+                    <div key={addressIndex} className="overflow-hidden rounded-xl border bg-card shadow-xs">
+                      <div className="flex items-center justify-between gap-3 border-b bg-muted/40 px-4 py-3.5 sm:px-5">
+                        <div className="flex min-w-0 items-center gap-3">
+                          <span className="flex size-9 shrink-0 items-center justify-center rounded-lg border bg-background text-primary shadow-xs">
+                            <MapPin className="size-4" />
+                          </span>
+                          <div className="min-w-0">
+                            <h4 className="font-semibold">Address {addressIndex + 1}</h4>
+                            <p className="mt-0.5 text-xs text-muted-foreground">
+                              {address.company_employees.length} {address.company_employees.length === 1 ? "contact person" : "contact persons"}
+                            </p>
+                          </div>
+                        </div>
+                        {formik.values.addresses.length > 1 && (
+                          <Button type="button" variant="ghost" size="icon" onClick={() => removeAddress(addressIndex)} aria-label={`Remove address ${addressIndex + 1}`} className="size-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive">
+                            <Trash2 className="size-4" />
+                          </Button>
+                        )}
+                      </div>
+
+                      <div className="p-4 sm:p-5">
+                        <div className="grid gap-5">
+                          <Field id={`addresses[${addressIndex}].address`} label="Full address" error={errorFor(`addresses[${addressIndex}].address`)}>
+                            <Textarea className="min-h-20 resize-y" id={`addresses[${addressIndex}].address`} placeholder="Building, street, area, city and state" autoComplete="street-address" {...inputProps(`addresses[${addressIndex}].address`)} />
+                          </Field>
+                          <Field id={`addresses[${addressIndex}].pincode`} label="PIN code" error={errorFor(`addresses[${addressIndex}].pincode`)}>
+                            <Input id={`addresses[${addressIndex}].pincode`} inputMode="numeric" placeholder="380001" maxLength={6} autoComplete="postal-code" {...inputProps(`addresses[${addressIndex}].pincode`)} />
+                          </Field>
+                        </div>
+
+                        <div className="mt-5 overflow-hidden rounded-lg border">
+                          <div className="flex flex-wrap items-center justify-between gap-3 border-b bg-muted/25 px-4 py-3">
+                            <div className="flex items-center gap-2">
+                              <ContactRound className="size-4 text-primary" />
+                              <h5 className="text-sm font-semibold">Contact persons</h5>
+                            </div>
+                            <Button type="button" variant="outline" size="sm" onClick={() => addContact(addressIndex)} className="h-8 bg-background">
+                              <Plus className="size-4" />
+                              Add contact
+                            </Button>
+                          </div>
+
+                          {typeof getIn(formik.errors, `addresses[${addressIndex}].company_employees`) === "string" && getIn(formik.touched, `addresses[${addressIndex}].company_employees`) && (
+                            <p className="border-b bg-destructive/5 px-4 py-2 text-xs font-medium text-destructive">
+                              {getIn(formik.errors, `addresses[${addressIndex}].company_employees`)}
+                            </p>
+                          )}
+
+                          <div className="divide-y">
+                            {address.company_employees.map((contact, contactIndex) => (
+                              <div key={contactIndex} className="p-4">
+                                <div className="mb-3 flex items-center justify-between gap-3">
+                                  <div className="flex items-center gap-2">
+                                    <span className="flex size-6 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+                                      {contactIndex + 1}
+                                    </span>
+                                    <p className="text-sm font-medium">Contact person</p>
+                                  </div>
+                                  <Button type="button" variant="ghost" size="icon" onClick={() => removeContact(addressIndex, contactIndex)} aria-label={`Remove contact ${contactIndex + 1}`} className="size-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive">
+                                    <Trash2 className="size-4" />
+                                  </Button>
+                                </div>
+                                <div className="grid gap-4 md:grid-cols-3">
+                                  <Field id={`addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_name`} label="Name" error={errorFor(`addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_name`)}>
+                                    <Input id={`addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_name`} placeholder="Full name" autoComplete="name" {...inputProps(`addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_name`)} />
+                                  </Field>
+                                  <Field id={`addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_mobile_number`} label="Mobile number" error={errorFor(`addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_mobile_number`)}>
+                                    <Input id={`addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_mobile_number`} type="tel" placeholder="+91 98765 43210" autoComplete="tel" {...inputProps(`addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_mobile_number`)} />
+                                  </Field>
+                                  <Field id={`addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_position`} label="Position" error={errorFor(`addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_position`)}>
+                                    <Select
+                                      value={getIn(formik.values, `addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_position`) ?? ""}
+                                      onValueChange={(value) => {
+                                        setSaveError(null);
+                                        formik.setFieldValue(`addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_position`, value, true);
+                                      }}
+                                      onOpenChange={(open) => !open && formik.setFieldTouched(`addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_position`, true, true)}
+                                    >
+                                      <SelectTrigger id={`addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_position`} aria-invalid={Boolean(errorFor(`addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_position`))}>
+                                        <SelectValue placeholder="Select position" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {CONTACT_POSITION_OPTIONS.map((position) => (
+                                          <SelectItem key={position.value} value={position.value}>
+                                            {position.label}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                  </Field>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </section>
 
               <div className="flex flex-col-reverse gap-3 border-t pt-6 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-xs text-muted-foreground">
-                  {savedAt ? `Last saved ${new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(savedAt))}` : "Your progress is saved when you submit this form."}
+                <p
+                  role={saveError ? "alert" : undefined}
+                  className={saveError ? "text-xs font-medium text-destructive" : "text-xs text-muted-foreground"}
+                >
+                  {saveError ?? "The company will appear in the company table after saving."}
                 </p>
                 <Button type="submit" disabled={formik.isSubmitting || !formik.dirty} className="sm:min-w-36">
                   {formik.isSubmitting ? <LoaderCircle className="size-4 animate-spin" /> : <Save className="size-4" />}
-                  {formik.isSubmitting ? "Saving..." : savedAt ? "Save changes" : "Save company"}
+                  {formik.isSubmitting ? "Saving..." : "Save company"}
                 </Button>
               </div>
             </form>
           </CardContent>
         </Card>
 
-        <aside className="space-y-4 lg:sticky lg:top-0">
-          <Card className="gap-4 border-primary/15 bg-primary/[0.035] shadow-none">
-            <CardHeader>
-              <div className="mb-2 flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <BadgeCheck className="size-5" />
-              </div>
-              <CardTitle className="text-base">Why we need this</CardTitle>
-              <CardDescription className="leading-6">Accurate details help us verify your business and prepare compliant documents.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3 text-sm text-muted-foreground">
-              {["Faster order processing", "Correct GST invoices", "Reliable account communication"].map((item) => (
-                <div key={item} className="flex items-center gap-2.5">
-                  <CheckCircle2 className="size-4 shrink-0 text-emerald-600" />
-                  <span>{item}</span>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-          <div className="rounded-xl border bg-card p-4 text-xs leading-5 text-muted-foreground">
-            <div className="flex items-center gap-2 font-medium text-foreground">
-              <ShieldCheck className="size-4 text-primary" />
-              Employee-only access
-            </div>
-            <p className="mt-2">This form is available only to signed-in employees. Other roles are redirected to their dashboard.</p>
-          </div>
-        </aside>
       </div>
     </main>
   );

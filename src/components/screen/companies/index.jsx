@@ -1,7 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Building2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import DataTable from "@/components/common/dataTable";
+import { ROLE_PATHS } from "@Enums";
 import {
   companyDetailsClosed,
   companyDetailsOpened,
@@ -17,12 +19,18 @@ import CompanySummary from "@/components/screen/companies/companySummary";
 
 function Companies() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const table = useCompanyList();
   const selectedCompany = useSelector(selectSelectedCompany);
+  const role = useSelector((state) => state.auth.role);
+  const canAddCompany = role === ROLE_PATHS.EMPLOYEE;
 
   return (
     <main className="flex w-full flex-col gap-6 pb-2 roomy:h-full roomy:min-h-0">
-      <CompanyHeader />
+      <CompanyHeader
+        canAddCompany={canAddCompany}
+        onAddCompany={() => navigate("/companies/new")}
+      />
       <CompanySummary />
 
       <DataTable

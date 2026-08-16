@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { getDummyStockList } from "@/components/screen/stocks/stock.data";
-import { fromStockListResponse } from "@/forms/stock/stock.payload";
+import { fromStockListResponse } from "@Forms/stock/stock.payload";
 
 /** Replace only the dummy source with the GET API when it becomes available. */
 export const fetchStocks = createAsyncThunk(

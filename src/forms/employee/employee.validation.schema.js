@@ -1,6 +1,7 @@
 import * as Yup from "yup";
 
 import { ROLE_PATHS } from "@Enums";
+import { EMPLOYEE_VALIDATION_MESSAGES } from "@Forms/employee/employee.validation.messages";
 import {
   EMPLOYEE_NAME_MAX_LENGTH,
   EMPLOYEE_NAME_MIN_LENGTH,
@@ -8,8 +9,7 @@ import {
   EMPLOYEE_USERNAME_MAX_LENGTH,
   EMPLOYEE_USERNAME_MIN_LENGTH,
   EMPLOYEE_USERNAME_PATTERN,
-} from "@/forms/employee/employee.validation.constants";
-import { EMPLOYEE_VALIDATION_MESSAGES } from "@/forms/employee/employee.validation.messages";
+} from "@Forms/employee/employee.validation.constants";
 
 const EMPLOYEE_ROLES = [ROLE_PATHS.EMPLOYEE, ROLE_PATHS.WAREHOUSE_MANAGER];
 

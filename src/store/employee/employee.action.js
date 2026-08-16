@@ -1,13 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { extractErrorMessage } from "@/api/client.api";
-import { superAdminEmployeeApi } from "@/api";
+import { extractErrorMessage } from "@Api/client.api";
+import { superAdminEmployeeApi } from "@Api";
 import {
   fromEmployeeListResponse,
   toEmployeeCreatePayload,
   toEmployeeListParams,
   toEmployeeUpdatePayload,
-} from "@/forms/employee/employee.payload";
+} from "@Forms/employee/employee.payload";
 
 /**
  * Reads its query straight from the store rather than taking arguments, so

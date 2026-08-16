@@ -1,46 +1,111 @@
-import * as yup from "yup";
+import * as Yup from "yup";
 
-const optionalWebsite = yup
-  .string()
-  .trim()
-  .test("website", "Enter a valid website URL", (value) => {
-    if (!value) return true;
+import { COMPANY_DETAILS_VALIDATION_MESSAGES as MESSAGES } from "@Forms/company/company-details.validation.messages";
+import {
+  COMPANY_ADDRESS_MAX_LENGTH,
+  COMPANY_ADDRESS_MIN_LENGTH,
+  COMPANY_CONTACT_NAME_MAX_LENGTH,
+  COMPANY_CONTACT_NAME_MIN_LENGTH,
+  COMPANY_EMAIL_MAX_LENGTH,
+  COMPANY_EMAIL_MIN_LENGTH,
+  COMPANY_GST_PATTERN,
+  COMPANY_MIN_ADDRESSES,
+  COMPANY_NAME_MAX_LENGTH,
+  COMPANY_NAME_MIN_LENGTH,
+  COMPANY_PAN_PATTERN,
+  COMPANY_PHONE_PATTERN,
+  COMPANY_PINCODE_PATTERN,
+  COMPANY_SUPPORTED_TYPES,
+  COMPANY_SUPPORTED_CONTACT_POSITIONS,
+  COMPANY_WEBSITE_MAX_LENGTH,
+  COMPANY_WEBSITE_MIN_LENGTH,
+  COMPANY_WEBSITE_PROTOCOL_PATTERN,
+} from "@Forms/company/company-details.validation.constants";
 
-    try {
-      new URL(/^https?:\/\//i.test(value) ? value : `https://${value}`);
-      return true;
-    } catch {
-      return false;
-    }
-  });
+const contactPersonSchema = Yup.object({
+  contact_person_name: Yup.string()
+    .trim()
+    .min(COMPANY_CONTACT_NAME_MIN_LENGTH, MESSAGES.CONTACT_NAME_MIN)
+    .max(COMPANY_CONTACT_NAME_MAX_LENGTH, MESSAGES.CONTACT_NAME_MAX)
+    .required(MESSAGES.CONTACT_NAME_REQUIRED),
+  contact_person_mobile_number: Yup.string()
+    .trim()
+    .matches(COMPANY_PHONE_PATTERN, MESSAGES.CONTACT_MOBILE_INVALID)
+    .required(MESSAGES.CONTACT_MOBILE_REQUIRED),
+  contact_person_position: Yup.string()
+    .trim()
+    .oneOf(
+      COMPANY_SUPPORTED_CONTACT_POSITIONS,
+      MESSAGES.CONTACT_POSITION_INVALID,
+    )
+    .required(MESSAGES.CONTACT_POSITION_REQUIRED),
+});
 
-export const companyDetailsValidationSchema = yup.object({
-  companyName: yup.string().trim().min(2, "Company name is too short").max(120).required("Company name is required"),
-  companyType: yup.string().required("Company type is required"),
-  industry: yup.string().trim().max(100).required("Industry is required"),
-  gstNumber: yup
-    .string()
+const companyAddressSchema = Yup.object({
+  address: Yup.string()
+    .trim()
+    .min(COMPANY_ADDRESS_MIN_LENGTH, MESSAGES.ADDRESS_MIN)
+    .max(COMPANY_ADDRESS_MAX_LENGTH, MESSAGES.ADDRESS_MAX)
+    .required(MESSAGES.ADDRESS_REQUIRED),
+  pincode: Yup.string()
+    .trim()
+    .matches(COMPANY_PINCODE_PATTERN, MESSAGES.PINCODE_INVALID)
+    .required(MESSAGES.PINCODE_REQUIRED),
+  company_employees: Yup.array()
+    .of(contactPersonSchema)
+    .required(MESSAGES.CONTACTS_REQUIRED),
+});
+
+export const companyDetailsValidationSchema = Yup.object({
+  company_name: Yup.string()
+    .trim()
+    .min(COMPANY_NAME_MIN_LENGTH, MESSAGES.COMPANY_NAME_MIN)
+    .max(COMPANY_NAME_MAX_LENGTH, MESSAGES.COMPANY_NAME_MAX)
+    .required(MESSAGES.COMPANY_NAME_REQUIRED),
+  company_type: Yup.string()
+    .oneOf(COMPANY_SUPPORTED_TYPES, MESSAGES.COMPANY_TYPE_INVALID)
+    .required(MESSAGES.COMPANY_TYPE_REQUIRED),
+  email: Yup.string()
+    .trim()
+    .min(COMPANY_EMAIL_MIN_LENGTH, MESSAGES.EMAIL_MIN)
+    .max(COMPANY_EMAIL_MAX_LENGTH, MESSAGES.EMAIL_MAX)
+    .email(MESSAGES.EMAIL_INVALID)
+    .required(MESSAGES.EMAIL_REQUIRED),
+  phone_number: Yup.string()
+    .trim()
+    .matches(COMPANY_PHONE_PATTERN, MESSAGES.PHONE_INVALID)
+    .required(MESSAGES.PHONE_REQUIRED),
+  gst_number: Yup.string()
     .trim()
     .uppercase()
-    .matches(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/, "Enter a valid 15-character GSTIN")
-    .required("GSTIN is required"),
-  panNumber: yup
-    .string()
+    .matches(COMPANY_GST_PATTERN, MESSAGES.GST_INVALID)
+    .required(MESSAGES.GST_REQUIRED),
+  pan_number: Yup.string()
     .trim()
     .uppercase()
-    .matches(/^[A-Z]{5}[0-9]{4}[A-Z]$/, "Enter a valid PAN number")
-    .required("PAN number is required"),
-  email: yup.string().trim().email("Enter a valid email address").required("Business email is required"),
-  phone: yup
-    .string()
+    .matches(COMPANY_PAN_PATTERN, MESSAGES.PAN_INVALID)
+    .required(MESSAGES.PAN_REQUIRED),
+  website: Yup.string()
     .trim()
-    .matches(/^[+]?[0-9][0-9\s-]{8,14}$/, "Enter a valid phone number")
-    .required("Phone number is required"),
-  website: optionalWebsite,
-  contactName: yup.string().trim().min(2, "Contact name is too short").max(100).required("Contact name is required"),
-  contactDesignation: yup.string().trim().max(100),
-  addressLine: yup.string().trim().min(5, "Enter the complete street address").max(250).required("Registered address is required"),
-  city: yup.string().trim().max(80).required("City is required"),
-  state: yup.string().trim().max(80).required("State is required"),
-  postalCode: yup.string().trim().matches(/^[1-9][0-9]{5}$/, "Enter a valid 6-digit PIN code").required("PIN code is required"),
+    .transform((value) => (value === "" ? undefined : value))
+    .min(COMPANY_WEBSITE_MIN_LENGTH, MESSAGES.WEBSITE_MIN)
+    .max(COMPANY_WEBSITE_MAX_LENGTH, MESSAGES.WEBSITE_MAX)
+    .test("website", MESSAGES.WEBSITE_INVALID, (value) => {
+      if (!value) return true;
+
+      try {
+        new URL(
+          COMPANY_WEBSITE_PROTOCOL_PATTERN.test(value)
+            ? value
+            : `https://${value}`,
+        );
+        return true;
+      } catch {
+        return false;
+      }
+    }),
+  addresses: Yup.array()
+    .of(companyAddressSchema)
+    .min(COMPANY_MIN_ADDRESSES, MESSAGES.ADDRESSES_MIN)
+    .required(MESSAGES.ADDRESSES_REQUIRED),
 });

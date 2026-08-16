@@ -27,6 +27,15 @@
             "@Enums": [
                 "./src/enums/index.js"
             ],
+            "@Forms/*": [
+                "./src/forms/*"
+            ],
+            "@Api/*": [
+                "./src/api/*"
+            ],
+            "@Api": [
+                "./src/api/index.js"
+            ],
         }
     },
     "include": ["./src/**/*"]

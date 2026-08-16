@@ -16,18 +16,38 @@ export const COMPANY_TYPE_OPTIONS = Object.freeze([
   { value: COMPANY_TYPES.BOTH, label: "Supplier & customer" },
 ]);
 
-export const CONTACT_POSITION_LABELS = Object.freeze({
-  owner: "Owner",
-  director: "Director",
-  manager: "Manager",
-  hr: "HR",
-  accounts: "Accounts",
-  purchase: "Purchase",
-  sales: "Sales",
-  store_keeper: "Store keeper",
-  engineer: "Engineer",
-  other: "Other",
+export const CONTACT_PERSON_POSITIONS = Object.freeze({
+  OWNER: "owner",
+  DIRECTOR: "director",
+  MANAGER: "manager",
+  HR: "hr",
+  ACCOUNTS: "accounts",
+  PURCHASE: "purchase",
+  SALES: "sales",
+  STORE_KEEPER: "store_keeper",
+  ENGINEER: "engineer",
+  OTHER: "other",
 });
+
+export const CONTACT_POSITION_LABELS = Object.freeze({
+  [CONTACT_PERSON_POSITIONS.OWNER]: "Owner",
+  [CONTACT_PERSON_POSITIONS.DIRECTOR]: "Director",
+  [CONTACT_PERSON_POSITIONS.MANAGER]: "Manager",
+  [CONTACT_PERSON_POSITIONS.HR]: "HR",
+  [CONTACT_PERSON_POSITIONS.ACCOUNTS]: "Accounts",
+  [CONTACT_PERSON_POSITIONS.PURCHASE]: "Purchase",
+  [CONTACT_PERSON_POSITIONS.SALES]: "Sales",
+  [CONTACT_PERSON_POSITIONS.STORE_KEEPER]: "Store keeper",
+  [CONTACT_PERSON_POSITIONS.ENGINEER]: "Engineer",
+  [CONTACT_PERSON_POSITIONS.OTHER]: "Other",
+});
+
+export const CONTACT_POSITION_OPTIONS = Object.freeze(
+  Object.values(CONTACT_PERSON_POSITIONS).map((value) => ({
+    value,
+    label: CONTACT_POSITION_LABELS[value],
+  })),
+);
 
 export const COMPANY_TABLE_DEFAULTS = Object.freeze({
   LIMIT: TABLE_DEFAULTS.LIMIT,

@@ -3,7 +3,7 @@ import {
   EMPLOYEE_NAME_MIN_LENGTH,
   EMPLOYEE_USERNAME_MAX_LENGTH,
   EMPLOYEE_USERNAME_MIN_LENGTH,
-} from "@/forms/employee/employee.validation.constants";
+} from "@Forms/employee/employee.validation.constants";
 
 export const EMPLOYEE_VALIDATION_MESSAGES = {
   FIRST_NAME_REQUIRED: "First name is required",

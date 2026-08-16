@@ -280,10 +280,16 @@ export const DUMMY_COMPANIES = [
   },
 ];
 
-export function getDummyCompanyList({ page = 1, limit = 20, search = "" } = {}) {
+export function getDummyCompanyList({
+  page = 1,
+  limit = 20,
+  search = "",
+  additionalCompanies = [],
+} = {}) {
   const query = search.trim().toLowerCase();
+  const companies = [...additionalCompanies, ...DUMMY_COMPANIES];
   const matching = query
-    ? DUMMY_COMPANIES.filter((company) =>
+    ? companies.filter((company) =>
         [
           company.company_name,
           company.company_type,
@@ -293,7 +299,7 @@ export function getDummyCompanyList({ page = 1, limit = 20, search = "" } = {}) 
           company.pan_number,
         ].some((value) => value.toLowerCase().includes(query)),
       )
-    : DUMMY_COMPANIES;
+    : companies;
   const start = (page - 1) * limit;
 
   return {

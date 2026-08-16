@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
-import { employeeValidationSchema } from "@/forms/employee/employee.validation.schema";
+import { employeeValidationSchema } from "@Forms/employee/employee.validation.schema";
 import { ASSIGNABLE_ROLE_OPTIONS } from "@/components/screen/employees/employee.utils";
 import {
   Select,

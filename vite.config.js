@@ -15,6 +15,8 @@ export default defineConfig({
       "@Assets": path.resolve(__dirname, "./src/assets"),
       "@Redux": path.resolve(__dirname, "./src/store"),
       "@Enums": path.resolve(__dirname, "./src/enums"),
+      "@Forms": path.resolve(__dirname, "./src/forms"),
+      "@Api": path.resolve(__dirname, "./src/api"),
     },
   },
 });

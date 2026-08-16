@@ -20,11 +20,9 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import {
-  companyTypeLabel,
-  companyTypeVariant,
-  contactInitials,
-  contactPositionLabel,
-} from "@/components/screen/companies/company.utils";
+  COMPANY_TYPE_OPTIONS,
+  CONTACT_POSITION_LABELS,
+} from "@Enums";
 
 function DetailItem({ icon, label, children }) {
   const Icon = icon;
@@ -43,6 +41,10 @@ function DetailItem({ icon, label, children }) {
 }
 
 function CompanyDetailSheet({ company, onClose }) {
+  const companyType =
+    COMPANY_TYPE_OPTIONS.find((option) => option.value === company?.type)?.label ??
+    company?.type;
+
   return (
     <Sheet open={Boolean(company)} onOpenChange={(open) => !open && onClose()}>
       <SheetContent className="w-full gap-0 sm:max-w-xl lg:max-w-2xl">
@@ -55,9 +57,7 @@ function CompanyDetailSheet({ company, onClose }) {
                 </span>
                 <div className="min-w-0">
                   <div className="mb-2 flex flex-wrap items-center gap-2">
-                    <Badge variant={companyTypeVariant(company.type)}>
-                      {companyTypeLabel(company.type)}
-                    </Badge>
+                    <Badge variant="outline">{companyType}</Badge>
                     <Badge variant="outline">Read only</Badge>
                   </div>
                   <SheetTitle className="text-xl sm:text-2xl">
@@ -96,7 +96,7 @@ function CompanyDetailSheet({ company, onClose }) {
                     </a>
                   </DetailItem>
                   <DetailItem icon={UserRound} label="Company type">
-                    {companyTypeLabel(company.type)}
+                    {companyType}
                   </DetailItem>
                 </div>
               </section>
@@ -163,7 +163,12 @@ function CompanyDetailSheet({ company, onClose }) {
                               >
                                 <Avatar className="size-9">
                                   <AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">
-                                    {contactInitials(contact.name)}
+                                    {contact.name
+                                      .split(/\s+/)
+                                      .filter(Boolean)
+                                      .slice(0, 2)
+                                      .map((part) => part[0]?.toUpperCase())
+                                      .join("")}
                                   </AvatarFallback>
                                 </Avatar>
                                 <div className="min-w-0 flex-1">
@@ -177,7 +182,8 @@ function CompanyDetailSheet({ company, onClose }) {
                                   </a>
                                 </div>
                                 <Badge variant="secondary" className="shrink-0">
-                                  {contactPositionLabel(contact.position)}
+                                  {CONTACT_POSITION_LABELS[contact.position] ??
+                                    CONTACT_POSITION_LABELS.other}
                                 </Badge>
                               </div>
                             ))}

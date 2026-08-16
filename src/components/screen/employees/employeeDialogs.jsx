@@ -2,7 +2,7 @@ import { Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { fullName } from "@/components/screen/employees/employee.utils";
-import { EMPLOYEE_INITIAL_VALUES } from "@/forms/employee/employee.initialValues";
+import { EMPLOYEE_INITIAL_VALUES } from "@Forms/employee/employee.initialValues";
 import {
   Dialog,
   DialogClose,
