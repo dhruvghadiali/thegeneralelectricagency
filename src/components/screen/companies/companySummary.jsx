@@ -1,46 +1,33 @@
-import {
-  Building2,
-  MapPinned,
-  ShoppingCart,
-  Truck,
-} from "lucide-react";
+import { Building2, CheckCircle2, XCircle } from "lucide-react";
 import { useSelector } from "react-redux";
 
-import {
-  companyTableSelectors,
-  selectCompanySummary,
-} from "@Redux/company/company.selector";
+import { selectCompanySummary } from "@Redux/company/company.selector";
 import SummaryCard from "@screenComponent/employees/summaryCard";
 
 function CompanySummary() {
-  const { total } = useSelector(companyTableSelectors.selectPagination);
-  const summary = useSelector(selectCompanySummary);
+  const { totalCompanies, activeCompanies, inactiveCompanies } = useSelector(
+    selectCompanySummary,
+  );
 
   return (
-    <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       <SummaryCard
         icon={Building2}
         iconClassName="bg-primary/10 text-primary"
-        value={total}
+        value={totalCompanies}
         label="Total companies"
       />
       <SummaryCard
-        icon={ShoppingCart}
+        icon={CheckCircle2}
         iconClassName="bg-emerald-500/10 text-emerald-600"
-        value={summary.customerCount}
-        label="Customer accounts on this page"
+        value={activeCompanies}
+        label="Active companies"
       />
       <SummaryCard
-        icon={Truck}
-        iconClassName="bg-amber-500/10 text-amber-600"
-        value={summary.supplierCount}
-        label="Supply partners on this page"
-      />
-      <SummaryCard
-        icon={MapPinned}
-        iconClassName="bg-sky-500/10 text-sky-600"
-        value={summary.locationCount}
-        label="Locations on this page"
+        icon={XCircle}
+        iconClassName="bg-destructive/10 text-destructive"
+        value={inactiveCompanies}
+        label="Inactive companies"
       />
     </section>
   );

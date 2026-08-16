@@ -160,6 +160,14 @@ export function fromCompanyResponse(company = {}) {
   };
 }
 
+export function fromCompanySummaryResponse(summary = {}) {
+  return {
+    totalCompanies: _.toNumber(summary.total_companies) || 0,
+    activeCompanies: _.toNumber(summary.active_companies) || 0,
+    inactiveCompanies: _.toNumber(summary.inactive_companies) || 0,
+  };
+}
+
 export function fromCompanyListResponse(response = {}, requested = {}) {
   const pagination = response.pagination ?? {};
   const page = Number(pagination.page) || requested.page || TABLE_DEFAULTS.PAGE;
@@ -180,5 +188,6 @@ export function fromCompanyListResponse(response = {}, requested = {}) {
         Math.ceil(total / limit) ||
         0,
     },
+    summary: fromCompanySummaryResponse(response.summary),
   };
 }

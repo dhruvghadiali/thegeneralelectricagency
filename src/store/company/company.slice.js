@@ -14,6 +14,11 @@ const initialState = {
     sort: COMPANY_TABLE_DEFAULTS.SORT,
   }),
   selectedCompany: null,
+  summary: {
+    totalCompanies: 0,
+    activeCompanies: 0,
+    inactiveCompanies: 0,
+  },
 };
 
 const companySlice = createSlice({
@@ -31,7 +36,10 @@ const companySlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchCompanies.pending, tableFetchCases.pending)
-      .addCase(fetchCompanies.fulfilled, tableFetchCases.fulfilled)
+      .addCase(fetchCompanies.fulfilled, (state, action) => {
+        tableFetchCases.fulfilled(state, action);
+        state.summary = action.payload.summary;
+      })
       .addCase(fetchCompanies.rejected, (state, action) =>
         tableFetchCases.rejected(state, action, "Unable to load companies."),
       );
