@@ -19,8 +19,8 @@ const POPOVER_WIDTH = {
 };
 
 /**
- * The filter affordance that sits at the right edge of a column heading: an
- * icon that opens this column's control.
+ * The filter affordance that sits immediately after a column heading: an icon
+ * that opens this column's control.
  *
  * Keeping the control behind an icon is what lets ten columns each have a
  * filter without the header turning into a wall of inputs - the heading row

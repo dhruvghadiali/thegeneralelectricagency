@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import _ from "lodash";
 
-import { TABLE_CAPABILITIES, TABLE_DEFAULTS } from "@Enums";
+import { TABLE_DEFAULTS } from "@Enums";
+import { normalizeSort } from "@/utils/dataTable.util";
 
 /**
  * Binds a table slice to the API. All state stays in the store - this only
@@ -59,18 +60,10 @@ export function useDataTable({ selectors, actions, fetchAction }) {
     [applyFilters, commitSearch],
   );
 
-  // Objects are compared by identity in a dependency array, and the store
-  // hands back a fresh one on every change - these give the effect something
-  // stable to compare.
-  //
-  // While a capability is switched off its key stays constant, so sorting a
-  // column or setting a filter updates the UI without firing a request the
-  // backend would answer identically.
-  const sortKey =
-    TABLE_CAPABILITIES.SORT_ENABLED && sort?.field ? `${sort.field}:${sort.order}` : "";
-  const filtersKey = TABLE_CAPABILITIES.COLUMN_FILTERS_ENABLED
-    ? JSON.stringify(appliedFilters)
-    : "";
+  // Store objects are compared by identity in dependency arrays. Serialising
+  // these plain query values prevents unrelated state changes from refetching.
+  const sortKey = JSON.stringify(normalizeSort(sort));
+  const filtersKey = JSON.stringify(appliedFilters);
 
   useEffect(() => {
     const request = dispatch(fetchAction());
@@ -90,8 +83,14 @@ export function useDataTable({ selectors, actions, fetchAction }) {
   const submitSearch = useCallback(() => commitSearch.flush(), [commitSearch]);
 
   const changeColumnFilter = useCallback(
-    (key, value, { immediate = false } = {}) => {
+    (key, value, { immediate = false, defer = false } = {}) => {
       dispatch(actions.columnFilterChanged({ key, value }));
+
+      // Range controls use this while only one boundary is present. The live
+      // UI value is stored, but the request waits for the complete range.
+      if (defer) {
+        return;
+      }
 
       if (!immediate) {
         applyFilters();

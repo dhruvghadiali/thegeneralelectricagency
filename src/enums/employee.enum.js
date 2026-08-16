@@ -25,6 +25,11 @@ export const EMPLOYEE_STATUS_OPTIONS = Object.freeze([
 
 export const EMPLOYEE_TABLE_DEFAULTS = Object.freeze({
   LIMIT: TABLE_DEFAULTS.LIMIT,
-  /** Newest joiners first, until the user sorts by something else. */
-  SORT: Object.freeze({ field: "created_at", order: SORT_ORDERS.DESC }),
+  /** Alphabetical employee order, with last name breaking first-name ties. */
+  SORT: Object.freeze([
+    Object.freeze({ field: "first_name", order: SORT_ORDERS.ASC }),
+    Object.freeze({ field: "last_name", order: SORT_ORDERS.ASC }),
+  ]),
+  /** Employee lists open with active records selected. */
+  FILTERS: Object.freeze({ is_active: "true" }),
 });

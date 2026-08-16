@@ -12,5 +12,7 @@ export const STOCK_CATEGORY_OPTIONS = Object.freeze([
 
 export const STOCK_TABLE_DEFAULTS = Object.freeze({
   LIMIT: TABLE_DEFAULTS.LIMIT,
-  SORT: Object.freeze({ field: "product_name", order: SORT_ORDERS.ASC }),
+  SORT: Object.freeze([
+    Object.freeze({ field: "product_name", order: SORT_ORDERS.ASC }),
+  ]),
 });

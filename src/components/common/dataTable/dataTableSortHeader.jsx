@@ -7,6 +7,7 @@ import {
   isFilterableColumn,
   isSortableColumn,
   nextSortState,
+  normalizeSort,
 } from "@/utils/dataTable.util";
 
 import DataTableColumnFilterPopover from "@commonComponent/dataTable/dataTableColumnFilterPopover";
@@ -25,14 +26,21 @@ const SORT_ICONS = {
  */
 function DataTableSortHeader({ column, sort, columnFilters, onSortChange, onColumnFilterChange }) {
   const isSortable = isSortableColumn(column);
-  const isSorted = isSortable && sort?.field === column.sortKey;
-  const Icon = (isSorted && SORT_ICONS[sort.order]) || ChevronsUpDown;
+  const sorts = normalizeSort(sort);
+  const sortIndex = isSortable ? sorts.findIndex(({ field }) => field === column.sortKey) : -1;
+  const activeSort = sortIndex >= 0 ? sorts[sortIndex] : null;
+  const isSorted = Boolean(activeSort);
+  const Icon = (activeSort && SORT_ICONS[activeSort.order]) || ChevronsUpDown;
 
   const label = isSortable ? (
     <button
       type="button"
-      onClick={() => onSortChange(nextSortState(sort, column.sortKey))}
-      title={`Sort by ${column.header}`}
+      onClick={(event) =>
+        onSortChange(
+          nextSortState(sort, column.sortKey, { multi: event.shiftKey }),
+        )
+      }
+      title={`Sort by ${column.header}. Shift-click to add a secondary sort.`}
       className={cn(
         "-mx-1.5 inline-flex min-w-0 items-center gap-1.5 rounded px-1.5 py-1 transition-colors",
         "hover:text-foreground focus-visible:ring-ring/50 focus-visible:ring-[3px] outline-none",
@@ -44,6 +52,11 @@ function DataTableSortHeader({ column, sort, columnFilters, onSortChange, onColu
         className={cn("size-3.5 shrink-0", !isSorted && "opacity-40")}
         aria-hidden="true"
       />
+      {isSorted && sorts.length > 1 && (
+        <span className="bg-primary/10 text-primary inline-flex size-4 items-center justify-center rounded-full text-[10px] font-semibold">
+          {sortIndex + 1}
+        </span>
+      )}
     </button>
   ) : (
     <span className="truncate">{column.header}</span>
@@ -52,15 +65,20 @@ function DataTableSortHeader({ column, sort, columnFilters, onSortChange, onColu
   return (
     <TableHead
       className={cn("whitespace-nowrap", column.headerClassName)}
+      style={
+        column.width == null
+          ? undefined
+          : { width: column.width, minWidth: column.width }
+      }
       aria-sort={
         isSorted
-          ? sort.order === SORT_ORDERS.ASC
+          ? activeSort.order === SORT_ORDERS.ASC
             ? "ascending"
             : "descending"
           : "none"
       }
     >
-      <div className="flex items-center justify-between gap-1">
+      <div className="inline-flex max-w-full items-center gap-1">
         {label}
         {isFilterableColumn(column) && (
           <DataTableColumnFilterPopover

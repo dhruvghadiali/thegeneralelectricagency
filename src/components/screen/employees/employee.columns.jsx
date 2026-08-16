@@ -17,7 +17,7 @@ import {
 
 /**
  * The whole employee table in one place. Each entry says what to show, how to
- * sort it (`sortKey` -> `sort_by`) and how to filter it (`filterKey` +
+ * sort it (`sortKey` -> the shared `sort` parameter) and how to filter it (`filterKey` +
  * `type` -> the query parameters), so the screen itself holds no table logic.
  *
  * Every filterable column is a visible one, because its filter control lives
@@ -37,6 +37,7 @@ export const EMPLOYEE_COLUMNS = [
     filterKey: "first_name",
     className: "whitespace-nowrap",
     mobile: MOBILE_SLOTS.PRIMARY,
+    width: "200px",
   },
   {
     key: "lastName",
@@ -47,6 +48,7 @@ export const EMPLOYEE_COLUMNS = [
     sortKey: "last_name",
     filterKey: "last_name",
     className: "whitespace-nowrap",
+    width: "200px",
   },
   {
     key: "empId",
@@ -57,6 +59,7 @@ export const EMPLOYEE_COLUMNS = [
     sortKey: "emp_id",
     filterKey: "emp_id",
     className: "whitespace-nowrap font-medium",
+    width: "200px",
   },
   {
     key: "username",
@@ -67,6 +70,7 @@ export const EMPLOYEE_COLUMNS = [
     sortKey: "username",
     filterKey: "username",
     mobile: MOBILE_SLOTS.SECONDARY,
+    width: "200px",
     render: (employee) =>
       employee.username ? `@${employee.username}` : EMPTY_FIELD_LABEL,
   },
@@ -80,6 +84,7 @@ export const EMPLOYEE_COLUMNS = [
     filterKey: "email",
     mobile: MOBILE_SLOTS.META,
     mobileIcon: Mail,
+    width: "300px",
   },
   {
     key: "phone",
@@ -92,6 +97,7 @@ export const EMPLOYEE_COLUMNS = [
     className: "whitespace-nowrap",
     mobile: MOBILE_SLOTS.META,
     mobileIcon: Phone,
+    width: "200px",
   },
   {
     key: "role",
@@ -104,6 +110,7 @@ export const EMPLOYEE_COLUMNS = [
     options: EMPLOYEE_USER_TYPE_OPTIONS,
     allOptionLabel: "All roles",
     className: "whitespace-nowrap",
+    width: "300px",
     render: (employee) => roleLabel(employee.role),
   },
   {
@@ -116,6 +123,7 @@ export const EMPLOYEE_COLUMNS = [
     filterKey: "is_active",
     options: EMPLOYEE_STATUS_OPTIONS,
     allOptionLabel: "All statuses",
+    width: "150px",
     mobile: MOBILE_SLOTS.BADGE,
     render: (employee) => (
       <Badge variant={statusVariant(employee)}>{statusLabel(employee)}</Badge>
@@ -128,11 +136,12 @@ export const EMPLOYEE_COLUMNS = [
     type: COLUMN_TYPES.DATE,
     field: "joined",
     sortKey: "created_at",
-    filterKey: "created_at",
+    filterKey: "created",
     className: "whitespace-nowrap text-muted-foreground",
     mobile: MOBILE_SLOTS.META,
     mobileIcon: CalendarDays,
     mobileLabel: "Joined",
+    width: "200px",
   },
   {
     key: "updatedAt",
@@ -141,7 +150,8 @@ export const EMPLOYEE_COLUMNS = [
     type: COLUMN_TYPES.DATE_TIME,
     field: "updatedAt",
     sortKey: "updated_at",
-    filterKey: "updated_at",
+    filterKey: "updated",
+    width: "200px",
     className: "whitespace-nowrap text-muted-foreground",
   },
 ];

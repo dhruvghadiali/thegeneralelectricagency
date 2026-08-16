@@ -61,9 +61,10 @@ const STICKY_HEADER_CLASSES = cn(
  *     type,                // COLUMN_TYPES - picks the filter control and
  *                          // the default cell formatting
  *     field,               // lodash path to the value on a row
- *     sortKey,             // sort_by value; omit to make it unsortable
+ *     sortKey,             // API field used inside `sort`; omit to make it unsortable
  *     filterKey,           // filter parameter base; omit to drop the filter icon
  *     options,             // SELECT columns: [{ value, label }]
+ *     width,               // custom CSS width; numbers are treated as pixels
  *     showInTable,         // false = filterable from the mobile panel only
  *     render(row),         // custom cell; falls back to formatting by type
  *     mobile,              // MOBILE_SLOTS - where it lands on a phone card
@@ -172,7 +173,7 @@ function DataTable({
             // Only pin the body on a window tall enough to hold it. Anywhere
             // smaller it keeps its natural height and the content area
             // scrolls instead, which is what a phone wants anyway.
-            fillHeight && "roomy:min-h-[240px] roomy:flex-1",
+            fillHeight && hasRows && "roomy:min-h-[240px] roomy:flex-1",
           )}
           style={fillHeight ? undefined : { maxHeight: maxBodyHeight }}
         >
@@ -215,6 +216,11 @@ function DataTable({
                       <TableCell
                         key={column.key}
                         className={cn("py-1", column.className)}
+                        style={
+                          column.width == null
+                            ? undefined
+                            : { width: column.width, minWidth: column.width }
+                        }
                       >
                         {renderCell(row, column)}
                       </TableCell>
@@ -230,7 +236,7 @@ function DataTable({
       {isFirstLoad && <DataTableSkeleton rows={skeletonRows} />}
 
       {!isFirstLoad && error && (
-        <DataTableError message={error} onRetry={onRetry} />
+        <DataTableError message={error} onRetry={onRetry} fillHeight={fillHeight} />
       )}
 
       {!isFirstLoad && !error && hasRows && (
@@ -260,6 +266,7 @@ function DataTable({
           description={emptyDescription}
           filteredDescription={filteredEmptyDescription}
           onClearFilters={onClearFilters}
+          fillHeight={fillHeight}
         />
       )}
 

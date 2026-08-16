@@ -22,9 +22,12 @@ import { buildPageItems, getRowRange } from "@/utils/pagination.util";
  */
 export function createTableState({
   limit = TABLE_DEFAULTS.LIMIT,
-  sort = null,
+  sort = [],
   columnFilters = {},
 } = {}) {
+  const defaultSort = _.cloneDeep(sort);
+  const defaultColumnFilters = _.cloneDeep(columnFilters);
+
   return {
     items: [],
     pagination: {
@@ -37,9 +40,13 @@ export function createTableState({
     limit,
     search: "",
     searchQuery: "",
-    sort,
-    columnFilters: { ...columnFilters },
-    appliedFilters: { ...columnFilters },
+    sort: _.cloneDeep(defaultSort),
+    columnFilters: _.cloneDeep(defaultColumnFilters),
+    appliedFilters: _.cloneDeep(defaultColumnFilters),
+    // Screen-level defaults are retained so Clear and the final sort-cycle
+    // return to the same query that was used when the list first opened.
+    defaultSort,
+    defaultColumnFilters,
     isLoading: false,
     listError: null,
   };
@@ -78,10 +85,13 @@ export const TABLE_REDUCERS = {
     resetToFirstPage(state);
   },
   sortChanged(state, action) {
-    state.sort = action.payload ?? null;
+    const requestedSort = action.payload ?? [];
+    state.sort = _.isEmpty(requestedSort)
+      ? _.cloneDeep(plain(state.defaultSort))
+      : requestedSort;
 
-    // While the backend ignores sort_by the row order cannot change, so
-    // moving the user off their page would be a pointless refetch.
+    // Sorting changes the result order, so the first page is the only safe
+    // page to request after a change.
     if (TABLE_CAPABILITIES.SORT_ENABLED) {
       resetToFirstPage(state);
     }
@@ -116,8 +126,9 @@ export const TABLE_REDUCERS = {
   filtersCleared(state) {
     state.search = "";
     state.searchQuery = "";
-    state.columnFilters = {};
-    state.appliedFilters = {};
+    state.sort = _.cloneDeep(plain(state.defaultSort));
+    state.columnFilters = _.cloneDeep(plain(state.defaultColumnFilters));
+    state.appliedFilters = _.cloneDeep(plain(state.defaultColumnFilters));
     resetToFirstPage(state);
   },
   pageChanged(state, action) {

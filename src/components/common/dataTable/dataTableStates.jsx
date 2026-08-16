@@ -1,6 +1,7 @@
 import _ from "lodash";
 import { Inbox, RotateCw, TriangleAlert } from "lucide-react";
 
+import { cn } from "@/lib/utils";
 import { Button } from "@shadcnComponent/button";
 
 /**
@@ -35,11 +36,18 @@ export function DataTableEmptyState({
   description,
   filteredDescription,
   onClearFilters,
+  fillHeight = false,
 }) {
   const Icon = icon ?? Inbox;
 
   return (
-    <div className="px-4 py-14 text-center">
+    <div
+      className={cn(
+        "px-4 py-14 text-center",
+        fillHeight &&
+          "roomy:flex roomy:min-h-[240px] roomy:flex-1 roomy:flex-col roomy:items-center roomy:justify-center",
+      )}
+    >
       <Icon className="mx-auto size-8 text-muted-foreground/50" />
       <p className="mt-3 font-medium">{title}</p>
       <p className="mt-1 text-sm text-muted-foreground">
@@ -58,9 +66,15 @@ export function DataTableEmptyState({
  * A failed request is recoverable, so this offers the retry rather than
  * leaving the user to reload the page.
  */
-export function DataTableError({ message, onRetry }) {
+export function DataTableError({ message, onRetry, fillHeight = false }) {
   return (
-    <div className="px-4 py-14 text-center">
+    <div
+      className={cn(
+        "px-4 py-14 text-center",
+        fillHeight &&
+          "roomy:flex roomy:min-h-[240px] roomy:flex-1 roomy:flex-col roomy:items-center roomy:justify-center",
+      )}
+    >
       <TriangleAlert className="mx-auto size-8 text-destructive/70" />
       <p className="mt-3 font-medium">Could not load this list</p>
       <p className="mt-1 text-sm text-muted-foreground">{message}</p>

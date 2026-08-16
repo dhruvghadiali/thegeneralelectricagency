@@ -5,7 +5,7 @@
  */
 
 /**
- * Which query parameters the backend understands today.
+ * Which shared query features are enabled for server-backed lists.
  *
  * The table renders the sort headers and the filter row either way, and the
  * store remembers what the user picked - these flags only decide whether the
@@ -13,12 +13,12 @@
  * unknown query keys cannot 400 on a parameter it has never heard of, and no
  * pointless refetch is fired for a change the server would ignore.
  *
- * Flip a flag to true the day that endpoint gains support. Nothing else
- * changes: the UI, the store and the parameter builders are already there.
+ * These remain centralised so an installation with an older API can disable
+ * either feature without changing every screen.
  */
 export const TABLE_CAPABILITIES = Object.freeze({
-  SORT_ENABLED: false,
-  COLUMN_FILTERS_ENABLED: false,
+  SORT_ENABLED: true,
+  COLUMN_FILTERS_ENABLED: true,
 });
 
 /**
@@ -64,13 +64,12 @@ export const FILTER_ALL = "all";
  * the API is a one-line change for every table in the app.
  */
 export const SORT_PARAM_KEYS = Object.freeze({
-  FIELD: "sort_by",
-  ORDER: "sort_order",
+  SORT: "sort",
 });
 
 /**
  * Range filters send two parameters built from the column's filter key -
- * a `created_at` date column becomes `created_at_from` / `created_at_to`,
+ * a `created` date column becomes `created_from` / `created_to`,
  * and a `salary` number column becomes `salary_min` / `salary_max`.
  */
 export const FILTER_PARAM_SUFFIXES = Object.freeze({

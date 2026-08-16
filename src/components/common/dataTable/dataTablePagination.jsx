@@ -26,15 +26,19 @@ function DataTablePagination({
   rowNoun = "rows",
 }) {
   const { page, limit, total, totalPages } = pagination;
+  const hasRenderedRows = rowRange.to > 0;
+  const displayedTotal = rowRange.total || total;
+
+  const rangeMessage = isLoading && !hasRenderedRows
+    ? `Loading ${rowNoun}…`
+    : hasRenderedRows
+      ? `Showing ${rowRange.from} to ${rowRange.to} of ${displayedTotal} ${rowNoun}`
+      : `No ${rowNoun} to show`;
 
   return (
     <div className="flex shrink-0 flex-col gap-3 border-t px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted-foreground">
-        <span>
-          {total > 0
-            ? `Showing ${rowRange.from} to ${rowRange.to} of ${total} ${rowNoun}`
-            : `No ${rowNoun} to show`}
-        </span>
+        <span aria-live="polite">{rangeMessage}</span>
         <span className="flex items-center gap-2">
           <span>Rows per page</span>
           <Select

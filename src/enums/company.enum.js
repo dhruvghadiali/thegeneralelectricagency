@@ -51,5 +51,7 @@ export const CONTACT_POSITION_OPTIONS = Object.freeze(
 
 export const COMPANY_TABLE_DEFAULTS = Object.freeze({
   LIMIT: TABLE_DEFAULTS.LIMIT,
-  SORT: Object.freeze({ field: "company_name", order: SORT_ORDERS.ASC }),
+  SORT: Object.freeze([
+    Object.freeze({ field: "company_name", order: SORT_ORDERS.ASC }),
+  ]),
 });

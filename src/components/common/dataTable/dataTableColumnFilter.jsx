@@ -27,9 +27,9 @@ const RANGE_BOUNDS = {
 };
 
 /**
- * Renders the one control that suits a column's type. Selects and date
- * pickers apply straight away because there is no more typing to wait for;
- * text and number inputs are debounced by the controller.
+ * Renders the one control that suits a column's type. Selects and completed
+ * date or date-time boundary selections apply straight away. Text and number
+ * inputs are debounced by the controller.
  *
  * `compact` is the version that sits in the table's filter row: the column
  * heading directly above is already the label, so it is dropped and the
@@ -81,8 +81,13 @@ function DataTableColumnFilter({ column, value, onChange, compact = false }) {
 
   if (isDateColumn(column.type)) {
     const range = _.isPlainObject(value) ? value : emptyFilterValue(column.type);
-    const updateBound = (bound) => (next) =>
-      onChange({ ...range, [bound]: next }, { immediate: true });
+    const updateBound = (bound) => (next) => {
+      const nextRange = { ...range, [bound]: next };
+
+      // Each boundary is independently valid on the API. This supports both
+      // closed ranges (`from` + `to`) and open-ended requests with only one.
+      onChange(nextRange, { immediate: true });
+    };
 
     return withLabel(
       <div className="flex min-w-0 items-center gap-1.5">

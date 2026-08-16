@@ -80,7 +80,8 @@ export function isSortableColumn(column) {
 }
 
 function toDateParam(value, type) {
-  const date = moment(value);
+  const hasExplicitOffset = /(?:Z|[+-]\d{2}:\d{2})$/i.test(String(value));
+  const date = hasExplicitOffset ? moment.parseZone(value) : moment(value);
 
   if (!date.isValid()) {
     return undefined;
@@ -88,7 +89,9 @@ function toDateParam(value, type) {
 
   // A date-only column is compared by calendar day, so sending a timestamp
   // would make the boundary depend on the user's clock.
-  return type === COLUMN_TYPES.DATE ? date.format(API_DATE_FORMAT) : date.toISOString();
+  return type === COLUMN_TYPES.DATE
+    ? date.format(API_DATE_FORMAT)
+    : date.format("YYYY-MM-DDTHH:mm:ssZ");
 }
 
 function toNumberParam(value) {
@@ -104,8 +107,9 @@ function toNumberParam(value) {
  *   number         ->  ?<filterKey>_min=&<filterKey>_max=
  *   date, datetime ->  ?<filterKey>_from=&<filterKey>_to=
  *
- * Empty halves of a range are omitted rather than sent blank, so an open-ended
- * range stays open-ended.
+ * Number, date and date-time ranges may be open-ended and omit their blank
+ * boundary. Date-time values include their UTC offset; Axios safely encodes
+ * the `+` in offsets as `%2B` when it builds the URL.
  *
  * Returns nothing at all while COLUMN_FILTERS_ENABLED is off - the controls
  * still render and the choices are still stored, they just do not reach the
@@ -132,14 +136,20 @@ export function buildColumnFilterParams(columns = [], filters = {}) {
     }
 
     if (isDateColumn(column.type)) {
-      params[`${column.filterKey}${FILTER_PARAM_SUFFIXES.FROM}`] = toDateParam(
-        value.from,
-        column.type,
-      );
-      params[`${column.filterKey}${FILTER_PARAM_SUFFIXES.TO}`] = toDateParam(
-        value.to,
-        column.type,
-      );
+      if (value.from) {
+        params[`${column.filterKey}${FILTER_PARAM_SUFFIXES.FROM}`] = toDateParam(
+          value.from,
+          column.type,
+        );
+      }
+
+      if (value.to) {
+        params[`${column.filterKey}${FILTER_PARAM_SUFFIXES.TO}`] = toDateParam(
+          value.to,
+          column.type,
+        );
+      }
+
       return;
     }
 
@@ -149,16 +159,27 @@ export function buildColumnFilterParams(columns = [], filters = {}) {
   return _.omitBy(params, (param) => _.isUndefined(param) || param === "");
 }
 
-/** Held back the same way, and for the same reason, as the column filters. */
+/** Accepts the original single-sort shape as well as the shared array shape. */
+export function normalizeSort(sort) {
+  const entries = _.isArray(sort) ? sort : sort?.field ? [sort] : [];
+
+  return _.filter(entries, ({ field, order }) =>
+    Boolean(field) && _.includes(_.values(SORT_ORDERS), order),
+  );
+}
+
+/** Serialises every active sort using the API's comma-separated contract. */
 export function buildSortParams(sort) {
-  if (!TABLE_CAPABILITIES.SORT_ENABLED || !sort?.field) {
+  const serialized = _.map(
+    normalizeSort(sort),
+    ({ field, order }) => `${field}:${order}`,
+  ).join(",");
+
+  if (!TABLE_CAPABILITIES.SORT_ENABLED || !serialized) {
     return {};
   }
 
-  return {
-    [SORT_PARAM_KEYS.FIELD]: sort.field,
-    [SORT_PARAM_KEYS.ORDER]: sort.order ?? SORT_ORDERS.ASC,
-  };
+  return { [SORT_PARAM_KEYS.SORT]: serialized };
 }
 
 /**
@@ -166,14 +187,32 @@ export function buildSortParams(sort) {
  * unsorted matters: it is the only way back to the backend's own default
  * ordering once a column has been touched.
  */
-export function nextSortState(currentSort, field) {
-  if (currentSort?.field !== field) {
-    return { field, order: SORT_ORDERS.ASC };
+export function nextSortState(currentSort, field, { multi = false } = {}) {
+  const sorts = normalizeSort(currentSort);
+  const index = _.findIndex(sorts, { field });
+  const current = sorts[index];
+
+  if (!multi) {
+    if (!current) {
+      return [{ field, order: SORT_ORDERS.ASC }];
+    }
+
+    return current.order === SORT_ORDERS.ASC
+      ? [{ field, order: SORT_ORDERS.DESC }]
+      : [];
   }
 
-  return currentSort.order === SORT_ORDERS.ASC
-    ? { field, order: SORT_ORDERS.DESC }
-    : null;
+  if (!current) {
+    return [...sorts, { field, order: SORT_ORDERS.ASC }];
+  }
+
+  if (current.order === SORT_ORDERS.ASC) {
+    return _.map(sorts, (entry, entryIndex) =>
+      entryIndex === index ? { ...entry, order: SORT_ORDERS.DESC } : entry,
+    );
+  }
+
+  return _.filter(sorts, (_entry, entryIndex) => entryIndex !== index);
 }
 
 export function getCellValue(row, column) {

@@ -42,6 +42,7 @@ function DataTableDatePicker({
   const [open, setOpen] = useState(false);
   const selected = parseValue(value);
   const isDateTime = type === COLUMN_TYPES.DATE_TIME;
+  const [draftDate, setDraftDate] = useState(selected);
   const defaultTime = bound === "to" ? "23:59" : "00:00";
   const time = selected ? format(selected, "HH:mm") : defaultTime;
   const [draftTime, setDraftTime] = useState(() => {
@@ -61,6 +62,7 @@ function DataTableDatePicker({
   const changeOpen = (nextOpen) => {
     if (nextOpen) {
       const [hours, minutes] = time.split(":");
+      setDraftDate(selected);
       setDraftTime({ hours, minutes });
     }
 
@@ -79,9 +81,10 @@ function DataTableDatePicker({
       return;
     }
 
-    const [hours, minutes] = time.split(":").map(Number);
-    const dateTime = setMinutes(setHours(date, hours), minutes);
-    onChange(format(dateTime, DATE_TIME_VALUE_FORMAT));
+    // Date-time remains a local draft until Apply. Otherwise selecting the
+    // day commits the default time and fires a request before the user has
+    // chosen the actual time.
+    setDraftDate(date);
   };
 
   const changeTimePart = (part) => (event) => {
@@ -90,10 +93,10 @@ function DataTableDatePicker({
   };
 
   const applyTime = () => {
-    if (!selected || !isDraftTimeValid) return;
+    if (!draftDate || !isDraftTimeValid) return;
 
     const dateTime = setMinutes(
-      setHours(selected, parsedDraftHours),
+      setHours(draftDate, parsedDraftHours),
       parsedDraftMinutes,
     );
     onChange(format(dateTime, DATE_TIME_VALUE_FORMAT));
@@ -127,8 +130,8 @@ function DataTableDatePicker({
       <PopoverContent align="start" className="w-auto p-0">
         <Calendar
           mode="single"
-          selected={selected}
-          defaultMonth={selected}
+          selected={isDateTime ? draftDate : selected}
+          defaultMonth={isDateTime ? draftDate : selected}
           onSelect={changeDate}
           captionLayout="label"
         />
@@ -141,7 +144,7 @@ function DataTableDatePicker({
                   <Input
                     value={draftTime.hours}
                     onChange={changeTimePart("hours")}
-                    disabled={!selected}
+                    disabled={!draftDate}
                     inputMode="numeric"
                     maxLength={2}
                     aria-label={`${label} ${bound} hour`}
@@ -156,7 +159,7 @@ function DataTableDatePicker({
                   <Input
                     value={draftTime.minutes}
                     onChange={changeTimePart("minutes")}
-                    disabled={!selected}
+                    disabled={!draftDate}
                     inputMode="numeric"
                     maxLength={2}
                     aria-label={`${label} ${bound} minute`}
@@ -174,7 +177,7 @@ function DataTableDatePicker({
               <Button
                 type="button"
                 size="sm"
-                disabled={!selected || !isDraftTimeValid}
+                disabled={!draftDate || !isDraftTimeValid}
                 onClick={applyTime}
               >
                 Apply

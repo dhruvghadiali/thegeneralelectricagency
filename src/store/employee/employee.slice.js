@@ -26,6 +26,7 @@ const initialState = {
   ...createTableState({
     limit: EMPLOYEE_TABLE_DEFAULTS.LIMIT,
     sort: EMPLOYEE_TABLE_DEFAULTS.SORT,
+    columnFilters: EMPLOYEE_TABLE_DEFAULTS.FILTERS,
   }),
   dialog: null,
   isCreating: false,

@@ -1,7 +1,7 @@
 import _ from "lodash";
 
 import { EMPLOYEE_TABLE_DEFAULTS, ROLE_BY_USER_TYPE, TABLE_DEFAULTS, USER_TYPE_BY_ROLE } from "@Enums";
-import { buildColumnFilterParams, buildSortParams } from "@/utils/dataTable.util";
+import { buildListQueryParams } from "@/utils/listQuery.util";
 
 /**
  * The employee form works in camelCase, the backend contract is snake_case.
@@ -75,8 +75,8 @@ export function toEmployeeUpdatePayload(values) {
  * Turns the table's query state into the query string the list endpoint
  * takes:
  *
- *   ?page=1&limit=20&search=raj&sort_by=first_name&sort_order=asc
- *   &user_type=employee&is_active=true&created_at_from=2024-01-01
+ *   ?search=raj&user_type=employee&is_active=true
+ *   &sort=first_name:asc,created_at:desc&page=1&limit=20
  *
  * The column filters are built from the column definitions, so adding a
  * filterable column to employee.columns.jsx is all it takes to add a
@@ -87,18 +87,17 @@ export function toEmployeeListParams({
   page = TABLE_DEFAULTS.PAGE,
   limit = EMPLOYEE_TABLE_DEFAULTS.LIMIT,
   search = "",
-  sort = null,
+  sort = [],
   filters = {},
 } = {}) {
-  const params = {
+  return buildListQueryParams({
+    columns,
     page,
     limit,
-    search: _.trim(search) || undefined,
-    ...buildSortParams(sort),
-    ...buildColumnFilterParams(columns, filters),
-  };
-
-  return _.omitBy(params, _.isUndefined);
+    search,
+    sort,
+    filters,
+  });
 }
 
 export function fromEmployeeResponse(response = {}) {
