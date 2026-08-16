@@ -3,7 +3,7 @@ import kegIcon from "@/assets/images/keg-icon.png";
 import premiumIcon from "@/assets/images/premium-transmission-icon.png";
 import { Award, BadgeCheck, Globe2, PackageCheck } from "lucide-react";
 import { useState } from "react";
-import { Typography } from "@/components/ui/typography";
+import { Typography } from "@shadcnComponent/typography";
 
 const partners = [
   {

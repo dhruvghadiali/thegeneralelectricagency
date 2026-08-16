@@ -8,30 +8,30 @@ import {
   ShoppingCart,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@shadcnComponent/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@shadcnComponent/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@shadcnComponent/select";
 
-import SummaryCard from "@/components/screen/dashboard/summaryCard";
-import PaymentCard from "@/components/screen/dashboard/paymentCard";
-import PaymentAlerts from "@/components/screen/dashboard/paymentAlerts";
-import InventoryTable from "@/components/screen/dashboard/inventoryTable";
-import TopCompaniesCard from "@/components/screen/dashboard/topCompaniesCard";
-import PerformanceChart from "@/components/screen/dashboard/performanceChart";
-import DamagedStockTable from "@/components/screen/dashboard/damagedStockTable";
-import PageBreadcrumb from "@/components/common/pageBreadcrumb";
+import SummaryCard from "@screenComponent/dashboard/shared/summaryCard";
+import PaymentCard from "./paymentCard";
+import PaymentAlerts from "./paymentAlerts";
+import InventoryTable from "./inventoryTable";
+import TopCompaniesCard from "./topCompaniesCard";
+import PerformanceChart from "./performanceChart";
+import DamagedStockTable from "./damagedStockTable";
+import PageBreadcrumb from "@commonComponent/pageBreadcrumb";
 
 // Remove when API will return the data
 import { monthlyPerformance } from "./dashboard.data";

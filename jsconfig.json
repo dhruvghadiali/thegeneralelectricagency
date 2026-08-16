@@ -6,13 +6,13 @@
             "@/*": [
                 "./src/*"
             ],
-            "@ShadcnComponents/*": [
+            "@shadcnComponent/*": [
                 "./src/components/ui/*"
             ],
-            "@Components/*": [
+            "@commonComponent/*": [
                 "./src/components/common/*"
             ],
-            "@ScreenComponents/*": [
+            "@screenComponent/*": [
                 "./src/components/screen/*"
             ],
             "@Assets/*": [

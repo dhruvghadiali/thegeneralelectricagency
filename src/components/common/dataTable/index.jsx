@@ -2,7 +2,7 @@ import { useState } from "react";
 import _ from "lodash";
 
 import { cn } from "@/lib/utils";
-import { Card } from "@/components/ui/card";
+import { Card } from "@shadcnComponent/card";
 import { getVisibleColumns, renderCell } from "@/utils/dataTable.util";
 import {
   Table,
@@ -10,18 +10,18 @@ import {
   TableCell,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@shadcnComponent/table";
 
-import DataTableToolbar from "@/components/common/dataTable/dataTableToolbar";
-import DataTableMobileList from "@/components/common/dataTable/dataTableMobileList";
-import DataTableSortHeader from "@/components/common/dataTable/dataTableSortHeader";
-import DataTablePagination from "@/components/common/dataTable/dataTablePagination";
-import DataTableMobileFilters from "@/components/common/dataTable/dataTableMobileFilters";
+import DataTableToolbar from "@commonComponent/dataTable/dataTableToolbar";
+import DataTableMobileList from "@commonComponent/dataTable/dataTableMobileList";
+import DataTableSortHeader from "@commonComponent/dataTable/dataTableSortHeader";
+import DataTablePagination from "@commonComponent/dataTable/dataTablePagination";
+import DataTableMobileFilters from "@commonComponent/dataTable/dataTableMobileFilters";
 import {
   DataTableEmptyState,
   DataTableError,
   DataTableSkeleton,
-} from "@/components/common/dataTable/dataTableStates";
+} from "@commonComponent/dataTable/dataTableStates";
 
 /**
  * Keeps both scrollbars inside the table's own viewport instead of at the far

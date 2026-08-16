@@ -2,7 +2,7 @@ import _ from "lodash";
 
 import { getFilterableColumns } from "@/utils/dataTable.util";
 
-import DataTableColumnFilter from "@/components/common/dataTable/dataTableColumnFilter";
+import DataTableColumnFilter from "@commonComponent/dataTable/dataTableColumnFilter";
 
 /**
  * The phone's stand-in for the filter row. There is no table below md, so

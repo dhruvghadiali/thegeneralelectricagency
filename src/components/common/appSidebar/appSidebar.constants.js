@@ -29,6 +29,7 @@ export const SIDEBAR_NAV_ITEMS_BY_ROLE = {
   ],
   [ROLE_PATHS.WAREHOUSE_MANAGER]: [
     { title: "Dashboard", url: "/dashboard", icon: LucideHome },
+    { title: "Stocks", url: "/stocks", icon: TrendingUp },
     { title: "Products", url: "/products", icon: Boxes },
     { title: "Settings", url: "/settings", icon: Settings },
   ],

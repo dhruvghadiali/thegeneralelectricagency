@@ -1,11 +1,11 @@
 import ShowcaseScrollNavigation from "@/components/ShowcaseScrollNavigation";
-import LoadingScreen from "@/components/ui/loading-screen";
+import LoadingScreen from "@shadcnComponent/loading-screen";
 import { showcaseSections } from "@/utils/showcaseSections";
-import HomeScreenComponent from "@ScreenComponents/home";
-import ServicesIntroComponent from "@ScreenComponents/services";
-import ClientsIntroComponent from "@ScreenComponents/clients";
-import PartnersScreenComponent from "@ScreenComponents/partners";
-import ContactUsScreenComponent from "@ScreenComponents/contactUs";
+import HomeScreenComponent from "@screenComponent/home";
+import ServicesIntroComponent from "@screenComponent/services";
+import ClientsIntroComponent from "@screenComponent/clients";
+import PartnersScreenComponent from "@screenComponent/partners";
+import ContactUsScreenComponent from "@screenComponent/contactUs";
 import { SHOWCASE_FOREGROUND_FRAME_SCROLL_VH } from "@/utils/showcaseTimeline";
 import useShowcaseScrollState from "@/utils/useShowcaseScrollState";
 import useScrollLock from "@/utils/useScrollLock";

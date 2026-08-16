@@ -2,20 +2,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { Building2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import DataTable from "@/components/common/dataTable";
+import DataTable from "@commonComponent/dataTable";
 import { ROLE_PATHS } from "@Enums";
 import {
   companyDetailsClosed,
   companyDetailsOpened,
 } from "@Redux/company/company.slice";
 import { selectSelectedCompany } from "@Redux/company/company.selector";
-import { COMPANY_COLUMNS } from "@/components/screen/companies/company.columns";
-import { useCompanyList } from "@/components/screen/companies/useCompanyList";
+import { COMPANY_COLUMNS } from "@screenComponent/companies/company.columns";
+import { useCompanyList } from "@screenComponent/companies/useCompanyList";
 
-import CompanyActions from "@/components/screen/companies/companyActions";
-import CompanyDetailSheet from "@/components/screen/companies/companyDetailSheet";
-import CompanyHeader from "@/components/screen/companies/companyHeader";
-import CompanySummary from "@/components/screen/companies/companySummary";
+import CompanyActions from "@screenComponent/companies/companyActions";
+import CompanyDetailSheet from "@screenComponent/companies/companyDetailSheet";
+import CompanyHeader from "@screenComponent/companies/companyHeader";
+import CompanySummary from "@screenComponent/companies/companySummary";
 
 function Companies() {
   const dispatch = useDispatch();

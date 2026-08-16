@@ -1,4 +1,4 @@
-import Employees from "@/components/screen/employees";
+import Employees from "@screenComponent/employees";
 
 function EmployeesPage() {
   return <Employees />;

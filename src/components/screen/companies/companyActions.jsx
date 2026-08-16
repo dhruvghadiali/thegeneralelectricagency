@@ -1,6 +1,6 @@
 import { Eye } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@shadcnComponent/button";
 
 function CompanyActions({ company, onView }) {
   return (

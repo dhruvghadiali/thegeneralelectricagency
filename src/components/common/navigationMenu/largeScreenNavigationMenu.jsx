@@ -1,7 +1,7 @@
 import { ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Typography } from "@/components/ui/typography";
+import { Typography } from "@shadcnComponent/typography";
 
 const getSectionId = (href) => href?.startsWith("#") ? href.replace("#", "") : "";
 

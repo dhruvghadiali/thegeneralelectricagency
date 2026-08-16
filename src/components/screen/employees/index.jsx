@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { UsersRound } from "lucide-react";
 
-import DataTable from "@/components/common/dataTable";
+import DataTable from "@commonComponent/dataTable";
 import {
   createEmployee,
   deleteEmployee,
@@ -12,13 +12,13 @@ import {
   employeeDialogClosed,
   employeeDialogOpened,
 } from "@Redux/employee/employee.slice";
-import { EMPLOYEE_COLUMNS } from "@/components/screen/employees/employee.columns";
-import { useEmployeeList } from "@/components/screen/employees/useEmployeeList";
+import { EMPLOYEE_COLUMNS } from "@screenComponent/employees/employee.columns";
+import { useEmployeeList } from "@screenComponent/employees/useEmployeeList";
 
-import EmployeeHeader from "@/components/screen/employees/employeeHeader";
-import EmployeeSummary from "@/components/screen/employees/employeeSummary";
-import EmployeeDialogs from "@/components/screen/employees/employeeDialogs";
-import EmployeeActions from "@/components/screen/employees/employeeActions";
+import EmployeeHeader from "@screenComponent/employees/employeeHeader";
+import EmployeeSummary from "@screenComponent/employees/employeeSummary";
+import EmployeeDialogs from "@screenComponent/employees/employeeDialogs";
+import EmployeeActions from "@screenComponent/employees/employeeActions";
 
 /**
  * Searching, sorting, filtering and paging are all done by the backend and

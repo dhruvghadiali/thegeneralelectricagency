@@ -1,19 +1,19 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Boxes } from "lucide-react";
 
-import DataTable from "@/components/common/dataTable";
+import DataTable from "@commonComponent/dataTable";
 import {
   stockDetailsClosed,
   stockDetailsOpened,
 } from "@Redux/stock/stock.slice";
 import { selectSelectedStock } from "@Redux/stock/stock.selector";
-import { STOCK_COLUMNS } from "@/components/screen/stocks/stock.columns";
-import { useStockList } from "@/components/screen/stocks/useStockList";
+import { STOCK_COLUMNS } from "@screenComponent/stocks/stock.columns";
+import { useStockList } from "@screenComponent/stocks/useStockList";
 
-import StockActions from "@/components/screen/stocks/stockActions";
-import StockDetailSheet from "@/components/screen/stocks/stockDetailSheet";
-import StockHeader from "@/components/screen/stocks/stockHeader";
-import StockSummary from "@/components/screen/stocks/stockSummary";
+import StockActions from "@screenComponent/stocks/stockActions";
+import StockDetailSheet from "@screenComponent/stocks/stockDetailSheet";
+import StockHeader from "@screenComponent/stocks/stockHeader";
+import StockSummary from "@screenComponent/stocks/stockSummary";
 
 function Stocks() {
   const dispatch = useDispatch();

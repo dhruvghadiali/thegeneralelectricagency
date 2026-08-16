@@ -6,7 +6,7 @@ import {
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
+} from "@shadcnComponent/chart";
 
 const chartConfig = {
   sales: { label: "Products sold", color: "var(--chart-1)" },

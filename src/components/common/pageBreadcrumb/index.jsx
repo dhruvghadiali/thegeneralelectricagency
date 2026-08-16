@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ChevronRight } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@shadcnComponent/button";
 
 function PageBreadcrumb({ items }) {
   return (

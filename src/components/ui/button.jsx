@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 
-import { buttonVariants } from "@/components/ui/button-variants"
+import { buttonVariants } from "@shadcnComponent/button-variants"
 import { cn } from "@/lib/utils"
 
 function Button({

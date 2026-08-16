@@ -1,7 +1,7 @@
 import { CalendarDays, Mail, Phone } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@shadcnComponent/badge";
+import { Avatar, AvatarFallback } from "@shadcnComponent/avatar";
 import {
   COLUMN_TYPES,
   EMPLOYEE_STATUS_OPTIONS,
@@ -13,7 +13,7 @@ import {
   roleLabel,
   statusLabel,
   statusVariant,
-} from "@/components/screen/employees/employee.utils";
+} from "@screenComponent/employees/employee.utils";
 
 /**
  * The whole employee table in one place. Each entry says what to show, how to

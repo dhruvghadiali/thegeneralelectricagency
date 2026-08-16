@@ -13,24 +13,24 @@ import {
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@shadcnComponent/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@shadcnComponent/card";
+import { Input } from "@shadcnComponent/input";
+import { Label } from "@shadcnComponent/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+} from "@shadcnComponent/select";
+import { Textarea } from "@shadcnComponent/textarea";
 import {
   COMPANY_DETAILS_INITIAL_VALUES,
   EMPTY_COMPANY_ADDRESS,
@@ -38,7 +38,7 @@ import {
 } from "@Forms/company/company-details.initialValues";
 import { companyDetailsValidationSchema } from "@Forms/company/company-details.validation.schema";
 import { COMPANY_TYPE_OPTIONS, CONTACT_POSITION_OPTIONS } from "@Enums";
-import PageBreadcrumb from "@/components/common/pageBreadcrumb";
+import PageBreadcrumb from "@commonComponent/pageBreadcrumb";
 import { createCompany } from "@Redux/company/company.action";
 
 function Field({ id, label, error, optional = false, children }) {

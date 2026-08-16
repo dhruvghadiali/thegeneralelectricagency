@@ -1,7 +1,7 @@
 import { CalendarCheck, Clock3, FileWarning, IndianRupee, WalletCards } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@shadcnComponent/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shadcnComponent/card";
 
 const _agingBuckets = [
   { label: "Not due", value: "₹15.2L", share: 55, color: "bg-emerald-500" },

@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { employeeCompanyApi } from "@Api";
-import { getDummyCompanyList } from "@/components/screen/companies/company.data";
+import { getDummyCompanyList } from "@screenComponent/companies/company.data";
 import {
   fromCompanyCreateError,
   fromCompanyListResponse,

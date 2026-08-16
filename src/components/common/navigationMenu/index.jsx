@@ -1,9 +1,9 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@shadcnComponent/avatar";
 import { useEffect, useState } from "react";
 
 import logoImage from "@Assets/images/logo.png";
-import LargeScreenNavigationMenuComponent from "@Components/navigationMenu/largeScreenNavigationMenu";
-import MobileScreenNavigationMenuComponent from "@Components/navigationMenu/mobileScreenNavigationMenu";
+import LargeScreenNavigationMenuComponent from "@commonComponent/navigationMenu/largeScreenNavigationMenu";
+import MobileScreenNavigationMenuComponent from "@commonComponent/navigationMenu/mobileScreenNavigationMenu";
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [

@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@shadcnComponent/card";
 
 function SummaryCard({ icon, iconClassName, value, label }) {
   const Icon = icon;

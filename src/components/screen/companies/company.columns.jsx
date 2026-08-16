@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 
 import { COLUMN_TYPES, COMPANY_TYPE_OPTIONS, MOBILE_SLOTS } from "@Enums";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@shadcnComponent/badge";
 
 export const COMPANY_COLUMNS = [
   {

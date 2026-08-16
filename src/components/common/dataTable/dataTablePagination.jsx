@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import _ from "lodash";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@shadcnComponent/button";
 import { TABLE_PAGE_SIZE_OPTIONS } from "@Enums";
 import { PAGINATION_ELLIPSIS } from "@/utils/pagination.util";
 import {
@@ -10,7 +10,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@shadcnComponent/select";
 
 /**
  * Server-driven pager: `pageItems` arrives already collapsed with ellipses,

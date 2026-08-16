@@ -1,6 +1,6 @@
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@shadcnComponent/card";
 import { cn } from "@/lib/utils";
 
 function SummaryCard({ item }) {

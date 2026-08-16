@@ -1,4 +1,4 @@
-import CompanyDetailsForm from "@/components/screen/companyDetails/companyDetailsForm";
+import CompanyDetailsForm from "@screenComponent/companyDetails/companyDetailsForm";
 
 function CompanyDetailsPage() {
   return <CompanyDetailsForm />;

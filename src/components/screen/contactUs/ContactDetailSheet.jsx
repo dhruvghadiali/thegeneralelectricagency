@@ -2,7 +2,7 @@ import { ExternalLink, Mail, MapPin, Phone, X } from "lucide-react";
 import { createPortal } from "react-dom";
 
 import useScrollLock from "@/utils/useScrollLock";
-import { Typography } from "@/components/ui/typography";
+import { Typography } from "@shadcnComponent/typography";
 import {
   CONTACT_SHEET_TYPE,
   emailContacts,

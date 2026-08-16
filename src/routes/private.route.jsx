@@ -3,13 +3,13 @@ import { Clock3, ShieldCheck } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-import AppSidebar from "@Components/appSidebar";
+import AppSidebar from "@commonComponent/appSidebar";
 
 import { ROLE_OPTIONS } from "@Enums";
 import { loggedOut } from "@/store/auth/auth.slice";
 import { getTokenExpiration, isAuthTokenValid } from "@/routes/auth-token.util";
-import { SIDEBAR_NAV_ITEMS_BY_ROLE } from "@Components/appSidebar/appSidebar.constants";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SIDEBAR_NAV_ITEMS_BY_ROLE } from "@commonComponent/appSidebar/appSidebar.constants";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@shadcnComponent/sidebar";
 
 function PrivateRoute() {
   const dispatch = useDispatch();

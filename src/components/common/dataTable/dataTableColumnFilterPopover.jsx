@@ -2,12 +2,12 @@ import _ from "lodash";
 import { Filter, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Button } from "@shadcnComponent/button";
 import { COLUMN_TYPES } from "@Enums";
 import { emptyFilterValue, isFilterActive, isRangeColumn } from "@/utils/dataTable.util";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@shadcnComponent/popover";
 
-import DataTableColumnFilter from "@/components/common/dataTable/dataTableColumnFilter";
+import DataTableColumnFilter from "@commonComponent/dataTable/dataTableColumnFilter";
 
 /**
  * A range filter is two controls and a separator, so it needs more room than

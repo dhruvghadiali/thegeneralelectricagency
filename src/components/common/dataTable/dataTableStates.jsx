@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { Inbox, RotateCw, TriangleAlert } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@shadcnComponent/button";
 
 /**
  * Placeholder rows sized to the real table, shown only on the first load -

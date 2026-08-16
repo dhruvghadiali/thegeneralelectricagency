@@ -1,7 +1,7 @@
 import { Eye } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
-import PageBreadcrumb from "@/components/common/pageBreadcrumb";
+import { Badge } from "@shadcnComponent/badge";
+import PageBreadcrumb from "@commonComponent/pageBreadcrumb";
 
 function StockHeader() {
   return (

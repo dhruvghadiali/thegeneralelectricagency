@@ -8,7 +8,7 @@ import {
   serviceProductDetails,
 } from "./servicesShowcase.constants";
 import { useIsMobileServicesView } from "./useIsMobileServicesView";
-import { Typography } from "@/components/ui/typography";
+import { Typography } from "@shadcnComponent/typography";
 
 function getCircularDistance(index, activeIndex, itemCount) {
   const rawDistance = index - activeIndex;

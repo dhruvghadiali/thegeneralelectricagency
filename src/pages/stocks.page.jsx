@@ -1,4 +1,4 @@
-import Stocks from "@/components/screen/stocks";
+import Stocks from "@screenComponent/stocks";
 
 function StocksPage() {
   return <Stocks />;

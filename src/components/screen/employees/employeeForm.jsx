@@ -1,18 +1,18 @@
 import { useFormik } from "formik";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { DialogClose, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@shadcnComponent/button";
+import { Input } from "@shadcnComponent/input";
+import { Label } from "@shadcnComponent/label";
+import { DialogClose, DialogFooter } from "@shadcnComponent/dialog";
 import { employeeValidationSchema } from "@Forms/employee/employee.validation.schema";
-import { ASSIGNABLE_ROLE_OPTIONS } from "@/components/screen/employees/employee.utils";
+import { ASSIGNABLE_ROLE_OPTIONS } from "@screenComponent/employees/employee.utils";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@shadcnComponent/select";
 
 function FormField({ id, label, error, children }) {
   return (

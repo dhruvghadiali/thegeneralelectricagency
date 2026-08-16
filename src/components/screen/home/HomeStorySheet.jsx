@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 
 import useScrollLock from "@/utils/useScrollLock";
 import { storyMilestones } from "./homeShowcase.constants";
-import { Typography } from "@/components/ui/typography";
+import { Typography } from "@shadcnComponent/typography";
 
 function HomeStorySheet({ yearsInBusiness, onClose }) {
   // This component only mounts while the sheet is open.

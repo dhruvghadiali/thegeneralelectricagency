@@ -1,6 +1,6 @@
 import { Building2 } from "lucide-react";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shadcnComponent/card";
 import { topCompanies } from "./dashboard.data";
 
 function TopCompaniesCard() {

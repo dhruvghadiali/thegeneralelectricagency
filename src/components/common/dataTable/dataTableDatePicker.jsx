@@ -10,15 +10,15 @@ import { CalendarIcon, X } from "lucide-react";
 
 import { COLUMN_TYPES } from "@Enums";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@shadcnComponent/button";
+import { Calendar } from "@shadcnComponent/calendar";
+import { Input } from "@shadcnComponent/input";
+import { Label } from "@shadcnComponent/label";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@shadcnComponent/popover";
 
 const DATE_VALUE_FORMAT = "yyyy-MM-dd";
 const DATE_TIME_VALUE_FORMAT = "yyyy-MM-dd'T'HH:mm";

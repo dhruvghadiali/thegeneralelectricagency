@@ -1,8 +1,8 @@
 import { Eye, Plus } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import PageBreadcrumb from "@/components/common/pageBreadcrumb";
+import { Badge } from "@shadcnComponent/badge";
+import { Button } from "@shadcnComponent/button";
+import PageBreadcrumb from "@commonComponent/pageBreadcrumb";
 
 function CompanyHeader({ canAddCompany, onAddCompany }) {
   return (

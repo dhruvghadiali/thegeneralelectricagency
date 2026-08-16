@@ -1,8 +1,8 @@
 import { fetchEmployees } from "@Redux/employee/employee.action";
 import { employeeTableActions } from "@Redux/employee/employee.slice";
 import { employeeTableSelectors } from "@Redux/employee/employee.selector";
-import { useDataTable } from "@/components/common/dataTable/useDataTable";
-import { EMPLOYEE_COLUMNS } from "@/components/screen/employees/employee.columns";
+import { useDataTable } from "@commonComponent/dataTable/useDataTable";
+import { EMPLOYEE_COLUMNS } from "@screenComponent/employees/employee.columns";
 
 /**
  * Binds the employee slice to the shared table controller.

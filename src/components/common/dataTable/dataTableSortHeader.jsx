@@ -2,14 +2,14 @@ import { ArrowDown, ArrowUp, ChevronsUpDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { SORT_ORDERS } from "@Enums";
-import { TableHead } from "@/components/ui/table";
+import { TableHead } from "@shadcnComponent/table";
 import {
   isFilterableColumn,
   isSortableColumn,
   nextSortState,
 } from "@/utils/dataTable.util";
 
-import DataTableColumnFilterPopover from "@/components/common/dataTable/dataTableColumnFilterPopover";
+import DataTableColumnFilterPopover from "@commonComponent/dataTable/dataTableColumnFilterPopover";
 
 const SORT_ICONS = {
   [SORT_ORDERS.ASC]: ArrowUp,

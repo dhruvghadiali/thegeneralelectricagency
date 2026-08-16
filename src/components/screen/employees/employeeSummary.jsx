@@ -7,7 +7,7 @@ import {
   selectEmployeeRoleCounts,
 } from "@Redux/employee/employee.selector";
 
-import SummaryCard from "@/components/screen/employees/summaryCard";
+import SummaryCard from "@screenComponent/employees/summaryCard";
 
 /**
  * Only the total is a real directory-wide figure - it comes from the

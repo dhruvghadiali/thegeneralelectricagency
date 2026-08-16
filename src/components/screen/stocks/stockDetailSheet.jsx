@@ -9,21 +9,21 @@ import {
   TriangleAlert,
 } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+import { Badge } from "@shadcnComponent/badge";
+import { Separator } from "@shadcnComponent/separator";
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet";
+} from "@shadcnComponent/sheet";
 import {
   formatCurrency,
   specificationLabel,
   stockCategoryLabel,
   stockStatus,
-} from "@/components/screen/stocks/stock.utils";
+} from "@screenComponent/stocks/stock.utils";
 
 function QuantityCard({ icon, label, value, tone }) {
   const Icon = icon;

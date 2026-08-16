@@ -20,7 +20,7 @@ import EmployeesPage from "@/pages/employees.page";
 import CompaniesPage from "@/pages/companies.page";
 import CompanyDetailsPage from "@/pages/company-details.page";
 import LenisScrollProvider from "@/components/LenisScrollProvider";
-import PlaceholderScreen from "@/components/common/pageBreadcrumb/placeholderScreen";
+import PlaceholderScreen from "@commonComponent/pageBreadcrumb/placeholderScreen";
 
 function App() {
   return (

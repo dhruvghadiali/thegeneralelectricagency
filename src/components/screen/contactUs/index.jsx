@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import ContactActionButton from "./ContactActionButton";
 import ContactDetailSheet from "./ContactDetailSheet";
 import { CONTACT_SHEET_TYPE } from "./contactShowcase.constants";
-import { Typography } from "@/components/ui/typography";
+import { Typography } from "@shadcnComponent/typography";
 
 function ContactUsScreenComponent() {
   const [activeContactSheet, setActiveContactSheet] = useState(null);

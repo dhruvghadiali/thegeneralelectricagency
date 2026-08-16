@@ -9,16 +9,16 @@ import {
   UserRound,
 } from "lucide-react";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback } from "@shadcnComponent/avatar";
+import { Badge } from "@shadcnComponent/badge";
+import { Separator } from "@shadcnComponent/separator";
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet";
+} from "@shadcnComponent/sheet";
 import {
   COMPANY_TYPE_OPTIONS,
   CONTACT_POSITION_LABELS,

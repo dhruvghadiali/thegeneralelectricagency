@@ -6,11 +6,11 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@ShadcnComponents/card";
-import { Typography } from "@ShadcnComponents/typography";
+} from "@shadcnComponent/card";
+import { Typography } from "@shadcnComponent/typography";
 
 import logoImage from "@Assets/images/logo.png";
-import SigninForm from "@ScreenComponents/signin/SigninForm";
+import SigninForm from "@screenComponent/signin/SigninForm";
 
 function SigninScreenComponent() {
   const navigate = useNavigate();

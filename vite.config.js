@@ -9,9 +9,9 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      "@ShadcnComponents": path.resolve(__dirname, "./src/components/ui"),
-      "@Components": path.resolve(__dirname, "./src/components/common"),
-      "@ScreenComponents": path.resolve(__dirname, "./src/components/screen"),
+      "@shadcnComponent": path.resolve(__dirname, "./src/components/ui"),
+      "@commonComponent": path.resolve(__dirname, "./src/components/common"),
+      "@screenComponent": path.resolve(__dirname, "./src/components/screen"),
       "@Assets": path.resolve(__dirname, "./src/assets"),
       "@Redux": path.resolve(__dirname, "./src/store"),
       "@Enums": path.resolve(__dirname, "./src/enums"),

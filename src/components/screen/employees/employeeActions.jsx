@@ -1,7 +1,7 @@
 import { Pencil, Trash2 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { fullName } from "@/components/screen/employees/employee.utils";
+import { Button } from "@shadcnComponent/button";
+import { fullName } from "@screenComponent/employees/employee.utils";
 
 function EmployeeActions({ employee, onEdit, onDelete }) {
   const employeeName = fullName(employee);

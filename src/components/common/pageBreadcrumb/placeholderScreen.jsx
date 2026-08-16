@@ -1,4 +1,4 @@
-import PageBreadcrumb from "@Components/pageBreadcrumb";
+import PageBreadcrumb from "@commonComponent/pageBreadcrumb";
 
 function PlaceholderScreen({ eyebrow, title, description, showDashboardParent = true }) {
   return (

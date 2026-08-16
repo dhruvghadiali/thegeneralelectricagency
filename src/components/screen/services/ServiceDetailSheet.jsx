@@ -2,7 +2,7 @@ import { CheckCircle2, Layers3, X } from "lucide-react";
 import { createPortal } from "react-dom";
 
 import useScrollLock from "@/utils/useScrollLock";
-import { Typography } from "@/components/ui/typography";
+import { Typography } from "@shadcnComponent/typography";
 
 function ServiceDetailSheet({
   selectedService,

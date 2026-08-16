@@ -1,4 +1,4 @@
-import Companies from "@/components/screen/companies";
+import Companies from "@screenComponent/companies";
 
 function CompaniesPage() {
   return <Companies />;

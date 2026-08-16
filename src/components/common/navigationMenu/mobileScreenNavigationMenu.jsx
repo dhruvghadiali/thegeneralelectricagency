@@ -1,17 +1,17 @@
-import { Button } from "@ShadcnComponents/button";
+import { Button } from "@shadcnComponent/button";
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-} from "@ShadcnComponents/navigation-menu";
+} from "@shadcnComponent/navigation-menu";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@ShadcnComponents/popover";
+} from "@shadcnComponent/popover";
 import { useNavigate } from "react-router-dom";
-import { Typography } from "@/components/ui/typography";
+import { Typography } from "@shadcnComponent/typography";
 
 const getSectionId = (href) => (href?.startsWith("#") ? href.replace("#", "") : "");
 

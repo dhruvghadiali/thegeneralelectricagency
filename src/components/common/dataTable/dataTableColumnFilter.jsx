@@ -1,8 +1,8 @@
 import _ from "lodash";
 
 import { cn } from "@/lib/utils";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Input } from "@shadcnComponent/input";
+import { Label } from "@shadcnComponent/label";
 import { COLUMN_TYPES, FILTER_ALL } from "@Enums";
 import { emptyFilterValue, isDateColumn } from "@/utils/dataTable.util";
 import {
@@ -11,8 +11,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import DataTableDatePicker from "@/components/common/dataTable/dataTableDatePicker";
+} from "@shadcnComponent/select";
+import DataTableDatePicker from "@commonComponent/dataTable/dataTableDatePicker";
 
 /**
  * Number ranges remain plain inputs. Date and datetime ranges use the

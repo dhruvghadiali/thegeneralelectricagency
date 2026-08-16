@@ -10,7 +10,7 @@ import {
   companyTableSelectors,
   selectCompanySummary,
 } from "@Redux/company/company.selector";
-import SummaryCard from "@/components/screen/employees/summaryCard";
+import SummaryCard from "@screenComponent/employees/summaryCard";
 
 function CompanySummary() {
   const { total } = useSelector(companyTableSelectors.selectPagination);

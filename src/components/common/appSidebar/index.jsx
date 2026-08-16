@@ -13,8 +13,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import { Typography } from "@/components/ui/typography";
+} from "@shadcnComponent/sidebar";
+import { Typography } from "@shadcnComponent/typography";
 import { loggedOut } from "@/store/auth/auth.slice";
 
 import { SIDEBAR_NAV_ITEMS_BY_ROLE } from "./appSidebar.constants";

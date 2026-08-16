@@ -10,24 +10,24 @@ import {
   UserRoundCog,
 } from "lucide-react";
 
-import { Input } from "@ShadcnComponents/input";
-import { Label } from "@ShadcnComponents/label";
+import { Input } from "@shadcnComponent/input";
+import { Label } from "@shadcnComponent/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@ShadcnComponents/select";
+} from "@shadcnComponent/select";
 import { signIn } from "@Redux/auth/auth.action";
-import { Button } from "@ShadcnComponents/button";
-import { Typography } from "@ShadcnComponents/typography";
+import { Button } from "@shadcnComponent/button";
+import { Typography } from "@shadcnComponent/typography";
 import { togglePasswordVisibility } from "@Redux/auth/auth.slice";
 import { SIGNIN_INITIAL_VALUES } from "@Forms/signin/signin.initialValues";
 import { signinValidationSchema } from "@Forms/signin/signin.validation.schema";
 import { ROLE_OPTIONS } from "@Enums";
 
-import FormErrorAlert from "@Components/alert/formErrorAlert";
+import FormErrorAlert from "@commonComponent/alert/formErrorAlert";
 
 function SigninForm() {
   const dispatch = useDispatch();

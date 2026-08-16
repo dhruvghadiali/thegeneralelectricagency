@@ -1,8 +1,8 @@
 import { TriangleAlert } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@shadcnComponent/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shadcnComponent/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@shadcnComponent/table";
 
 // Remove when API will return the data
 import { damagedInventory } from "./dashboard.data";

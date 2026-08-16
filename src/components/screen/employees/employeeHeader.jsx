@@ -1,7 +1,7 @@
 import { Plus } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import PageBreadcrumb from "@/components/common/pageBreadcrumb";
+import { Button } from "@shadcnComponent/button";
+import PageBreadcrumb from "@commonComponent/pageBreadcrumb";
 
 function EmployeeHeader({ onAddEmployee }) {
   return (

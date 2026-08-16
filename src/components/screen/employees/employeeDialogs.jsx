@@ -1,7 +1,7 @@
 import { Trash2 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { fullName } from "@/components/screen/employees/employee.utils";
+import { Button } from "@shadcnComponent/button";
+import { fullName } from "@screenComponent/employees/employee.utils";
 import { EMPLOYEE_INITIAL_VALUES } from "@Forms/employee/employee.initialValues";
 import {
   Dialog,
@@ -11,10 +11,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@shadcnComponent/dialog";
 
-import FormErrorAlert from "@Components/alert/formErrorAlert";
-import EmployeeForm from "@/components/screen/employees/employeeForm";
+import FormErrorAlert from "@commonComponent/alert/formErrorAlert";
+import EmployeeForm from "@screenComponent/employees/employeeForm";
 
 function EmployeeDialogs({
   dialog,

@@ -1,9 +1,9 @@
 import { Loader2, Search, SlidersHorizontal, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Badge } from "@shadcnComponent/badge";
+import { Button } from "@shadcnComponent/button";
+import { Input } from "@shadcnComponent/input";
 import { getFilterableColumns } from "@/utils/dataTable.util";
 
 /**

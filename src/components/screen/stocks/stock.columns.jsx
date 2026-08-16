@@ -1,12 +1,12 @@
 import { Boxes, MapPin, PackageCheck, Tag } from "lucide-react";
 
 import { COLUMN_TYPES, MOBILE_SLOTS, STOCK_CATEGORY_OPTIONS } from "@Enums";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@shadcnComponent/badge";
 import {
   formatCurrency,
   stockCategoryLabel,
   stockStatus,
-} from "@/components/screen/stocks/stock.utils";
+} from "@screenComponent/stocks/stock.utils";
 
 export const STOCK_COLUMNS = [
   {

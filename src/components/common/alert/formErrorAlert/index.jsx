@@ -1,6 +1,6 @@
 import { AlertCircle } from "lucide-react";
 
-import { Typography } from "@/components/ui/typography";
+import { Typography } from "@shadcnComponent/typography";
 
 function FormErrorAlert({ message }) {
   if (!message) {
