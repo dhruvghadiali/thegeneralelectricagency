@@ -1,5 +1,4 @@
 import { createSelector } from "@reduxjs/toolkit";
-import _ from "lodash";
 
 import { createTableSelectors } from "@Redux/factories/table.factory";
 
@@ -32,14 +31,10 @@ export const selectEmployeeDialogState = createSelector(
   }),
 );
 
-/**
- * Per-role counts for the summary cards. These can only describe the rows
- * actually loaded, which is why the cards say so - the authoritative total
- * comes from the backend's `pagination.total`.
- */
-export const selectEmployeeRoleCounts = createSelector(
-  employeeTableSelectors.selectItems,
-  (employees) => _.countBy(employees, "role"),
+/** Directory-wide counts returned by the list endpoint's summary object. */
+export const selectEmployeeSummary = createSelector(
+  selectEmployeeState,
+  (employees) => employees.summary,
 );
 
 export default employeeTableSelectors;

@@ -1,6 +1,5 @@
-import { Eye, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 
-import { Badge } from "@shadcnComponent/badge";
 import { Button } from "@shadcnComponent/button";
 import PageBreadcrumb from "@commonComponent/pageBreadcrumb";
 
@@ -18,16 +17,11 @@ function CompanyHeader({ canAddCompany, onAddCompany }) {
             Review company profiles, locations, compliance details, and contacts.
           </p>
         </div>
-        {canAddCompany ? (
+        {canAddCompany && (
           <Button onClick={onAddCompany} className="w-full lg:w-auto">
             <Plus className="size-4" />
             Add company
           </Button>
-        ) : (
-          <Badge variant="outline" className="w-fit gap-1.5 px-3 py-1.5">
-            <Eye className="size-3.5" />
-            Read-only access
-          </Badge>
         )}
       </section>
     </div>

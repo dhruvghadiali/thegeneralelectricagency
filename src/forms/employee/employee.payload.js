@@ -135,6 +135,15 @@ export function fromEmployeePaginationResponse(pagination = {}, requested = {}) 
   };
 }
 
+export function fromEmployeeSummaryResponse(summary = {}) {
+  return {
+    totalEmployees: _.toNumber(summary.total_employees) || 0,
+    activeEmployees: _.toNumber(summary.active_employees) || 0,
+    activeWarehouseManagers:
+      _.toNumber(summary.active_warehouse_managers) || 0,
+  };
+}
+
 /**
  * The list endpoint wraps its payload one level deeper than the rest of the
  * API: `data` is an array holding a single { employees, pagination } object.
@@ -150,5 +159,6 @@ export function fromEmployeeListResponse(response = {}, requested = {}) {
       _.get(response, "pagination", {}),
       requested,
     ),
+    summary: fromEmployeeSummaryResponse(_.get(response, "summary", {})),
   };
 }

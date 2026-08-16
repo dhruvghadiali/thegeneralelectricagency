@@ -7,8 +7,26 @@ import {
   UsersRound,
 } from "lucide-react";
 
-import { COLUMN_TYPES, COMPANY_TYPE_OPTIONS, MOBILE_SLOTS } from "@Enums";
+import {
+  COLUMN_TYPES,
+  COMPANY_TYPES,
+  COMPANY_TYPE_OPTIONS,
+  MOBILE_SLOTS,
+} from "@Enums";
 import { Badge } from "@shadcnComponent/badge";
+
+const COMPANY_TYPE_BADGE_CLASSES = Object.freeze({
+  [COMPANY_TYPES.SUPPLIER]:
+    "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-950/50 dark:text-blue-300",
+  [COMPANY_TYPES.CUSTOMER]:
+    "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300",
+  [COMPANY_TYPES.MANUFACTURER]:
+    "border-violet-200 bg-violet-50 text-violet-700 dark:border-violet-800 dark:bg-violet-950/50 dark:text-violet-300",
+  [COMPANY_TYPES.DEALER]:
+    "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-300",
+  [COMPANY_TYPES.BOTH]:
+    "border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-800 dark:bg-rose-950/50 dark:text-rose-300",
+});
 
 export const COMPANY_COLUMNS = [
   {
@@ -22,6 +40,7 @@ export const COMPANY_COLUMNS = [
     className: "min-w-52 font-medium",
     mobile: MOBILE_SLOTS.PRIMARY,
     mobileIcon: Building2,
+    width:"500px"
   },
   {
     key: "type",
@@ -34,8 +53,12 @@ export const COMPANY_COLUMNS = [
     options: COMPANY_TYPE_OPTIONS,
     allOptionLabel: "All company types",
     mobile: MOBILE_SLOTS.BADGE,
+    width:"200px",
     render: (company) => (
-      <Badge variant="outline">
+      <Badge
+        variant="outline"
+        className={COMPANY_TYPE_BADGE_CLASSES[company.type]}
+      >
         {COMPANY_TYPE_OPTIONS.find((option) => option.value === company.type)
           ?.label ?? company.type}
       </Badge>
@@ -51,6 +74,7 @@ export const COMPANY_COLUMNS = [
     className: "min-w-56",
     mobile: MOBILE_SLOTS.META,
     mobileIcon: Mail,
+    width:"400px",
   },
   {
     key: "phone",
@@ -62,6 +86,7 @@ export const COMPANY_COLUMNS = [
     className: "whitespace-nowrap",
     mobile: MOBILE_SLOTS.META,
     mobileIcon: Phone,
+    width:"200px"
   },
   {
     key: "gstNumber",
@@ -70,7 +95,7 @@ export const COMPANY_COLUMNS = [
     field: "gstNumber",
     sortKey: "gst_number",
     filterKey: "gst_number",
-    className: "whitespace-nowrap font-mono text-xs",
+    width:"200px",
   },
   {
     key: "panNumber",
@@ -79,7 +104,7 @@ export const COMPANY_COLUMNS = [
     field: "panNumber",
     sortKey: "pan_number",
     filterKey: "pan_number",
-    className: "whitespace-nowrap font-mono text-xs",
+    width:"200px",
   },
   {
     key: "website",
@@ -88,7 +113,7 @@ export const COMPANY_COLUMNS = [
     field: "website",
     sortKey: "website",
     filterKey: "website",
-    className: "min-w-44",
+    width:"500px",
     render: (company) => (
       <a
         href={company.website}
@@ -108,6 +133,7 @@ export const COMPANY_COLUMNS = [
     className: "min-w-44",
     mobile: MOBILE_SLOTS.META,
     mobileIcon: MapPin,
+    width:"300px",
     render: (company) => (
       <div className="flex items-center gap-3 text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-1">

@@ -1,17 +1,11 @@
 import {
   Building2,
-  ExternalLink,
-  FileText,
-  Globe2,
-  Mail,
   MapPin,
   Phone,
-  UserRound,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@shadcnComponent/avatar";
 import { Badge } from "@shadcnComponent/badge";
-import { Separator } from "@shadcnComponent/separator";
 import {
   Sheet,
   SheetContent,
@@ -19,32 +13,9 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@shadcnComponent/sheet";
-import {
-  COMPANY_TYPE_OPTIONS,
-  CONTACT_POSITION_LABELS,
-} from "@Enums";
-
-function DetailItem({ icon, label, children }) {
-  const Icon = icon;
-
-  return (
-    <div className="flex min-w-0 gap-3 rounded-lg border bg-card p-3">
-      <span className="mt-0.5 rounded-md bg-muted p-2 text-muted-foreground">
-        <Icon className="size-4" />
-      </span>
-      <div className="min-w-0">
-        <p className="text-xs text-muted-foreground">{label}</p>
-        <div className="mt-1 break-words text-sm font-medium">{children}</div>
-      </div>
-    </div>
-  );
-}
+import { CONTACT_POSITION_LABELS } from "@Enums";
 
 function CompanyDetailSheet({ company, onClose }) {
-  const companyType =
-    COMPANY_TYPE_OPTIONS.find((option) => option.value === company?.type)?.label ??
-    company?.type;
-
   return (
     <Sheet open={Boolean(company)} onOpenChange={(open) => !open && onClose()}>
       <SheetContent className="w-full gap-0 sm:max-w-xl lg:max-w-2xl">
@@ -56,15 +27,11 @@ function CompanyDetailSheet({ company, onClose }) {
                   <Building2 className="size-6" />
                 </span>
                 <div className="min-w-0">
-                  <div className="mb-2 flex flex-wrap items-center gap-2">
-                    <Badge variant="outline">{companyType}</Badge>
-                    <Badge variant="outline">Read only</Badge>
-                  </div>
                   <SheetTitle className="text-xl sm:text-2xl">
                     {company.name}
                   </SheetTitle>
                   <SheetDescription className="mt-1">
-                    Company profile, registered details, locations, and contacts.
+                    Addresses and their contact persons.
                   </SheetDescription>
                 </div>
               </div>
@@ -72,67 +39,25 @@ function CompanyDetailSheet({ company, onClose }) {
 
             <div data-lenis-prevent className="flex-1 overflow-y-auto px-5 py-5 sm:px-6">
               <section>
-                <h3 className="text-sm font-semibold">Contact information</h3>
-                <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                  <DetailItem icon={Mail} label="Email address">
-                    <a className="text-primary hover:underline" href={`mailto:${company.email}`}>
-                      {company.email}
-                    </a>
-                  </DetailItem>
-                  <DetailItem icon={Phone} label="Phone number">
-                    <a className="text-primary hover:underline" href={`tel:${company.phone}`}>
-                      {company.phone}
-                    </a>
-                  </DetailItem>
-                  <DetailItem icon={Globe2} label="Website">
-                    <a
-                      className="inline-flex items-center gap-1 text-primary hover:underline"
-                      href={company.website}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {company.website.replace(/^https?:\/\//, "")}
-                      <ExternalLink className="size-3" />
-                    </a>
-                  </DetailItem>
-                  <DetailItem icon={UserRound} label="Company type">
-                    {companyType}
-                  </DetailItem>
-                </div>
-              </section>
-
-              <Separator className="my-6" />
-
-              <section>
-                <h3 className="text-sm font-semibold">Tax & registration</h3>
-                <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                  <DetailItem icon={FileText} label="GST number">
-                    <span className="font-mono text-xs sm:text-sm">{company.gstNumber}</span>
-                  </DetailItem>
-                  <DetailItem icon={FileText} label="PAN number">
-                    <span className="font-mono text-xs sm:text-sm">{company.panNumber}</span>
-                  </DetailItem>
-                </div>
-              </section>
-
-              <Separator className="my-6" />
-
-              <section>
                 <div className="flex items-end justify-between gap-3">
                   <div>
-                    <h3 className="text-sm font-semibold">Locations & contacts</h3>
+                    <h3 className="text-sm font-semibold">Company addresses</h3>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      Contacts are grouped under the location they work from.
+                      Contact persons are grouped under their address.
                     </p>
                   </div>
                   <Badge variant="secondary">
-                    {company.addressCount} {company.addressCount === 1 ? "location" : "locations"}
+                    {company.addresses.length}{" "}
+                    {company.addresses.length === 1 ? "address" : "addresses"}
                   </Badge>
                 </div>
 
                 <div className="mt-4 grid gap-4">
                   {company.addresses.map((address, addressIndex) => (
-                    <article key={address.id} className="overflow-hidden rounded-xl border bg-card">
+                    <article
+                      key={address.id ?? addressIndex}
+                      className="overflow-hidden rounded-xl border bg-card"
+                    >
                       <div className="flex gap-3 border-b bg-muted/35 p-4">
                         <span className="rounded-lg bg-background p-2 text-primary shadow-xs">
                           <MapPin className="size-4" />
@@ -158,7 +83,7 @@ function CompanyDetailSheet({ company, onClose }) {
                           <div className="grid gap-2">
                             {address.contacts.map((contact) => (
                               <div
-                                key={contact.id}
+                                key={contact.id ?? `${addressIndex}-${contact.mobile}`}
                                 className="flex items-center gap-3 rounded-lg border p-3"
                               >
                                 <Avatar className="size-9">
@@ -196,6 +121,12 @@ function CompanyDetailSheet({ company, onClose }) {
                       </div>
                     </article>
                   ))}
+
+                  {company.addresses.length === 0 && (
+                    <p className="rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground">
+                      No addresses are available for this company.
+                    </p>
+                  )}
                 </div>
               </section>
             </div>

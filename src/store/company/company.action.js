@@ -1,30 +1,51 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { employeeCompanyApi } from "@Api";
-import { getDummyCompanyList } from "@screenComponent/companies/company.data";
+import { employeeCompanyApi, superAdminCompanyApi } from "@Api";
+import { extractErrorMessage } from "@Api/client.api";
+import { ROLE_PATHS } from "@Enums";
 import {
   fromCompanyCreateError,
   fromCompanyListResponse,
   toCompanyCreatePayload,
+  toCompanyListParams,
 } from "@Forms/company/company.payload";
 
-/**
- * Temporary list source with the same thunk boundary as the future GET API.
- * When the endpoint lands, replace getDummyCompanyList with the company API
- * call and keep the screen, slice and table controller unchanged.
- */
+const companyListApiByRole = {
+  [ROLE_PATHS.EMPLOYEE]: employeeCompanyApi,
+  [ROLE_PATHS.SUPER_ADMIN]: superAdminCompanyApi,
+};
+
 export const fetchCompanies = createAsyncThunk(
   "companies/fetchCompanies",
-  async (_, { getState }) => {
-    const { page, limit, searchQuery } = getState().companies;
+  async (columns = [], { getState, signal, rejectWithValue }) => {
+    const state = getState();
+    const { page, limit, searchQuery, sort, appliedFilters } = state.companies;
     const requested = { page, limit };
-    const response = getDummyCompanyList({
-      page,
-      limit,
-      search: searchQuery,
-    });
+    const companyApi = companyListApiByRole[state.auth.role];
 
-    return fromCompanyListResponse(response, requested);
+    if (!companyApi) {
+      return rejectWithValue(
+        "You do not have permission to view the company directory.",
+      );
+    }
+
+    try {
+      const response = await companyApi.getCompanies(
+        toCompanyListParams({
+          columns,
+          page,
+          limit,
+          search: searchQuery,
+          sort,
+          filters: appliedFilters,
+        }),
+        { signal },
+      );
+
+      return fromCompanyListResponse(response, requested);
+    } catch (error) {
+      return rejectWithValue(extractErrorMessage(error));
+    }
   },
 );
 

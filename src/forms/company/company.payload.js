@@ -1,6 +1,29 @@
 import _ from "lodash";
 
 import { COMPANY_TABLE_DEFAULTS, TABLE_DEFAULTS } from "@Enums";
+import { buildListQueryParams } from "@/utils/listQuery.util";
+
+export function toCompanyListParams({
+  columns = [],
+  page = TABLE_DEFAULTS.PAGE,
+  limit = COMPANY_TABLE_DEFAULTS.LIMIT,
+  search = "",
+  sort = [],
+  filters = {},
+  isActive = true,
+} = {}) {
+  return {
+    ...buildListQueryParams({
+      columns,
+      page,
+      limit,
+      search,
+      sort,
+      filters,
+    }),
+    is_active: isActive,
+  };
+}
 
 export function toCompanyCreatePayload(values = {}) {
   const website = values.website

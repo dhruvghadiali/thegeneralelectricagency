@@ -29,6 +29,11 @@ const initialState = {
     columnFilters: EMPLOYEE_TABLE_DEFAULTS.FILTERS,
   }),
   dialog: null,
+  summary: {
+    totalEmployees: 0,
+    activeEmployees: 0,
+    activeWarehouseManagers: 0,
+  },
   isCreating: false,
   createError: null,
   isUpdating: false,
@@ -58,7 +63,10 @@ const employeeSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchEmployees.pending, tableFetchCases.pending)
-      .addCase(fetchEmployees.fulfilled, tableFetchCases.fulfilled)
+      .addCase(fetchEmployees.fulfilled, (state, action) => {
+        tableFetchCases.fulfilled(state, action);
+        state.summary = action.payload.summary;
+      })
       .addCase(fetchEmployees.rejected, (state, action) =>
         tableFetchCases.rejected(state, action, "Unable to load employees."),
       )
