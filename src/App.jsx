@@ -13,7 +13,11 @@ import PrivateRoute from "@/routes/private.route";
 import DashboardPage from "@/pages/dashboard.page";
 import EmployeesPage from "@/pages/employees.page";
 import CompaniesPage from "@/pages/companies.page";
+import StocksPage from "@/pages/stocks.page";
+import CompanyDetailsPage from "@/pages/company-details.page";
 import LenisScrollProvider from "@/components/LenisScrollProvider";
+import RoleRoute from "@/routes/role.route";
+import { ROLE_PATHS } from "@Enums";
 
 function App() {
   return (
@@ -28,9 +32,15 @@ function App() {
 
             <Route element={<PrivateRoute />}>
               <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/employees" element={<EmployeesPage />} />
+              <Route element={<RoleRoute allowedRoles={[ROLE_PATHS.SUPER_ADMIN]} />}>
+                <Route path="/employees" element={<EmployeesPage />} />
+                <Route path="/companies" element={<CompaniesPage />} />
+              </Route>
               <Route path="/products" element={<>Products Content</>} />
-              <Route path="/companies" element={<CompaniesPage />} />
+              <Route element={<RoleRoute allowedRoles={[ROLE_PATHS.EMPLOYEE]} />}>
+                <Route path="/company-details" element={<CompanyDetailsPage />} />
+              </Route>
+              <Route path="/stocks" element={<StocksPage />} />
               <Route path="/settings" element={<>Settings Content</>} />
             </Route>
 

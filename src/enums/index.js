@@ -30,3 +30,8 @@ export {
   COMPANY_TYPES,
   CONTACT_POSITION_LABELS,
 } from "./company.enum";
+
+export {
+  STOCK_CATEGORY_OPTIONS,
+  STOCK_TABLE_DEFAULTS,
+} from "./stock.enum";

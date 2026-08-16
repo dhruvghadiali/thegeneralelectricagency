@@ -1,0 +1,16 @@
+export const COMPANY_DETAILS_INITIAL_VALUES = {
+  companyName: "",
+  companyType: "",
+  industry: "",
+  gstNumber: "",
+  panNumber: "",
+  email: "",
+  phone: "",
+  website: "",
+  contactName: "",
+  contactDesignation: "",
+  addressLine: "",
+  city: "",
+  state: "",
+  postalCode: "",
+};
