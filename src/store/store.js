@@ -5,6 +5,7 @@ import employeeReducer from "@Redux/employee/employee.slice";
 import companyReducer from "@Redux/company/company.slice";
 import companyContactReducer from "@Redux/companyContact/companyContact.slice";
 import stockReducer from "@Redux/stock/stock.slice";
+import productReducer from "@Redux/product/product.slice";
 
 export const store = configureStore({
   reducer: {
@@ -13,5 +14,6 @@ export const store = configureStore({
     companies: companyReducer,
     companyContacts: companyContactReducer,
     stocks: stockReducer,
+    products: productReducer,
   },
 });

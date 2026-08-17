@@ -18,6 +18,7 @@ import PrivateRoute from "@/routes/private.route";
 import DashboardPage from "@/pages/dashboard.page";
 import EmployeesPage from "@/pages/employees.page";
 import CompaniesPage from "@/pages/companies.page";
+import ProductsPage from "@/pages/products.page";
 import CompanyDetailsPage from "@/pages/company-details.page";
 import LenisScrollProvider from "@/components/LenisScrollProvider";
 import PlaceholderScreen from "@commonComponent/pageBreadcrumb/placeholderScreen";
@@ -50,16 +51,14 @@ function App() {
                 <Route path="/companies" element={<CompaniesPage />} />
               </Route>
               <Route
-                path="/products"
                 element={
-                  <PlaceholderScreen
-                    eyebrow="Product catalogue"
-                    title="Products"
-                    description="Manage products, categories, brands, and specifications."
-                    showDashboardParent={false}
+                  <RoleRoute
+                    allowedRoles={[ROLE_PATHS.SUPER_ADMIN, ROLE_PATHS.EMPLOYEE]}
                   />
                 }
-              />
+              >
+                <Route path="/products" element={<ProductsPage />} />
+              </Route>
               <Route
                 element={<RoleRoute allowedRoles={[ROLE_PATHS.EMPLOYEE]} />}
               >

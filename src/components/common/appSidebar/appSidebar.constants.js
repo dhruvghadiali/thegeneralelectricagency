@@ -18,6 +18,7 @@ export const SIDEBAR_NAV_ITEMS_BY_ROLE = {
     { title: "Dashboard", url: "/dashboard", icon: LucideHome },
     { title: "Employees", url: "/employees", icon: Users },
     { title: "Companies", url: "/companies", icon: Building2 },
+    { title: "Products", url: "/products", icon: Boxes },
     { title: "Stocks", url: "/stocks", icon: TrendingUp },
     { title: "Settings", url: "/settings", icon: Settings },
   ],
@@ -30,7 +31,6 @@ export const SIDEBAR_NAV_ITEMS_BY_ROLE = {
   [ROLE_PATHS.WAREHOUSE_MANAGER]: [
     { title: "Dashboard", url: "/dashboard", icon: LucideHome },
     { title: "Stocks", url: "/stocks", icon: TrendingUp },
-    { title: "Products", url: "/products", icon: Boxes },
     { title: "Settings", url: "/settings", icon: Settings },
   ],
 };

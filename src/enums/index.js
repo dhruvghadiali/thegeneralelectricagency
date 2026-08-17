@@ -37,3 +37,11 @@ export {
   STOCK_CATEGORY_OPTIONS,
   STOCK_TABLE_DEFAULTS,
 } from "./stock.enum";
+
+export {
+  AGENCIES,
+  AGENCY_OPTIONS,
+  PRODUCT_CATEGORIES,
+  PRODUCT_CATEGORY_OPTIONS,
+  PRODUCT_TABLE_DEFAULTS,
+} from "./product.enum";
