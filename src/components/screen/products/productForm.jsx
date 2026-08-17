@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import { Sparkles } from "lucide-react";
+import { CircleAlert, Sparkles } from "lucide-react";
 
 import { AGENCY_OPTIONS, PRODUCT_CATEGORY_OPTIONS } from "@Enums";
 import {
@@ -29,15 +29,20 @@ import { generateProductCode } from "@screenComponent/products/product.utils";
 
 function FormField({ id, label, required = false, error, children }) {
   return (
-    <div className="grid gap-2">
+    <div className="grid content-start gap-2">
       <Label htmlFor={id}>
         {label}
         {required && <span className="text-destructive"> *</span>}
       </Label>
       {children}
       {error && (
-        <p id={`${id}-error`} className="text-xs font-medium text-destructive">
-          {error}
+        <p
+          id={`${id}-error`}
+          role="alert"
+          className="flex items-start gap-1.5 text-xs font-medium leading-4 text-destructive"
+        >
+          <CircleAlert className="mt-px size-3.5 shrink-0" aria-hidden="true" />
+          <span>{error}</span>
         </p>
       )}
     </div>
