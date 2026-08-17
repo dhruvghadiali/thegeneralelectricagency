@@ -9,9 +9,15 @@ import { Button } from "@shadcnComponent/button";
  * once rows exist, refetches dim the table instead so the layout does not
  * jump on every keystroke.
  */
-export function DataTableSkeleton({ rows = 5 }) {
+export function DataTableSkeleton({ rows = 5, fillHeight = false }) {
   return (
-    <div className="divide-y" aria-hidden="true">
+    <div
+      className={cn(
+        "divide-y",
+        fillHeight && "roomy:min-h-0 roomy:flex-1 roomy:overflow-auto",
+      )}
+      aria-hidden="true"
+    >
       {_.map(_.range(rows), (row) => (
         <div key={row} className="flex items-center gap-4 p-4">
           <span className="size-9 shrink-0 animate-pulse rounded-full bg-muted" />
@@ -45,7 +51,7 @@ export function DataTableEmptyState({
       className={cn(
         "px-4 py-14 text-center",
         fillHeight &&
-          "roomy:flex roomy:min-h-[240px] roomy:flex-1 roomy:flex-col roomy:items-center roomy:justify-center",
+          "roomy:flex roomy:min-h-0 roomy:flex-1 roomy:flex-col roomy:items-center roomy:justify-center roomy:overflow-auto",
       )}
     >
       <Icon className="mx-auto size-8 text-muted-foreground/50" />
@@ -72,7 +78,7 @@ export function DataTableError({ message, onRetry, fillHeight = false }) {
       className={cn(
         "px-4 py-14 text-center",
         fillHeight &&
-          "roomy:flex roomy:min-h-[240px] roomy:flex-1 roomy:flex-col roomy:items-center roomy:justify-center",
+          "roomy:flex roomy:min-h-0 roomy:flex-1 roomy:flex-col roomy:items-center roomy:justify-center roomy:overflow-auto",
       )}
     >
       <TriangleAlert className="mx-auto size-8 text-destructive/70" />

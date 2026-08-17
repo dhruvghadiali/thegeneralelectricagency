@@ -13,7 +13,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@shadcnComponent/sheet";
-import { CONTACT_POSITION_LABELS } from "@Enums";
+import ContactPositionBadge from "@screenComponent/companies/companyContact/contactPositionBadge";
 
 function CompanyDetailSheet({ company, onClose }) {
   return (
@@ -106,10 +106,10 @@ function CompanyDetailSheet({ company, onClose }) {
                                     {contact.mobile}
                                   </a>
                                 </div>
-                                <Badge variant="secondary" className="shrink-0">
-                                  {CONTACT_POSITION_LABELS[contact.position] ??
-                                    CONTACT_POSITION_LABELS.other}
-                                </Badge>
+                                <ContactPositionBadge
+                                  position={contact.position}
+                                  className="shrink-0"
+                                />
                               </div>
                             ))}
                           </div>

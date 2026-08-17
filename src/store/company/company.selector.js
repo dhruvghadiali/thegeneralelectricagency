@@ -15,5 +15,3 @@ export const selectCompanySummary = createSelector(
   selectCompanyState,
   (companies) => companies.summary,
 );
-
-export default companyTableSelectors;

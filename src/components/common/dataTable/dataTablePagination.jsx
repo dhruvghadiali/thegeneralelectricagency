@@ -36,7 +36,7 @@ function DataTablePagination({
       : `No ${rowNoun} to show`;
 
   return (
-    <div className="flex shrink-0 flex-col gap-3 border-t px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex min-h-14 w-full shrink-0 flex-col gap-3 border-t bg-card px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted-foreground">
         <span aria-live="polite">{rangeMessage}</span>
         <span className="flex items-center gap-2">

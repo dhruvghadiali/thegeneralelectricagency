@@ -13,4 +13,7 @@ export const ENDPOINTS = {
   COMPANY: {
     BASE: "companies",
   },
+  COMPANY_CONTACT: {
+    BASE: "company-contacts",
+  },
 };

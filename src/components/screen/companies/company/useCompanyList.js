@@ -2,7 +2,7 @@ import { fetchCompanies } from "@Redux/company/company.action";
 import { useDataTable } from "@commonComponent/dataTable/useDataTable";
 import { companyTableActions } from "@Redux/company/company.slice";
 import { companyTableSelectors } from "@Redux/company/company.selector";
-import { COMPANY_COLUMNS } from "@screenComponent/companies/company.columns";
+import { COMPANY_COLUMNS } from "@screenComponent/companies/company/company.columns";
 
 const fetchCompanyList = () => fetchCompanies(COMPANY_COLUMNS);
 
@@ -13,5 +13,3 @@ export function useCompanyList() {
     fetchAction: fetchCompanyList,
   });
 }
-
-export default useCompanyList;

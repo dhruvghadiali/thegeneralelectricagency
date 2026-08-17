@@ -1,29 +1,58 @@
-import { useDispatch, useSelector } from "react-redux";
-import { Building2 } from "lucide-react";
+import { useState } from "react";
+import { Building2, ContactRound } from "lucide-react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import DataTable from "@commonComponent/dataTable";
+import { Button } from "@shadcnComponent/button";
 import { ROLE_PATHS } from "@Enums";
-import {
-  companyDetailsClosed,
-  companyDetailsOpened,
-} from "@Redux/company/company.slice";
-import { selectSelectedCompany } from "@Redux/company/company.selector";
-import { COMPANY_COLUMNS } from "@screenComponent/companies/company.columns";
-import { useCompanyList } from "@screenComponent/companies/useCompanyList";
 
-import CompanyActions from "@screenComponent/companies/companyActions";
-import CompanyDetailSheet from "@screenComponent/companies/companyDetailSheet";
-import CompanyHeader from "@screenComponent/companies/companyHeader";
-import CompanySummary from "@screenComponent/companies/companySummary";
+import CompanyContactDirectory from "@screenComponent/companies/companyContact/companyContactDirectory";
+import CompanyDirectory from "@screenComponent/companies/company/companyDirectory";
+import CompanyHeader from "@screenComponent/companies/company/companyHeader";
+
+const DIRECTORY_VIEWS = Object.freeze({
+  COMPANIES: "companies",
+  CONTACTS: "contacts",
+});
+
+function DirectorySwitcher({ value, onChange }) {
+  return (
+    <div className="flex w-full gap-1 rounded-lg border bg-muted/30 p-1 sm:w-fit">
+      <Button
+        type="button"
+        size="sm"
+        variant={value === DIRECTORY_VIEWS.COMPANIES ? "default" : "ghost"}
+        onClick={() => onChange(DIRECTORY_VIEWS.COMPANIES)}
+        className="flex-1 shadow-none sm:flex-none"
+      >
+        <Building2 className="size-4" />
+        Company directory
+      </Button>
+      <Button
+        type="button"
+        size="sm"
+        variant={value === DIRECTORY_VIEWS.CONTACTS ? "default" : "ghost"}
+        onClick={() => onChange(DIRECTORY_VIEWS.CONTACTS)}
+        className="flex-1 shadow-none sm:flex-none"
+      >
+        <ContactRound className="size-4" />
+        Contact person directory
+      </Button>
+    </div>
+  );
+}
 
 function Companies() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const table = useCompanyList();
-  const selectedCompany = useSelector(selectSelectedCompany);
   const role = useSelector((state) => state.auth.role);
+  const [directoryView, setDirectoryView] = useState(
+    DIRECTORY_VIEWS.COMPANIES,
+  );
   const canAddCompany = role === ROLE_PATHS.EMPLOYEE;
+  const canViewContactDirectory = [
+    ROLE_PATHS.EMPLOYEE,
+    ROLE_PATHS.SUPER_ADMIN,
+  ].includes(role);
 
   return (
     <main className="flex w-full flex-col gap-6 pb-2 roomy:h-full roomy:min-h-0">
@@ -31,49 +60,19 @@ function Companies() {
         canAddCompany={canAddCompany}
         onAddCompany={() => navigate("/companies/new")}
       />
-      <CompanySummary />
 
-      <DataTable
-        columns={COMPANY_COLUMNS}
-        rows={table.rows}
-        rowKey={(company) => company.id}
-        search={table.search}
-        sort={table.sort}
-        columnFilters={table.columnFilters}
-        pagination={table.pagination}
-        pageItems={table.pageItems}
-        rowRange={table.rowRange}
-        activeFilterCount={table.activeFilterCount}
-        isFiltered={table.isFiltered}
-        onSearchChange={table.changeSearch}
-        onSearchSubmit={table.submitSearch}
-        onSortChange={table.changeSort}
-        onColumnFilterChange={table.changeColumnFilter}
-        onClearFilters={table.clearFilters}
-        onPageChange={table.changePage}
-        onLimitChange={table.changeLimit}
-        onRetry={table.refresh}
-        isLoading={table.isLoading}
-        error={table.error}
-        rowActions={(company) => (
-          <CompanyActions
-            company={company}
-            onView={(row) => dispatch(companyDetailsOpened(row))}
-          />
-        )}
-        searchPlaceholder="Search by company, email, phone, GST, or PAN..."
-        rowNoun="companies"
-        emptyIcon={Building2}
-        emptyTitle="No companies found"
-        emptyDescription="Company profiles will appear here when available."
-        filteredEmptyDescription="Try changing your search or filters."
-        fillHeight
-      />
+      {canViewContactDirectory && (
+        <DirectorySwitcher
+          value={directoryView}
+          onChange={setDirectoryView}
+        />
+      )}
 
-      <CompanyDetailSheet
-        company={selectedCompany}
-        onClose={() => dispatch(companyDetailsClosed())}
-      />
+      {directoryView === DIRECTORY_VIEWS.CONTACTS && canViewContactDirectory ? (
+        <CompanyContactDirectory />
+      ) : (
+        <CompanyDirectory />
+      )}
     </main>
   );
 }

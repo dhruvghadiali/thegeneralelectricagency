@@ -173,7 +173,7 @@ function DataTable({
             // Only pin the body on a window tall enough to hold it. Anywhere
             // smaller it keeps its natural height and the content area
             // scrolls instead, which is what a phone wants anyway.
-            fillHeight && hasRows && "roomy:min-h-[240px] roomy:flex-1",
+            fillHeight && hasRows && "roomy:min-h-0 roomy:flex-1",
           )}
           style={fillHeight ? undefined : { maxHeight: maxBodyHeight }}
         >
@@ -233,7 +233,9 @@ function DataTable({
         </div>
       )}
 
-      {isFirstLoad && <DataTableSkeleton rows={skeletonRows} />}
+      {isFirstLoad && (
+        <DataTableSkeleton rows={skeletonRows} fillHeight={fillHeight} />
+      )}
 
       {!isFirstLoad && error && (
         <DataTableError message={error} onRetry={onRetry} fillHeight={fillHeight} />
@@ -244,7 +246,7 @@ function DataTable({
           data-lenis-prevent
           className={cn(
             "overflow-auto transition-opacity md:hidden",
-            fillHeight && "roomy:min-h-[240px] roomy:flex-1",
+            fillHeight && "roomy:min-h-0 roomy:flex-1",
             isLoading && "pointer-events-none opacity-60",
           )}
           style={fillHeight ? undefined : { maxHeight: maxBodyHeight }}

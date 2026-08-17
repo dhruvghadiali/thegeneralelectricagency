@@ -10,7 +10,6 @@ export function toCompanyListParams({
   search = "",
   sort = [],
   filters = {},
-  isActive = true,
 } = {}) {
   return {
     ...buildListQueryParams({
@@ -21,7 +20,7 @@ export function toCompanyListParams({
       sort,
       filters,
     }),
-    is_active: isActive,
+    is_active: true,
   };
 }
 
@@ -57,7 +56,7 @@ export function toCompanyCreatePayload(values = {}) {
   };
 }
 
-export function toCompanyFormFieldPath(apiField = "") {
+function toCompanyFormFieldPath(apiField = "") {
   return apiField
     .replace(/^address(?=\.|$)/, "addresses")
     .replace(/\.contact_person(?=\.|$)/g, ".company_employees");
@@ -139,7 +138,7 @@ function fromCompanyAddressResponse(address = {}) {
   };
 }
 
-export function fromCompanyResponse(company = {}) {
+function fromCompanyResponse(company = {}) {
   const addresses = _.map(
     company.addresses ?? company.address ?? [],
     fromCompanyAddressResponse,
@@ -160,7 +159,7 @@ export function fromCompanyResponse(company = {}) {
   };
 }
 
-export function fromCompanySummaryResponse(summary = {}) {
+function fromCompanySummaryResponse(summary = {}) {
   return {
     totalCompanies: _.toNumber(summary.total_companies) || 0,
     activeCompanies: _.toNumber(summary.active_companies) || 0,
