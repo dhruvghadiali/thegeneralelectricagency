@@ -6,6 +6,7 @@ import companyReducer from "@Redux/company/company.slice";
 import companyContactReducer from "@Redux/companyContact/companyContact.slice";
 import stockReducer from "@Redux/stock/stock.slice";
 import productReducer from "@Redux/product/product.slice";
+import purchaseReducer from "@Redux/purchase/purchase.slice";
 
 export const store = configureStore({
   reducer: {
@@ -15,5 +16,6 @@ export const store = configureStore({
     companyContacts: companyContactReducer,
     stocks: stockReducer,
     products: productReducer,
+    purchases: purchaseReducer,
   },
 });

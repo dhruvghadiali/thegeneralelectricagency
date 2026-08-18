@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import * as PopoverPrimitive from "@radix-ui/react-popover";
 import {
   Building2,
   Check,
@@ -35,7 +36,6 @@ import { Input } from "@shadcnComponent/input";
 import { Label } from "@shadcnComponent/label";
 import {
   Popover,
-  PopoverContent,
   PopoverTrigger,
 } from "@shadcnComponent/popover";
 import {
@@ -55,6 +55,32 @@ import {
 } from "@shadcnComponent/sheet";
 import ProductAgencyBadge from "@screenComponent/products/productAgencyBadge";
 import ProductCategoryBadge from "@screenComponent/products/productCategoryBadge";
+import { cn } from "@/lib/utils";
+
+function QuotationPopoverContent({
+  container,
+  className,
+  align = "center",
+  sideOffset = 4,
+  ...props
+}) {
+  return (
+    <PopoverPrimitive.Portal container={container}>
+      <PopoverPrimitive.Content
+        align={align}
+        sideOffset={sideOffset}
+        className={cn(
+          "z-50 w-72 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-hidden",
+          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+          "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+          "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+          className,
+        )}
+        {...props}
+      />
+    </PopoverPrimitive.Portal>
+  );
+}
 
 const QUANTITY_OPTIONS = Object.freeze(
   Array.from({ length: 100 }, (_, index) => String(index + 1)),
@@ -212,7 +238,10 @@ function QuotationProductCard({
           <div className="flex flex-wrap items-center gap-2">
             <h4 className="truncate text-sm font-semibold">{product.name}</h4>
             <ProductCategoryBadge category={product.category} />
-            <ProductAgencyBadge agency={product.agency} />
+            <ProductAgencyBadge
+              agency={product.agency}
+              label={product.agencyName}
+            />
           </div>
           <p className="mt-1 text-xs text-muted-foreground">
             Product code: {staticValue(product.productCode)}
@@ -342,6 +371,7 @@ function QuotationProductCard({
 }
 
 function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
+  const sheetContentRef = useRef(null);
   const isOpen = products.length > 0;
   const [quotationItems, setQuotationItems] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -637,6 +667,7 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <SheetContent
+        ref={sheetContentRef}
         className="w-full gap-0 sm:max-w-xl lg:max-w-2xl"
       >
         {isOpen && (
@@ -693,8 +724,9 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
                       Add another product
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent
+                  <QuotationPopoverContent
                     align="start"
+                    container={sheetContentRef.current}
                     className="w-(--radix-popover-trigger-width) p-0"
                   >
                     <div className="border-b p-2">
@@ -750,7 +782,7 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
                                   {availableProduct.name}
                                 </span>
                                 <span className="block truncate text-xs text-muted-foreground">
-                                  {availableProduct.productCode} · {availableProduct.agency}
+                                  {availableProduct.productCode} · {availableProduct.agencyName || availableProduct.agency}
                                 </span>
                               </span>
                               {isAdded && (
@@ -783,7 +815,7 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
                         </Button>
                       </div>
                     )}
-                  </PopoverContent>
+                  </QuotationPopoverContent>
                 </Popover>
 
                 <div className="mt-4 space-y-4">
@@ -830,8 +862,9 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
                         <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent
+                    <QuotationPopoverContent
                       align="start"
+                      container={sheetContentRef.current}
                       className="w-(--radix-popover-trigger-width) p-0"
                     >
                       <div className="border-b p-2">
@@ -915,7 +948,7 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
                           </Button>
                         </div>
                       )}
-                    </PopoverContent>
+                    </QuotationPopoverContent>
                   </Popover>
                 </div>
 

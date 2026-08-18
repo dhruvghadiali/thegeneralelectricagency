@@ -11,10 +11,18 @@ const PRODUCT_AGENCY_BADGE_CLASSES = Object.freeze({
     "border-teal-200 bg-teal-50 text-teal-700 dark:border-teal-800 dark:bg-teal-950/50 dark:text-teal-300",
 });
 
-function ProductAgencyBadge({ agency }) {
+function ProductAgencyBadge({ agency, label }) {
+  const displayValue = label || agency;
+
   return (
-    <Badge variant="outline" className={PRODUCT_AGENCY_BADGE_CLASSES[agency]}>
-      {agencyLabel(agency)}
+    <Badge
+      variant="outline"
+      className={
+        PRODUCT_AGENCY_BADGE_CLASSES[displayValue] ??
+        PRODUCT_AGENCY_BADGE_CLASSES[agency]
+      }
+    >
+      {agencyLabel(displayValue)}
     </Badge>
   );
 }

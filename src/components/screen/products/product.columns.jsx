@@ -1,12 +1,10 @@
 import {
-  AGENCY_OPTIONS,
   COLUMN_TYPES,
   MOBILE_SLOTS,
   PRODUCT_CATEGORY_OPTIONS,
   PRODUCT_STATUS_OPTIONS,
 } from "@Enums";
 import { Badge } from "@shadcnComponent/badge";
-import ProductAgencyBadge from "@screenComponent/products/productAgencyBadge";
 import ProductCategoryBadge from "@screenComponent/products/productCategoryBadge";
 import {
   formatCurrency,
@@ -105,15 +103,14 @@ export const PRODUCT_COLUMNS = [
     key: "agency",
     header: "Agency/Company",
     filterLabel: "Agency/Company",
-    type: COLUMN_TYPES.SELECT,
+    type: COLUMN_TYPES.TEXT,
     field: "agency",
     sortKey: "agency",
     filterKey: "agency",
-    options: AGENCY_OPTIONS,
-    allOptionLabel: "All agencies",
     mobile: MOBILE_SLOTS.META,
-    width: "180px",
-    render: (product) => <ProductAgencyBadge agency={product.agency} />,
+    className: "min-w-72 font-medium",
+    width: "320px",
+    render: (product) => optionalValue(product.agencyName || product.agency),
   },
   {
     key: "gstPercentage",

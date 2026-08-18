@@ -34,6 +34,13 @@ function buildBreadcrumbItems(pathname, navItems) {
     ];
   }
 
+  if (pathname === "/purchases/new") {
+    return [
+      { label: "Purchase orders", href: "/purchases" },
+      { label: "Add purchase order" },
+    ];
+  }
+
   if (/^\/products\/[^/]+\/edit$/.test(pathname)) {
     return [
       { label: "Products", href: "/products" },

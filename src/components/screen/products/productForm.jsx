@@ -1,12 +1,27 @@
-import { createElement, useRef } from "react";
+import { createElement, useEffect, useRef, useState } from "react";
 import { useFormik } from "formik";
-import { Boxes, CircleAlert, IndianRupee, Sparkles } from "lucide-react";
+import {
+  Boxes,
+  Check,
+  ChevronsUpDown,
+  CircleAlert,
+  IndianRupee,
+  Loader2,
+  Search,
+  Sparkles,
+} from "lucide-react";
 
 import {
-  AGENCY_OPTIONS,
+  COMPANY_TABLE_DEFAULTS,
   INDIAN_GST_OPTIONS,
   PRODUCT_CATEGORY_OPTIONS,
+  TABLE_DEFAULTS,
 } from "@Enums";
+import { employeeCompanyApi } from "@Api";
+import {
+  fromCompanyListResponse,
+  toCompanyListParams,
+} from "@Forms/company/company.payload";
 import {
   PRODUCT_CODE_MAX_LENGTH,
   PRODUCT_CODE_MIN_LENGTH,
@@ -27,6 +42,11 @@ import { DialogFooter } from "@shadcnComponent/dialog";
 import { Input } from "@shadcnComponent/input";
 import { Label } from "@shadcnComponent/label";
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@shadcnComponent/popover";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -43,6 +63,7 @@ const discountRangeValue = (value, boundary) => {
 
 const toProductFormValues = (product) => ({
   ...product,
+  agencyName: product.agencyName ?? "",
   purchasePrice: product.purchasePrice ?? "",
   salePrice: product.salePrice ?? "",
   gstPercentage: product.gstPercentage ?? "",
@@ -136,6 +157,197 @@ function ProductSelect({
         ))}
       </SelectContent>
     </Select>
+  );
+}
+
+function CompanySearchSelect({ formik, error, isBusy }) {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [companies, setCompanies] = useState([]);
+  const [page, setPage] = useState(TABLE_DEFAULTS.PAGE);
+  const [pagination, setPagination] = useState({
+    page: TABLE_DEFAULTS.PAGE,
+    totalPages: 0,
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadError, setLoadError] = useState(null);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setPage(TABLE_DEFAULTS.PAGE);
+      setDebouncedSearch(search.trim());
+    }, TABLE_DEFAULTS.SEARCH_DEBOUNCE_MS);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [search]);
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    const controller = new AbortController();
+    const isFirstPage = page === TABLE_DEFAULTS.PAGE;
+    setIsLoading(true);
+    setLoadError(null);
+
+    const loadCompanies = async () => {
+      try {
+        const response = await employeeCompanyApi.getCompanies(
+          {
+            ...toCompanyListParams({
+              page,
+              limit: COMPANY_TABLE_DEFAULTS.LIMIT,
+              search: debouncedSearch,
+              sort: COMPANY_TABLE_DEFAULTS.SORT,
+            }),
+            is_active: true,
+          },
+          { signal: controller.signal },
+        );
+        const result = fromCompanyListResponse(response, {
+          page,
+          limit: COMPANY_TABLE_DEFAULTS.LIMIT,
+        });
+
+        setCompanies((current) => {
+          if (isFirstPage) return result.items;
+          return [
+            ...new Map(
+              [...current, ...result.items].map((company) => [
+                company.id,
+                company,
+              ]),
+            ).values(),
+          ];
+        });
+        setPagination(result.pagination);
+      } catch {
+        if (!controller.signal.aborted) {
+          if (isFirstPage) setCompanies([]);
+          setLoadError("Unable to load companies. Try again.");
+        }
+      } finally {
+        if (!controller.signal.aborted) setIsLoading(false);
+      }
+    };
+
+    loadCompanies();
+    return () => controller.abort();
+  }, [debouncedSearch, open, page]);
+
+  const selectCompany = (company) => {
+    formik.setFieldValue("agency", company.id, true);
+    formik.setFieldValue("agencyName", company.name, false);
+    formik.setFieldTouched("agency", true, false);
+    setSearch("");
+    setOpen(false);
+  };
+
+  return (
+    <Popover
+      open={open}
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen);
+        if (!nextOpen) formik.setFieldTouched("agency", true, true);
+      }}
+    >
+      <PopoverTrigger asChild>
+        <Button
+          id="product-agency"
+          type="button"
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          aria-invalid={Boolean(error)}
+          aria-describedby={error ? "product-agency-error" : undefined}
+          disabled={isBusy}
+          className="w-full justify-between font-normal aria-invalid:border-destructive aria-invalid:ring-destructive/20"
+        >
+          <span
+            className={
+              formik.values.agencyName || formik.values.agency
+                ? "truncate"
+                : "truncate text-muted-foreground"
+            }
+          >
+            {formik.values.agencyName ||
+              formik.values.agency ||
+              "Select a company"}
+          </span>
+          <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="start"
+        className="w-[var(--radix-popover-trigger-width)] p-0"
+      >
+        <div className="border-b p-2">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search company name..."
+              aria-label="Search company by name"
+              className="pl-9"
+              autoFocus
+            />
+          </div>
+        </div>
+
+        <div className="max-h-64 overflow-y-auto p-1">
+          {isLoading && companies.length === 0 ? (
+            <div className="flex items-center justify-center gap-2 px-3 py-8 text-sm text-muted-foreground">
+              <Loader2 className="size-4 animate-spin" />
+              Loading companies...
+            </div>
+          ) : loadError ? (
+            <p className="px-3 py-8 text-center text-sm text-destructive">
+              {loadError}
+            </p>
+          ) : companies.length === 0 ? (
+            <p className="px-3 py-8 text-center text-sm text-muted-foreground">
+              No active company found.
+            </p>
+          ) : (
+            companies.map((company) => (
+              <Button
+                key={company.id}
+                type="button"
+                variant="ghost"
+                onClick={() => selectCompany(company)}
+                className="h-auto w-full justify-start gap-2 px-3 py-2.5 text-left font-normal"
+              >
+                <Check
+                  className={`size-4 shrink-0 ${
+                    formik.values.agency === company.id
+                      ? "opacity-100"
+                      : "opacity-0"
+                  }`}
+                />
+                <span className="truncate">{company.name}</span>
+              </Button>
+            ))
+          )}
+        </div>
+
+        {pagination.page < pagination.totalPages && (
+          <div className="border-t p-2">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              disabled={isLoading}
+              onClick={() => setPage((current) => current + 1)}
+              className="w-full"
+            >
+              {isLoading && <Loader2 className="size-4 animate-spin" />}
+              {isLoading ? "Loading..." : "Load more companies"}
+            </Button>
+          </div>
+        )}
+      </PopoverContent>
+    </Popover>
   );
 }
 
@@ -291,17 +503,14 @@ function ProductForm({
           </FormField>
           <FormField
             id="product-agency"
-            label="Agency"
+            label="Company"
             required
             error={fieldError("agency")}
           >
-            <ProductSelect
-              id="product-agency"
-              field="agency"
-              placeholder="Select an agency"
-              options={AGENCY_OPTIONS}
+            <CompanySearchSelect
               formik={formik}
               error={fieldError("agency")}
+              isBusy={isBusy}
             />
           </FormField>
         </div>

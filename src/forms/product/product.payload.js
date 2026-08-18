@@ -52,6 +52,16 @@ export function toProductListParams({
 }
 
 export function fromProductResponse(product = {}) {
+  const agencySource = product.agency ?? product.company ?? "";
+  const agency = _.isObject(agencySource)
+    ? agencySource._id ?? agencySource.id ?? ""
+    : agencySource;
+  const agencyName =
+    product.agency_name ??
+    product.company_name ??
+    (_.isObject(agencySource)
+      ? agencySource.company_name ?? agencySource.name ?? ""
+      : agencySource);
   const discountRange = (value) => {
     if (_.isObject(value)) {
       return {
@@ -75,7 +85,8 @@ export function fromProductResponse(product = {}) {
     productCode: product.product_code ?? product.productCode ?? "",
     name: product.name ?? "",
     category: product.category ?? "",
-    agency: product.agency ?? "",
+    agency,
+    agencyName,
     modelNumber: product.model_number ?? product.modelNumber ?? "",
     description: product.description ?? "",
     purchasePrice: product.purchase_price ?? product.purchasePrice ?? null,

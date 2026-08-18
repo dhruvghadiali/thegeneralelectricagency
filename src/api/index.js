@@ -4,6 +4,7 @@ export { employeeAuthApi } from "@Api/employee/auth.api";
 export { superAdminAuthApi } from "@Api/superAdmin/auth.api";
 export { employeeCompanyApi } from "@Api/employee/company.api";
 export { employeeProductApi } from "@Api/employee/product.api";
+export { employeePurchaseApi } from "@Api/employee/purchase.api";
 export { superAdminProductApi } from "@Api/superAdmin/product.api";
 export { superAdminCompanyApi } from "@Api/superAdmin/company.api";
 export { superAdminEmployeeApi } from "@Api/superAdmin/employee.api";

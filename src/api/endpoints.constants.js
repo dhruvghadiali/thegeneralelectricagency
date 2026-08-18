@@ -23,4 +23,7 @@ export const ENDPOINTS = {
   PRODUCT: {
     BASE: "products",
   },
+  PURCHASE: {
+    BASE: "purchases",
+  },
 };

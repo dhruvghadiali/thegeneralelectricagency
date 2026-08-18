@@ -40,6 +40,13 @@ export {
 } from "./stock.enum";
 
 export {
+  PAYMENT_MODES,
+  PAYMENT_MODE_OPTIONS,
+  PAYMENT_STATUSES,
+  PAYMENT_STATUS_OPTIONS,
+} from "./purchaseOrder.enum";
+
+export {
   AGENCIES,
   AGENCY_OPTIONS,
   INDIAN_GST_OPTIONS,

@@ -19,7 +19,6 @@ import {
   PRODUCT_PURCHASE_PRICE_MIN,
   PRODUCT_SALE_PRICE_MAX,
   PRODUCT_SALE_PRICE_MIN,
-  PRODUCT_SUPPORTED_AGENCIES,
   PRODUCT_SUPPORTED_CATEGORIES,
   PRODUCT_SUPPORTED_GST_RATES,
 } from "@Forms/product/product.validation.constants";
@@ -69,7 +68,7 @@ export const productValidationSchema = Yup.object({
     .oneOf(PRODUCT_SUPPORTED_CATEGORIES, MESSAGES.CATEGORY_INVALID)
     .required(MESSAGES.CATEGORY_REQUIRED),
   agency: Yup.string()
-    .oneOf(PRODUCT_SUPPORTED_AGENCIES, MESSAGES.AGENCY_INVALID)
+    .trim()
     .required(MESSAGES.AGENCY_REQUIRED),
   purchasePrice: commercialNumber(
     MESSAGES.PURCHASE_PRICE_NUMBER,
