@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import _ from "lodash";
 
 import { cn } from "@/lib/utils";
@@ -10,7 +10,7 @@ import {
   TableCell,
   TableHeader,
   TableRow,
-} from "@shadcnComponent/table";
+} from "@commonComponent/appTable";
 
 import DataTableToolbar from "@commonComponent/dataTable/dataTableToolbar";
 import DataTableMobileList from "@commonComponent/dataTable/dataTableMobileList";
@@ -42,6 +42,25 @@ const STICKY_HEADER_CLASSES = cn(
   "[&_th]:sticky [&_th]:top-0 [&_th]:z-20 [&_th]:bg-card",
   "[&_th]:shadow-[inset_0_-1px_0_0_var(--border)]",
 );
+
+function SelectionCheckbox({ checked, indeterminate = false, onChange, label }) {
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.indeterminate = indeterminate;
+  }, [indeterminate]);
+
+  return (
+    <input
+      ref={inputRef}
+      type="checkbox"
+      checked={checked}
+      onChange={(event) => onChange(event.target.checked)}
+      aria-label={label}
+      className="size-4 cursor-pointer rounded border-input accent-primary"
+    />
+  );
+}
 
 /**
  * The shared list surface: search, sortable headings, a per-column filter
@@ -97,6 +116,9 @@ function DataTable({
   error,
   // Presentation
   rowActions,
+  selectedRowKeys = [],
+  onRowSelectionChange,
+  selectionLabel = (row) => `Select ${rowKey(row)}`,
   toolbarActions,
   searchPlaceholder = "Search...",
   rowNoun = "rows",
@@ -123,6 +145,17 @@ function DataTable({
 
   const visibleColumns = getVisibleColumns(columns);
   const hasRows = rows.length > 0;
+  const selectedKeys = new Set(selectedRowKeys);
+  const isSelectable = Boolean(onRowSelectionChange);
+  const selectedVisibleCount = isSelectable
+    ? rows.filter((row) => selectedKeys.has(rowKey(row))).length
+    : 0;
+  const areAllVisibleRowsSelected =
+    hasRows && selectedVisibleCount === rows.length;
+  const areSomeVisibleRowsSelected =
+    selectedVisibleCount > 0 && !areAllVisibleRowsSelected;
+  const toggleAllVisibleRows = (checked) =>
+    rows.forEach((row) => onRowSelectionChange(row, checked));
   const isFirstLoad = isLoading && !hasRows;
   // The head carries every filter control, so it stays even when the body
   // cannot - otherwise a filter that matched nothing would take away the only
@@ -180,9 +213,25 @@ function DataTable({
           <Table>
             <TableHeader className={STICKY_HEADER_CLASSES}>
               <TableRow className="hover:bg-transparent">
-                {rowActions && (
-                  <th className="h-11 w-14 px-4">
-                    <span className="sr-only">Actions</span>
+                {(isSelectable || rowActions) && (
+                  <th className="h-11 w-px whitespace-nowrap px-4">
+                    <div className="flex items-center gap-1">
+                      {isSelectable && (
+                        <span className="flex size-9 items-center justify-center">
+                          <SelectionCheckbox
+                            checked={areAllVisibleRowsSelected}
+                            indeterminate={areSomeVisibleRowsSelected}
+                            onChange={toggleAllVisibleRows}
+                            label={
+                              areAllVisibleRowsSelected
+                                ? "Deselect all visible products"
+                                : "Select all visible products"
+                            }
+                          />
+                        </span>
+                      )}
+                      {rowActions && <span className="sr-only">Actions</span>}
+                    </div>
                   </th>
                 )}
                 {_.map(visibleColumns, (column) => (
@@ -207,10 +256,35 @@ function DataTable({
                   isLoading && "pointer-events-none opacity-60",
                 )}
               >
-                {_.map(rows, (row) => (
-                  <TableRow key={rowKey(row)}>
-                    {rowActions && (
-                      <TableCell className="py-1">{rowActions(row)}</TableCell>
+                {_.map(rows, (row) => {
+                  const key = rowKey(row);
+                  const isSelected = selectedKeys.has(key);
+
+                  return (
+                  <TableRow
+                    key={key}
+                    data-state={isSelected ? "selected" : undefined}
+                    className={cn(
+                      isSelected && "bg-primary/5 hover:bg-primary/10",
+                    )}
+                  >
+                    {(isSelectable || rowActions) && (
+                      <TableCell className="w-px whitespace-nowrap px-4 py-1">
+                        <div className="flex items-center gap-1">
+                          {isSelectable && (
+                            <span className="flex size-9 items-center justify-center">
+                              <SelectionCheckbox
+                                checked={isSelected}
+                                onChange={(checked) =>
+                                  onRowSelectionChange(row, checked)
+                                }
+                                label={selectionLabel(row)}
+                              />
+                            </span>
+                          )}
+                          {rowActions?.(row)}
+                        </div>
+                      </TableCell>
                     )}
                     {_.map(visibleColumns, (column) => (
                       <TableCell
@@ -226,7 +300,8 @@ function DataTable({
                       </TableCell>
                     ))}
                   </TableRow>
-                ))}
+                  );
+                })}
               </TableBody>
             )}
           </Table>
@@ -256,6 +331,9 @@ function DataTable({
             rows={rows}
             rowKey={rowKey}
             rowActions={rowActions}
+            selectedRowKeys={selectedRowKeys}
+            onRowSelectionChange={onRowSelectionChange}
+            selectionLabel={selectionLabel}
           />
         </div>
       )}

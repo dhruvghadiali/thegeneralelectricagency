@@ -3,6 +3,13 @@ export const PRODUCT_INITIAL_VALUES = Object.freeze({
   name: "",
   category: "",
   agency: "",
+  purchasePrice: "",
+  salePrice: "",
+  gstPercentage: "",
+  discountAmountMin: "",
+  discountAmountMax: "",
+  discountPercentageMin: "",
+  discountPercentageMax: "",
   modelNumber: "",
   description: "",
 });

@@ -9,19 +9,48 @@ import { renderCell } from "@/utils/dataTable.util";
  * off the card - on a narrow screen, showing every column is worse than
  * showing the few that identify the row.
  */
-function DataTableMobileList({ columns, rows, rowKey, rowActions }) {
+function DataTableMobileList({
+  columns,
+  rows,
+  rowKey,
+  rowActions,
+  selectedRowKeys = [],
+  onRowSelectionChange,
+  selectionLabel,
+}) {
   const bySlot = _.groupBy(_.filter(columns, "mobile"), "mobile");
   const [primaryColumn] = bySlot[MOBILE_SLOTS.PRIMARY] ?? [];
   const [secondaryColumn] = bySlot[MOBILE_SLOTS.SECONDARY] ?? [];
   const metaColumns = bySlot[MOBILE_SLOTS.META] ?? [];
   const badgeColumns = bySlot[MOBILE_SLOTS.BADGE] ?? [];
+  const selectedKeys = new Set(selectedRowKeys);
 
   return (
     <div className="divide-y md:hidden">
-      {_.map(rows, (row) => (
-        <article key={rowKey(row)} className="p-4">
+      {_.map(rows, (row) => {
+        const key = rowKey(row);
+        const isSelected = selectedKeys.has(key);
+
+        return (
+        <article
+          key={key}
+          data-state={isSelected ? "selected" : undefined}
+          className="p-4 data-[state=selected]:bg-muted/50"
+        >
           <div className="flex items-start justify-between gap-2">
-            <div className="min-w-0">
+            <div className="flex min-w-0 gap-3">
+              {onRowSelectionChange && (
+                <input
+                  type="checkbox"
+                  checked={isSelected}
+                  onChange={(event) =>
+                    onRowSelectionChange(row, event.target.checked)
+                  }
+                  aria-label={selectionLabel(row)}
+                  className="mt-1 size-4 shrink-0 cursor-pointer rounded border-input accent-primary"
+                />
+              )}
+              <div className="min-w-0">
               {primaryColumn && (
                 <div className="font-medium">{renderCell(row, primaryColumn)}</div>
               )}
@@ -30,6 +59,7 @@ function DataTableMobileList({ columns, rows, rowKey, rowActions }) {
                   {renderCell(row, secondaryColumn)}
                 </div>
               )}
+              </div>
             </div>
             {rowActions?.(row)}
           </div>
@@ -60,7 +90,8 @@ function DataTableMobileList({ columns, rows, rowKey, rowActions }) {
             </div>
           )}
         </article>
-      ))}
+        );
+      })}
     </div>
   );
 }

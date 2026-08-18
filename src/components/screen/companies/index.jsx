@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Building2, ContactRound } from "lucide-react";
+import { Building2, ContactRound, Plus } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -8,7 +8,6 @@ import { ROLE_PATHS } from "@Enums";
 
 import CompanyContactDirectory from "@screenComponent/companies/companyContact/companyContactDirectory";
 import CompanyDirectory from "@screenComponent/companies/company/companyDirectory";
-import CompanyHeader from "@screenComponent/companies/company/companyHeader";
 
 const DIRECTORY_VIEWS = Object.freeze({
   COMPANIES: "companies",
@@ -56,17 +55,26 @@ function Companies() {
 
   return (
     <main className="flex w-full flex-col gap-6 pb-2 roomy:h-full roomy:min-h-0">
-      <CompanyHeader
-        canAddCompany={canAddCompany}
-        onAddCompany={() => navigate("/companies/new")}
-      />
+      <h1 className="sr-only">Companies</h1>
 
-      {canViewContactDirectory && (
-        <DirectorySwitcher
-          value={directoryView}
-          onChange={setDirectoryView}
-        />
-      )}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        {canViewContactDirectory && (
+          <DirectorySwitcher
+            value={directoryView}
+            onChange={setDirectoryView}
+          />
+        )}
+
+        {canAddCompany && (
+          <Button
+            onClick={() => navigate("/companies/new")}
+            className="w-full sm:w-auto"
+          >
+            <Plus className="size-4" />
+            Add company
+          </Button>
+        )}
+      </div>
 
       {directoryView === DIRECTORY_VIEWS.CONTACTS && canViewContactDirectory ? (
         <CompanyContactDirectory />

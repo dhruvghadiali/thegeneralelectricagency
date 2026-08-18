@@ -3,9 +3,17 @@ import {
   COLUMN_TYPES,
   MOBILE_SLOTS,
   PRODUCT_CATEGORY_OPTIONS,
+  PRODUCT_STATUS_OPTIONS,
 } from "@Enums";
+import { Badge } from "@shadcnComponent/badge";
 import ProductAgencyBadge from "@screenComponent/products/productAgencyBadge";
 import ProductCategoryBadge from "@screenComponent/products/productCategoryBadge";
+import {
+  formatCurrency,
+  formatNumber,
+  formatPercentage,
+  formatRange,
+} from "@screenComponent/products/product.utils";
 
 const optionalValue = (value) => value || "—";
 
@@ -35,6 +43,51 @@ export const PRODUCT_COLUMNS = [
     width: "320px",
   },
   {
+    key: "purchasePrice",
+    header: "Purchase price",
+    filterLabel: "Purchase price",
+    type: COLUMN_TYPES.NUMBER,
+    field: "purchasePrice",
+    sortKey: "purchase_price",
+    filterKey: "purchase_price",
+    className: "whitespace-nowrap tabular-nums",
+    mobile: MOBILE_SLOTS.META,
+    width: "180px",
+    render: (product) => formatCurrency(product.purchasePrice),
+  },
+  {
+    key: "salePrice",
+    header: "Sale price",
+    filterLabel: "Sale price",
+    type: COLUMN_TYPES.NUMBER,
+    field: "salePrice",
+    sortKey: "sale_price",
+    filterKey: "sale_price",
+    className: "whitespace-nowrap tabular-nums",
+    mobile: MOBILE_SLOTS.META,
+    width: "180px",
+    render: (product) => formatCurrency(product.salePrice),
+  },
+  {
+    key: "discountAmount",
+    header: "Discount amount",
+    type: COLUMN_TYPES.CUSTOM,
+    field: "discountAmount",
+    className: "whitespace-nowrap tabular-nums",
+    width: "220px",
+    render: (product) => formatRange(product.discountAmount, formatNumber),
+  },
+  {
+    key: "discountPercentage",
+    header: "Discount %",
+    type: COLUMN_TYPES.CUSTOM,
+    field: "discountPercentage",
+    className: "whitespace-nowrap tabular-nums",
+    width: "180px",
+    render: (product) =>
+      formatRange(product.discountPercentage, formatPercentage, "-"),
+  },
+  {
     key: "category",
     header: "Category",
     filterLabel: "Category",
@@ -61,6 +114,18 @@ export const PRODUCT_COLUMNS = [
     mobile: MOBILE_SLOTS.META,
     width: "180px",
     render: (product) => <ProductAgencyBadge agency={product.agency} />,
+  },
+  {
+    key: "gstPercentage",
+    header: "GST",
+    filterLabel: "GST percentage",
+    type: COLUMN_TYPES.NUMBER,
+    field: "gstPercentage",
+    sortKey: "gst_percentage",
+    filterKey: "gst_percentage",
+    className: "whitespace-nowrap tabular-nums",
+    width: "140px",
+    render: (product) => formatPercentage(product.gstPercentage),
   },
   {
     key: "modelNumber",
@@ -110,5 +175,23 @@ export const PRODUCT_COLUMNS = [
     mobile: MOBILE_SLOTS.META,
     mobileLabel: "Updated",
     width: "210px",
+  },
+  {
+    key: "status",
+    header: "Status",
+    filterLabel: "Status",
+    type: COLUMN_TYPES.SELECT,
+    field: "isActive",
+    sortKey: "is_active",
+    filterKey: "is_active",
+    options: PRODUCT_STATUS_OPTIONS,
+    allOptionLabel: "All statuses",
+    width: "150px",
+    mobile: MOBILE_SLOTS.BADGE,
+    render: (product) => (
+      <Badge variant={product.isActive ? "success" : "destructive"}>
+        {product.isActive ? "Active" : "Inactive"}
+      </Badge>
+    ),
   },
 ];

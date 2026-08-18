@@ -1,4 +1,4 @@
-import { AGENCIES, PRODUCT_CATEGORIES } from "@Enums";
+import { AGENCIES, INDIAN_GST_RATES, PRODUCT_CATEGORIES } from "@Enums";
 
 export const PRODUCT_CODE_MIN_LENGTH = 2;
 export const PRODUCT_CODE_MAX_LENGTH = 50;
@@ -8,6 +8,17 @@ export const PRODUCT_MODEL_NUMBER_MIN_LENGTH = 2;
 export const PRODUCT_MODEL_NUMBER_MAX_LENGTH = 100;
 export const PRODUCT_DESCRIPTION_MIN_LENGTH = 3;
 export const PRODUCT_DESCRIPTION_MAX_LENGTH = 2000;
+export const PRODUCT_PURCHASE_PRICE_MIN = 0;
+export const PRODUCT_PURCHASE_PRICE_MAX = 10000000;
+export const PRODUCT_SALE_PRICE_MIN = 0;
+export const PRODUCT_SALE_PRICE_MAX = 10000000;
+export const PRODUCT_GST_MIN = 0;
+export const PRODUCT_GST_MAX = 100;
+export const PRODUCT_DISCOUNT_AMOUNT_MIN = 0;
+export const PRODUCT_DISCOUNT_AMOUNT_MAX = 10000000;
+export const PRODUCT_DISCOUNT_PERCENTAGE_MIN = 0;
+export const PRODUCT_DISCOUNT_PERCENTAGE_MAX = 100;
+export const PRODUCT_PRICE_DECIMAL_PLACES = 2;
 
 export const PRODUCT_SUPPORTED_CATEGORIES = Object.freeze(
   Object.values(PRODUCT_CATEGORIES),
@@ -15,4 +26,8 @@ export const PRODUCT_SUPPORTED_CATEGORIES = Object.freeze(
 
 export const PRODUCT_SUPPORTED_AGENCIES = Object.freeze(
   Object.values(AGENCIES),
+);
+
+export const PRODUCT_SUPPORTED_GST_RATES = Object.freeze(
+  Object.values(INDIAN_GST_RATES),
 );

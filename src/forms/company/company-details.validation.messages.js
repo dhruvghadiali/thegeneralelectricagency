@@ -39,6 +39,7 @@ export const COMPANY_DETAILS_VALIDATION_MESSAGES = {
   ADDRESSES_REQUIRED: "Add at least one address",
   ADDRESSES_MIN: `Add at least ${COMPANY_MIN_ADDRESSES} address`,
   CONTACTS_REQUIRED: "Contact persons are required",
+  CONTACTS_MIN: "Add at least one company contact person for this address",
   CONTACT_NAME_REQUIRED: "Contact name is required",
   CONTACT_NAME_MIN: `Contact name must be at least ${COMPANY_CONTACT_NAME_MIN_LENGTH} characters`,
   CONTACT_NAME_MAX: `Contact name must be ${COMPANY_CONTACT_NAME_MAX_LENGTH} characters or fewer`,

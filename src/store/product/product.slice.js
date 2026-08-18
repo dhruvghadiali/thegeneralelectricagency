@@ -17,8 +17,14 @@ const initialState = {
   ...createTableState({
     limit: PRODUCT_TABLE_DEFAULTS.LIMIT,
     sort: PRODUCT_TABLE_DEFAULTS.SORT,
+    columnFilters: PRODUCT_TABLE_DEFAULTS.FILTERS,
   }),
   dialog: null,
+  summary: {
+    totalProducts: 0,
+    activeProducts: 0,
+    inactiveProducts: 0,
+  },
   isCreating: false,
   createError: null,
   isUpdating: false,
@@ -48,7 +54,10 @@ const productSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchProducts.pending, tableFetchCases.pending)
-      .addCase(fetchProducts.fulfilled, tableFetchCases.fulfilled)
+      .addCase(fetchProducts.fulfilled, (state, action) => {
+        tableFetchCases.fulfilled(state, action);
+        state.summary = action.payload.summary;
+      })
       .addCase(fetchProducts.rejected, (state, action) =>
         tableFetchCases.rejected(state, action, "Unable to load products."),
       )

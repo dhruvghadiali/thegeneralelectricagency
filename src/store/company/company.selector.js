@@ -15,3 +15,12 @@ export const selectCompanySummary = createSelector(
   selectCompanyState,
   (companies) => companies.summary,
 );
+
+export const selectCompanyDeleteState = createSelector(
+  selectCompanyState,
+  ({ companyToDelete, isDeleting, deleteError }) => ({
+    companyToDelete,
+    isDeleting,
+    deleteError,
+  }),
+);

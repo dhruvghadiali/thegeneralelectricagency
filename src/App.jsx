@@ -19,6 +19,7 @@ import DashboardPage from "@/pages/dashboard.page";
 import EmployeesPage from "@/pages/employees.page";
 import CompaniesPage from "@/pages/companies.page";
 import ProductsPage from "@/pages/products.page";
+import ProductDetailsPage from "@/pages/product-details.page";
 import CompanyDetailsPage from "@/pages/company-details.page";
 import LenisScrollProvider from "@/components/LenisScrollProvider";
 import PlaceholderScreen from "@commonComponent/pageBreadcrumb/placeholderScreen";
@@ -63,6 +64,15 @@ function App() {
                 element={<RoleRoute allowedRoles={[ROLE_PATHS.EMPLOYEE]} />}
               >
                 <Route path="/companies/new" element={<CompanyDetailsPage />} />
+                <Route
+                  path="/companies/:companyId/edit"
+                  element={<CompanyDetailsPage />}
+                />
+                <Route path="/products/new" element={<ProductDetailsPage />} />
+                <Route
+                  path="/products/:productId/edit"
+                  element={<ProductDetailsPage />}
+                />
               </Route>
               <Route path="/stocks" element={<StocksPage />} />
               <Route
@@ -72,7 +82,6 @@ function App() {
                     eyebrow="Workspace preferences"
                     title="Settings"
                     description="Manage your account and workspace preferences."
-                    showDashboardParent={false}
                   />
                 }
               />

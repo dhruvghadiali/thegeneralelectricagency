@@ -31,7 +31,6 @@ import InventoryTable from "./inventoryTable";
 import TopCompaniesCard from "./topCompaniesCard";
 import PerformanceChart from "./performanceChart";
 import DamagedStockTable from "./damagedStockTable";
-import PageBreadcrumb from "@commonComponent/pageBreadcrumb";
 
 // Remove when API will return the data
 import { monthlyPerformance } from "./dashboard.data";
@@ -82,15 +81,14 @@ function Dashboard() {
 
   return (
     <main className="w-full space-y-6 pb-8">
-      <PageBreadcrumb items={[{ label: "Dashboard" }]} />
       <section className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
           <p className="text-sm font-medium text-primary">
             Operations overview
           </p>
-          <h2 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
             Good afternoon, here’s your business at a glance.
-          </h2>
+          </h1>
           <p className="mt-2 text-sm text-muted-foreground">
             Sales, payments, customers, and warehouse status for FY 2026.
           </p>

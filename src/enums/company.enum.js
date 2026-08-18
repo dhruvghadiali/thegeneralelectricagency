@@ -16,6 +16,11 @@ export const COMPANY_TYPE_OPTIONS = Object.freeze([
   { value: COMPANY_TYPES.BOTH, label: "Supplier & customer" },
 ]);
 
+export const COMPANY_STATUS_OPTIONS = Object.freeze([
+  { value: "true", label: "Active" },
+  { value: "false", label: "Inactive" },
+]);
+
 export const CONTACT_PERSON_POSITIONS = Object.freeze({
   OWNER: "owner",
   DIRECTOR: "director",
@@ -54,4 +59,5 @@ export const COMPANY_TABLE_DEFAULTS = Object.freeze({
   SORT: Object.freeze([
     Object.freeze({ field: "company_name", order: SORT_ORDERS.ASC }),
   ]),
+  FILTERS: Object.freeze({ is_active: "true" }),
 });

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Customize shadcn Safely"
+  short_description: "Style screens without editing shadcn source"
+  default_prompt: "Use $customize-shadcn-safely to implement this UI change without modifying shadcn component files."

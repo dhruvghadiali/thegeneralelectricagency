@@ -1,8 +1,8 @@
-import { Pencil, Trash2 } from "lucide-react";
+import { FileText, Pencil, Trash2 } from "lucide-react";
 
 import { Button } from "@shadcnComponent/button";
 
-function ProductActions({ product, onEdit, onDelete }) {
+function ProductActions({ product, onEdit, onDelete, onPdf, showPdf = true }) {
   return (
     <div className="flex items-center justify-end gap-1">
       <Button
@@ -22,6 +22,18 @@ function ProductActions({ product, onEdit, onDelete }) {
       >
         <Trash2 className="size-4" />
       </Button>
+      {showPdf && (
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          onClick={() => onPdf(product)}
+          aria-label={`Product PDF for ${product.name}`}
+          title="Product PDF"
+        >
+          <FileText className="size-4" />
+        </Button>
+      )}
     </div>
   );
 }

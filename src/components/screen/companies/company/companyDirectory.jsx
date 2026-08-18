@@ -1,23 +1,49 @@
 import { Building2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import DataTable from "@commonComponent/dataTable";
+import { ROLE_PATHS } from "@Enums";
+import { deleteCompany } from "@Redux/company/company.action";
 import {
+  companyDeleteClosed,
+  companyDeleteOpened,
   companyDetailsClosed,
   companyDetailsOpened,
 } from "@Redux/company/company.slice";
-import { selectSelectedCompany } from "@Redux/company/company.selector";
+import {
+  selectCompanyDeleteState,
+  selectSelectedCompany,
+} from "@Redux/company/company.selector";
 import { COMPANY_COLUMNS } from "@screenComponent/companies/company/company.columns";
 import { useCompanyList } from "@screenComponent/companies/company/useCompanyList";
 
 import CompanyActions from "@screenComponent/companies/company/companyActions";
+import CompanyDeleteDialog from "@screenComponent/companies/company/companyDeleteDialog";
 import CompanyDetailSheet from "@screenComponent/companies/company/companyDetailSheet";
 import CompanySummary from "@screenComponent/companies/company/companySummary";
 
 function CompanyDirectory() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const table = useCompanyList();
   const selectedCompany = useSelector(selectSelectedCompany);
+  const { companyToDelete, isDeleting, deleteError } = useSelector(
+    selectCompanyDeleteState,
+  );
+  const role = useSelector((state) => state.auth.role);
+  const canManageCompany = role === ROLE_PATHS.EMPLOYEE;
+
+  const handleDelete = async () => {
+    if (!companyToDelete?.id) return;
+
+    try {
+      await dispatch(deleteCompany(companyToDelete.id)).unwrap();
+      table.refresh();
+    } catch {
+      // The rejected thunk stores the display-ready error for the dialog.
+    }
+  };
 
   return (
     <>
@@ -48,7 +74,14 @@ function CompanyDirectory() {
         rowActions={(company) => (
           <CompanyActions
             company={company}
+            canManage={canManageCompany}
             onView={(row) => dispatch(companyDetailsOpened(row))}
+            onEdit={(row) =>
+              navigate(`/companies/${row.id}/edit`, {
+                state: { company: row },
+              })
+            }
+            onDelete={(row) => dispatch(companyDeleteOpened(row))}
           />
         )}
         searchPlaceholder="Search by company, email, phone, GST, or PAN..."
@@ -63,6 +96,14 @@ function CompanyDirectory() {
       <CompanyDetailSheet
         company={selectedCompany}
         onClose={() => dispatch(companyDetailsClosed())}
+      />
+
+      <CompanyDeleteDialog
+        company={companyToDelete}
+        isDeleting={isDeleting}
+        error={deleteError}
+        onClose={() => dispatch(companyDeleteClosed())}
+        onDelete={handleDelete}
       />
     </>
   );

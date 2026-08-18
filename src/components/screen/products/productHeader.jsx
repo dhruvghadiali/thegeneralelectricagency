@@ -1,32 +1,40 @@
-import { Plus } from "lucide-react";
+import { FileText, Plus } from "lucide-react";
 
 import { Button } from "@shadcnComponent/button";
-import PageBreadcrumb from "@commonComponent/pageBreadcrumb";
 
-function ProductHeader({ canManage, onAddProduct }) {
-  return (
-    <div className="space-y-5">
-      <PageBreadcrumb items={[{ label: "Products" }]} />
-      <section className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
-        <div>
-          <p className="text-sm font-medium text-primary">Product catalogue</p>
-          <h2 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
-            Products
-          </h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            {canManage
-              ? "Manage product codes, categories, agencies, and specifications."
-              : "View product codes, categories, agencies, and specifications."}
-          </p>
-        </div>
-        {canManage && (
-          <Button onClick={onAddProduct} className="w-full lg:w-auto">
-            <Plus className="size-4" />
-            Add product
-          </Button>
-        )}
-      </section>
+function ProductHeader({
+  canManage,
+  selectedCount = 0,
+  onViewQuotation,
+  onAddProduct,
+}) {
+  const actions = canManage ? (
+    <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:justify-end">
+      {selectedCount > 0 && (
+        <Button
+          variant="outline"
+          onClick={onViewQuotation}
+          className="w-full sm:w-auto"
+        >
+          <FileText className="size-4" />
+          View quotation details
+          <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
+            {selectedCount}
+          </span>
+        </Button>
+      )}
+      <Button onClick={onAddProduct} className="w-full sm:w-auto">
+        <Plus className="size-4" />
+        Add product
+      </Button>
     </div>
+  ) : null;
+
+  return (
+    <header className="flex justify-end">
+      <h1 className="sr-only">Products</h1>
+      {actions}
+    </header>
   );
 }
 

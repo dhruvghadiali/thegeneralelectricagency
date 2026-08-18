@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-import PageBreadcrumb from "@commonComponent/pageBreadcrumb";
 import SummaryCard from "@screenComponent/dashboard/shared/summaryCard";
 import { Badge } from "@shadcnComponent/badge";
 import { Button } from "@shadcnComponent/button";
@@ -55,15 +54,13 @@ const movements = [
 function WarehouseDashboard() {
   return (
     <main className="w-full space-y-6 pb-8">
-      <PageBreadcrumb items={[{ label: "Dashboard" }]} />
-
       <section className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
           <div className="flex items-center gap-2 text-sm font-medium text-emerald-700">
             <span className="relative flex size-2"><span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-60" /><span className="relative inline-flex size-2 rounded-full bg-emerald-600" /></span>
             Warehouse operations live
           </div>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">Today&apos;s inventory flow</h2>
+          <h1 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">Today&apos;s inventory flow</h1>
           <p className="mt-2 text-sm text-muted-foreground">Monitor receiving, picking, packing, and dispatch from one workspace.</p>
         </div>
         <Button asChild className="self-start">
@@ -83,8 +80,8 @@ function WarehouseDashboard() {
           </CardHeader>
           <CardContent className="px-3 sm:px-5">
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[620px] text-sm">
-                <thead><tr className="border-b text-left text-xs text-muted-foreground"><th className="px-2 pb-3 font-medium">Order</th><th className="px-2 pb-3 font-medium">Company</th><th className="px-2 pb-3 font-medium">Quantity</th><th className="px-2 pb-3 font-medium">Dispatch by</th><th className="px-2 pb-3 text-right font-medium">Status</th></tr></thead>
+              <table className="w-full min-w-[620px] font-sans text-sm [&_td]:font-sans [&_td]:text-sm [&_td_*]:font-sans [&_td_*]:text-sm [&_th]:font-sans [&_th]:text-sm [&_th_*]:font-sans [&_th_*]:text-sm">
+                <thead><tr className="border-b text-left text-muted-foreground"><th className="px-2 pb-3 font-medium">Order</th><th className="px-2 pb-3 font-medium">Company</th><th className="px-2 pb-3 font-medium">Quantity</th><th className="px-2 pb-3 font-medium">Dispatch by</th><th className="px-2 pb-3 text-right font-medium">Status</th></tr></thead>
                 <tbody>{dispatchQueue.map((order) => <tr key={order.id} className="border-b last:border-0"><td className="px-2 py-4 font-medium">{order.id}</td><td className="px-2 py-4">{order.company}</td><td className="px-2 py-4 text-muted-foreground">{order.items}</td><td className="px-2 py-4 text-muted-foreground">{order.time}</td><td className="px-2 py-4 text-right"><Badge variant={order.variant}>{order.status}</Badge></td></tr>)}</tbody>
               </table>
             </div>

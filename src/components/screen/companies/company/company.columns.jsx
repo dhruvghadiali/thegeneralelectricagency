@@ -9,9 +9,11 @@ import {
 
 import {
   COLUMN_TYPES,
+  COMPANY_STATUS_OPTIONS,
   COMPANY_TYPE_OPTIONS,
   MOBILE_SLOTS,
 } from "@Enums";
+import { Badge } from "@shadcnComponent/badge";
 import CompanyTypeBadge from "@screenComponent/companies/company/companyTypeBadge";
 
 export const COMPANY_COLUMNS = [
@@ -123,6 +125,24 @@ export const COMPANY_COLUMNS = [
           {company.contactCount} {company.contactCount === 1 ? "contact" : "contacts"}
         </span>
       </div>
+    ),
+  },
+  {
+    key: "status",
+    header: "Status",
+    filterLabel: "Status",
+    type: COLUMN_TYPES.SELECT,
+    field: "isActive",
+    sortKey: "is_active",
+    filterKey: "is_active",
+    options: COMPANY_STATUS_OPTIONS,
+    allOptionLabel: "All statuses",
+    mobile: MOBILE_SLOTS.BADGE,
+    width: "150px",
+    render: (company) => (
+      <Badge variant={company.isActive ? "success" : "destructive"}>
+        {company.isActive ? "Active" : "Inactive"}
+      </Badge>
     ),
   },
 ];

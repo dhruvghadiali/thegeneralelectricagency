@@ -14,7 +14,6 @@ import {
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-import PageBreadcrumb from "@commonComponent/pageBreadcrumb";
 import SummaryCard from "@screenComponent/dashboard/shared/summaryCard";
 import { Badge } from "@shadcnComponent/badge";
 import { Button } from "@shadcnComponent/button";
@@ -105,15 +104,13 @@ function EmployeeDashboard() {
 
   return (
     <main className="w-full space-y-6 pb-8">
-      <PageBreadcrumb items={[{ label: "Dashboard" }]} />
-
       <section className="overflow-hidden rounded-2xl bg-primary px-5 py-6 text-primary-foreground sm:px-7">
         <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
           <div>
             <p className="text-sm font-medium text-primary-foreground/70">My workspace</p>
-            <h2 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
+            <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
               Welcome back, <span className="capitalize">{displayName}</span>.
-            </h2>
+            </h1>
             <p className="mt-2 max-w-xl text-sm text-primary-foreground/75">
               You have 7 follow-ups and 2 priority customer requests on your list today.
             </p>

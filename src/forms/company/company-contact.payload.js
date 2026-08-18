@@ -11,17 +11,14 @@ export function toCompanyContactListParams({
   sort = [],
   filters = {},
 } = {}) {
-  return {
-    ...buildListQueryParams({
-      columns,
-      page,
-      limit,
-      search,
-      sort,
-      filters,
-    }),
-    is_active: true,
-  };
+  return buildListQueryParams({
+    columns,
+    page,
+    limit,
+    search,
+    sort,
+    filters,
+  });
 }
 
 function fromCompanyDetailsResponse(details = {}) {
@@ -36,14 +33,27 @@ function fromCompanyDetailsResponse(details = {}) {
 function fromCompanyContactResponse(contact = {}) {
   return {
     id: contact._id ?? contact.id ?? null,
+    companyId:
+      contact.company_id ??
+      contact.company?._id ??
+      contact.company?.id ??
+      (typeof contact.company === "string" ? contact.company : null),
+    companyAddressId:
+      contact.company_address_id ??
+      contact.company_address?._id ??
+      contact.company_address?.id ??
+      null,
     contactPersonName: contact.contact_person_name ?? "",
     contactPersonMobileNumber:
       contact.contact_person_mobile_number ?? "",
     contactPersonPosition: contact.contact_person_position ?? "other",
+    isActive: contact.is_active !== false,
     companyName: contact.company_name ?? "",
     companyType: contact.company_type ?? "",
-    companyAddress: contact.company_address ?? "",
-    companyAddressPincode: contact.company_address_pincode ?? "",
+    companyAddress:
+      contact.company_address?.address ?? contact.company_address ?? "",
+    companyAddressPincode:
+      contact.company_address_pincode ?? contact.company_address?.pincode ?? "",
     companyDetails: _.map(
       contact.company_details ?? [],
       fromCompanyDetailsResponse,

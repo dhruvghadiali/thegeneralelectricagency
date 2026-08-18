@@ -6,8 +6,13 @@ import { ROLE_PATHS } from "@Enums";
 import {
   fromCompanyCreateError,
   fromCompanyListResponse,
+  toCompanyAddressCreatePayload,
+  toCompanyAddressUpdatePayload,
+  toCompanyContactCreatePayload,
+  toCompanyContactUpdatePayload,
   toCompanyCreatePayload,
   toCompanyListParams,
+  toCompanyUpdatePayload,
 } from "@Forms/company/company.payload";
 
 const companyListApiByRole = {
@@ -58,6 +63,110 @@ export const createCompany = createAsyncThunk(
       );
     } catch (error) {
       return rejectWithValue(fromCompanyCreateError(error));
+    }
+  },
+);
+
+export const updateCompany = createAsyncThunk(
+  "companies/updateCompany",
+  async ({ id, values }, { rejectWithValue }) => {
+    try {
+      return await employeeCompanyApi.updateCompany(
+        id,
+        toCompanyUpdatePayload(values),
+      );
+    } catch (error) {
+      return rejectWithValue(fromCompanyCreateError(error));
+    }
+  },
+);
+
+export const deleteCompany = createAsyncThunk(
+  "companies/deleteCompany",
+  async (id, { rejectWithValue }) => {
+    try {
+      await employeeCompanyApi.deleteCompany(id);
+      return id;
+    } catch (error) {
+      return rejectWithValue(extractErrorMessage(error));
+    }
+  },
+);
+
+export const createCompanyAddress = createAsyncThunk(
+  "companies/createCompanyAddress",
+  async ({ companyId, values }, { rejectWithValue }) => {
+    try {
+      return await employeeCompanyApi.createCompanyAddress(
+        toCompanyAddressCreatePayload(companyId, values),
+      );
+    } catch (error) {
+      return rejectWithValue(extractErrorMessage(error));
+    }
+  },
+);
+
+export const createCompanyContact = createAsyncThunk(
+  "companies/createCompanyContact",
+  async ({ companyId, addressId, values }, { rejectWithValue }) => {
+    try {
+      return await employeeCompanyApi.createCompanyContact(
+        toCompanyContactCreatePayload(companyId, addressId, values),
+      );
+    } catch (error) {
+      return rejectWithValue(extractErrorMessage(error));
+    }
+  },
+);
+
+export const deleteCompanyContact = createAsyncThunk(
+  "companies/deleteCompanyContact",
+  async (id, { rejectWithValue }) => {
+    try {
+      await employeeCompanyApi.deleteCompanyContact(id);
+      return id;
+    } catch (error) {
+      return rejectWithValue(extractErrorMessage(error));
+    }
+  },
+);
+
+export const deleteCompanyAddress = createAsyncThunk(
+  "companies/deleteCompanyAddress",
+  async (id, { rejectWithValue }) => {
+    try {
+      await employeeCompanyApi.deleteCompanyAddress(id);
+      return id;
+    } catch (error) {
+      return rejectWithValue(extractErrorMessage(error));
+    }
+  },
+);
+
+export const updateCompanyAddress = createAsyncThunk(
+  "companies/updateCompanyAddress",
+  async ({ id, values }, { rejectWithValue }) => {
+    try {
+      return await employeeCompanyApi.updateCompanyAddress(
+        id,
+        toCompanyAddressUpdatePayload(values),
+      );
+    } catch (error) {
+      return rejectWithValue(extractErrorMessage(error));
+    }
+  },
+);
+
+export const updateCompanyContact = createAsyncThunk(
+  "companies/updateCompanyContact",
+  async ({ id, values }, { rejectWithValue }) => {
+    try {
+      return await employeeCompanyApi.updateCompanyContact(
+        id,
+        toCompanyContactUpdatePayload(values),
+      );
+    } catch (error) {
+      return rejectWithValue(extractErrorMessage(error));
     }
   },
 );

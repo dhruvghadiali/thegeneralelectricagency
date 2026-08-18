@@ -2,7 +2,7 @@ import { Boxes } from "lucide-react";
 
 import { Badge } from "@shadcnComponent/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shadcnComponent/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@shadcnComponent/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@commonComponent/appTable";
 import { inventory } from "./dashboard.data";
 
 function InventoryTable() {

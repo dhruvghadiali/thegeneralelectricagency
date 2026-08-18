@@ -2,15 +2,16 @@ import { Building2, MapPin, Phone, UserRound } from "lucide-react";
 
 import {
   COLUMN_TYPES,
+  COMPANY_STATUS_OPTIONS,
   COMPANY_TYPE_OPTIONS,
   CONTACT_POSITION_OPTIONS,
   MOBILE_SLOTS,
 } from "@Enums";
+import { Badge } from "@shadcnComponent/badge";
 import CompanyTypeBadge from "@screenComponent/companies/company/companyTypeBadge";
 import ContactPositionBadge from "@screenComponent/companies/companyContact/contactPositionBadge";
 
-export function createCompanyContactColumns(onCompanyOpen) {
-  return [
+export const COMPANY_CONTACT_COLUMNS = [
     {
       key: "contactPersonName",
       header: "Contact person",
@@ -71,15 +72,7 @@ export function createCompanyContactColumns(onCompanyOpen) {
       mobile: MOBILE_SLOTS.SECONDARY,
       mobileIcon: Building2,
       width: "360px",
-      render: (contact) => (
-        <button
-          type="button"
-          onClick={() => onCompanyOpen(contact)}
-          className="text-left font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          {contact.companyName}
-        </button>
-      ),
+      className: "font-medium",
     },
     {
       key: "companyType",
@@ -116,5 +109,22 @@ export function createCompanyContactColumns(onCompanyOpen) {
       filterKey: "company_address_pincode",
       width: "140px",
     },
-  ];
-}
+    {
+      key: "status",
+      header: "Status",
+      filterLabel: "Status",
+      type: COLUMN_TYPES.SELECT,
+      field: "isActive",
+      sortKey: "is_active",
+      filterKey: "is_active",
+      options: COMPANY_STATUS_OPTIONS,
+      allOptionLabel: "All statuses",
+      mobile: MOBILE_SLOTS.BADGE,
+      width: "150px",
+      render: (contact) => (
+        <Badge variant={contact.isActive ? "success" : "destructive"}>
+          {contact.isActive ? "Active" : "Inactive"}
+        </Badge>
+      ),
+    },
+];

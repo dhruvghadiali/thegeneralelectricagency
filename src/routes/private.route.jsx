@@ -4,12 +4,50 @@ import { useDispatch, useSelector } from "react-redux";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 import AppSidebar from "@commonComponent/appSidebar";
+import PageBreadcrumb from "@commonComponent/pageBreadcrumb";
 
 import { ROLE_OPTIONS } from "@Enums";
 import { loggedOut } from "@/store/auth/auth.slice";
 import { getTokenExpiration, isAuthTokenValid } from "@/routes/auth-token.util";
 import { SIDEBAR_NAV_ITEMS_BY_ROLE } from "@commonComponent/appSidebar/appSidebar.constants";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@shadcnComponent/sidebar";
+
+function buildBreadcrumbItems(pathname, navItems) {
+  if (pathname === "/companies/new") {
+    return [
+      { label: "Companies", href: "/companies" },
+      { label: "Add company" },
+    ];
+  }
+
+  if (/^\/companies\/[^/]+\/edit$/.test(pathname)) {
+    return [
+      { label: "Companies", href: "/companies" },
+      { label: "Edit company" },
+    ];
+  }
+
+  if (pathname === "/products/new") {
+    return [
+      { label: "Products", href: "/products" },
+      { label: "Add product" },
+    ];
+  }
+
+  if (/^\/products\/[^/]+\/edit$/.test(pathname)) {
+    return [
+      { label: "Products", href: "/products" },
+      { label: "Edit product" },
+    ];
+  }
+
+  const currentItem = navItems.find(
+    (item) =>
+      pathname === item.url || pathname.startsWith(`${item.url}/`),
+  );
+
+  return [{ label: currentItem?.title ?? "Dashboard" }];
+}
 
 function PrivateRoute() {
   const dispatch = useDispatch();
@@ -19,11 +57,7 @@ function PrivateRoute() {
   
   const isValid = isAuthTokenValid(token);
   const navItems = SIDEBAR_NAV_ITEMS_BY_ROLE[role] ?? [];
-  const currentPage =
-    navItems.find(
-      (item) =>
-        location.pathname === item.url || location.pathname.startsWith(`${item.url}/`)
-    )?.title ?? "Dashboard";
+  const breadcrumbItems = buildBreadcrumbItems(location.pathname, navItems);
   const roleLabel = ROLE_OPTIONS.find((option) => option.value === role)?.label ?? "User";
   const expiresAt = getTokenExpiration(token);
   const expiryLabel = expiresAt
@@ -55,10 +89,8 @@ function PrivateRoute() {
         <header className="flex min-h-14 shrink-0 items-center justify-between gap-3 border-b px-3 py-2 sm:px-4">
           <div className="flex min-w-0 items-center gap-2 sm:gap-3">
             <SidebarTrigger className="shrink-0" />
-            <div className="h-5 w-px bg-border" aria-hidden="true" />
-            <h1 className="truncate text-base font-semibold text-foreground sm:text-lg">
-              {currentPage}
-            </h1>
+            <div className="h-5 w-px shrink-0 bg-border" aria-hidden="true" />
+            <PageBreadcrumb items={breadcrumbItems} compact />
           </div>
 
           <div className="flex shrink-0 items-center gap-3 text-xs text-muted-foreground sm:gap-5">

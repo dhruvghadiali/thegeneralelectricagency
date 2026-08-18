@@ -1,13 +1,11 @@
+import { useMemo, useState } from "react";
 import { Boxes } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import DataTable from "@commonComponent/dataTable";
 import { ROLE_PATHS } from "@Enums";
-import {
-  createProduct,
-  deleteProduct,
-  updateProduct,
-} from "@Redux/product/product.action";
+import { deleteProduct } from "@Redux/product/product.action";
 import { selectProductDialogState } from "@Redux/product/product.selector";
 import {
   productDialogClosed,
@@ -17,41 +15,49 @@ import ProductActions from "@screenComponent/products/productActions";
 import { PRODUCT_COLUMNS } from "@screenComponent/products/product.columns";
 import ProductDialogs from "@screenComponent/products/productDialogs";
 import ProductHeader from "@screenComponent/products/productHeader";
+import ProductQuotationSheet from "@screenComponent/products/productQuotationSheet";
+import ProductSummary from "@screenComponent/products/productSummary";
 import { useProductList } from "@screenComponent/products/useProductList";
 
 function Products() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const role = useSelector((state) => state.auth.role);
   const table = useProductList();
   const canManage = role === ROLE_PATHS.EMPLOYEE;
-  const {
-    dialog,
-    isCreating,
-    createError,
-    isUpdating,
-    updateError,
-    isDeleting,
-    deleteError,
-  } = useSelector(selectProductDialogState);
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [quotationProducts, setQuotationProducts] = useState([]);
+  const { dialog, isDeleting, deleteError } = useSelector(
+    selectProductDialogState,
+  );
+  const selectedProductIds = useMemo(
+    () => new Set(selectedProducts.map((product) => product.id)),
+    [selectedProducts],
+  );
+  const displayedProducts = useMemo(() => {
+    if (selectedProducts.length === 0) return table.rows;
 
-  const openDialog = (type, product) => {
-    if (!canManage) return;
-    dispatch(productDialogOpened({ type, ...(product && { product }) }));
+    return [
+      ...selectedProducts,
+      ...table.rows.filter((product) => !selectedProductIds.has(product.id)),
+    ];
+  }, [selectedProductIds, selectedProducts, table.rows]);
+
+  const changeProductSelection = (product, checked) => {
+    setSelectedProducts((current) => {
+      const alreadySelected = current.some((item) => item.id === product.id);
+
+      if (checked) {
+        return alreadySelected ? current : [...current, product];
+      }
+
+      return current.filter((item) => item.id !== product.id);
+    });
   };
 
-  const saveProduct = async (values) => {
-    try {
-      if (dialog?.type === "edit") {
-        await dispatch(
-          updateProduct({ id: dialog.product.id, values }),
-        ).unwrap();
-      } else {
-        await dispatch(createProduct(values)).unwrap();
-      }
-      table.refresh();
-    } catch {
-      // The slice keeps the form open and exposes a display-ready error.
-    }
+  const openDeleteDialog = (product) => {
+    if (!canManage) return;
+    dispatch(productDialogOpened({ type: "delete", product }));
   };
 
   const deleteSelectedProduct = async () => {
@@ -59,6 +65,9 @@ function Products() {
 
     try {
       await dispatch(deleteProduct(dialog.product.id)).unwrap();
+      setSelectedProducts((current) =>
+        current.filter((product) => product.id !== dialog.product.id),
+      );
       table.refresh();
     } catch {
       // The slice keeps the confirmation open with the request error.
@@ -69,13 +78,19 @@ function Products() {
     <main className="flex w-full flex-col gap-6 pb-2 roomy:h-full roomy:min-h-0">
       <ProductHeader
         canManage={canManage}
-        onAddProduct={() => openDialog("add")}
+        selectedCount={selectedProducts.length}
+        onViewQuotation={() => setQuotationProducts(selectedProducts)}
+        onAddProduct={() => navigate("/products/new")}
       />
+      <ProductSummary />
 
       <DataTable
         columns={PRODUCT_COLUMNS}
-        rows={table.rows}
+        rows={displayedProducts}
         rowKey={(product) => product.id}
+        selectedRowKeys={[...selectedProductIds]}
+        onRowSelectionChange={canManage ? changeProductSelection : undefined}
+        selectionLabel={(product) => `Select ${product.name} for quotation`}
         search={table.search}
         sort={table.sort}
         columnFilters={table.columnFilters}
@@ -99,8 +114,14 @@ function Products() {
             ? (product) => (
                 <ProductActions
                   product={product}
-                  onEdit={(row) => openDialog("edit", row)}
-                  onDelete={(row) => openDialog("delete", row)}
+                  onEdit={(row) =>
+                    navigate(`/products/${row.id}/edit`, {
+                      state: { product: row },
+                    })
+                  }
+                  onDelete={openDeleteDialog}
+                  onPdf={(row) => setQuotationProducts([row])}
+                  showPdf={selectedProducts.length === 0}
                 />
               )
             : undefined
@@ -119,16 +140,19 @@ function Products() {
       />
 
       {canManage && (
-        <ProductDialogs
-          dialog={dialog}
-          isSaving={dialog?.type === "edit" ? isUpdating : isCreating}
-          saveError={dialog?.type === "edit" ? updateError : createError}
-          isDeleting={isDeleting}
-          deleteError={deleteError}
-          onClose={() => dispatch(productDialogClosed())}
-          onSave={saveProduct}
-          onDelete={deleteSelectedProduct}
-        />
+        <>
+          <ProductDialogs
+            dialog={dialog}
+            isDeleting={isDeleting}
+            deleteError={deleteError}
+            onClose={() => dispatch(productDialogClosed())}
+            onDelete={deleteSelectedProduct}
+          />
+          <ProductQuotationSheet
+            products={quotationProducts}
+            onClose={() => setQuotationProducts([])}
+          />
+        </>
       )}
     </main>
   );

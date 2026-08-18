@@ -12,6 +12,7 @@ const initialState = {
   ...createTableState({
     limit: TABLE_DEFAULTS.LIMIT,
     sort: [{ field: "contact_person_name", order: SORT_ORDERS.ASC }],
+    columnFilters: { is_active: "true" },
   }),
   selectedContact: null,
   summary: {

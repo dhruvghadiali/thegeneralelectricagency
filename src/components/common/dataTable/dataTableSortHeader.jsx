@@ -2,7 +2,7 @@ import { ArrowDown, ArrowUp, ChevronsUpDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { SORT_ORDERS } from "@Enums";
-import { TableHead } from "@shadcnComponent/table";
+import { TableHead } from "@commonComponent/appTable";
 import {
   isFilterableColumn,
   isSortableColumn,

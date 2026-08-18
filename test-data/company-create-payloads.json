@@ -1,0 +1,272 @@
+[
+  {
+    "company_name": "Aarav Industrial Supplies Private Limited",
+    "company_type": "supplier",
+    "email": "accounts@aaravindustrial.example.com",
+    "phone_number": "+919876500101",
+    "gst_number": "24AACCA1234A1Z5",
+    "pan_number": "AACCA1234A",
+    "website": "https://aaravindustrial.example.com",
+    "address": [
+      {
+        "address": "Plot 21, GIDC Industrial Estate, Vatva, Ahmedabad, Gujarat",
+        "pincode": 382445,
+        "contact_person": [
+          { "contact_person_name": "Rakesh Patel", "contact_person_mobile_number": "9825010101", "contact_person_position": "owner" },
+          { "contact_person_name": "Neha Shah", "contact_person_mobile_number": "9825010102", "contact_person_position": "purchase" }
+        ]
+      },
+      {
+        "address": "Warehouse 8, Changodar Industrial Park, Ahmedabad, Gujarat",
+        "pincode": 382213,
+        "contact_person": [
+          { "contact_person_name": "Viral Desai", "contact_person_mobile_number": "9825010103", "contact_person_position": "store_keeper" },
+          { "contact_person_name": "Kajal Mehta", "contact_person_mobile_number": "9825010104", "contact_person_position": "accounts" }
+        ]
+      }
+    ]
+  },
+  {
+    "company_name": "BlueRiver Controls Private Limited",
+    "company_type": "customer",
+    "email": "finance@bluerivercontrols.example.com",
+    "phone_number": "+919876500202",
+    "gst_number": "27AABCB2345B1Z6",
+    "pan_number": "AABCB2345B",
+    "website": "https://bluerivercontrols.example.com",
+    "address": [
+      {
+        "address": "Unit 12, TTC Industrial Area, Turbhe, Navi Mumbai, Maharashtra",
+        "pincode": 400705,
+        "contact_person": [
+          { "contact_person_name": "Aditya Kulkarni", "contact_person_mobile_number": "9825020201", "contact_person_position": "director" },
+          { "contact_person_name": "Pooja Nair", "contact_person_mobile_number": "9825020202", "contact_person_position": "accounts" }
+        ]
+      },
+      {
+        "address": "Office 604, Orion Business Park, Thane West, Maharashtra",
+        "pincode": 400607,
+        "contact_person": [
+          { "contact_person_name": "Sameer Joshi", "contact_person_mobile_number": "9825020203", "contact_person_position": "manager" },
+          { "contact_person_name": "Riya Menon", "contact_person_mobile_number": "9825020204", "contact_person_position": "purchase" }
+        ]
+      }
+    ]
+  },
+  {
+    "company_name": "Crestline Motors Private Limited",
+    "company_type": "manufacturer",
+    "email": "accounts@crestlinemotors.example.com",
+    "phone_number": "+919876500303",
+    "gst_number": "29AACCC3456C1Z7",
+    "pan_number": "AACCC3456C",
+    "website": "https://crestlinemotors.example.com",
+    "address": [
+      {
+        "address": "Factory 44, Peenya Industrial Area Phase II, Bengaluru, Karnataka",
+        "pincode": 560058,
+        "contact_person": [
+          { "contact_person_name": "Karthik Rao", "contact_person_mobile_number": "9825030301", "contact_person_position": "plant_manager" },
+          { "contact_person_name": "Divya Shetty", "contact_person_mobile_number": "9825030302", "contact_person_position": "purchase" }
+        ]
+      },
+      {
+        "address": "Shed 9, Bommasandra Industrial Area, Bengaluru, Karnataka",
+        "pincode": 560099,
+        "contact_person": [
+          { "contact_person_name": "Arun Prasad", "contact_person_mobile_number": "9825030303", "contact_person_position": "engineer" },
+          { "contact_person_name": "Meera Iyer", "contact_person_mobile_number": "9825030304", "contact_person_position": "store_keeper" }
+        ]
+      }
+    ]
+  },
+  {
+    "company_name": "Delta Electrical Traders LLP",
+    "company_type": "dealer",
+    "email": "billing@deltaelectrical.example.com",
+    "phone_number": "+919876500404",
+    "gst_number": "24AABCD4567D1Z8",
+    "pan_number": "AABCD4567D",
+    "website": "https://deltaelectrical.example.com",
+    "address": [
+      {
+        "address": "Shop 16, Relief Road Electrical Market, Ahmedabad, Gujarat",
+        "pincode": 380001,
+        "contact_person": [
+          { "contact_person_name": "Harshad Trivedi", "contact_person_mobile_number": "9825040401", "contact_person_position": "partner" },
+          { "contact_person_name": "Jinal Bhatt", "contact_person_mobile_number": "9825040402", "contact_person_position": "sales" }
+        ]
+      },
+      {
+        "address": "Godown 3, Narol Industrial Estate, Ahmedabad, Gujarat",
+        "pincode": 382405,
+        "contact_person": [
+          { "contact_person_name": "Manish Parmar", "contact_person_mobile_number": "9825040403", "contact_person_position": "store_keeper" },
+          { "contact_person_name": "Falguni Dave", "contact_person_mobile_number": "9825040404", "contact_person_position": "accounts" }
+        ]
+      }
+    ]
+  },
+  {
+    "company_name": "Evergreen Automation Private Limited",
+    "company_type": "both",
+    "email": "accounts@evergreenautomation.example.com",
+    "phone_number": "+919876500505",
+    "gst_number": "27AACCE5678E1Z9",
+    "pan_number": "AACCE5678E",
+    "website": "https://evergreenautomation.example.com",
+    "address": [
+      {
+        "address": "Plot 7, MIDC Bhosari, Pune, Maharashtra",
+        "pincode": 411026,
+        "contact_person": [
+          { "contact_person_name": "Siddharth Patil", "contact_person_mobile_number": "9825050501", "contact_person_position": "director" },
+          { "contact_person_name": "Sneha Gokhale", "contact_person_mobile_number": "9825050502", "contact_person_position": "purchase" }
+        ]
+      },
+      {
+        "address": "Unit 18, Chakan Industrial Area Phase II, Pune, Maharashtra",
+        "pincode": 410501,
+        "contact_person": [
+          { "contact_person_name": "Nitin More", "contact_person_mobile_number": "9825050503", "contact_person_position": "engineer" },
+          { "contact_person_name": "Anjali Kale", "contact_person_mobile_number": "9825050504", "contact_person_position": "accounts" }
+        ]
+      }
+    ]
+  },
+  {
+    "company_name": "Falcon Pump Systems Private Limited",
+    "company_type": "supplier",
+    "email": "finance@falconpumps.example.com",
+    "phone_number": "+919876500606",
+    "gst_number": "24AABCF6789F1Z1",
+    "pan_number": "AABCF6789F",
+    "website": "https://falconpumps.example.com",
+    "address": [
+      {
+        "address": "Plot 32, GIDC Makarpura, Vadodara, Gujarat",
+        "pincode": 390010,
+        "contact_person": [
+          { "contact_person_name": "Chirag Shah", "contact_person_mobile_number": "9825060601", "contact_person_position": "owner" },
+          { "contact_person_name": "Bhavna Patel", "contact_person_mobile_number": "9825060602", "contact_person_position": "sales" }
+        ]
+      },
+      {
+        "address": "Warehouse 11, Savli GIDC, Manjusar, Vadodara, Gujarat",
+        "pincode": 391775,
+        "contact_person": [
+          { "contact_person_name": "Jayesh Rana", "contact_person_mobile_number": "9825060603", "contact_person_position": "store_keeper" },
+          { "contact_person_name": "Mitali Vyas", "contact_person_mobile_number": "9825060604", "contact_person_position": "accounts" }
+        ]
+      }
+    ]
+  },
+  {
+    "company_name": "Gujarat Motion Technologies Private Limited",
+    "company_type": "manufacturer",
+    "email": "accounts@gujaratmotion.example.com",
+    "phone_number": "+919876500707",
+    "gst_number": "24AACCG7890G1Z2",
+    "pan_number": "AACCG7890G",
+    "website": "https://gujaratmotion.example.com",
+    "address": [
+      {
+        "address": "Survey 55, Shapar Veraval Industrial Area, Rajkot, Gujarat",
+        "pincode": 360024,
+        "contact_person": [
+          { "contact_person_name": "Dhaval Gondaliya", "contact_person_mobile_number": "9825070701", "contact_person_position": "director" },
+          { "contact_person_name": "Hetal Savaliya", "contact_person_mobile_number": "9825070702", "contact_person_position": "purchase" }
+        ]
+      },
+      {
+        "address": "Unit 6, Metoda GIDC, Kalawad Road, Rajkot, Gujarat",
+        "pincode": 360021,
+        "contact_person": [
+          { "contact_person_name": "Maulik Jadeja", "contact_person_mobile_number": "9825070703", "contact_person_position": "plant_manager" },
+          { "contact_person_name": "Krupa Joshi", "contact_person_mobile_number": "9825070704", "contact_person_position": "accounts" }
+        ]
+      }
+    ]
+  },
+  {
+    "company_name": "Horizon Engineering Works Private Limited",
+    "company_type": "customer",
+    "email": "billing@horizonengineering.example.com",
+    "phone_number": "+919876500808",
+    "gst_number": "27AABCH8901H1Z3",
+    "pan_number": "AABCH8901H",
+    "website": "https://horizonengineering.example.com",
+    "address": [
+      {
+        "address": "Plot 89, Waluj MIDC, Chhatrapati Sambhajinagar, Maharashtra",
+        "pincode": 431136,
+        "contact_person": [
+          { "contact_person_name": "Prasad Deshmukh", "contact_person_mobile_number": "9825080801", "contact_person_position": "manager" },
+          { "contact_person_name": "Madhuri Pawar", "contact_person_mobile_number": "9825080802", "contact_person_position": "purchase" }
+        ]
+      },
+      {
+        "address": "Office 203, Jalna Road Business Centre, Chhatrapati Sambhajinagar, Maharashtra",
+        "pincode": 431001,
+        "contact_person": [
+          { "contact_person_name": "Amit Shinde", "contact_person_mobile_number": "9825080803", "contact_person_position": "accounts" },
+          { "contact_person_name": "Komal Jadhav", "contact_person_mobile_number": "9825080804", "contact_person_position": "hr" }
+        ]
+      }
+    ]
+  },
+  {
+    "company_name": "Indus Drive Solutions Private Limited",
+    "company_type": "dealer",
+    "email": "accounts@indusdrives.example.com",
+    "phone_number": "+919876500909",
+    "gst_number": "29AACCI9012I1Z4",
+    "pan_number": "AACCI9012I",
+    "website": "https://indusdrives.example.com",
+    "address": [
+      {
+        "address": "No. 27, SP Road Electrical Market, Bengaluru, Karnataka",
+        "pincode": 560002,
+        "contact_person": [
+          { "contact_person_name": "Raghavendra Bhat", "contact_person_mobile_number": "9825090901", "contact_person_position": "owner" },
+          { "contact_person_name": "Asha Murthy", "contact_person_mobile_number": "9825090902", "contact_person_position": "sales" }
+        ]
+      },
+      {
+        "address": "Godown 14, Nelamangala Industrial Area, Bengaluru Rural, Karnataka",
+        "pincode": 562123,
+        "contact_person": [
+          { "contact_person_name": "Manjunath Gowda", "contact_person_mobile_number": "9825090903", "contact_person_position": "store_keeper" },
+          { "contact_person_name": "Lakshmi Rao", "contact_person_mobile_number": "9825090904", "contact_person_position": "accounts" }
+        ]
+      }
+    ]
+  },
+  {
+    "company_name": "Jupiter Power Equipment Private Limited",
+    "company_type": "both",
+    "email": "finance@jupiterpower.example.com",
+    "phone_number": "+919876501010",
+    "gst_number": "24AABCJ0123J1Z5",
+    "pan_number": "AABCJ0123J",
+    "website": "https://jupiterpower.example.com",
+    "address": [
+      {
+        "address": "Plot 63, Sachin GIDC, Surat, Gujarat",
+        "pincode": 394230,
+        "contact_person": [
+          { "contact_person_name": "Jignesh Kapadia", "contact_person_mobile_number": "9825101001", "contact_person_position": "director" },
+          { "contact_person_name": "Priya Modi", "contact_person_mobile_number": "9825101002", "contact_person_position": "purchase" }
+        ]
+      },
+      {
+        "address": "Office 408, Ring Road Textile Tower, Surat, Gujarat",
+        "pincode": 395002,
+        "contact_person": [
+          { "contact_person_name": "Ketan Gandhi", "contact_person_mobile_number": "9825101003", "contact_person_position": "sales" },
+          { "contact_person_name": "Rupal Parekh", "contact_person_mobile_number": "9825101004", "contact_person_position": "accounts" }
+        ]
+      }
+    ]
+  }
+]

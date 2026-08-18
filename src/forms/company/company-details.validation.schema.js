@@ -23,6 +23,7 @@ import {
 } from "@Forms/company/company-details.validation.constants";
 
 const contactPersonSchema = Yup.object({
+  id: Yup.string().nullable().notRequired(),
   contact_person_name: Yup.string()
     .trim()
     .min(COMPANY_CONTACT_NAME_MIN_LENGTH, MESSAGES.CONTACT_NAME_MIN)
@@ -42,6 +43,7 @@ const contactPersonSchema = Yup.object({
 });
 
 const companyAddressSchema = Yup.object({
+  id: Yup.string().nullable().notRequired(),
   address: Yup.string()
     .trim()
     .min(COMPANY_ADDRESS_MIN_LENGTH, MESSAGES.ADDRESS_MIN)
@@ -53,6 +55,7 @@ const companyAddressSchema = Yup.object({
     .required(MESSAGES.PINCODE_REQUIRED),
   company_employees: Yup.array()
     .of(contactPersonSchema)
+    .min(1, MESSAGES.CONTACTS_MIN)
     .required(MESSAGES.CONTACTS_REQUIRED),
 });
 

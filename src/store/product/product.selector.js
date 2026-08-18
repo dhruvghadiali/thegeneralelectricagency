@@ -6,6 +6,11 @@ const selectProductState = (state) => state.products;
 
 export const productTableSelectors = createTableSelectors(selectProductState);
 
+export const selectProductSummary = createSelector(
+  selectProductState,
+  (products) => products.summary,
+);
+
 export const selectProductDialogState = createSelector(
   selectProductState,
   ({

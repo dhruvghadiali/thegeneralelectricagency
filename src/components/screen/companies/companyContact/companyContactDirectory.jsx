@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ContactRound } from "lucide-react";
 
@@ -8,30 +7,24 @@ import {
   contactDetailsOpened,
 } from "@Redux/companyContact/companyContact.slice";
 import { selectSelectedCompanyContact } from "@Redux/companyContact/companyContact.selector";
-import { createCompanyContactColumns } from "@screenComponent/companies/companyContact/companyContact.columns";
+import { COMPANY_CONTACT_COLUMNS } from "@screenComponent/companies/companyContact/companyContact.columns";
 import { useCompanyContactList } from "@screenComponent/companies/companyContact/useCompanyContactList";
 
+import CompanyContactActions from "@screenComponent/companies/companyContact/companyContactActions";
 import CompanyContactDetailSheet from "@screenComponent/companies/companyContact/companyContactDetailSheet";
 import CompanyContactSummary from "@screenComponent/companies/companyContact/companyContactSummary";
 
 function CompanyContactDirectory() {
   const dispatch = useDispatch();
   const selectedContact = useSelector(selectSelectedCompanyContact);
-  const columns = useMemo(
-    () =>
-      createCompanyContactColumns((contact) =>
-        dispatch(contactDetailsOpened(contact)),
-      ),
-    [dispatch],
-  );
-  const table = useCompanyContactList(columns);
+  const table = useCompanyContactList();
 
   return (
     <>
       <CompanyContactSummary />
 
       <DataTable
-        columns={columns}
+        columns={COMPANY_CONTACT_COLUMNS}
         rows={table.rows}
         rowKey={(contact) => contact.id}
         search={table.search}
@@ -52,6 +45,12 @@ function CompanyContactDirectory() {
         onRetry={table.refresh}
         isLoading={table.isLoading}
         error={table.error}
+        rowActions={(contact) => (
+          <CompanyContactActions
+            contact={contact}
+            onView={(row) => dispatch(contactDetailsOpened(row))}
+          />
+        )}
         searchPlaceholder="Search contacts or companies..."
         rowNoun="contacts"
         emptyIcon={ContactRound}

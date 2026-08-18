@@ -1,7 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { COMPANY_TABLE_DEFAULTS } from "@Enums";
-import { fetchCompanies } from "@Redux/company/company.action";
+import {
+  deleteCompany,
+  fetchCompanies,
+} from "@Redux/company/company.action";
 import {
   createTableState,
   tableFetchCases,
@@ -12,8 +15,12 @@ const initialState = {
   ...createTableState({
     limit: COMPANY_TABLE_DEFAULTS.LIMIT,
     sort: COMPANY_TABLE_DEFAULTS.SORT,
+    columnFilters: COMPANY_TABLE_DEFAULTS.FILTERS,
   }),
   selectedCompany: null,
+  companyToDelete: null,
+  isDeleting: false,
+  deleteError: null,
   summary: {
     totalCompanies: 0,
     activeCompanies: 0,
@@ -32,6 +39,14 @@ const companySlice = createSlice({
     companyDetailsClosed(state) {
       state.selectedCompany = null;
     },
+    companyDeleteOpened(state, action) {
+      state.companyToDelete = action.payload;
+      state.deleteError = null;
+    },
+    companyDeleteClosed(state) {
+      state.companyToDelete = null;
+      state.deleteError = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -42,12 +57,27 @@ const companySlice = createSlice({
       })
       .addCase(fetchCompanies.rejected, (state, action) =>
         tableFetchCases.rejected(state, action, "Unable to load companies."),
-      );
+      )
+      .addCase(deleteCompany.pending, (state) => {
+        state.isDeleting = true;
+        state.deleteError = null;
+      })
+      .addCase(deleteCompany.fulfilled, (state) => {
+        state.isDeleting = false;
+        state.deleteError = null;
+        state.companyToDelete = null;
+      })
+      .addCase(deleteCompany.rejected, (state, action) => {
+        state.isDeleting = false;
+        state.deleteError = action.payload ?? "Unable to delete company.";
+      });
   },
 });
 
 export const {
   columnFilterChanged,
+  companyDeleteClosed,
+  companyDeleteOpened,
   companyDetailsClosed,
   companyDetailsOpened,
   filtersApplied,

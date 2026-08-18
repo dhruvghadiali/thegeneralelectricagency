@@ -7,6 +7,11 @@ import {
   PRODUCT_MODEL_NUMBER_MIN_LENGTH,
   PRODUCT_NAME_MAX_LENGTH,
   PRODUCT_NAME_MIN_LENGTH,
+  PRODUCT_DISCOUNT_AMOUNT_MAX,
+  PRODUCT_DISCOUNT_PERCENTAGE_MAX,
+  PRODUCT_PRICE_DECIMAL_PLACES,
+  PRODUCT_PURCHASE_PRICE_MAX,
+  PRODUCT_SALE_PRICE_MAX,
 } from "@Forms/product/product.validation.constants";
 
 export const PRODUCT_VALIDATION_MESSAGES = Object.freeze({
@@ -24,4 +29,30 @@ export const PRODUCT_VALIDATION_MESSAGES = Object.freeze({
   MODEL_NUMBER_MAX: `Model number must be ${PRODUCT_MODEL_NUMBER_MAX_LENGTH} characters or fewer`,
   DESCRIPTION_MIN: `Description must be at least ${PRODUCT_DESCRIPTION_MIN_LENGTH} characters`,
   DESCRIPTION_MAX: `Description must be ${PRODUCT_DESCRIPTION_MAX_LENGTH.toLocaleString()} characters or fewer`,
+  PURCHASE_PRICE_NUMBER: "Purchase price must be a valid number",
+  PURCHASE_PRICE_MIN: "Purchase price cannot be negative",
+  PURCHASE_PRICE_MAX: `Purchase price cannot exceed ₹${PRODUCT_PURCHASE_PRICE_MAX.toLocaleString("en-IN")}`,
+  PURCHASE_PRICE_DECIMALS: `Purchase price can have up to ${PRODUCT_PRICE_DECIMAL_PLACES} decimal places`,
+  SALE_PRICE_NUMBER: "Sale price must be a valid number",
+  SALE_PRICE_MIN: "Sale price cannot be negative",
+  SALE_PRICE_MAX: `Sale price cannot exceed ₹${PRODUCT_SALE_PRICE_MAX.toLocaleString("en-IN")}`,
+  SALE_PRICE_DECIMALS: `Sale price can have up to ${PRODUCT_PRICE_DECIMAL_PLACES} decimal places`,
+  GST_NUMBER: "GST must be a valid number",
+  GST_INVALID: "Select a supported Indian GST rate",
+  DISCOUNT_AMOUNT_NUMBER: "Discount amount must be a valid number",
+  DISCOUNT_AMOUNT_MIN: "Discount amount cannot be negative",
+  DISCOUNT_AMOUNT_LIMIT: `Discount amount cannot exceed ₹${PRODUCT_DISCOUNT_AMOUNT_MAX.toLocaleString("en-IN")}`,
+  DISCOUNT_AMOUNT_MAX: "Discount amount cannot exceed the sale price",
+  DISCOUNT_AMOUNT_DECIMALS: `Discount amount can have up to ${PRODUCT_PRICE_DECIMAL_PLACES} decimal places`,
+  DISCOUNT_AMOUNT_RANGE:
+    "Maximum discount amount must be greater than or equal to the minimum",
+  DISCOUNT_AMOUNT_REQUIRES_SALE_PRICE:
+    "Enter a sale price before applying a discount amount",
+  DISCOUNT_PERCENTAGE_NUMBER: "Discount percentage must be a valid number",
+  DISCOUNT_PERCENTAGE_RANGE: `Discount percentage must be between 0 and ${PRODUCT_DISCOUNT_PERCENTAGE_MAX}`,
+  DISCOUNT_PERCENTAGE_DECIMALS: `Discount percentage can have up to ${PRODUCT_PRICE_DECIMAL_PLACES} decimal places`,
+  DISCOUNT_PERCENTAGE_ORDER:
+    "Maximum discount percentage must be greater than or equal to the minimum",
+  DISCOUNT_PERCENTAGE_REQUIRES_SALE_PRICE:
+    "Enter a sale price before applying a discount percentage",
 });
