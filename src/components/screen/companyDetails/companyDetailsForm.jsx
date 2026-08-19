@@ -34,11 +34,11 @@ import {
 } from "@shadcnComponent/select";
 import { Textarea } from "@shadcnComponent/textarea";
 import {
-  COMPANY_DETAILS_INITIAL_VALUES,
+  COMPANY_INITIAL_VALUES,
   EMPTY_COMPANY_ADDRESS,
   EMPTY_COMPANY_CONTACT,
-} from "@Forms/company/company-details.initialValues";
-import { companyDetailsValidationSchema } from "@Forms/company/company-details.validation.schema";
+} from "@Forms/company/company.initialValues";
+import { companyValidationSchema } from "@Forms/company/company.validation.schema";
 import { COMPANY_TYPE_OPTIONS, CONTACT_POSITION_OPTIONS } from "@Enums";
 import {
   createCompanyAddress,
@@ -50,7 +50,7 @@ import {
   updateCompanyAddress,
   updateCompanyContact,
 } from "@Redux/company/company.action";
-import { toCompanyFormValues } from "@Forms/company/company.payload";
+import { toCompanyFormValues } from "@Forms/company/company-frontend.payload";
 
 function Field({ id, label, error, optional = false, children }) {
   return (
@@ -97,7 +97,7 @@ function isSavedAddress(address) {
 }
 
 function isSavedContact(contact) {
-  return Boolean(contact?.id && contact.contact_person_mobile_number?.trim());
+  return Boolean(contact?.id && contact.contactPersonMobileNumber?.trim());
 }
 
 function createdRecordId(response, type) {
@@ -145,17 +145,17 @@ function CompanyDetailsForm() {
   const formik = useFormik({
     initialValues,
     enableReinitialize: true,
-    validationSchema: companyDetailsValidationSchema,
+    validationSchema: companyValidationSchema,
     onSubmit: async (values, helpers) => {
       try {
-        const details = companyDetailsValidationSchema.cast(values);
+        const details = companyValidationSchema.cast(values);
         if (isEditing) {
           await dispatch(
             updateCompany({ id: resolvedCompanyId, values: details }),
           ).unwrap();
         } else {
           await dispatch(createCompany(details)).unwrap();
-          helpers.resetForm({ values: COMPANY_DETAILS_INITIAL_VALUES });
+          helpers.resetForm({ values: COMPANY_INITIAL_VALUES });
         }
         navigate("/companies", { replace: true });
       } catch (error) {
@@ -200,14 +200,14 @@ function CompanyDetailsForm() {
     formik.values.addresses.filter(isSavedAddress).length;
   const savedContactCount = formik.values.addresses.reduce(
     (count, address) =>
-      count + (address.company_employees ?? []).filter(isSavedContact).length,
+      count + (address.companyEmployees ?? []).filter(isSavedContact).length,
     0,
   );
   const hasUnsavedAddress = formik.values.addresses.some(
     (address) => !address.id,
   );
   const hasUnsavedContact = formik.values.addresses.some((address) =>
-    (address.company_employees ?? []).some((contact) => !contact.id),
+    (address.companyEmployees ?? []).some((contact) => !contact.id),
   );
 
   const addressDeleteBlockReason = (address) => {
@@ -217,7 +217,7 @@ function CompanyDetailsForm() {
       return SAVED_ADDRESS_REQUIRED_MESSAGE;
     }
 
-    const savedContactsOnAddress = (address.company_employees ?? []).filter(
+    const savedContactsOnAddress = (address.companyEmployees ?? []).filter(
       isSavedContact,
     ).length;
 
@@ -232,7 +232,7 @@ function CompanyDetailsForm() {
     if (!isEditing) return null;
 
     const addressContacts =
-      formik.values.addresses[addressIndex]?.company_employees ?? [];
+      formik.values.addresses[addressIndex]?.companyEmployees ?? [];
 
     if (addressContacts.length <= 1) {
       return COMPANY_CONTACT_REQUIRED_MESSAGE;
@@ -363,9 +363,9 @@ function CompanyDetailsForm() {
       addressIndex,
       contactIndex,
       snapshot: {
-        contact_person_name: contact.contact_person_name,
-        contact_person_mobile_number: contact.contact_person_mobile_number,
-        contact_person_position: contact.contact_person_position,
+        contactPersonName: contact.contactPersonName,
+        contactPersonMobileNumber: contact.contactPersonMobileNumber,
+        contactPersonPosition: contact.contactPersonPosition,
       },
     });
   };
@@ -373,7 +373,7 @@ function CompanyDetailsForm() {
   const cancelContactEdit = () => {
     if (!contactEdit) return;
 
-    const contactPath = `addresses[${contactEdit.addressIndex}].company_employees[${contactEdit.contactIndex}]`;
+    const contactPath = `addresses[${contactEdit.addressIndex}].companyEmployees[${contactEdit.contactIndex}]`;
     Object.entries(contactEdit.snapshot).forEach(([field, value]) => {
       formik.setFieldValue(`${contactPath}.${field}`, value, false);
     });
@@ -381,11 +381,11 @@ function CompanyDetailsForm() {
   };
 
   const saveContact = async (contact, addressIndex, contactIndex) => {
-    const contactPath = `addresses[${addressIndex}].company_employees[${contactIndex}]`;
+    const contactPath = `addresses[${addressIndex}].companyEmployees[${contactIndex}]`;
     const fields = [
-      `${contactPath}.contact_person_name`,
-      `${contactPath}.contact_person_mobile_number`,
-      `${contactPath}.contact_person_position`,
+      `${contactPath}.contactPersonName`,
+      `${contactPath}.contactPersonMobileNumber`,
+      `${contactPath}.contactPersonPosition`,
     ];
     const errors = await formik.validateForm();
 
@@ -424,11 +424,11 @@ function CompanyDetailsForm() {
       return;
     }
 
-    const contactPath = `addresses[${addressIndex}].company_employees[${contactIndex}]`;
+    const contactPath = `addresses[${addressIndex}].companyEmployees[${contactIndex}]`;
     const fields = [
-      `${contactPath}.contact_person_name`,
-      `${contactPath}.contact_person_mobile_number`,
-      `${contactPath}.contact_person_position`,
+      `${contactPath}.contactPersonName`,
+      `${contactPath}.contactPersonMobileNumber`,
+      `${contactPath}.contactPersonPosition`,
     ];
     const errors = await formik.validateForm();
 
@@ -473,7 +473,7 @@ function CompanyDetailsForm() {
       ...formik.values.addresses,
       {
         ...EMPTY_COMPANY_ADDRESS,
-        company_employees: isEditing ? [] : [{ ...EMPTY_COMPANY_CONTACT }],
+        companyEmployees: isEditing ? [] : [{ ...EMPTY_COMPANY_CONTACT }],
       },
     ]);
   };
@@ -521,7 +521,7 @@ function CompanyDetailsForm() {
       return;
     }
 
-    const contactsPath = `addresses[${addressIndex}].company_employees`;
+    const contactsPath = `addresses[${addressIndex}].companyEmployees`;
     const contacts = getIn(formik.values, contactsPath) ?? [];
     formik.setFieldValue(contactsPath, [
       ...contacts,
@@ -530,7 +530,7 @@ function CompanyDetailsForm() {
   };
 
   const removeContact = async (addressIndex, contactIndex) => {
-    const contactsPath = `addresses[${addressIndex}].company_employees`;
+    const contactsPath = `addresses[${addressIndex}].companyEmployees`;
     const contacts = getIn(formik.values, contactsPath) ?? [];
     const contact = contacts[contactIndex];
     const blockedReason = contactDeleteBlockReason(addressIndex, contact);
@@ -606,36 +606,36 @@ function CompanyDetailsForm() {
                 />
                 <div className="grid gap-5 sm:grid-cols-2">
                   <Field
-                    id="company_name"
+                    id="companyName"
                     label="Company name"
-                    error={errorFor("company_name")}
+                    error={errorFor("companyName")}
                   >
                     <Input
-                      id="company_name"
+                      id="companyName"
                       placeholder="e.g. Apex Industrial Solutions"
                       autoComplete="organization"
-                      {...inputProps("company_name")}
+                      {...inputProps("companyName")}
                     />
                   </Field>
                   <Field
-                    id="company_type"
+                    id="companyType"
                     label="Company type"
-                    error={errorFor("company_type")}
+                    error={errorFor("companyType")}
                   >
                     <Select
-                      value={formik.values.company_type}
+                      value={formik.values.companyType}
                       onValueChange={(value) => {
                         setSaveError(null);
-                        formik.setFieldValue("company_type", value, true);
+                        formik.setFieldValue("companyType", value, true);
                       }}
                       onOpenChange={(open) =>
                         !open &&
-                        formik.setFieldTouched("company_type", true, true)
+                        formik.setFieldTouched("companyType", true, true)
                       }
                     >
                       <SelectTrigger
-                        id="company_type"
-                        aria-invalid={Boolean(errorFor("company_type"))}
+                        id="companyType"
+                        aria-invalid={Boolean(errorFor("companyType"))}
                       >
                         <SelectValue placeholder="Select company type" />
                       </SelectTrigger>
@@ -662,16 +662,16 @@ function CompanyDetailsForm() {
                     />
                   </Field>
                   <Field
-                    id="phone_number"
+                    id="phoneNumber"
                     label="Phone number"
-                    error={errorFor("phone_number")}
+                    error={errorFor("phoneNumber")}
                   >
                     <Input
-                      id="phone_number"
+                      id="phoneNumber"
                       type="tel"
                       placeholder="+91 98765 43210"
                       autoComplete="tel"
-                      {...inputProps("phone_number")}
+                      {...inputProps("phoneNumber")}
                     />
                   </Field>
                 </div>
@@ -685,29 +685,29 @@ function CompanyDetailsForm() {
                 />
                 <div className="grid gap-5 sm:grid-cols-2">
                   <Field
-                    id="gst_number"
+                    id="gstNumber"
                     label="GSTIN"
-                    error={errorFor("gst_number")}
+                    error={errorFor("gstNumber")}
                   >
                     <Input
-                      id="gst_number"
+                      id="gstNumber"
                       placeholder="22AAAAA0000A1Z5"
                       className="uppercase"
                       maxLength={15}
-                      {...inputProps("gst_number")}
+                      {...inputProps("gstNumber")}
                     />
                   </Field>
                   <Field
-                    id="pan_number"
+                    id="panNumber"
                     label="PAN number"
-                    error={errorFor("pan_number")}
+                    error={errorFor("panNumber")}
                   >
                     <Input
-                      id="pan_number"
+                      id="panNumber"
                       placeholder="AAAAA0000A"
                       className="uppercase"
                       maxLength={10}
-                      {...inputProps("pan_number")}
+                      {...inputProps("panNumber")}
                     />
                   </Field>
                   <Field
@@ -793,8 +793,8 @@ function CompanyDetailsForm() {
                               Address {addressIndex + 1}
                             </h4>
                             <p className="mt-0.5 text-xs text-muted-foreground">
-                              {address.company_employees.length}{" "}
-                              {address.company_employees.length === 1
+                              {address.companyEmployees.length}{" "}
+                              {address.companyEmployees.length === 1
                                 ? "contact person"
                                 : "contact persons"}
                             </p>
@@ -987,22 +987,22 @@ function CompanyDetailsForm() {
 
                           {typeof getIn(
                             formik.errors,
-                            `addresses[${addressIndex}].company_employees`,
+                            `addresses[${addressIndex}].companyEmployees`,
                           ) === "string" &&
                             getIn(
                               formik.touched,
-                              `addresses[${addressIndex}].company_employees`,
+                              `addresses[${addressIndex}].companyEmployees`,
                             ) && (
                               <p className="border-b bg-destructive/5 px-4 py-2 text-xs font-medium text-destructive">
                                 {getIn(
                                   formik.errors,
-                                  `addresses[${addressIndex}].company_employees`,
+                                  `addresses[${addressIndex}].companyEmployees`,
                                 )}
                               </p>
                             )}
 
                           <div className="divide-y">
-                            {address.company_employees.map(
+                            {address.companyEmployees.map(
                               (contact, contactIndex) => (
                                 <div key={contactIndex} className="p-4">
                                   <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
@@ -1145,10 +1145,10 @@ function CompanyDetailsForm() {
                                   </div>
                                   <div className="grid gap-4 md:grid-cols-3">
                                     <Field
-                                      id={`addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_name`}
+                                      id={`addresses[${addressIndex}].companyEmployees[${contactIndex}].contactPersonName`}
                                       label="Name"
                                       error={errorFor(
-                                        `addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_name`,
+                                        `addresses[${addressIndex}].companyEmployees[${contactIndex}].contactPersonName`,
                                       )}
                                     >
                                       <Input
@@ -1156,19 +1156,19 @@ function CompanyDetailsForm() {
                                           Boolean(contact.id) &&
                                           contactEdit?.id !== contact.id
                                         }
-                                        id={`addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_name`}
+                                        id={`addresses[${addressIndex}].companyEmployees[${contactIndex}].contactPersonName`}
                                         placeholder="Full name"
                                         autoComplete="name"
                                         {...inputProps(
-                                          `addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_name`,
+                                          `addresses[${addressIndex}].companyEmployees[${contactIndex}].contactPersonName`,
                                         )}
                                       />
                                     </Field>
                                     <Field
-                                      id={`addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_mobile_number`}
+                                      id={`addresses[${addressIndex}].companyEmployees[${contactIndex}].contactPersonMobileNumber`}
                                       label="Mobile number"
                                       error={errorFor(
-                                        `addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_mobile_number`,
+                                        `addresses[${addressIndex}].companyEmployees[${contactIndex}].contactPersonMobileNumber`,
                                       )}
                                     >
                                       <Input
@@ -1176,20 +1176,20 @@ function CompanyDetailsForm() {
                                           Boolean(contact.id) &&
                                           contactEdit?.id !== contact.id
                                         }
-                                        id={`addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_mobile_number`}
+                                        id={`addresses[${addressIndex}].companyEmployees[${contactIndex}].contactPersonMobileNumber`}
                                         type="tel"
                                         placeholder="+91 98765 43210"
                                         autoComplete="tel"
                                         {...inputProps(
-                                          `addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_mobile_number`,
+                                          `addresses[${addressIndex}].companyEmployees[${contactIndex}].contactPersonMobileNumber`,
                                         )}
                                       />
                                     </Field>
                                     <Field
-                                      id={`addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_position`}
+                                      id={`addresses[${addressIndex}].companyEmployees[${contactIndex}].contactPersonPosition`}
                                       label="Position"
                                       error={errorFor(
-                                        `addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_position`,
+                                        `addresses[${addressIndex}].companyEmployees[${contactIndex}].contactPersonPosition`,
                                       )}
                                     >
                                       <Select
@@ -1200,13 +1200,13 @@ function CompanyDetailsForm() {
                                         value={
                                           getIn(
                                             formik.values,
-                                            `addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_position`,
+                                            `addresses[${addressIndex}].companyEmployees[${contactIndex}].contactPersonPosition`,
                                           ) ?? ""
                                         }
                                         onValueChange={(value) => {
                                           setSaveError(null);
                                           formik.setFieldValue(
-                                            `addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_position`,
+                                            `addresses[${addressIndex}].companyEmployees[${contactIndex}].contactPersonPosition`,
                                             value,
                                             true,
                                           );
@@ -1214,17 +1214,17 @@ function CompanyDetailsForm() {
                                         onOpenChange={(open) =>
                                           !open &&
                                           formik.setFieldTouched(
-                                            `addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_position`,
+                                            `addresses[${addressIndex}].companyEmployees[${contactIndex}].contactPersonPosition`,
                                             true,
                                             true,
                                           )
                                         }
                                       >
                                         <SelectTrigger
-                                          id={`addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_position`}
+                                          id={`addresses[${addressIndex}].companyEmployees[${contactIndex}].contactPersonPosition`}
                                           aria-invalid={Boolean(
                                             errorFor(
-                                              `addresses[${addressIndex}].company_employees[${contactIndex}].contact_person_position`,
+                                              `addresses[${addressIndex}].companyEmployees[${contactIndex}].contactPersonPosition`,
                                             ),
                                           )}
                                         >

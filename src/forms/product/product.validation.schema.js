@@ -70,6 +70,7 @@ export const productValidationSchema = Yup.object({
   agency: Yup.string()
     .trim()
     .required(MESSAGES.AGENCY_REQUIRED),
+  agencyName: Yup.string().trim().optional(),
   purchasePrice: commercialNumber(
     MESSAGES.PURCHASE_PRICE_NUMBER,
     MESSAGES.PURCHASE_PRICE_DECIMALS,

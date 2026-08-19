@@ -4,10 +4,10 @@ import { employeePurchaseApi } from "@Api";
 import { extractErrorMessage } from "@Api/client.api";
 import { ROLE_PATHS } from "@Enums";
 import {
-  fromPurchaseListResponse,
   toPurchaseCreatePayload,
   toPurchaseListParams,
-} from "@Forms/purchaseOrder/purchaseOrder.payload";
+} from "@Forms/purchaseOrder/purchaseOrder-api.payload";
+import { fromPurchaseListResponse } from "@Forms/purchaseOrder/purchaseOrder-frontend.payload";
 
 export const fetchPurchases = createAsyncThunk(
   "purchases/fetchPurchases",

@@ -1,57 +1,33 @@
 import _ from "lodash";
 
 import { PRODUCT_TABLE_DEFAULTS, TABLE_DEFAULTS } from "@Enums";
-import { buildListQueryParams } from "@/utils/listQuery.util";
 
-export function toProductMutationPayload(values = {}) {
-  const nullableNumber = (value) => {
-    if (value === "" || value === null || value === undefined) return null;
-    const number = _.toNumber(value);
-    return Number.isFinite(number) ? number : null;
+const discountRangeValue = (value, boundary) => {
+  if (value && typeof value === "object") return value[boundary] ?? "";
+  return value ?? "";
+};
+
+export function toProductFormValues(product = {}) {
+  return {
+    ...product,
+    agencyName: product.agencyName ?? "",
+    purchasePrice: product.purchasePrice ?? "",
+    salePrice: product.salePrice ?? "",
+    gstPercentage: product.gstPercentage ?? "",
+    discountAmountMin: discountRangeValue(product.discountAmount, "min"),
+    discountAmountMax: discountRangeValue(product.discountAmount, "max"),
+    discountPercentageMin: discountRangeValue(
+      product.discountPercentage,
+      "min",
+    ),
+    discountPercentageMax: discountRangeValue(
+      product.discountPercentage,
+      "max",
+    ),
   };
-  const discountAmountMin = nullableNumber(values.discountAmountMin);
-  const discountAmountMax = nullableNumber(values.discountAmountMax);
-  const discountPercentageMin = nullableNumber(values.discountPercentageMin);
-  const discountPercentageMax = nullableNumber(values.discountPercentageMax);
-  const payload = {
-    product_code: _.trim(values.productCode ?? ""),
-    name: _.trim(values.name ?? ""),
-    category: values.category ?? "",
-    agency: values.agency ?? "",
-    purchase_price: nullableNumber(values.purchasePrice),
-    sale_price: nullableNumber(values.salePrice),
-    gst_percentage: nullableNumber(values.gstPercentage),
-    discount_amount: {
-      min: discountAmountMin,
-      max: discountAmountMax,
-    },
-    discount_percentage: {
-      min: discountPercentageMin,
-      max: discountPercentageMax,
-    },
-  };
-
-  const modelNumber = _.trim(values.modelNumber ?? "");
-  const description = _.trim(values.description ?? "");
-
-  if (modelNumber) payload.model_number = modelNumber;
-  if (description) payload.description = description;
-
-  return payload;
 }
 
-export function toProductListParams({
-  columns = [],
-  page = TABLE_DEFAULTS.PAGE,
-  limit = PRODUCT_TABLE_DEFAULTS.LIMIT,
-  search = "",
-  sort = [],
-  filters = {},
-} = {}) {
-  return buildListQueryParams({ columns, page, limit, search, sort, filters });
-}
-
-export function fromProductResponse(product = {}) {
+function fromProductResponse(product = {}) {
   const agencySource = product.agency ?? product.company ?? "";
   const agency = _.isObject(agencySource)
     ? agencySource._id ?? agencySource.id ?? ""
@@ -102,7 +78,7 @@ export function fromProductResponse(product = {}) {
   };
 }
 
-export function fromProductSummaryResponse(summary = {}) {
+function fromProductSummaryResponse(summary = {}) {
   return {
     totalProducts: _.toNumber(summary.total_products) || 0,
     activeProducts: _.toNumber(summary.active_products) || 0,

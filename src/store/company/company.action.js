@@ -4,8 +4,6 @@ import { employeeCompanyApi, superAdminCompanyApi } from "@Api";
 import { extractErrorMessage } from "@Api/client.api";
 import { ROLE_PATHS } from "@Enums";
 import {
-  fromCompanyCreateError,
-  fromCompanyListResponse,
   toCompanyAddressCreatePayload,
   toCompanyAddressUpdatePayload,
   toCompanyContactCreatePayload,
@@ -13,7 +11,11 @@ import {
   toCompanyCreatePayload,
   toCompanyListParams,
   toCompanyUpdatePayload,
-} from "@Forms/company/company.payload";
+} from "@Forms/company/company-api.payload";
+import {
+  fromCompanyCreateError,
+  fromCompanyListResponse,
+} from "@Forms/company/company-frontend.payload";
 
 const companyListApiByRole = {
   [ROLE_PATHS.EMPLOYEE]: employeeCompanyApi,

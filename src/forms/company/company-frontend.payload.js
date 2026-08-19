@@ -1,140 +1,59 @@
 import _ from "lodash";
 
 import { COMPANY_TABLE_DEFAULTS, TABLE_DEFAULTS } from "@Enums";
-import { COMPANY_DETAILS_INITIAL_VALUES } from "@Forms/company/company-details.initialValues";
-import { buildListQueryParams } from "@/utils/listQuery.util";
-
-export function toCompanyListParams({
-  columns = [],
-  page = TABLE_DEFAULTS.PAGE,
-  limit = COMPANY_TABLE_DEFAULTS.LIMIT,
-  search = "",
-  sort = [],
-  filters = {},
-} = {}) {
-  return buildListQueryParams({
-    columns,
-    page,
-    limit,
-    search,
-    sort,
-    filters,
-  });
-}
-
-function toCompanyProfilePayload(values = {}) {
-  const website = values.website
-    ? /^https?:\/\//i.test(values.website)
-      ? values.website
-      : `https://${values.website}`
-    : "";
-
-  return {
-    company_name: values.company_name?.trim() ?? "",
-    company_type: values.company_type ?? "",
-    email: values.email?.trim() ?? "",
-    phone_number: values.phone_number?.trim() ?? "",
-    gst_number: values.gst_number?.trim().toUpperCase() ?? "",
-    pan_number: values.pan_number?.trim().toUpperCase() ?? "",
-    website,
-  };
-}
-
-export function toCompanyCreatePayload(values = {}) {
-  return {
-    ...toCompanyProfilePayload(values),
-    address: _.map(values.addresses ?? [], (companyAddress) => ({
-      address: companyAddress.address?.trim() ?? "",
-      pincode: _.toNumber(companyAddress.pincode),
-      contact_person: _.map(
-        companyAddress.company_employees ?? [],
-        (contact) => ({
-          contact_person_name: contact.contact_person_name?.trim() ?? "",
-          contact_person_mobile_number:
-            contact.contact_person_mobile_number?.trim() ?? "",
-          contact_person_position:
-            contact.contact_person_position?.trim() ?? "",
-        }),
-      ),
-    })),
-  };
-}
-
-export function toCompanyUpdatePayload(values = {}) {
-  return toCompanyProfilePayload(values);
-}
-
-export function toCompanyAddressUpdatePayload(address = {}) {
-  return {
-    address: address.address?.trim() ?? "",
-    pincode: _.toNumber(address.pincode),
-  };
-}
-
-export function toCompanyAddressCreatePayload(companyId, address = {}) {
-  return {
-    company: companyId,
-    ...toCompanyAddressUpdatePayload(address),
-  };
-}
-
-export function toCompanyContactUpdatePayload(contact = {}) {
-  return {
-    contact_person_name: contact.contact_person_name?.trim() ?? "",
-    contact_person_mobile_number:
-      contact.contact_person_mobile_number?.trim() ?? "",
-    contact_person_position: contact.contact_person_position?.trim() ?? "",
-  };
-}
-
-export function toCompanyContactCreatePayload(
-  companyId,
-  addressId,
-  contact = {},
-) {
-  return {
-    company: companyId,
-    company_address: addressId,
-    ...toCompanyContactUpdatePayload(contact),
-  };
-}
+import { COMPANY_INITIAL_VALUES } from "@Forms/company/company.initialValues";
 
 export function toCompanyFormValues(company) {
   if (!company) {
-    return _.cloneDeep(COMPANY_DETAILS_INITIAL_VALUES);
+    return _.cloneDeep(COMPANY_INITIAL_VALUES);
   }
 
   const addresses = _.map(company.addresses ?? [], (companyAddress) => ({
     id: companyAddress.id ?? null,
     address: companyAddress.address ?? "",
     pincode: String(companyAddress.pincode ?? ""),
-    company_employees: _.map(companyAddress.contacts ?? [], (contact) => ({
+    companyEmployees: _.map(companyAddress.contacts ?? [], (contact) => ({
       id: contact.id ?? null,
-      contact_person_name: contact.name ?? "",
-      contact_person_mobile_number: contact.mobile ?? "",
-      contact_person_position: contact.position ?? "",
+      contactPersonName: contact.name ?? "",
+      contactPersonMobileNumber: contact.mobile ?? "",
+      contactPersonPosition: contact.position ?? "",
     })),
   }));
 
   return {
-    company_name: company.name ?? "",
-    company_type: company.type ?? "",
+    companyName: company.name ?? "",
+    companyType: company.type ?? "",
     email: company.email ?? "",
-    phone_number: company.phone ?? "",
-    gst_number: company.gstNumber ?? "",
-    pan_number: company.panNumber ?? "",
+    phoneNumber: company.phone ?? "",
+    gstNumber: company.gstNumber ?? "",
+    panNumber: company.panNumber ?? "",
     website: company.website ?? "",
     addresses:
       addresses.length > 0
         ? addresses
-        : _.cloneDeep(COMPANY_DETAILS_INITIAL_VALUES.addresses),
+        : _.cloneDeep(COMPANY_INITIAL_VALUES.addresses),
   };
 }
 
+const COMPANY_FORM_FIELD_BY_API_FIELD = {
+  company_name: "companyName",
+  company_type: "companyType",
+  phone_number: "phoneNumber",
+  gst_number: "gstNumber",
+  pan_number: "panNumber",
+  address: "addresses",
+  contact_person: "companyEmployees",
+  contact_person_name: "contactPersonName",
+  contact_person_mobile_number: "contactPersonMobileNumber",
+  contact_person_position: "contactPersonPosition",
+};
+
 function toCompanyFormFieldPath(apiField = "") {
-  return apiField
-    .replace(/^address(?=\.|$)/, "addresses")
-    .replace(/\.contact_person(?=\.|$)/g, ".company_employees");
+  return apiField.replace(
+    /(^|\.)([a-z_]+)(?=\.|\[|$)/g,
+    (_, separator, field) =>
+      `${separator}${COMPANY_FORM_FIELD_BY_API_FIELD[field] ?? field}`,
+  );
 }
 
 const COMPANY_CREATE_STATUS_MESSAGES = {
@@ -167,7 +86,7 @@ export function fromCompanyCreateError(error = {}) {
   });
 
   if (error.status === 409 && error.message && _.isEmpty(fieldErrors)) {
-    fieldErrors.company_name = error.message;
+    fieldErrors.companyName = error.message;
   }
 
   const isNetworkError =

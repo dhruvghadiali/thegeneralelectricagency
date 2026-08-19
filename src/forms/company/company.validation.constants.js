@@ -17,7 +17,8 @@ export const COMPANY_GST_PATTERN =
 export const COMPANY_PAN_PATTERN = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
 export const COMPANY_PHONE_PATTERN = /^\d{10}$/;
 export const COMPANY_PINCODE_PATTERN = /^[1-9][0-9]{5}$/;
-export const COMPANY_WEBSITE_PROTOCOL_PATTERN = /^(https?:\/\/)?([\w-]+\.)+[a-z]{2,}(\/[^\s]*)?$/i;
+export const COMPANY_WEBSITE_PROTOCOL_PATTERN =
+  /^(https?:\/\/)?([\w-]+\.)+[a-z]{2,}(\/[^\s]*)?$/i;
 
 export const COMPANY_SUPPORTED_TYPES = Object.freeze(
   COMPANY_TYPE_OPTIONS.map((option) => option.value),

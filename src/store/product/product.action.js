@@ -4,10 +4,11 @@ import { employeeProductApi, superAdminProductApi } from "@Api";
 import { extractErrorMessage } from "@Api/client.api";
 import { ROLE_PATHS } from "@Enums";
 import {
-  fromProductListResponse,
+  toProductCreatePayload,
   toProductListParams,
-  toProductMutationPayload,
-} from "@Forms/product/product.payload";
+  toProductUpdatePayload,
+} from "@Forms/product/product-api.payload";
+import { fromProductListResponse } from "@Forms/product/product-frontend.payload";
 
 const productListApiByRole = {
   [ROLE_PATHS.EMPLOYEE]: employeeProductApi,
@@ -61,7 +62,7 @@ export const createProduct = createAsyncThunk(
 
     try {
       return await employeeProductApi.createProduct(
-        toProductMutationPayload(values),
+        toProductCreatePayload(values),
       );
     } catch (error) {
       return rejectWithValue(extractErrorMessage(error));
@@ -78,7 +79,7 @@ export const updateProduct = createAsyncThunk(
     try {
       return await employeeProductApi.updateProduct(
         id,
-        toProductMutationPayload(values),
+        toProductUpdatePayload(values),
       );
     } catch (error) {
       return rejectWithValue(extractErrorMessage(error));

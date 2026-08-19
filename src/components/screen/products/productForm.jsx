@@ -18,10 +18,9 @@ import {
   TABLE_DEFAULTS,
 } from "@Enums";
 import { employeeCompanyApi } from "@Api";
-import {
-  fromCompanyListResponse,
-  toCompanyListParams,
-} from "@Forms/company/company.payload";
+import { toCompanyListParams } from "@Forms/company/company-api.payload";
+import { fromCompanyListResponse } from "@Forms/company/company-frontend.payload";
+import { toProductFormValues } from "@Forms/product/product-frontend.payload";
 import {
   PRODUCT_CODE_MAX_LENGTH,
   PRODUCT_CODE_MIN_LENGTH,
@@ -55,29 +54,6 @@ import {
 } from "@shadcnComponent/select";
 import { Textarea } from "@shadcnComponent/textarea";
 import { generateProductCode } from "@screenComponent/products/product.utils";
-
-const discountRangeValue = (value, boundary) => {
-  if (value && typeof value === "object") return value[boundary] ?? "";
-  return value ?? "";
-};
-
-const toProductFormValues = (product) => ({
-  ...product,
-  agencyName: product.agencyName ?? "",
-  purchasePrice: product.purchasePrice ?? "",
-  salePrice: product.salePrice ?? "",
-  gstPercentage: product.gstPercentage ?? "",
-  discountAmountMin: discountRangeValue(product.discountAmount, "min"),
-  discountAmountMax: discountRangeValue(product.discountAmount, "max"),
-  discountPercentageMin: discountRangeValue(
-    product.discountPercentage,
-    "min",
-  ),
-  discountPercentageMax: discountRangeValue(
-    product.discountPercentage,
-    "max",
-  ),
-});
 
 const roundedCommercialValue = (value) =>
   Number.isFinite(value) ? String(Math.round(value * 100) / 100) : "";

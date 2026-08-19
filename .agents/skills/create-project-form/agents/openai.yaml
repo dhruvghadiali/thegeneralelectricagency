@@ -1,0 +1,4 @@
+interface:
+  display_name: "Create Project Form"
+  short_description: "Build forms using the project file structure"
+  default_prompt: "Use $create-project-form to create this form following the project structure."

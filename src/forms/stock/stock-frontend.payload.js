@@ -11,14 +11,13 @@ function fromStockLocationResponse(location = {}) {
   };
 }
 
-export function fromStockResponse(stock = {}) {
+function fromStockResponse(stock = {}) {
   const locations = _.map(
     stock.warehouse_locations ?? stock.locations ?? [],
     fromStockLocationResponse,
   );
-  const availableQuantity = Number(
-    stock.available_quantity ?? stock.availableQuantity,
-  ) || 0;
+  const availableQuantity =
+    Number(stock.available_quantity ?? stock.availableQuantity) || 0;
   const unitPrice = Number(stock.unit_price ?? stock.unitPrice) || 0;
 
   return {
@@ -30,8 +29,10 @@ export function fromStockResponse(stock = {}) {
     model: stock.model ?? "",
     unit: stock.unit ?? "unit",
     availableQuantity,
-    reservedQuantity: Number(stock.reserved_quantity ?? stock.reservedQuantity) || 0,
-    damagedQuantity: Number(stock.damaged_quantity ?? stock.damagedQuantity) || 0,
+    reservedQuantity:
+      Number(stock.reserved_quantity ?? stock.reservedQuantity) || 0,
+    damagedQuantity:
+      Number(stock.damaged_quantity ?? stock.damagedQuantity) || 0,
     reorderLevel: Number(stock.reorder_level ?? stock.reorderLevel) || 0,
     unitPrice,
     stockValue: availableQuantity * unitPrice,

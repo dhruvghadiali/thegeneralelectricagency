@@ -23,14 +23,10 @@ import {
   PRODUCT_TABLE_DEFAULTS,
   TABLE_DEFAULTS,
 } from "@Enums";
-import {
-  fromCompanyListResponse,
-  toCompanyListParams,
-} from "@Forms/company/company.payload";
-import {
-  fromProductListResponse,
-  toProductListParams,
-} from "@Forms/product/product.payload";
+import { toCompanyListParams } from "@Forms/company/company-api.payload";
+import { fromCompanyListResponse } from "@Forms/company/company-frontend.payload";
+import { toProductListParams } from "@Forms/product/product-api.payload";
+import { fromProductListResponse } from "@Forms/product/product-frontend.payload";
 import { Button } from "@shadcnComponent/button";
 import { Input } from "@shadcnComponent/input";
 import { Label } from "@shadcnComponent/label";

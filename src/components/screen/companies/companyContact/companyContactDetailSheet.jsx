@@ -35,10 +35,8 @@ import {
   SheetTitle,
 } from "@shadcnComponent/sheet";
 import { COMPANY_TABLE_DEFAULTS, ROLE_PATHS, TABLE_DEFAULTS } from "@Enums";
-import {
-  fromCompanyListResponse,
-  toCompanyListParams,
-} from "@Forms/company/company.payload";
+import { toCompanyListParams } from "@Forms/company/company-api.payload";
+import { fromCompanyListResponse } from "@Forms/company/company-frontend.payload";
 import { fetchCompanyContacts } from "@Redux/companyContact/companyContact.action";
 import CompanyDetailItem from "@screenComponent/companies/companyContact/companyDetailItem";
 import { COMPANY_CONTACT_COLUMNS } from "@screenComponent/companies/companyContact/companyContact.columns";
