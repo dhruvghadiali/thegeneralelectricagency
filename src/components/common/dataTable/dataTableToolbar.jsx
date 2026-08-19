@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Loader2, Search, SlidersHorizontal, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -30,14 +31,25 @@ function DataTableToolbar({
   actions,
 }) {
   const hasFilters = getFilterableColumns(columns).length > 0;
+  const searchInputRef = useRef(null);
+
+  const focusSearchInput = () => {
+    const input = searchInputRef.current;
+    if (!input) return;
+
+    const cursorPosition = input.value.length;
+    input.setSelectionRange(cursorPosition, cursorPosition);
+  };
 
   return (
     <div className="flex shrink-0 flex-col gap-3 border-b p-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="relative w-full sm:max-w-sm">
         <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
+          ref={searchInputRef}
           value={search}
           onChange={(event) => onSearchChange(event.target.value)}
+          onFocus={focusSearchInput}
           onKeyDown={(event) => event.key === "Enter" && onSearchSubmit()}
           placeholder={searchPlaceholder}
           className="pl-9 pr-9"

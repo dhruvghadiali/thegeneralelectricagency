@@ -1,7 +1,6 @@
 import { CalendarDays, Mail, Phone } from "lucide-react";
 
 import { Badge } from "@shadcnComponent/badge";
-import { Avatar, AvatarFallback } from "@shadcnComponent/avatar";
 import {
   COLUMN_TYPES,
   EMPLOYEE_STATUS_OPTIONS,
