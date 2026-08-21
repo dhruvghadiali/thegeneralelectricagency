@@ -7,12 +7,10 @@ import { deleteCompany } from "@Redux/company/company.action";
 import {
   companyDeleteClosed,
   companyDeleteOpened,
-  companyDetailsClosed,
   companyDetailsOpened,
 } from "@Redux/company/company.slice";
 import {
   selectCompanyDeleteState,
-  selectSelectedCompany,
 } from "@Redux/company/company.selector";
 import {
   COMPANY_TABLE_CONFIG,
@@ -20,15 +18,13 @@ import {
   useCompanyTable,
 } from "@Tables/company";
 
-import CompanyDeleteDialog from "@screenComponent/companies/company/companyDeleteDialog";
-import CompanyDetailSheet from "@screenComponent/companies/company/companyDetailSheet";
-import CompanySummary from "@screenComponent/companies/company/companySummary";
+import CompanyDeleteDialog from "@screenComponent/companies/company/dialogs/companyDeleteDialog";
+import CompanyDetailSheet from "@screenComponent/companies/company/sheet/companyDetailSheet";
 
 function CompanyDirectory() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const table = useCompanyTable();
-  const selectedCompany = useSelector(selectSelectedCompany);
   const { companyToDelete, isDeleting, deleteError } = useSelector(
     selectCompanyDeleteState,
   );
@@ -48,8 +44,6 @@ function CompanyDirectory() {
 
   return (
     <>
-      <CompanySummary />
-
       <DataTable
         {...COMPANY_TABLE_CONFIG}
         rows={table.rows}
@@ -86,10 +80,7 @@ function CompanyDirectory() {
         )}
       />
 
-      <CompanyDetailSheet
-        company={selectedCompany}
-        onClose={() => dispatch(companyDetailsClosed())}
-      />
+      <CompanyDetailSheet />
 
       <CompanyDeleteDialog
         company={companyToDelete}

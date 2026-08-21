@@ -9,6 +9,7 @@ import { companyDirectoryViewChanged } from "@Redux/company/company.slice";
 
 import CompanyContactDirectory from "@screenComponent/companies/companyContact/companyContactDirectory";
 import CompanyDirectory from "@screenComponent/companies/company/companyDirectory";
+import CompanySummaryPopover from "@screenComponent/companies/company/header/companySummaryPopover";
 
 const DIRECTORY_VIEWS = Object.freeze({
   COMPANIES: "companies",
@@ -65,15 +66,20 @@ function Companies() {
           />
         )}
 
-        {canAddCompany && (
-          <Button
-            onClick={() => navigate("/companies/new")}
-            className="w-full sm:w-auto"
-          >
-            <Plus className="size-4" />
-            Add company
-          </Button>
-        )}
+        <div className="flex flex-col gap-2 sm:flex-row">
+          {directoryView === DIRECTORY_VIEWS.COMPANIES && (
+            <CompanySummaryPopover />
+          )}
+          {canAddCompany && (
+            <Button
+              onClick={() => navigate("/companies/new")}
+              className="w-full sm:w-auto"
+            >
+              <Plus className="size-4" />
+              Add company
+            </Button>
+          )}
+        </div>
       </div>
 
       {directoryView === DIRECTORY_VIEWS.CONTACTS && canViewContactDirectory ? (
