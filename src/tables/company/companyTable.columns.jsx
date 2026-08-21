@@ -14,9 +14,9 @@ import {
   MOBILE_SLOTS,
 } from "@Enums";
 import { Badge } from "@shadcnComponent/badge";
-import CompanyTypeBadge from "@screenComponent/companies/company/companyTypeBadge";
+import CompanyTypeBadge from "@Tables/company/companyTypeBadge";
 
-export const COMPANY_COLUMNS = [
+export const COMPANY_TABLE_COLUMNS = [
   {
     key: "name",
     header: "Company",
@@ -146,3 +146,5 @@ export const COMPANY_COLUMNS = [
     ),
   },
 ];
+
+export default COMPANY_TABLE_COLUMNS;

@@ -39,7 +39,7 @@ import { toCompanyListParams } from "@Forms/company/company-api.payload";
 import { fromCompanyListResponse } from "@Forms/company/company-frontend.payload";
 import { fetchCompanyContacts } from "@Redux/companyContact/companyContact.action";
 import CompanyDetailItem from "@screenComponent/companies/companyContact/companyDetailItem";
-import { COMPANY_CONTACT_COLUMNS } from "@screenComponent/companies/companyContact/companyContact.columns";
+import { COMPANY_CONTACT_TABLE_COLUMNS } from "@Tables/companyContact";
 
 const sourceAddressFor = (company, contact) =>
   company?.addresses?.find(
@@ -226,7 +226,7 @@ function CompanyContactDetailSheet({ contact, onClose }) {
         company: selectedCompany.id,
         company_address: selectedAddressId,
       });
-      await dispatch(fetchCompanyContacts(COMPANY_CONTACT_COLUMNS));
+      await dispatch(fetchCompanyContacts(COMPANY_CONTACT_TABLE_COLUMNS));
       onClose();
     } catch (error) {
       setSaveError(extractErrorMessage(error));

@@ -1,4 +1,3 @@
-import { Building2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -15,10 +14,12 @@ import {
   selectCompanyDeleteState,
   selectSelectedCompany,
 } from "@Redux/company/company.selector";
-import { COMPANY_COLUMNS } from "@screenComponent/companies/company/company.columns";
-import { useCompanyList } from "@screenComponent/companies/company/useCompanyList";
+import {
+  COMPANY_TABLE_CONFIG,
+  CompanyTableActions,
+  useCompanyTable,
+} from "@Tables/company";
 
-import CompanyActions from "@screenComponent/companies/company/companyActions";
 import CompanyDeleteDialog from "@screenComponent/companies/company/companyDeleteDialog";
 import CompanyDetailSheet from "@screenComponent/companies/company/companyDetailSheet";
 import CompanySummary from "@screenComponent/companies/company/companySummary";
@@ -26,7 +27,7 @@ import CompanySummary from "@screenComponent/companies/company/companySummary";
 function CompanyDirectory() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const table = useCompanyList();
+  const table = useCompanyTable();
   const selectedCompany = useSelector(selectSelectedCompany);
   const { companyToDelete, isDeleting, deleteError } = useSelector(
     selectCompanyDeleteState,
@@ -50,9 +51,8 @@ function CompanyDirectory() {
       <CompanySummary />
 
       <DataTable
-        columns={COMPANY_COLUMNS}
+        {...COMPANY_TABLE_CONFIG}
         rows={table.rows}
-        rowKey={(company) => company.id}
         search={table.search}
         sort={table.sort}
         columnFilters={table.columnFilters}
@@ -72,7 +72,7 @@ function CompanyDirectory() {
         isLoading={table.isLoading}
         error={table.error}
         rowActions={(company) => (
-          <CompanyActions
+          <CompanyTableActions
             company={company}
             canManage={canManageCompany}
             onView={(row) => dispatch(companyDetailsOpened(row))}
@@ -84,13 +84,6 @@ function CompanyDirectory() {
             onDelete={(row) => dispatch(companyDeleteOpened(row))}
           />
         )}
-        searchPlaceholder="Search by company, email, phone, GST, or PAN..."
-        rowNoun="companies"
-        emptyIcon={Building2}
-        emptyTitle="No companies found"
-        emptyDescription="Company profiles will appear here when available."
-        filteredEmptyDescription="Try changing your search or filters."
-        fillHeight
       />
 
       <CompanyDetailSheet

@@ -2,7 +2,7 @@ import { Eye, Pencil, Trash2 } from "lucide-react";
 
 import { Button } from "@shadcnComponent/button";
 
-function CompanyActions({ company, canManage, onView, onEdit, onDelete }) {
+function CompanyTableActions({ company, canManage, onView, onEdit, onDelete }) {
   return (
     <div className="flex items-center gap-1">
       <Button
@@ -42,4 +42,4 @@ function CompanyActions({ company, canManage, onView, onEdit, onDelete }) {
   );
 }
 
-export default CompanyActions;
+export default CompanyTableActions;

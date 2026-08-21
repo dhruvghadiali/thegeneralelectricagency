@@ -8,10 +8,10 @@ import {
   MOBILE_SLOTS,
 } from "@Enums";
 import { Badge } from "@shadcnComponent/badge";
-import CompanyTypeBadge from "@screenComponent/companies/company/companyTypeBadge";
 import ContactPositionBadge from "@screenComponent/companies/companyContact/contactPositionBadge";
+import CompanyTypeBadge from "@Tables/company/companyTypeBadge";
 
-export const COMPANY_CONTACT_COLUMNS = [
+export const COMPANY_CONTACT_TABLE_COLUMNS = [
     {
       key: "contactPersonName",
       header: "Contact person",
@@ -128,3 +128,5 @@ export const COMPANY_CONTACT_COLUMNS = [
       ),
     },
 ];
+
+export default COMPANY_CONTACT_TABLE_COLUMNS;

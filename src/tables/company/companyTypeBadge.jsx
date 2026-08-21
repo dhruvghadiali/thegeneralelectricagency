@@ -1,5 +1,5 @@
-import { Badge } from "@shadcnComponent/badge";
 import { COMPANY_TYPES, COMPANY_TYPE_OPTIONS } from "@Enums";
+import { Badge } from "@shadcnComponent/badge";
 
 const COMPANY_TYPE_BADGE_CLASSES = Object.freeze({
   [COMPANY_TYPES.SUPPLIER]:

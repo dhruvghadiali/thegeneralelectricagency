@@ -2,7 +2,7 @@ import { Eye } from "lucide-react";
 
 import { Button } from "@shadcnComponent/button";
 
-function CompanyContactActions({ contact, onView }) {
+function CompanyContactTableActions({ contact, onView }) {
   return (
     <Button
       variant="ghost"
@@ -16,4 +16,4 @@ function CompanyContactActions({ contact, onView }) {
   );
 }
 
-export default CompanyContactActions;
+export default CompanyContactTableActions;

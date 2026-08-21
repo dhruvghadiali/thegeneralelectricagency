@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from "react-redux";
-import { ContactRound } from "lucide-react";
 
 import DataTable from "@commonComponent/dataTable";
 import {
@@ -7,26 +6,27 @@ import {
   contactDetailsOpened,
 } from "@Redux/companyContact/companyContact.slice";
 import { selectSelectedCompanyContact } from "@Redux/companyContact/companyContact.selector";
-import { COMPANY_CONTACT_COLUMNS } from "@screenComponent/companies/companyContact/companyContact.columns";
-import { useCompanyContactList } from "@screenComponent/companies/companyContact/useCompanyContactList";
+import {
+  COMPANY_CONTACT_TABLE_CONFIG,
+  CompanyContactTableActions,
+  useCompanyContactTable,
+} from "@Tables/companyContact";
 
-import CompanyContactActions from "@screenComponent/companies/companyContact/companyContactActions";
 import CompanyContactDetailSheet from "@screenComponent/companies/companyContact/companyContactDetailSheet";
 import CompanyContactSummary from "@screenComponent/companies/companyContact/companyContactSummary";
 
 function CompanyContactDirectory() {
   const dispatch = useDispatch();
   const selectedContact = useSelector(selectSelectedCompanyContact);
-  const table = useCompanyContactList();
+  const table = useCompanyContactTable();
 
   return (
     <>
       <CompanyContactSummary />
 
       <DataTable
-        columns={COMPANY_CONTACT_COLUMNS}
+        {...COMPANY_CONTACT_TABLE_CONFIG}
         rows={table.rows}
-        rowKey={(contact) => contact.id}
         search={table.search}
         sort={table.sort}
         columnFilters={table.columnFilters}
@@ -46,18 +46,11 @@ function CompanyContactDirectory() {
         isLoading={table.isLoading}
         error={table.error}
         rowActions={(contact) => (
-          <CompanyContactActions
+          <CompanyContactTableActions
             contact={contact}
             onView={(row) => dispatch(contactDetailsOpened(row))}
           />
         )}
-        searchPlaceholder="Search contacts or companies..."
-        rowNoun="contacts"
-        emptyIcon={ContactRound}
-        emptyTitle="No contact persons found"
-        emptyDescription="Company contact persons will appear here when available."
-        filteredEmptyDescription="Try changing your search or filters."
-        fillHeight
       />
 
       <CompanyContactDetailSheet
