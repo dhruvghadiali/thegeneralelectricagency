@@ -3,6 +3,8 @@ import { Eye, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@shadcnComponent/button";
 
 function CompanyTableActions({ company, canManage, onView, onEdit, onDelete }) {
+  const canModify = canManage && company.isActive;
+
   return (
     <div className="flex items-center gap-1">
       <Button
@@ -15,7 +17,7 @@ function CompanyTableActions({ company, canManage, onView, onEdit, onDelete }) {
         <Eye className="size-4" />
       </Button>
 
-      {canManage && (
+      {canModify && (
         <>
           <Button
             variant="ghost"
