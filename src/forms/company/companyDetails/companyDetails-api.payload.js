@@ -1,26 +1,5 @@
 import _ from "lodash";
 
-import { COMPANY_TABLE_DEFAULTS, TABLE_DEFAULTS } from "@Enums";
-import { buildListQueryParams } from "@/utils/listQuery.util";
-
-export function toCompanyListParams({
-  columns = [],
-  page = TABLE_DEFAULTS.PAGE,
-  limit = COMPANY_TABLE_DEFAULTS.LIMIT,
-  search = "",
-  sort = [],
-  filters = {},
-} = {}) {
-  return buildListQueryParams({
-    columns,
-    page,
-    limit,
-    search,
-    sort,
-    filters,
-  });
-}
-
 function toCompanyProfilePayload(values = {}) {
   const website = values.website
     ? /^https?:\/\//i.test(values.website)

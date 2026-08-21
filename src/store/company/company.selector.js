@@ -16,6 +16,11 @@ export const selectCompanySummary = createSelector(
   (companies) => companies.summary,
 );
 
+export const selectCompanyDirectoryView = createSelector(
+  selectCompanyState,
+  (state) => state.directoryView,
+);
+
 export const selectCompanyDeleteState = createSelector(
   selectCompanyState,
   ({ companyToDelete, isDeleting, deleteError }) => ({
@@ -23,4 +28,9 @@ export const selectCompanyDeleteState = createSelector(
     isDeleting,
     deleteError,
   }),
+);
+
+export const selectCompanyDetailsFormState = createSelector(
+  selectCompanyState,
+  (state) => state.companyDetailsForm,
 );

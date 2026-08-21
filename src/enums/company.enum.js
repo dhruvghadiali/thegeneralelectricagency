@@ -1,5 +1,3 @@
-import { SORT_ORDERS, TABLE_DEFAULTS } from "./dataTable.enum";
-
 export const COMPANY_TYPES = Object.freeze({
   SUPPLIER: "supplier",
   CUSTOMER: "customer",
@@ -53,11 +51,3 @@ export const CONTACT_POSITION_OPTIONS = Object.freeze(
     label: CONTACT_POSITION_LABELS[value],
   })),
 );
-
-export const COMPANY_TABLE_DEFAULTS = Object.freeze({
-  LIMIT: TABLE_DEFAULTS.LIMIT,
-  SORT: Object.freeze([
-    Object.freeze({ field: "company_name", order: SORT_ORDERS.ASC }),
-  ]),
-  FILTERS: Object.freeze({ is_active: "true" }),
-});

@@ -1,5 +1,6 @@
-import { COMPANY_TYPES, COMPANY_TYPE_OPTIONS } from "@Enums";
+import { COMPANY_TYPES } from "@Enums";
 import { Badge } from "@shadcnComponent/badge";
+import { companyTypeLabel } from "@Tables/company/companyTable.utils";
 
 const COMPANY_TYPE_BADGE_CLASSES = Object.freeze({
   [COMPANY_TYPES.SUPPLIER]:
@@ -15,12 +16,9 @@ const COMPANY_TYPE_BADGE_CLASSES = Object.freeze({
 });
 
 function CompanyTypeBadge({ type }) {
-  const label =
-    COMPANY_TYPE_OPTIONS.find((option) => option.value === type)?.label ?? type;
-
   return (
     <Badge variant="outline" className={COMPANY_TYPE_BADGE_CLASSES[type]}>
-      {label}
+      {companyTypeLabel(type)}
     </Badge>
   );
 }

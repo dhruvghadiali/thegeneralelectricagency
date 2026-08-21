@@ -1,20 +1,43 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { SORT_ORDERS, TABLE_DEFAULTS } from "@Enums";
 import { fetchCompanyContacts } from "@Redux/companyContact/companyContact.action";
 import {
   createTableState,
   tableFetchCases,
   TABLE_REDUCERS,
 } from "@Redux/factories/table.factory";
+import { COMPANY_CONTACT_TABLE_DEFAULTS } from "@Tables/companyContact/companyContactTable.defaults";
+import { TABLE_DEFAULTS } from "@Enums";
+
+const COMPANY_CONTACT_ASSIGNMENT_INITIAL_STATE = {
+  currentCompany: null,
+  currentAddress: null,
+  selectedCompany: null,
+  selectedAddressId: "",
+  isChecking: false,
+  checkError: null,
+  isSaving: false,
+  saveError: null,
+  pickerOpen: false,
+  companySearch: "",
+  debouncedSearch: "",
+  companies: [],
+  companyPage: TABLE_DEFAULTS.PAGE,
+  companyPagination: {
+    page: TABLE_DEFAULTS.PAGE,
+    totalPages: 0,
+  },
+  isLoadingCompanies: false,
+};
 
 const initialState = {
   ...createTableState({
-    limit: TABLE_DEFAULTS.LIMIT,
-    sort: [{ field: "contact_person_name", order: SORT_ORDERS.ASC }],
-    columnFilters: { is_active: "true" },
+    limit: COMPANY_CONTACT_TABLE_DEFAULTS.limit,
+    sort: COMPANY_CONTACT_TABLE_DEFAULTS.sort,
+    columnFilters: COMPANY_CONTACT_TABLE_DEFAULTS.filters,
   }),
   selectedContact: null,
+  contactAssignment: { ...COMPANY_CONTACT_ASSIGNMENT_INITIAL_STATE },
   summary: {
     totalContacts: 0,
     activeContacts: 0,
@@ -29,9 +52,33 @@ const companyContactSlice = createSlice({
     ...TABLE_REDUCERS,
     contactDetailsOpened(state, action) {
       state.selectedContact = action.payload;
+      state.contactAssignment = {
+        ...COMPANY_CONTACT_ASSIGNMENT_INITIAL_STATE,
+      };
     },
     contactDetailsClosed(state) {
       state.selectedContact = null;
+      state.contactAssignment = {
+        ...COMPANY_CONTACT_ASSIGNMENT_INITIAL_STATE,
+      };
+    },
+    contactAssignmentChanged(state, action) {
+      Object.assign(state.contactAssignment, action.payload);
+    },
+    contactAssignmentReset(state) {
+      state.contactAssignment = {
+        ...COMPANY_CONTACT_ASSIGNMENT_INITIAL_STATE,
+      };
+    },
+    contactCompanyOptionsLoaded(state, action) {
+      const { items, pagination, replace } = action.payload;
+      const companies = replace
+        ? items
+        : [...state.contactAssignment.companies, ...items];
+      state.contactAssignment.companies = [
+        ...new Map(companies.map((company) => [company.id, company])).values(),
+      ];
+      state.contactAssignment.companyPagination = pagination;
     },
   },
   extraReducers: (builder) => {
@@ -53,6 +100,9 @@ const companyContactSlice = createSlice({
 
 export const {
   columnFilterChanged,
+  contactAssignmentChanged,
+  contactAssignmentReset,
+  contactCompanyOptionsLoaded,
   contactDetailsClosed,
   contactDetailsOpened,
   filtersApplied,

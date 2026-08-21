@@ -1,10 +1,11 @@
-import { useState } from "react";
 import { Building2, ContactRound, Plus } from "lucide-react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "@shadcnComponent/button";
 import { ROLE_PATHS } from "@Enums";
+import { selectCompanyDirectoryView } from "@Redux/company/company.selector";
+import { companyDirectoryViewChanged } from "@Redux/company/company.slice";
 
 import CompanyContactDirectory from "@screenComponent/companies/companyContact/companyContactDirectory";
 import CompanyDirectory from "@screenComponent/companies/company/companyDirectory";
@@ -42,11 +43,10 @@ function DirectorySwitcher({ value, onChange }) {
 }
 
 function Companies() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const role = useSelector((state) => state.auth.role);
-  const [directoryView, setDirectoryView] = useState(
-    DIRECTORY_VIEWS.COMPANIES,
-  );
+  const directoryView = useSelector(selectCompanyDirectoryView);
   const canAddCompany = role === ROLE_PATHS.EMPLOYEE;
   const canViewContactDirectory = [
     ROLE_PATHS.EMPLOYEE,
@@ -61,7 +61,7 @@ function Companies() {
         {canViewContactDirectory && (
           <DirectorySwitcher
             value={directoryView}
-            onChange={setDirectoryView}
+            onChange={(view) => dispatch(companyDirectoryViewChanged(view))}
           />
         )}
 

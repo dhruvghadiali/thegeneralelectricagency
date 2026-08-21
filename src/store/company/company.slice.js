@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { COMPANY_TABLE_DEFAULTS } from "@Enums";
 import {
   deleteCompany,
   fetchCompanies,
@@ -10,17 +9,32 @@ import {
   tableFetchCases,
   TABLE_REDUCERS,
 } from "@Redux/factories/table.factory";
+import { COMPANY_TABLE_DEFAULTS } from "@Tables/company/companyTable.defaults";
+
+const COMPANY_DETAILS_FORM_INITIAL_STATE = {
+  saveError: null,
+  addressEdit: null,
+  contactEdit: null,
+  deletingAddressId: null,
+  deletingContactId: null,
+  updatingAddressId: null,
+  updatingContactId: null,
+  creatingAddressIndex: null,
+  creatingContactKey: null,
+};
 
 const initialState = {
   ...createTableState({
-    limit: COMPANY_TABLE_DEFAULTS.LIMIT,
-    sort: COMPANY_TABLE_DEFAULTS.SORT,
-    columnFilters: COMPANY_TABLE_DEFAULTS.FILTERS,
+    limit: COMPANY_TABLE_DEFAULTS.limit,
+    sort: COMPANY_TABLE_DEFAULTS.sort,
+    columnFilters: COMPANY_TABLE_DEFAULTS.filters,
   }),
   selectedCompany: null,
   companyToDelete: null,
   isDeleting: false,
   deleteError: null,
+  directoryView: "companies",
+  companyDetailsForm: { ...COMPANY_DETAILS_FORM_INITIAL_STATE },
   summary: {
     totalCompanies: 0,
     activeCompanies: 0,
@@ -39,6 +53,9 @@ const companySlice = createSlice({
     companyDetailsClosed(state) {
       state.selectedCompany = null;
     },
+    companyDirectoryViewChanged(state, action) {
+      state.directoryView = action.payload;
+    },
     companyDeleteOpened(state, action) {
       state.companyToDelete = action.payload;
       state.deleteError = null;
@@ -46,6 +63,12 @@ const companySlice = createSlice({
     companyDeleteClosed(state) {
       state.companyToDelete = null;
       state.deleteError = null;
+    },
+    companyDetailsFormChanged(state, action) {
+      Object.assign(state.companyDetailsForm, action.payload);
+    },
+    companyDetailsFormReset(state) {
+      state.companyDetailsForm = { ...COMPANY_DETAILS_FORM_INITIAL_STATE };
     },
   },
   extraReducers: (builder) => {
@@ -78,7 +101,10 @@ export const {
   columnFilterChanged,
   companyDeleteClosed,
   companyDeleteOpened,
+  companyDirectoryViewChanged,
   companyDetailsClosed,
+  companyDetailsFormChanged,
+  companyDetailsFormReset,
   companyDetailsOpened,
   filtersApplied,
   filtersCleared,

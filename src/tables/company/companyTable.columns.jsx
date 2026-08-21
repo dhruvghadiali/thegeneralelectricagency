@@ -14,6 +14,10 @@ import {
   MOBILE_SLOTS,
 } from "@Enums";
 import { Badge } from "@shadcnComponent/badge";
+import {
+  companyStatusLabel,
+  companyStatusVariant,
+} from "@Tables/company/companyTable.utils";
 import CompanyTypeBadge from "@Tables/company/companyTypeBadge";
 
 export const COMPANY_TABLE_COLUMNS = [
@@ -140,8 +144,8 @@ export const COMPANY_TABLE_COLUMNS = [
     mobile: MOBILE_SLOTS.BADGE,
     width: "150px",
     render: (company) => (
-      <Badge variant={company.isActive ? "success" : "destructive"}>
-        {company.isActive ? "Active" : "Inactive"}
+      <Badge variant={companyStatusVariant(company)}>
+        {companyStatusLabel(company)}
       </Badge>
     ),
   },

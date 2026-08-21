@@ -13,7 +13,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@shadcnComponent/sheet";
-import ContactPositionBadge from "@screenComponent/companies/companyContact/contactPositionBadge";
+import ContactPositionBadge from "@Tables/companyContact/contactPositionBadge";
 
 function CompanyDetailSheet({ company, onClose }) {
   return (

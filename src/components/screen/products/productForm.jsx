@@ -11,15 +11,8 @@ import {
   Sparkles,
 } from "lucide-react";
 
-import {
-  COMPANY_TABLE_DEFAULTS,
-  INDIAN_GST_OPTIONS,
-  PRODUCT_CATEGORY_OPTIONS,
-  TABLE_DEFAULTS,
-} from "@Enums";
+import { INDIAN_GST_OPTIONS, PRODUCT_CATEGORY_OPTIONS, TABLE_DEFAULTS } from "@Enums";
 import { employeeCompanyApi } from "@Api";
-import { toCompanyListParams } from "@Forms/company/company-api.payload";
-import { fromCompanyListResponse } from "@Forms/company/company-frontend.payload";
 import { toProductFormValues } from "@Forms/product/product-frontend.payload";
 import {
   PRODUCT_CODE_MAX_LENGTH,
@@ -36,6 +29,9 @@ import {
   PRODUCT_SALE_PRICE_MAX,
 } from "@Forms/product/product.validation.constants";
 import { productValidationSchema } from "@Forms/product/product.validation.schema";
+import { toCompanyListParams } from "@Tables/company/companyTable.api-payload";
+import { COMPANY_TABLE_DEFAULTS } from "@Tables/company/companyTable.defaults";
+import { fromCompanyListResponse } from "@Tables/company/companyTable.frontend-payload";
 import { Button } from "@shadcnComponent/button";
 import { DialogFooter } from "@shadcnComponent/dialog";
 import { Input } from "@shadcnComponent/input";
@@ -172,9 +168,9 @@ function CompanySearchSelect({ formik, error, isBusy }) {
           {
             ...toCompanyListParams({
               page,
-              limit: COMPANY_TABLE_DEFAULTS.LIMIT,
+              limit: COMPANY_TABLE_DEFAULTS.limit,
               search: debouncedSearch,
-              sort: COMPANY_TABLE_DEFAULTS.SORT,
+              sort: COMPANY_TABLE_DEFAULTS.sort,
             }),
             is_active: true,
           },
@@ -182,7 +178,7 @@ function CompanySearchSelect({ formik, error, isBusy }) {
         );
         const result = fromCompanyListResponse(response, {
           page,
-          limit: COMPANY_TABLE_DEFAULTS.LIMIT,
+          limit: COMPANY_TABLE_DEFAULTS.limit,
         });
 
         setCompanies((current) => {

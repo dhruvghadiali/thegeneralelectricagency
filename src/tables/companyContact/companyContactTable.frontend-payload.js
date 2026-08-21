@@ -1,6 +1,7 @@
 import _ from "lodash";
 
 import { TABLE_DEFAULTS } from "@Enums";
+import { COMPANY_CONTACT_TABLE_DEFAULTS } from "@Tables/companyContact/companyContactTable.defaults";
 
 function fromCompanyDetailsResponse(details = {}) {
   return {
@@ -42,6 +43,29 @@ function fromCompanyContactResponse(contact = {}) {
   };
 }
 
+function fromCompanyContactPaginationResponse(
+  pagination = {},
+  requested = {},
+) {
+  const page =
+    _.toNumber(pagination.page) || requested.page || TABLE_DEFAULTS.PAGE;
+  const limit =
+    _.toNumber(pagination.limit) ||
+    requested.limit ||
+    COMPANY_CONTACT_TABLE_DEFAULTS.limit;
+  const total = _.toNumber(pagination.total) || 0;
+
+  return {
+    page,
+    limit,
+    total,
+    totalPages:
+      _.toNumber(pagination.total_pages ?? pagination.totalPages) ||
+      Math.ceil(total / limit) ||
+      0,
+  };
+}
+
 function fromCompanyContactSummaryResponse(summary = {}) {
   return {
     totalContacts: _.toNumber(summary.total_contacts) || 0,
@@ -51,27 +75,15 @@ function fromCompanyContactSummaryResponse(summary = {}) {
 }
 
 export function fromCompanyContactListResponse(response = {}, requested = {}) {
-  const pagination = response.pagination ?? {};
-  const page =
-    _.toNumber(pagination.page) || requested.page || TABLE_DEFAULTS.PAGE;
-  const limit =
-    _.toNumber(pagination.limit) || requested.limit || TABLE_DEFAULTS.LIMIT;
-  const total = _.toNumber(pagination.total) || 0;
-
   return {
     items: _.map(
       response.company_contacts ?? [],
       fromCompanyContactResponse,
     ),
-    pagination: {
-      page,
-      limit,
-      total,
-      totalPages:
-        _.toNumber(pagination.total_pages ?? pagination.totalPages) ||
-        Math.ceil(total / limit) ||
-        0,
-    },
+    pagination: fromCompanyContactPaginationResponse(
+      response.pagination ?? {},
+      requested,
+    ),
     summary: fromCompanyContactSummaryResponse(response.summary),
   };
 }

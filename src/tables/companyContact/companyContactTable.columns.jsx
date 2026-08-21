@@ -8,8 +8,12 @@ import {
   MOBILE_SLOTS,
 } from "@Enums";
 import { Badge } from "@shadcnComponent/badge";
-import ContactPositionBadge from "@screenComponent/companies/companyContact/contactPositionBadge";
+import {
+  companyStatusLabel,
+  companyStatusVariant,
+} from "@Tables/company/companyTable.utils";
 import CompanyTypeBadge from "@Tables/company/companyTypeBadge";
+import ContactPositionBadge from "@Tables/companyContact/contactPositionBadge";
 
 export const COMPANY_CONTACT_TABLE_COLUMNS = [
     {
@@ -122,8 +126,8 @@ export const COMPANY_CONTACT_TABLE_COLUMNS = [
       mobile: MOBILE_SLOTS.BADGE,
       width: "150px",
       render: (contact) => (
-        <Badge variant={contact.isActive ? "success" : "destructive"}>
-          {contact.isActive ? "Active" : "Inactive"}
+        <Badge variant={companyStatusVariant(contact)}>
+          {companyStatusLabel(contact)}
         </Badge>
       ),
     },

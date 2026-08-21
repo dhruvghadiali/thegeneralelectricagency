@@ -1,4 +1,4 @@
-export const COMPANY_INITIAL_VALUES = {
+export const COMPANY_DETAILS_INITIAL_VALUES = {
   companyName: "",
   companyType: "",
   email: "",

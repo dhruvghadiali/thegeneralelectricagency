@@ -5,8 +5,8 @@ import {
   employeeProductApi,
   extractErrorMessage,
 } from "@Api";
-import { fromCompanyListResponse } from "@Forms/company/company-frontend.payload";
 import { fromProductListResponse } from "@Forms/product/product-frontend.payload";
+import { fromCompanyListResponse } from "@Tables/company/companyTable.frontend-payload";
 
 const SEARCH_DELAY_MS = 350;
 const OPTION_LIMIT = 20;

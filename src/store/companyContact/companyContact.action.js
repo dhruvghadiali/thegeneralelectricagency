@@ -3,8 +3,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { employeeCompanyApi, superAdminCompanyApi } from "@Api";
 import { extractErrorMessage } from "@Api/client.api";
 import { ROLE_PATHS } from "@Enums";
-import { toCompanyContactListParams } from "@Forms/company/company-contact-api.payload";
-import { fromCompanyContactListResponse } from "@Forms/company/company-contact-frontend.payload";
+import { toCompanyContactListParams } from "@Tables/companyContact/companyContactTable.api-payload";
+import { fromCompanyContactListResponse } from "@Tables/companyContact/companyContactTable.frontend-payload";
 
 const companyContactApiByRole = {
   [ROLE_PATHS.EMPLOYEE]: employeeCompanyApi,

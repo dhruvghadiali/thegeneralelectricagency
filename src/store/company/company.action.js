@@ -9,13 +9,11 @@ import {
   toCompanyContactCreatePayload,
   toCompanyContactUpdatePayload,
   toCompanyCreatePayload,
-  toCompanyListParams,
   toCompanyUpdatePayload,
-} from "@Forms/company/company-api.payload";
-import {
-  fromCompanyCreateError,
-  fromCompanyListResponse,
-} from "@Forms/company/company-frontend.payload";
+} from "@Forms/company/companyDetails/companyDetails-api.payload";
+import { fromCompanyCreateError } from "@Forms/company/companyDetails/companyDetails-frontend.payload";
+import { toCompanyListParams } from "@Tables/company/companyTable.api-payload";
+import { fromCompanyListResponse } from "@Tables/company/companyTable.frontend-payload";
 
 const companyListApiByRole = {
   [ROLE_PATHS.EMPLOYEE]: employeeCompanyApi,

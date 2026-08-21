@@ -19,14 +19,14 @@ import { employeeCompanyApi, employeeProductApi } from "@Api";
 import defaultSignatureUrl from "@Assets/images/default-signature.png";
 import companyLogoUrl from "@Assets/images/logo.png";
 import {
-  COMPANY_TABLE_DEFAULTS,
   PRODUCT_TABLE_DEFAULTS,
   TABLE_DEFAULTS,
 } from "@Enums";
-import { toCompanyListParams } from "@Forms/company/company-api.payload";
-import { fromCompanyListResponse } from "@Forms/company/company-frontend.payload";
 import { toProductListParams } from "@Forms/product/product-api.payload";
 import { fromProductListResponse } from "@Forms/product/product-frontend.payload";
+import { toCompanyListParams } from "@Tables/company/companyTable.api-payload";
+import { COMPANY_TABLE_DEFAULTS } from "@Tables/company/companyTable.defaults";
+import { fromCompanyListResponse } from "@Tables/company/companyTable.frontend-payload";
 import { Button } from "@shadcnComponent/button";
 import { Input } from "@shadcnComponent/input";
 import { Label } from "@shadcnComponent/label";
@@ -505,9 +505,9 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
           {
             ...toCompanyListParams({
               page: companyPage,
-              limit: COMPANY_TABLE_DEFAULTS.LIMIT,
+              limit: COMPANY_TABLE_DEFAULTS.limit,
               search: debouncedCompanySearch,
-              sort: COMPANY_TABLE_DEFAULTS.SORT,
+              sort: COMPANY_TABLE_DEFAULTS.sort,
             }),
             is_active: true,
           },
@@ -515,7 +515,7 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
         );
         const result = fromCompanyListResponse(response, {
           page: companyPage,
-          limit: COMPANY_TABLE_DEFAULTS.LIMIT,
+          limit: COMPANY_TABLE_DEFAULTS.limit,
         });
 
         setCompanies((current) => {

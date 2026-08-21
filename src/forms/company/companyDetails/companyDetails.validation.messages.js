@@ -10,7 +10,7 @@ import {
   COMPANY_NAME_MIN_LENGTH,
   COMPANY_WEBSITE_MAX_LENGTH,
   COMPANY_WEBSITE_MIN_LENGTH,
-} from "@Forms/company/company.validation.constants";
+} from "@Forms/company/companyDetails/companyDetails.validation.constants";
 
 export const COMPANY_VALIDATION_MESSAGES = {
   COMPANY_NAME_REQUIRED: "Company name is required",

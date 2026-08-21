@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-import { COMPANY_VALIDATION_MESSAGES as MESSAGES } from "@Forms/company/company.validation.messages";
+import { COMPANY_VALIDATION_MESSAGES as MESSAGES } from "@Forms/company/companyDetails/companyDetails.validation.messages";
 import {
   COMPANY_ADDRESS_MAX_LENGTH,
   COMPANY_ADDRESS_MIN_LENGTH,
@@ -20,7 +20,7 @@ import {
   COMPANY_WEBSITE_MAX_LENGTH,
   COMPANY_WEBSITE_MIN_LENGTH,
   COMPANY_WEBSITE_PROTOCOL_PATTERN,
-} from "@Forms/company/company.validation.constants";
+} from "@Forms/company/companyDetails/companyDetails.validation.constants";
 
 const contactPersonSchema = Yup.object({
   id: Yup.string().nullable().notRequired(),
@@ -59,7 +59,7 @@ const companyAddressSchema = Yup.object({
     .required(MESSAGES.CONTACTS_REQUIRED),
 });
 
-export const companyValidationSchema = Yup.object({
+export const companyDetailsValidationSchema = Yup.object({
   companyName: Yup.string()
     .trim()
     .min(COMPANY_NAME_MIN_LENGTH, MESSAGES.COMPANY_NAME_MIN)

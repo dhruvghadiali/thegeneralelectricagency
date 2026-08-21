@@ -17,3 +17,8 @@ export const selectSelectedCompanyContact = createSelector(
   selectCompanyContactState,
   (companyContacts) => companyContacts.selectedContact,
 );
+
+export const selectCompanyContactAssignment = createSelector(
+  selectCompanyContactState,
+  (companyContacts) => companyContacts.contactAssignment,
+);

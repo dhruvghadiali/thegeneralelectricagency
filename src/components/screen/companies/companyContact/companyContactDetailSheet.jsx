@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import {
   Building2,
   Check,
@@ -34,11 +34,18 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@shadcnComponent/sheet";
-import { COMPANY_TABLE_DEFAULTS, ROLE_PATHS, TABLE_DEFAULTS } from "@Enums";
-import { toCompanyListParams } from "@Forms/company/company-api.payload";
-import { fromCompanyListResponse } from "@Forms/company/company-frontend.payload";
+import { ROLE_PATHS, TABLE_DEFAULTS } from "@Enums";
 import { fetchCompanyContacts } from "@Redux/companyContact/companyContact.action";
+import { selectCompanyContactAssignment } from "@Redux/companyContact/companyContact.selector";
+import {
+  contactAssignmentChanged,
+  contactAssignmentReset,
+  contactCompanyOptionsLoaded,
+} from "@Redux/companyContact/companyContact.slice";
 import CompanyDetailItem from "@screenComponent/companies/companyContact/companyDetailItem";
+import { COMPANY_TABLE_DEFAULTS } from "@Tables/company";
+import { toCompanyListParams } from "@Tables/company/companyTable.api-payload";
+import { fromCompanyListResponse } from "@Tables/company/companyTable.frontend-payload";
 import { COMPANY_CONTACT_TABLE_COLUMNS } from "@Tables/companyContact";
 
 const sourceAddressFor = (company, contact) =>
@@ -59,64 +66,71 @@ function CompanyContactDetailSheet({ contact, onClose }) {
   const role = useSelector((state) => state.auth.role);
   const canManage = role === ROLE_PATHS.EMPLOYEE;
   const isInactiveContact = contact?.isActive === false;
-  const [currentCompany, setCurrentCompany] = useState(null);
-  const [currentAddress, setCurrentAddress] = useState(null);
-  const [selectedCompany, setSelectedCompany] = useState(null);
-  const [selectedAddressId, setSelectedAddressId] = useState("");
-  const [isChecking, setIsChecking] = useState(false);
-  const [checkError, setCheckError] = useState(null);
-  const [isSaving, setIsSaving] = useState(false);
-  const [saveError, setSaveError] = useState(null);
-  const [pickerOpen, setPickerOpen] = useState(false);
-  const [companySearch, setCompanySearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [companies, setCompanies] = useState([]);
-  const [companyPage, setCompanyPage] = useState(TABLE_DEFAULTS.PAGE);
-  const [companyPagination, setCompanyPagination] = useState({
-    page: TABLE_DEFAULTS.PAGE,
-    totalPages: 0,
-  });
-  const [isLoadingCompanies, setIsLoadingCompanies] = useState(false);
+  const {
+    currentCompany,
+    currentAddress,
+    selectedCompany,
+    selectedAddressId,
+    isChecking,
+    checkError,
+    isSaving,
+    saveError,
+    pickerOpen,
+    companySearch,
+    debouncedSearch,
+    companies,
+    companyPage,
+    companyPagination,
+    isLoadingCompanies,
+  } = useSelector(selectCompanyContactAssignment);
+  const changeAssignment = useCallback(
+    (changes) => dispatch(contactAssignmentChanged(changes)),
+    [dispatch],
+  );
+  const setSelectedCompany = (value) =>
+    changeAssignment({ selectedCompany: value });
+  const setSelectedAddressId = (value) =>
+    changeAssignment({ selectedAddressId: value });
+  const setIsSaving = (value) => changeAssignment({ isSaving: value });
+  const setSaveError = (value) => changeAssignment({ saveError: value });
+  const setPickerOpen = (value) => changeAssignment({ pickerOpen: value });
+  const setCompanySearch = (value) => changeAssignment({ companySearch: value });
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
-      setCompanyPage(TABLE_DEFAULTS.PAGE);
-      setDebouncedSearch(companySearch.trim());
+      changeAssignment({
+        companyPage: TABLE_DEFAULTS.PAGE,
+        debouncedSearch: companySearch.trim(),
+      });
     }, TABLE_DEFAULTS.SEARCH_DEBOUNCE_MS);
     return () => window.clearTimeout(timeoutId);
-  }, [companySearch]);
+  }, [changeAssignment, companySearch]);
 
   useEffect(() => {
     if (!contact || !canManage) return undefined;
-    setCheckError(null);
-    setCurrentCompany(null);
-    setCurrentAddress(null);
-    setSelectedCompany(null);
-    setSelectedAddressId("");
-    setSaveError(null);
+    dispatch(contactAssignmentReset());
 
     if (isInactiveContact) {
-      setIsChecking(false);
       return undefined;
     }
 
     const controller = new AbortController();
-    setIsChecking(true);
+    changeAssignment({ isChecking: true });
 
     const loadCurrentCompany = async () => {
       try {
         const response = await employeeCompanyApi.getCompanies(
           activeCompanyListParams({
             page: TABLE_DEFAULTS.PAGE,
-            limit: COMPANY_TABLE_DEFAULTS.LIMIT,
+            limit: COMPANY_TABLE_DEFAULTS.limit,
             search: contact.companyName,
-            sort: COMPANY_TABLE_DEFAULTS.SORT,
+            sort: COMPANY_TABLE_DEFAULTS.sort,
           }),
           { signal: controller.signal },
         );
         const result = fromCompanyListResponse(response, {
           page: TABLE_DEFAULTS.PAGE,
-          limit: COMPANY_TABLE_DEFAULTS.LIMIT,
+          limit: COMPANY_TABLE_DEFAULTS.limit,
         });
         const company =
           result.items.find((item) => item.id === contact.companyId) ??
@@ -127,22 +141,26 @@ function CompanyContactDetailSheet({ contact, onClose }) {
           );
 
         const address = sourceAddressFor(company, contact);
-        setCurrentCompany(company);
-        setCurrentAddress(address);
-        setSelectedCompany(company);
-        setSelectedAddressId(address?.id ?? "");
+        changeAssignment({
+          currentCompany: company,
+          currentAddress: address,
+          selectedCompany: company,
+          selectedAddressId: address?.id ?? "",
+        });
       } catch (error) {
         if (!controller.signal.aborted)
-          setCheckError(
-            error?.message ?? "Unable to verify the current company.",
-          );
+          changeAssignment({
+            checkError:
+              error?.message ?? "Unable to verify the current company.",
+          });
       } finally {
-        if (!controller.signal.aborted) setIsChecking(false);
+        if (!controller.signal.aborted)
+          changeAssignment({ isChecking: false });
       }
     };
     loadCurrentCompany();
     return () => controller.abort();
-  }, [canManage, contact, isInactiveContact]);
+  }, [canManage, changeAssignment, contact, dispatch, isInactiveContact]);
 
   const reassignmentBlockReason = useMemo(() => {
     if (isInactiveContact) return null;
@@ -163,46 +181,47 @@ function CompanyContactDetailSheet({ contact, onClose }) {
       return undefined;
     const controller = new AbortController();
     const isFirstPage = companyPage === TABLE_DEFAULTS.PAGE;
-    setIsLoadingCompanies(true);
+    changeAssignment({ isLoadingCompanies: true });
 
     const loadCompanies = async () => {
       try {
         const response = await employeeCompanyApi.getCompanies(
           activeCompanyListParams({
             page: companyPage,
-            limit: COMPANY_TABLE_DEFAULTS.LIMIT,
+            limit: COMPANY_TABLE_DEFAULTS.limit,
             search: debouncedSearch,
-            sort: COMPANY_TABLE_DEFAULTS.SORT,
+            sort: COMPANY_TABLE_DEFAULTS.sort,
           }),
           { signal: controller.signal },
         );
         const result = fromCompanyListResponse(response, {
           page: companyPage,
-          limit: COMPANY_TABLE_DEFAULTS.LIMIT,
+          limit: COMPANY_TABLE_DEFAULTS.limit,
         });
-        setCompanies((current) =>
-          isFirstPage
-            ? result.items
-            : [
-                ...new Map(
-                  [...current, ...result.items].map((item) => [item.id, item]),
-                ).values(),
-              ],
+        dispatch(
+          contactCompanyOptionsLoaded({
+            items: result.items,
+            pagination: result.pagination,
+            replace: isFirstPage,
+          }),
         );
-        setCompanyPagination(result.pagination);
       } catch {
-        if (!controller.signal.aborted && isFirstPage) setCompanies([]);
+        if (!controller.signal.aborted && isFirstPage)
+          changeAssignment({ companies: [] });
       } finally {
-        if (!controller.signal.aborted) setIsLoadingCompanies(false);
+        if (!controller.signal.aborted)
+          changeAssignment({ isLoadingCompanies: false });
       }
     };
     loadCompanies();
     return () => controller.abort();
   }, [
     canManage,
+    changeAssignment,
     companyPage,
     contact,
     debouncedSearch,
+    dispatch,
     pickerOpen,
     reassignmentBlockReason,
   ]);
@@ -399,7 +418,9 @@ function CompanyContactDetailSheet({ contact, onClose }) {
                                   size="sm"
                                   disabled={isLoadingCompanies}
                                   onClick={() =>
-                                    setCompanyPage((page) => page + 1)
+                                    changeAssignment({
+                                      companyPage: companyPage + 1,
+                                    })
                                   }
                                   className="w-full"
                                 >
