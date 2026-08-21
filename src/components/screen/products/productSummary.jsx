@@ -2,7 +2,7 @@ import { Boxes, PackageCheck, PackageX } from "lucide-react";
 import { useSelector } from "react-redux";
 
 import { selectProductSummary } from "@Redux/product/product.selector";
-import SummaryCard from "@screenComponent/employees/summaryCard";
+import SummaryCard from "@commonComponent/summaryCard";
 
 function ProductSummary() {
   const { totalProducts, activeProducts, inactiveProducts } = useSelector(

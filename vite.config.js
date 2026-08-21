@@ -16,6 +16,7 @@ export default defineConfig({
       "@Redux": path.resolve(__dirname, "./src/store"),
       "@Enums": path.resolve(__dirname, "./src/enums"),
       "@Forms": path.resolve(__dirname, "./src/forms"),
+      "@Tables": path.resolve(__dirname, "./src/tables"),
       "@Api": path.resolve(__dirname, "./src/api"),
     },
   },

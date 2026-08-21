@@ -12,7 +12,7 @@ import {
   roleLabel,
   statusLabel,
   statusVariant,
-} from "@screenComponent/employees/employee.utils";
+} from "@Tables/employee/employeeTable.utils";
 
 /**
  * The whole employee table in one place. Each entry says what to show, how to
@@ -25,7 +25,7 @@ import {
  * horizontally, which is the trade for having each filter sit directly under
  * the heading it belongs to.
  */
-export const EMPLOYEE_COLUMNS = [
+export const EMPLOYEE_TABLE_COLUMNS = [
   {
     key: "firstName",
     header: "First name",
@@ -155,4 +155,4 @@ export const EMPLOYEE_COLUMNS = [
   },
 ];
 
-export default EMPLOYEE_COLUMNS;
+export default EMPLOYEE_TABLE_COLUMNS;

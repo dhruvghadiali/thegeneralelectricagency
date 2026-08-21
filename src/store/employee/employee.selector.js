@@ -18,6 +18,8 @@ export const selectEmployeeDialogState = createSelector(
     createError,
     isUpdating,
     updateError,
+    isRestoring,
+    restoreError,
     isDeleting,
     deleteError,
   }) => ({
@@ -26,6 +28,8 @@ export const selectEmployeeDialogState = createSelector(
     createError,
     isUpdating,
     updateError,
+    isRestoring,
+    restoreError,
     isDeleting,
     deleteError,
   }),

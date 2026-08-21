@@ -75,6 +75,16 @@ export function createEmployeeMutationApi(rolePath) {
       return unwrapPayload(data);
     },
 
+    /** PATCH /:role/employees/:id/restore - restores an inactive employee. */
+    restoreEmployee: async (employeeId, payload) => {
+      const { data } = await apiClient.patch(
+        `${employeesPath(rolePath)}/${employeeId}/${ENDPOINTS.EMPLOYEE.RESTORE}`,
+        payload,
+      );
+
+      return unwrapPayload(data);
+    },
+
     /**
      * DELETE /:role/employees/:id.
      */

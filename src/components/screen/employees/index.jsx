@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
-import { UsersRound } from "lucide-react";
 
 import DataTable from "@commonComponent/dataTable";
 import {
   createEmployee,
   deleteEmployee,
+  restoreEmployee,
   updateEmployee,
 } from "@Redux/employee/employee.action";
 import { selectEmployeeDialogState } from "@Redux/employee/employee.selector";
@@ -12,28 +12,31 @@ import {
   employeeDialogClosed,
   employeeDialogOpened,
 } from "@Redux/employee/employee.slice";
-import { EMPLOYEE_COLUMNS } from "@screenComponent/employees/employee.columns";
-import { useEmployeeList } from "@screenComponent/employees/useEmployeeList";
+import {
+  EMPLOYEE_TABLE_CONFIG,
+  EmployeeTableActions,
+  useEmployeeTable,
+} from "@Tables/employee";
 
-import EmployeeHeader from "@screenComponent/employees/employeeHeader";
-import EmployeeSummary from "@screenComponent/employees/employeeSummary";
-import EmployeeDialogs from "@screenComponent/employees/employeeDialogs";
-import EmployeeActions from "@screenComponent/employees/employeeActions";
+import EmployeeHeader from "@screenComponent/employees/header";
+import EmployeeDialogs from "@screenComponent/employees/dialogs";
 
 /**
  * Searching, sorting, filtering and paging are all done by the backend and
  * driven by the shared table, so this screen is only what is specific to
- * employees: the header, the summary cards, the row actions and the dialogs.
+ * employees: the header controls, the row actions and the dialogs.
  */
 function Employees() {
   const dispatch = useDispatch();
-  const table = useEmployeeList();
+  const table = useEmployeeTable();
   const {
     dialog,
     isCreating,
     createError,
     isUpdating,
     updateError,
+    isRestoring,
+    restoreError,
     isDeleting,
     deleteError,
   } = useSelector(selectEmployeeDialogState);
@@ -70,15 +73,26 @@ function Employees() {
     }
   };
 
+  const restoreSelectedEmployee = async (values) => {
+    if (!dialog?.employee?.id) return;
+
+    try {
+      await dispatch(
+        restoreEmployee({ id: dialog.employee.id, values }),
+      ).unwrap();
+      table.refresh();
+    } catch {
+      // The store keeps the dialog open with a display-ready error.
+    }
+  };
+
   return (
     <main className="flex w-full flex-col gap-6 pb-2 roomy:h-full roomy:min-h-0">
       <EmployeeHeader onAddEmployee={() => openDialog("add")} />
-      <EmployeeSummary />
 
       <DataTable
-        columns={EMPLOYEE_COLUMNS}
+        {...EMPLOYEE_TABLE_CONFIG}
         rows={table.rows}
-        rowKey={(employee) => employee.id}
         search={table.search}
         sort={table.sort}
         columnFilters={table.columnFilters}
@@ -98,29 +112,26 @@ function Employees() {
         isLoading={table.isLoading}
         error={table.error}
         rowActions={(employee) => (
-          <EmployeeActions
+          <EmployeeTableActions
             employee={employee}
             onEdit={(row) => openDialog("edit", row)}
             onDelete={(row) => openDialog("delete", row)}
+            onRestore={(row) => openDialog("restore", row)}
           />
         )}
-        searchPlaceholder="Search by name, username, or email..."
-        rowNoun="employees"
-        emptyIcon={UsersRound}
-        emptyTitle="No employees found"
-        emptyDescription="Add your first employee to start building the directory."
-        filteredEmptyDescription="Try changing your search or filters."
-        fillHeight
       />
 
       <EmployeeDialogs
         dialog={dialog}
         isSaving={dialog?.type === "edit" ? isUpdating : isCreating}
         saveError={dialog?.type === "edit" ? updateError : createError}
+        isRestoring={isRestoring}
+        restoreError={restoreError}
         isDeleting={isDeleting}
         deleteError={deleteError}
         onClose={() => dispatch(employeeDialogClosed())}
         onSave={saveEmployee}
+        onRestore={restoreSelectedEmployee}
         onDelete={deleteSelectedEmployee}
       />
     </main>

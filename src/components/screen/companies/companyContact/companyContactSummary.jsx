@@ -2,7 +2,7 @@ import { CheckCircle2, ContactRound, XCircle } from "lucide-react";
 import { useSelector } from "react-redux";
 
 import { selectCompanyContactSummary } from "@Redux/companyContact/companyContact.selector";
-import SummaryCard from "@screenComponent/employees/summaryCard";
+import SummaryCard from "@commonComponent/summaryCard";
 
 function CompanyContactSummary() {
   const { totalContacts, activeContacts, inactiveContacts } = useSelector(

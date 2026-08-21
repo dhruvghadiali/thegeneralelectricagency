@@ -8,7 +8,7 @@ import {
 import { useSelector } from "react-redux";
 
 import { selectPurchaseSummary } from "@Redux/purchase/purchase.selector";
-import SummaryCard from "@screenComponent/employees/summaryCard";
+import SummaryCard from "@commonComponent/summaryCard";
 import { formatCurrency } from "@screenComponent/products/product.utils";
 
 function PurchaseOrderSummary() {

@@ -9,6 +9,7 @@ export const ENDPOINTS = {
   },
   EMPLOYEE: {
     BASE: "employees",
+    RESTORE: "restore",
   },
   COMPANY: {
     BASE: "companies",

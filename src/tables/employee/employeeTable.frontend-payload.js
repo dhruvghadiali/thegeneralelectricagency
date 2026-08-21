@@ -1,10 +1,10 @@
 import _ from "lodash";
 
 import {
-  EMPLOYEE_TABLE_DEFAULTS,
   ROLE_BY_USER_TYPE,
   TABLE_DEFAULTS,
 } from "@Enums";
+import { EMPLOYEE_TABLE_DEFAULTS } from "@Tables/employee/employeeTable.defaults";
 
 /**
  * Maps backend employee response fields to the frontend's camelCase model.
@@ -38,11 +38,17 @@ function pickFields(source, fieldPaths) {
   });
 }
 
+function upperFirstCharacter(value) {
+  return _.isString(value) ? _.upperFirst(value) : value;
+}
+
 function fromEmployeeResponse(response = {}) {
   const record = pickFields(response, RESPONSE_FIELDS);
 
   return {
     ...record,
+    firstName: upperFirstCharacter(record.firstName),
+    lastName: upperFirstCharacter(record.lastName),
     role: ROLE_BY_USER_TYPE[record.role] ?? record.role,
     // Only an explicit false marks an employee as inactive.
     isActive: _.isNil(record.isActive) ? true : Boolean(record.isActive),
@@ -53,7 +59,7 @@ function fromEmployeePaginationResponse(pagination = {}, requested = {}) {
   const record = pickFields(pagination, PAGINATION_FIELDS);
   const page = _.toNumber(record.page) || requested.page || TABLE_DEFAULTS.PAGE;
   const limit =
-    _.toNumber(record.limit) || requested.limit || EMPLOYEE_TABLE_DEFAULTS.LIMIT;
+    _.toNumber(record.limit) || requested.limit || EMPLOYEE_TABLE_DEFAULTS.limit;
   const total = _.toNumber(record.total) || 0;
 
   return {

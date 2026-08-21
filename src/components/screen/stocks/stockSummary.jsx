@@ -2,7 +2,7 @@ import { Boxes, IndianRupee, PackageCheck, TriangleAlert } from "lucide-react";
 import { useSelector } from "react-redux";
 
 import { selectStockSummary } from "@Redux/stock/stock.selector";
-import SummaryCard from "@screenComponent/employees/summaryCard";
+import SummaryCard from "@commonComponent/summaryCard";
 import { formatCurrency } from "@screenComponent/stocks/stock.utils";
 
 function StockSummary() {

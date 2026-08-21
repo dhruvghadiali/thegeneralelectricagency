@@ -4,8 +4,8 @@ import { Button } from "@shadcnComponent/button";
 import { Input } from "@shadcnComponent/input";
 import { Label } from "@shadcnComponent/label";
 import { DialogClose, DialogFooter } from "@shadcnComponent/dialog";
-import { employeeValidationSchema } from "@Forms/employee/employee.validation.schema";
-import { ASSIGNABLE_ROLE_OPTIONS } from "@screenComponent/employees/employee.utils";
+import { addEmployeeValidationSchema } from "@Forms/employee/addEmployee/addEmployee.validation.schema";
+import { ASSIGNABLE_ROLE_OPTIONS } from "@Forms/employee/addEmployee/addEmployee.options";
 import {
   Select,
   SelectContent,
@@ -31,11 +31,11 @@ function FormField({ id, label, error, children }) {
   );
 }
 
-function EmployeeForm({ employee, onSubmit, submitLabel, isSubmitting }) {
+function AddEmployeeForm({ employee, onSubmit, submitLabel, isSubmitting }) {
   const formik = useFormik({
     initialValues: employee,
-    validationSchema: employeeValidationSchema,
-    onSubmit: (values) => onSubmit(employeeValidationSchema.cast(values)),
+    validationSchema: addEmployeeValidationSchema,
+    onSubmit: (values) => onSubmit(addEmployeeValidationSchema.cast(values)),
   });
 
   const isBusy = isSubmitting || formik.isSubmitting;
@@ -162,4 +162,4 @@ function EmployeeForm({ employee, onSubmit, submitLabel, isSubmitting }) {
   );
 }
 
-export default EmployeeForm;
+export default AddEmployeeForm;

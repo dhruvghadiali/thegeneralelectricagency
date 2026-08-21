@@ -1,18 +1,9 @@
 import _ from "lodash";
 
-import { ROLE_OPTIONS, ROLE_PATHS } from "@Enums";
-
-export const ASSIGNABLE_ROLE_OPTIONS = ROLE_OPTIONS.filter(
-  (role) => role.value !== ROLE_PATHS.SUPER_ADMIN,
-);
+import { ROLE_OPTIONS } from "@Enums";
 
 export const EMPTY_FIELD_LABEL = "—";
 
-/**
- * The list endpoint does not guarantee every name part, so the pieces are
- * compacted rather than joined blindly - otherwise a missing surname leaves a
- * trailing space, and a record with neither renders as an empty cell.
- */
 export function fullName(employee) {
   const name = _.trim(
     _.compact([employee?.firstName, employee?.lastName]).join(" "),

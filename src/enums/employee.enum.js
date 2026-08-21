@@ -1,5 +1,4 @@
 import { ROLE_PATHS, USER_TYPE_BY_ROLE } from "./role.enum";
-import { SORT_ORDERS, TABLE_DEFAULTS } from "./dataTable.enum";
 
 /**
  * Filter options are keyed by the value the backend stores, not the value the
@@ -22,14 +21,3 @@ export const EMPLOYEE_STATUS_OPTIONS = Object.freeze([
   { value: "true", label: "Active" },
   { value: "false", label: "Inactive" },
 ]);
-
-export const EMPLOYEE_TABLE_DEFAULTS = Object.freeze({
-  LIMIT: TABLE_DEFAULTS.LIMIT,
-  /** Alphabetical employee order, with last name breaking first-name ties. */
-  SORT: Object.freeze([
-    Object.freeze({ field: "first_name", order: SORT_ORDERS.ASC }),
-    Object.freeze({ field: "last_name", order: SORT_ORDERS.ASC }),
-  ]),
-  /** Employee lists open with active records selected. */
-  FILTERS: Object.freeze({ is_active: "true" }),
-});

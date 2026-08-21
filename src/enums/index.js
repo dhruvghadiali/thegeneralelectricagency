@@ -20,7 +20,6 @@ export {
 
 export {
   EMPLOYEE_STATUS_OPTIONS,
-  EMPLOYEE_TABLE_DEFAULTS,
   EMPLOYEE_USER_TYPE_OPTIONS,
 } from "./employee.enum";
 

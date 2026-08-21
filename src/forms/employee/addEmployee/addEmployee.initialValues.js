@@ -1,4 +1,4 @@
-export const EMPLOYEE_INITIAL_VALUES = {
+export const ADD_EMPLOYEE_INITIAL_VALUES = {
   firstName: "",
   lastName: "",
   username: "",

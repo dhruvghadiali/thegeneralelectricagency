@@ -2,12 +2,13 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { extractErrorMessage } from "@Api/client.api";
 import { superAdminEmployeeApi } from "@Api";
+import { toEmployeeListParams } from "@Tables/employee/employeeTable.api-payload";
 import {
   toEmployeeCreatePayload,
-  toEmployeeListParams,
   toEmployeeUpdatePayload,
-} from "@Forms/employee/employee-api.payload";
-import { fromEmployeeListResponse } from "@Forms/employee/employee-frontend.payload";
+} from "@Forms/employee/addEmployee/addEmployee-api.payload";
+import { toEmployeeRestorePayload } from "@Forms/employee/restoreEmployee/restoreEmployee-api.payload";
+import { fromEmployeeListResponse } from "@Tables/employee/employeeTable.frontend-payload";
 
 /**
  * Reads its query straight from the store rather than taking arguments, so
@@ -16,8 +17,8 @@ import { fromEmployeeListResponse } from "@Forms/employee/employee-frontend.payl
  * fire with a stale closure.
  *
  * The column definitions come in as the argument instead: they say which
- * filter is a date and which is a number, and that belongs to the screen. It
- * keeps the store from importing a component module to find out.
+ * filter is a date and which is a number, and that belongs to the table
+ * module. It keeps the request logic reusable and driven by configuration.
  *
  * The `signal` is handed to axios: when the table aborts a request that a
  * newer keystroke, sort or page change has already replaced, the in-flight
@@ -79,6 +80,20 @@ export const updateEmployee = createAsyncThunk(
       return await superAdminEmployeeApi.updateEmployee(
         id,
         toEmployeeUpdatePayload(values),
+      );
+    } catch (error) {
+      return rejectWithValue(extractErrorMessage(error));
+    }
+  },
+);
+
+export const restoreEmployee = createAsyncThunk(
+  "employees/restoreEmployee",
+  async ({ id, values }, { rejectWithValue }) => {
+    try {
+      return await superAdminEmployeeApi.restoreEmployee(
+        id,
+        toEmployeeRestorePayload(values),
       );
     } catch (error) {
       return rejectWithValue(extractErrorMessage(error));

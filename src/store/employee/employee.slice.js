@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { EMPLOYEE_TABLE_DEFAULTS } from "@Enums";
+import { EMPLOYEE_TABLE_DEFAULTS } from "@Tables/employee/employeeTable.defaults";
 import {
   createEmployee,
   deleteEmployee,
   fetchEmployees,
+  restoreEmployee,
   updateEmployee,
 } from "@Redux/employee/employee.action";
 import {
@@ -24,9 +25,9 @@ import {
  */
 const initialState = {
   ...createTableState({
-    limit: EMPLOYEE_TABLE_DEFAULTS.LIMIT,
-    sort: EMPLOYEE_TABLE_DEFAULTS.SORT,
-    columnFilters: EMPLOYEE_TABLE_DEFAULTS.FILTERS,
+    limit: EMPLOYEE_TABLE_DEFAULTS.limit,
+    sort: EMPLOYEE_TABLE_DEFAULTS.sort,
+    columnFilters: EMPLOYEE_TABLE_DEFAULTS.filters,
   }),
   dialog: null,
   summary: {
@@ -38,6 +39,8 @@ const initialState = {
   createError: null,
   isUpdating: false,
   updateError: null,
+  isRestoring: false,
+  restoreError: null,
   isDeleting: false,
   deleteError: null,
 };
@@ -51,12 +54,14 @@ const employeeSlice = createSlice({
       state.dialog = action.payload;
       state.createError = null;
       state.updateError = null;
+      state.restoreError = null;
       state.deleteError = null;
     },
     employeeDialogClosed(state) {
       state.dialog = null;
       state.createError = null;
       state.updateError = null;
+      state.restoreError = null;
       state.deleteError = null;
     },
   },
@@ -78,8 +83,6 @@ const employeeSlice = createSlice({
         state.isCreating = false;
         state.createError = null;
         state.dialog = null;
-        // The list is server-paged, so the new row is picked up by the
-        // refetch the screen fires rather than being spliced in locally.
       })
       .addCase(createEmployee.rejected, (state, action) => {
         state.isCreating = false;
@@ -97,6 +100,19 @@ const employeeSlice = createSlice({
       .addCase(updateEmployee.rejected, (state, action) => {
         state.isUpdating = false;
         state.updateError = action.payload ?? "Unable to update employee.";
+      })
+      .addCase(restoreEmployee.pending, (state) => {
+        state.isRestoring = true;
+        state.restoreError = null;
+      })
+      .addCase(restoreEmployee.fulfilled, (state) => {
+        state.isRestoring = false;
+        state.restoreError = null;
+        state.dialog = null;
+      })
+      .addCase(restoreEmployee.rejected, (state, action) => {
+        state.isRestoring = false;
+        state.restoreError = action.payload ?? "Unable to restore employee.";
       })
       .addCase(deleteEmployee.pending, (state) => {
         state.isDeleting = true;
