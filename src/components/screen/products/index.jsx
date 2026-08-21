@@ -16,7 +16,6 @@ import { PRODUCT_COLUMNS } from "@screenComponent/products/product.columns";
 import ProductDialogs from "@screenComponent/products/productDialogs";
 import ProductHeader from "@screenComponent/products/productHeader";
 import ProductQuotationSheet from "@screenComponent/products/productQuotationSheet";
-import ProductSummary from "@screenComponent/products/productSummary";
 import { useProductList } from "@screenComponent/products/useProductList";
 
 function Products() {
@@ -82,7 +81,6 @@ function Products() {
         onViewQuotation={() => setQuotationProducts(selectedProducts)}
         onAddProduct={() => navigate("/products/new")}
       />
-      <ProductSummary />
 
       <DataTable
         columns={PRODUCT_COLUMNS}

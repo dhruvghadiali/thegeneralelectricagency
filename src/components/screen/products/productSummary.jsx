@@ -1,8 +1,33 @@
-import { Boxes, PackageCheck, PackageX } from "lucide-react";
+import { createElement } from "react";
+import { Boxes, ChevronDown, PackageCheck, PackageX } from "lucide-react";
 import { useSelector } from "react-redux";
 
 import { selectProductSummary } from "@Redux/product/product.selector";
-import SummaryCard from "@commonComponent/summaryCard";
+import { Button } from "@shadcnComponent/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@shadcnComponent/popover";
+import { Separator } from "@shadcnComponent/separator";
+
+function ProductSummaryItem({ icon, iconClassName, label, value }) {
+  return (
+    <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+      <span
+        className={`flex size-9 shrink-0 items-center justify-center rounded-md ${iconClassName}`}
+      >
+        {createElement(icon, { className: "size-4", "aria-hidden": true })}
+      </span>
+      <span className="min-w-0 flex-1 text-sm text-muted-foreground">
+        {label}
+      </span>
+      <span className="text-lg font-semibold tabular-nums text-foreground">
+        {value}
+      </span>
+    </div>
+  );
+}
 
 function ProductSummary() {
   const { totalProducts, activeProducts, inactiveProducts } = useSelector(
@@ -10,26 +35,55 @@ function ProductSummary() {
   );
 
   return (
-    <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <SummaryCard
-        icon={Boxes}
-        iconClassName="bg-primary/10 text-primary"
-        value={totalProducts}
-        label="Total products"
-      />
-      <SummaryCard
-        icon={PackageCheck}
-        iconClassName="bg-emerald-500/10 text-emerald-600"
-        value={activeProducts}
-        label="Active products"
-      />
-      <SummaryCard
-        icon={PackageX}
-        iconClassName="bg-destructive/10 text-destructive"
-        value={inactiveProducts}
-        label="Inactive products"
-      />
-    </section>
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline" className="w-full justify-between sm:w-auto">
+          <span className="flex items-center gap-2">
+            <Boxes className="size-4 text-primary" />
+            Product summary
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-semibold tabular-nums text-primary">
+              {totalProducts}
+            </span>
+            <ChevronDown className="size-3.5 text-muted-foreground" />
+          </span>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="end"
+        sideOffset={8}
+        className="w-[min(22rem,calc(100vw-2rem))] p-0"
+      >
+        <div className="space-y-1 p-4">
+          <h2 className="text-sm font-semibold">Product summary</h2>
+          <p className="text-xs text-muted-foreground">
+            Catalogue totals from the latest product list.
+          </p>
+        </div>
+        <Separator />
+        <div className="grid gap-2 p-4">
+          <ProductSummaryItem
+            icon={Boxes}
+            iconClassName="bg-primary/10 text-primary"
+            label="Total products"
+            value={totalProducts}
+          />
+          <ProductSummaryItem
+            icon={PackageCheck}
+            iconClassName="bg-emerald-500/10 text-emerald-600"
+            label="Active products"
+            value={activeProducts}
+          />
+          <ProductSummaryItem
+            icon={PackageX}
+            iconClassName="bg-destructive/10 text-destructive"
+            label="Inactive products"
+            value={inactiveProducts}
+          />
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }
 
