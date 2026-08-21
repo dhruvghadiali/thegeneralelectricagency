@@ -9,7 +9,6 @@ import {
 } from "@Tables/companyContact";
 
 import CompanyContactDetailSheet from "@screenComponent/companies/companyContact/sheet/companyContactDetailSheet";
-import CompanyContactSummary from "@screenComponent/companies/companyContact/companyContactSummary";
 
 function CompanyContactDirectory() {
   const dispatch = useDispatch();
@@ -17,8 +16,6 @@ function CompanyContactDirectory() {
 
   return (
     <>
-      <CompanyContactSummary />
-
       <DataTable
         {...COMPANY_CONTACT_TABLE_CONFIG}
         rows={table.rows}

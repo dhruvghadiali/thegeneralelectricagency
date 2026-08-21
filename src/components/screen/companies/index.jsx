@@ -7,7 +7,8 @@ import { ROLE_PATHS } from "@Enums";
 import { selectCompanyDirectoryView } from "@Redux/company/company.selector";
 import { companyDirectoryViewChanged } from "@Redux/company/company.slice";
 
-import CompanyContactDirectory from "@screenComponent/companies/companyContact/companyContactDirectory";
+import CompanyContactDirectory from "@screenComponent/companies/companyContact/dialog/companyContactDirectory";
+import CompanyContactSummaryPopover from "@screenComponent/companies/companyContact/header/companyContactSummaryPopover";
 import CompanyDirectory from "@screenComponent/companies/company/companyDirectory";
 import CompanySummaryPopover from "@screenComponent/companies/company/header/companySummaryPopover";
 
@@ -70,6 +71,8 @@ function Companies() {
           {directoryView === DIRECTORY_VIEWS.COMPANIES && (
             <CompanySummaryPopover />
           )}
+          {directoryView === DIRECTORY_VIEWS.CONTACTS &&
+            canViewContactDirectory && <CompanyContactSummaryPopover />}
           {canAddCompany && (
             <Button
               onClick={() => navigate("/companies/new")}
