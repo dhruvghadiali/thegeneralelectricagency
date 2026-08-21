@@ -1,23 +1,18 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import DataTable from "@commonComponent/dataTable";
-import {
-  contactDetailsClosed,
-  contactDetailsOpened,
-} from "@Redux/companyContact/companyContact.slice";
-import { selectSelectedCompanyContact } from "@Redux/companyContact/companyContact.selector";
+import { contactDetailsOpened } from "@Redux/companyContact/companyContact.slice";
 import {
   COMPANY_CONTACT_TABLE_CONFIG,
   CompanyContactTableActions,
   useCompanyContactTable,
 } from "@Tables/companyContact";
 
-import CompanyContactDetailSheet from "@screenComponent/companies/companyContact/companyContactDetailSheet";
+import CompanyContactDetailSheet from "@screenComponent/companies/companyContact/sheet/companyContactDetailSheet";
 import CompanyContactSummary from "@screenComponent/companies/companyContact/companyContactSummary";
 
 function CompanyContactDirectory() {
   const dispatch = useDispatch();
-  const selectedContact = useSelector(selectSelectedCompanyContact);
   const table = useCompanyContactTable();
 
   return (
@@ -53,10 +48,7 @@ function CompanyContactDirectory() {
         )}
       />
 
-      <CompanyContactDetailSheet
-        contact={selectedContact}
-        onClose={() => dispatch(contactDetailsClosed())}
-      />
+      <CompanyContactDetailSheet />
     </>
   );
 }

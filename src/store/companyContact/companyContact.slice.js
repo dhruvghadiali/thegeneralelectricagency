@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { fetchCompanyContacts } from "@Redux/companyContact/companyContact.action";
+import { COMPANY_ASSIGNMENT_INITIAL_VALUES } from "@Forms/company/companyAssignment/companyAssignment.initialValues";
 import {
   createTableState,
   tableFetchCases,
@@ -10,14 +11,15 @@ import { COMPANY_CONTACT_TABLE_DEFAULTS } from "@Tables/companyContact/companyCo
 import { TABLE_DEFAULTS } from "@Enums";
 
 const COMPANY_CONTACT_ASSIGNMENT_INITIAL_STATE = {
+  ...COMPANY_ASSIGNMENT_INITIAL_VALUES,
   currentCompany: null,
   currentAddress: null,
-  selectedCompany: null,
-  selectedAddressId: "",
+  selectedCompanyOption: null,
   isChecking: false,
   checkError: null,
   isSaving: false,
   saveError: null,
+  fieldErrors: {},
   pickerOpen: false,
   companySearch: "",
   debouncedSearch: "",
