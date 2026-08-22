@@ -30,6 +30,15 @@ export const selectCompanyDeleteState = createSelector(
   }),
 );
 
+export const selectCompanyRestoreState = createSelector(
+  selectCompanyState,
+  ({ companyToRestore, isRestoring, restoreError }) => ({
+    companyToRestore,
+    isRestoring,
+    restoreError,
+  }),
+);
+
 export const selectCompanyDetailsFormState = createSelector(
   selectCompanyState,
   (state) => state.companyDetailsForm,

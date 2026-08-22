@@ -126,6 +126,15 @@ export function createCompanyMutationApi(rolePath) {
       return unwrapPayload(data);
     },
 
+    restoreCompany: async (companyId, payload) => {
+      const { data } = await apiClient.patch(
+        `${companiesPath(rolePath)}/${companyId}/${ENDPOINTS.COMPANY.RESTORE}`,
+        payload,
+      );
+
+      return unwrapPayload(data);
+    },
+
     deleteCompany: async (companyId) => {
       const { data } = await apiClient.delete(
         `${companiesPath(rolePath)}/${companyId}`,

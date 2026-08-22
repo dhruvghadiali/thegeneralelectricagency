@@ -12,6 +12,7 @@ import {
   toCompanyUpdatePayload,
 } from "@Forms/company/companyDetails/companyDetails-api.payload";
 import { fromCompanyCreateError } from "@Forms/company/companyDetails/companyDetails-frontend.payload";
+import { toCompanyRestorePayload } from "@Forms/company/restoreCompany/restoreCompany-api.payload";
 import { toCompanyListParams } from "@Tables/company/companyTable.api-payload";
 import { fromCompanyListResponse } from "@Tables/company/companyTable.frontend-payload";
 
@@ -86,6 +87,21 @@ export const deleteCompany = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       await employeeCompanyApi.deleteCompany(id);
+      return id;
+    } catch (error) {
+      return rejectWithValue(extractErrorMessage(error));
+    }
+  },
+);
+
+export const restoreCompany = createAsyncThunk(
+  "companies/restoreCompany",
+  async ({ id, values }, { rejectWithValue }) => {
+    try {
+      await employeeCompanyApi.restoreCompany(
+        id,
+        toCompanyRestorePayload(values),
+      );
       return id;
     } catch (error) {
       return rejectWithValue(extractErrorMessage(error));

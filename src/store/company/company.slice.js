@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   deleteCompany,
   fetchCompanies,
+  restoreCompany,
 } from "@Redux/company/company.action";
 import {
   createTableState,
@@ -33,6 +34,9 @@ const initialState = {
   companyToDelete: null,
   isDeleting: false,
   deleteError: null,
+  companyToRestore: null,
+  isRestoring: false,
+  restoreError: null,
   directoryView: "companies",
   companyDetailsForm: { ...COMPANY_DETAILS_FORM_INITIAL_STATE },
   summary: {
@@ -64,6 +68,14 @@ const companySlice = createSlice({
       state.companyToDelete = null;
       state.deleteError = null;
     },
+    companyRestoreOpened(state, action) {
+      state.companyToRestore = action.payload;
+      state.restoreError = null;
+    },
+    companyRestoreClosed(state) {
+      state.companyToRestore = null;
+      state.restoreError = null;
+    },
     companyDetailsFormChanged(state, action) {
       Object.assign(state.companyDetailsForm, action.payload);
     },
@@ -93,6 +105,19 @@ const companySlice = createSlice({
       .addCase(deleteCompany.rejected, (state, action) => {
         state.isDeleting = false;
         state.deleteError = action.payload ?? "Unable to delete company.";
+      })
+      .addCase(restoreCompany.pending, (state) => {
+        state.isRestoring = true;
+        state.restoreError = null;
+      })
+      .addCase(restoreCompany.fulfilled, (state) => {
+        state.isRestoring = false;
+        state.restoreError = null;
+        state.companyToRestore = null;
+      })
+      .addCase(restoreCompany.rejected, (state, action) => {
+        state.isRestoring = false;
+        state.restoreError = action.payload ?? "Unable to restore company.";
       });
   },
 });
@@ -101,6 +126,8 @@ export const {
   columnFilterChanged,
   companyDeleteClosed,
   companyDeleteOpened,
+  companyRestoreClosed,
+  companyRestoreOpened,
   companyDirectoryViewChanged,
   companyDetailsClosed,
   companyDetailsFormChanged,

@@ -3,14 +3,17 @@ import { useNavigate } from "react-router-dom";
 
 import DataTable from "@commonComponent/dataTable";
 import { ROLE_PATHS } from "@Enums";
-import { deleteCompany } from "@Redux/company/company.action";
+import { deleteCompany, restoreCompany } from "@Redux/company/company.action";
 import {
   companyDeleteClosed,
   companyDeleteOpened,
   companyDetailsOpened,
+  companyRestoreClosed,
+  companyRestoreOpened,
 } from "@Redux/company/company.slice";
 import {
   selectCompanyDeleteState,
+  selectCompanyRestoreState,
 } from "@Redux/company/company.selector";
 import {
   COMPANY_TABLE_CONFIG,
@@ -19,6 +22,7 @@ import {
 } from "@Tables/company";
 
 import CompanyDeleteDialog from "@screenComponent/companies/company/dialogs/companyDeleteDialog";
+import CompanyRestoreDialog from "@screenComponent/companies/company/dialogs/companyRestoreDialog";
 import CompanyDetailSheet from "@screenComponent/companies/company/sheet/companyDetailSheet";
 
 function CompanyDirectory() {
@@ -28,6 +32,9 @@ function CompanyDirectory() {
   const { companyToDelete, isDeleting, deleteError } = useSelector(
     selectCompanyDeleteState,
   );
+  const { companyToRestore, isRestoring, restoreError } = useSelector(
+    selectCompanyRestoreState,
+  );
   const role = useSelector((state) => state.auth.role);
   const canManageCompany = role === ROLE_PATHS.EMPLOYEE;
 
@@ -36,6 +43,19 @@ function CompanyDirectory() {
 
     try {
       await dispatch(deleteCompany(companyToDelete.id)).unwrap();
+      table.refresh();
+    } catch {
+      // The rejected thunk stores the display-ready error for the dialog.
+    }
+  };
+
+  const handleRestore = async (values) => {
+    if (!companyToRestore?.id) return;
+
+    try {
+      await dispatch(
+        restoreCompany({ id: companyToRestore.id, values }),
+      ).unwrap();
       table.refresh();
     } catch {
       // The rejected thunk stores the display-ready error for the dialog.
@@ -76,6 +96,7 @@ function CompanyDirectory() {
               })
             }
             onDelete={(row) => dispatch(companyDeleteOpened(row))}
+            onRestore={(row) => dispatch(companyRestoreOpened(row))}
           />
         )}
       />
@@ -88,6 +109,14 @@ function CompanyDirectory() {
         error={deleteError}
         onClose={() => dispatch(companyDeleteClosed())}
         onDelete={handleDelete}
+      />
+
+      <CompanyRestoreDialog
+        company={companyToRestore}
+        isRestoring={isRestoring}
+        error={restoreError}
+        onClose={() => dispatch(companyRestoreClosed())}
+        onRestore={handleRestore}
       />
     </>
   );
