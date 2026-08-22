@@ -1,7 +1,8 @@
 import { FileText, Plus } from "lucide-react";
 
 import { Button } from "@shadcnComponent/button";
-import ProductSummary from "@screenComponent/products/productSummary";
+
+import ProductSummary from "@screenComponent/products/header/productSummary";
 
 function ProductHeader({
   canManage,

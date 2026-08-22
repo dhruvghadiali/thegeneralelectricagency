@@ -32,7 +32,7 @@ function CompanyPicker({
             role="combobox"
             aria-expanded={open}
             aria-invalid={Boolean(error)}
-            className="w-full min-w-0 max-w-full justify-between overflow-hidden bg-background font-normal"
+            className="w-full min-w-0 max-w-full justify-between overflow-hidden bg-background font-normal aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40"
           >
             <span className="min-w-0 flex-1 truncate text-left">
               {selectedCompany?.name ?? "Select company"}

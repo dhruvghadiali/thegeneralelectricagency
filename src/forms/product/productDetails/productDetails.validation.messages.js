@@ -12,7 +12,7 @@ import {
   PRODUCT_PRICE_DECIMAL_PLACES,
   PRODUCT_PURCHASE_PRICE_MAX,
   PRODUCT_SALE_PRICE_MAX,
-} from "@Forms/product/product.validation.constants";
+} from "@Forms/product/productDetails/productDetails.validation.constants";
 
 export const PRODUCT_VALIDATION_MESSAGES = Object.freeze({
   PRODUCT_CODE_REQUIRED: "Product code is required",

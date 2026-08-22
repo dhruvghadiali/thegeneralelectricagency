@@ -55,6 +55,7 @@ function CompanyProfileSections({ form }) {
               <SelectTrigger
                 id="companyType"
                 aria-invalid={Boolean(errorFor("companyType"))}
+                className="aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40"
               >
                 <SelectValue placeholder="Select company type" />
               </SelectTrigger>

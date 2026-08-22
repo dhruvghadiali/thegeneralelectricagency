@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { PRODUCT_TABLE_DEFAULTS } from "@Enums";
+import { PRODUCT_TABLE_DEFAULTS } from "@Tables/product";
 import {
   createProduct,
   deleteProduct,
@@ -15,9 +15,9 @@ import {
 
 const initialState = {
   ...createTableState({
-    limit: PRODUCT_TABLE_DEFAULTS.LIMIT,
-    sort: PRODUCT_TABLE_DEFAULTS.SORT,
-    columnFilters: PRODUCT_TABLE_DEFAULTS.FILTERS,
+    limit: PRODUCT_TABLE_DEFAULTS.limit,
+    sort: PRODUCT_TABLE_DEFAULTS.sort,
+    columnFilters: PRODUCT_TABLE_DEFAULTS.filters,
   }),
   dialog: null,
   summary: {

@@ -1,6 +1,6 @@
 import { AGENCIES } from "@Enums";
 import { Badge } from "@shadcnComponent/badge";
-import { agencyLabel } from "@screenComponent/products/product.utils";
+import { agencyLabel } from "@Tables/product/productTable.utils";
 
 const PRODUCT_AGENCY_BADGE_CLASSES = Object.freeze({
   [AGENCIES.CG]:

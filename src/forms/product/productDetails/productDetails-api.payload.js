@@ -1,8 +1,5 @@
 import _ from "lodash";
 
-import { PRODUCT_TABLE_DEFAULTS, TABLE_DEFAULTS } from "@Enums";
-import { buildListQueryParams } from "@/utils/listQuery.util";
-
 function toProductPayload(values = {}) {
   const nullableNumber = (value) => {
     if (value === "" || value === null || value === undefined) return null;
@@ -42,15 +39,4 @@ export function toProductCreatePayload(values = {}) {
 
 export function toProductUpdatePayload(values = {}) {
   return toProductPayload(values);
-}
-
-export function toProductListParams({
-  columns = [],
-  page = TABLE_DEFAULTS.PAGE,
-  limit = PRODUCT_TABLE_DEFAULTS.LIMIT,
-  search = "",
-  sort = [],
-  filters = {},
-} = {}) {
-  return buildListQueryParams({ columns, page, limit, search, sort, filters });
 }

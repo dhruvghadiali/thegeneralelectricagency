@@ -26,7 +26,7 @@ import {
   formatCurrency,
   formatNumber,
   formatPercentage,
-} from "@screenComponent/products/product.utils";
+} from "@Tables/product/productTable.utils";
 
 const STATUS_VARIANTS = {
   [PAYMENT_STATUSES.PAID]: "success",

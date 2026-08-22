@@ -1,9 +1,7 @@
 import { useMemo, useState } from "react";
-import { Boxes } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
-import DataTable from "@commonComponent/dataTable";
 import { ROLE_PATHS } from "@Enums";
 import { deleteProduct } from "@Redux/product/product.action";
 import { selectProductDialogState } from "@Redux/product/product.selector";
@@ -11,28 +9,36 @@ import {
   productDialogClosed,
   productDialogOpened,
 } from "@Redux/product/product.slice";
-import ProductActions from "@screenComponent/products/productActions";
-import { PRODUCT_COLUMNS } from "@screenComponent/products/product.columns";
-import ProductDialogs from "@screenComponent/products/productDialogs";
-import ProductHeader from "@screenComponent/products/productHeader";
-import ProductQuotationSheet from "@screenComponent/products/productQuotationSheet";
-import { useProductList } from "@screenComponent/products/useProductList";
+import {
+  PRODUCT_TABLE_CONFIG,
+  ProductTableActions,
+  useProductTable,
+} from "@Tables/product";
+
+import DataTable from "@commonComponent/dataTable";
+import ProductHeader from "@screenComponent/products/header/productHeader";
+import ProductDialogs from "@screenComponent/products/dialogs/productDialogs";
+import ProductQuotationSheet from "@screenComponent/products/quotation/productQuotationSheet";
 
 function Products() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const role = useSelector((state) => state.auth.role);
-  const table = useProductList();
+  const table = useProductTable();
   const canManage = role === ROLE_PATHS.EMPLOYEE;
+
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [quotationProducts, setQuotationProducts] = useState([]);
   const { dialog, isDeleting, deleteError } = useSelector(
     selectProductDialogState,
   );
+
   const selectedProductIds = useMemo(
     () => new Set(selectedProducts.map((product) => product.id)),
     [selectedProducts],
   );
+  
   const displayedProducts = useMemo(() => {
     if (selectedProducts.length === 0) return table.rows;
 
@@ -83,7 +89,7 @@ function Products() {
       />
 
       <DataTable
-        columns={PRODUCT_COLUMNS}
+        {...PRODUCT_TABLE_CONFIG}
         rows={displayedProducts}
         rowKey={(product) => product.id}
         selectedRowKeys={[...selectedProductIds]}
@@ -110,7 +116,7 @@ function Products() {
         rowActions={
           canManage
             ? (product) => (
-                <ProductActions
+                <ProductTableActions
                   product={product}
                   onEdit={(row) =>
                     navigate(`/products/${row.id}/edit`, {
@@ -124,17 +130,11 @@ function Products() {
               )
             : undefined
         }
-        searchPlaceholder="Search by product code, name, model, or agency..."
-        rowNoun="products"
-        emptyIcon={Boxes}
-        emptyTitle="No products found"
         emptyDescription={
           canManage
             ? "Add your first product to start building the catalogue."
             : "Products will appear here when an employee adds them."
         }
-        filteredEmptyDescription="Try changing your search or filters."
-        fillHeight
       />
 
       {canManage && (

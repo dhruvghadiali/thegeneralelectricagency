@@ -9,7 +9,7 @@ import {
   formatCurrency,
   formatNumber,
   formatPercentage,
-} from "@screenComponent/products/product.utils";
+} from "@Tables/product/productTable.utils";
 
 const PAYMENT_STATUS_VARIANTS = {
   [PAYMENT_STATUSES.PAID]: "success",

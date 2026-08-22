@@ -200,6 +200,7 @@ function CompanyContactCard({
               aria-invalid={Boolean(
                 errorFor(`${contactPath}.contactPersonPosition`),
               )}
+              className="aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40"
             >
               <SelectValue placeholder="Select position" />
             </SelectTrigger>

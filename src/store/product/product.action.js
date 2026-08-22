@@ -1,14 +1,14 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { employeeProductApi, superAdminProductApi } from "@Api";
-import { extractErrorMessage } from "@Api/client.api";
 import { ROLE_PATHS } from "@Enums";
+import { extractErrorMessage } from "@Api/client.api";
+import { employeeProductApi, superAdminProductApi } from "@Api";
+import { toProductListParams } from "@Tables/product/productTable.api-payload";
+import { fromProductListResponse } from "@Tables/product/productTable.frontend-payload";
 import {
   toProductCreatePayload,
-  toProductListParams,
   toProductUpdatePayload,
-} from "@Forms/product/product-api.payload";
-import { fromProductListResponse } from "@Forms/product/product-frontend.payload";
+} from "@Forms/product/productDetails/productDetails-api.payload";
 
 const productListApiByRole = {
   [ROLE_PATHS.EMPLOYEE]: employeeProductApi,

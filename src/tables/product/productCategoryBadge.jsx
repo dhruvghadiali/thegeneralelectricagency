@@ -1,6 +1,6 @@
 import { PRODUCT_CATEGORIES } from "@Enums";
 import { Badge } from "@shadcnComponent/badge";
-import { productCategoryLabel } from "@screenComponent/products/product.utils";
+import { productCategoryLabel } from "@Tables/product/productTable.utils";
 
 const PRODUCT_CATEGORY_BADGE_CLASSES = Object.freeze({
   [PRODUCT_CATEGORIES.MOTOR]:

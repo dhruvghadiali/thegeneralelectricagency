@@ -1,33 +1,17 @@
 import _ from "lodash";
 
-import { PRODUCT_TABLE_DEFAULTS, TABLE_DEFAULTS } from "@Enums";
+import { TABLE_DEFAULTS } from "@Enums";
+import { PRODUCT_TABLE_DEFAULTS } from "@Tables/product/productTable.defaults";
 
-const discountRangeValue = (value, boundary) => {
-  if (value && typeof value === "object") return value[boundary] ?? "";
-  return value ?? "";
-};
+function discountRange(value) {
+  if (_.isObject(value)) {
+    return { min: value.min ?? null, max: value.max ?? null };
+  }
 
-export function toProductFormValues(product = {}) {
-  return {
-    ...product,
-    agencyName: product.agencyName ?? "",
-    purchasePrice: product.purchasePrice ?? "",
-    salePrice: product.salePrice ?? "",
-    gstPercentage: product.gstPercentage ?? "",
-    discountAmountMin: discountRangeValue(product.discountAmount, "min"),
-    discountAmountMax: discountRangeValue(product.discountAmount, "max"),
-    discountPercentageMin: discountRangeValue(
-      product.discountPercentage,
-      "min",
-    ),
-    discountPercentageMax: discountRangeValue(
-      product.discountPercentage,
-      "max",
-    ),
-  };
+  return { min: value ?? null, max: value ?? null };
 }
 
-function fromProductResponse(product = {}) {
+export function fromProductResponse(product = {}) {
   const agencySource = product.agency ?? product.company ?? "";
   const agency = _.isObject(agencySource)
     ? agencySource._id ?? agencySource.id ?? ""
@@ -38,23 +22,6 @@ function fromProductResponse(product = {}) {
     (_.isObject(agencySource)
       ? agencySource.company_name ?? agencySource.name ?? ""
       : agencySource);
-  const discountRange = (value) => {
-    if (_.isObject(value)) {
-      return {
-        min: value.min ?? null,
-        max: value.max ?? null,
-      };
-    }
-
-    return {
-      min: value ?? null,
-      max: value ?? null,
-    };
-  };
-  const discountAmount =
-    product.discount_amount ?? product.discountAmount ?? null;
-  const discountPercentage =
-    product.discount_percentage ?? product.discountPercentage ?? null;
 
   return {
     id: product._id ?? product.id ?? null,
@@ -68,8 +35,12 @@ function fromProductResponse(product = {}) {
     purchasePrice: product.purchase_price ?? product.purchasePrice ?? null,
     salePrice: product.sale_price ?? product.salePrice ?? null,
     gstPercentage: product.gst_percentage ?? product.gstPercentage ?? null,
-    discountAmount: discountRange(discountAmount),
-    discountPercentage: discountRange(discountPercentage),
+    discountAmount: discountRange(
+      product.discount_amount ?? product.discountAmount ?? null,
+    ),
+    discountPercentage: discountRange(
+      product.discount_percentage ?? product.discountPercentage ?? null,
+    ),
     isActive: _.isNil(product.is_active ?? product.isActive)
       ? true
       : Boolean(product.is_active ?? product.isActive),
@@ -88,14 +59,19 @@ function fromProductSummaryResponse(summary = {}) {
 
 export function fromProductListResponse(response = {}, requested = {}) {
   const pagination = response.pagination ?? {};
-  const page = Number(pagination.page) || requested.page || TABLE_DEFAULTS.PAGE;
+  const page =
+    Number(pagination.page) || requested.page || TABLE_DEFAULTS.PAGE;
   const limit =
-    Number(pagination.limit) || requested.limit || PRODUCT_TABLE_DEFAULTS.LIMIT;
+    Number(pagination.limit) ||
+    requested.limit ||
+    PRODUCT_TABLE_DEFAULTS.limit;
   const total = Number(pagination.total) || 0;
-  const products = response.products ?? response.items ?? [];
 
   return {
-    items: _.map(products, fromProductResponse),
+    items: _.map(
+      response.products ?? response.items ?? [],
+      fromProductResponse,
+    ),
     summary: fromProductSummaryResponse(response.summary ?? response),
     pagination: {
       page,

@@ -1,17 +1,16 @@
 import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Navigate,
   useLocation,
   useNavigate,
   useParams,
 } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 
-import FormErrorAlert from "@commonComponent/alert/formErrorAlert";
-import { PRODUCT_INITIAL_VALUES } from "@Forms/product/product.initialValues";
-import { createProduct, updateProduct } from "@Redux/product/product.action";
-import { selectProductDialogState } from "@Redux/product/product.selector";
 import { productDialogClosed } from "@Redux/product/product.slice";
+import { selectProductDialogState } from "@Redux/product/product.selector";
+import { createProduct, updateProduct } from "@Redux/product/product.action";
+import { PRODUCT_INITIAL_VALUES } from "@Forms/product/productDetails/productDetails.initialValues";
 import {
   Card,
   CardContent,
@@ -19,17 +18,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@shadcnComponent/card";
-import ProductForm from "@screenComponent/products/productForm";
 
-function ProductDetailsForm() {
+import FormErrorAlert from "@commonComponent/alert/formErrorAlert";
+import ProductDetailsForm from "@Forms/product/productDetails/productDetailsForm";
+
+function ProductDetailsScreen() {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
+
   const { productId } = useParams();
-  const products = useSelector((state) => state.products.items);
   const { isCreating, createError, isUpdating, updateError } = useSelector(
     selectProductDialogState,
   );
+  const products = useSelector((state) => state.products.items);
+
   const isEdit = Boolean(productId);
   const product = isEdit
     ? (location.state?.product ??
@@ -86,7 +89,7 @@ function ProductDetailsForm() {
         </CardHeader>
         <CardContent>
           <FormErrorAlert message={isEdit ? updateError : createError} />
-          <ProductForm
+          <ProductDetailsForm
             key={`${isEdit ? "edit" : "add"}-${product.id ?? "new"}`}
             product={product}
             onSubmit={saveProduct}
@@ -100,4 +103,4 @@ function ProductDetailsForm() {
   );
 }
 
-export default ProductDetailsForm;
+export default ProductDetailsScreen;

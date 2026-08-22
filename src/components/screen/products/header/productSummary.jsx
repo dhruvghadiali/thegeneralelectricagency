@@ -1,38 +1,20 @@
-import { createElement } from "react";
-import { Boxes, ChevronDown, PackageCheck, PackageX } from "lucide-react";
 import { useSelector } from "react-redux";
+import { Boxes, ChevronDown, PackageCheck, PackageX } from "lucide-react";
 
-import { selectProductSummary } from "@Redux/product/product.selector";
 import { Button } from "@shadcnComponent/button";
+import { Separator } from "@shadcnComponent/separator";
+import { selectProductSummary } from "@Redux/product/product.selector";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@shadcnComponent/popover";
-import { Separator } from "@shadcnComponent/separator";
 
-function ProductSummaryItem({ icon, iconClassName, label, value }) {
-  return (
-    <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
-      <span
-        className={`flex size-9 shrink-0 items-center justify-center rounded-md ${iconClassName}`}
-      >
-        {createElement(icon, { className: "size-4", "aria-hidden": true })}
-      </span>
-      <span className="min-w-0 flex-1 text-sm text-muted-foreground">
-        {label}
-      </span>
-      <span className="text-lg font-semibold tabular-nums text-foreground">
-        {value}
-      </span>
-    </div>
-  );
-}
+import ProductSummaryItem from "@screenComponent/products/header/productSummaryItem";
 
 function ProductSummary() {
-  const { totalProducts, activeProducts, inactiveProducts } = useSelector(
-    selectProductSummary,
-  );
+  const { totalProducts, activeProducts, inactiveProducts } =
+    useSelector(selectProductSummary);
 
   return (
     <Popover>

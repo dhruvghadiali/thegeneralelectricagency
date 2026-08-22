@@ -9,13 +9,6 @@ export const productCategoryLabel = (value) =>
 
 export const agencyLabel = (value) => optionLabel(AGENCY_OPTIONS, value);
 
-export function generateProductCode() {
-  const timestamp = Date.now().toString(36).toUpperCase();
-  const random = Math.random().toString(36).slice(2, 7).toUpperCase();
-
-  return `PRD-${timestamp}-${random}`;
-}
-
 const currencyFormatter = new Intl.NumberFormat("en-IN", {
   style: "currency",
   currency: "INR",

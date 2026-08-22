@@ -5,17 +5,17 @@ import {
   PRODUCT_STATUS_OPTIONS,
 } from "@Enums";
 import { Badge } from "@shadcnComponent/badge";
-import ProductCategoryBadge from "@screenComponent/products/productCategoryBadge";
+import ProductCategoryBadge from "@Tables/product/productCategoryBadge";
 import {
   formatCurrency,
   formatNumber,
   formatPercentage,
   formatRange,
-} from "@screenComponent/products/product.utils";
+} from "@Tables/product/productTable.utils";
 
 const optionalValue = (value) => value || "—";
 
-export const PRODUCT_COLUMNS = [
+export const PRODUCT_TABLE_COLUMNS = [
   {
     key: "productCode",
     header: "Product code",
@@ -39,6 +39,19 @@ export const PRODUCT_COLUMNS = [
     className: "min-w-56 font-medium",
     mobile: MOBILE_SLOTS.PRIMARY,
     width: "320px",
+  },
+  {
+    key: "modelNumber",
+    header: "Model number",
+    filterLabel: "Model number",
+    type: COLUMN_TYPES.TEXT,
+    field: "modelNumber",
+    sortKey: "model_number",
+    filterKey: "model_number",
+    className: "whitespace-nowrap",
+    mobile: MOBILE_SLOTS.META,
+    width: "200px",
+    render: (product) => optionalValue(product.modelNumber),
   },
   {
     key: "purchasePrice",
@@ -125,19 +138,6 @@ export const PRODUCT_COLUMNS = [
     render: (product) => formatPercentage(product.gstPercentage),
   },
   {
-    key: "modelNumber",
-    header: "Model number",
-    filterLabel: "Model number",
-    type: COLUMN_TYPES.TEXT,
-    field: "modelNumber",
-    sortKey: "model_number",
-    filterKey: "model_number",
-    className: "whitespace-nowrap",
-    mobile: MOBILE_SLOTS.META,
-    width: "200px",
-    render: (product) => optionalValue(product.modelNumber),
-  },
-  {
     key: "description",
     header: "Description",
     type: COLUMN_TYPES.TEXT,
@@ -192,3 +192,5 @@ export const PRODUCT_COLUMNS = [
     ),
   },
 ];
+
+export default PRODUCT_TABLE_COLUMNS;

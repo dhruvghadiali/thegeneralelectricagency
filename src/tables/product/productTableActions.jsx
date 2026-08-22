@@ -2,7 +2,7 @@ import { FileText, Pencil, Trash2 } from "lucide-react";
 
 import { Button } from "@shadcnComponent/button";
 
-function ProductActions({ product, onEdit, onDelete, onPdf, showPdf = true }) {
+function ProductTableActions({ product, onEdit, onDelete, onPdf, showPdf = true }) {
   return (
     <div className="flex items-center justify-end gap-1">
       <Button
@@ -38,4 +38,4 @@ function ProductActions({ product, onEdit, onDelete, onPdf, showPdf = true }) {
   );
 }
 
-export default ProductActions;
+export default ProductTableActions;

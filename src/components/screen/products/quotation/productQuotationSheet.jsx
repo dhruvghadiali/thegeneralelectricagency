@@ -19,11 +19,11 @@ import { employeeCompanyApi, employeeProductApi } from "@Api";
 import defaultSignatureUrl from "@Assets/images/default-signature.png";
 import companyLogoUrl from "@Assets/images/logo.png";
 import {
-  PRODUCT_TABLE_DEFAULTS,
   TABLE_DEFAULTS,
 } from "@Enums";
-import { toProductListParams } from "@Forms/product/product-api.payload";
-import { fromProductListResponse } from "@Forms/product/product-frontend.payload";
+import { toProductListParams } from "@Tables/product/productTable.api-payload";
+import { fromProductListResponse } from "@Tables/product/productTable.frontend-payload";
+import { PRODUCT_TABLE_DEFAULTS } from "@Tables/product";
 import { toCompanyListParams } from "@Tables/company/companyTable.api-payload";
 import { COMPANY_TABLE_DEFAULTS } from "@Tables/company/companyTable.defaults";
 import { fromCompanyListResponse } from "@Tables/company/companyTable.frontend-payload";
@@ -49,8 +49,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@shadcnComponent/sheet";
-import ProductAgencyBadge from "@screenComponent/products/productAgencyBadge";
-import ProductCategoryBadge from "@screenComponent/products/productCategoryBadge";
+import ProductAgencyBadge from "@Tables/product/productAgencyBadge";
+import ProductCategoryBadge from "@Tables/product/productCategoryBadge";
 import { cn } from "@/lib/utils";
 
 function QuotationPopoverContent({
@@ -440,15 +440,15 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
         const response = await employeeProductApi.getProducts(
           toProductListParams({
             page: productPage,
-            limit: PRODUCT_TABLE_DEFAULTS.LIMIT,
+            limit: PRODUCT_TABLE_DEFAULTS.limit,
             search: debouncedProductSearch,
-            sort: PRODUCT_TABLE_DEFAULTS.SORT,
+            sort: PRODUCT_TABLE_DEFAULTS.sort,
           }),
           { signal: controller.signal },
         );
         const result = fromProductListResponse(response, {
           page: productPage,
-          limit: PRODUCT_TABLE_DEFAULTS.LIMIT,
+          limit: PRODUCT_TABLE_DEFAULTS.limit,
         });
 
         setAvailableProducts((current) => {
@@ -640,7 +640,7 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
     setIsGenerating(true);
     try {
       const { downloadProductQuotationPdf } =
-        await import("@screenComponent/products/productQuotationPdf");
+        await import("@screenComponent/products/quotation/productQuotationPdf");
       await downloadProductQuotationPdf(
         quotationItems.map((item) => ({
           product: item.product,

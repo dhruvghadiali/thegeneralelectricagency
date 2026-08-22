@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-import { PRODUCT_VALIDATION_MESSAGES as MESSAGES } from "@Forms/product/product.validation.messages";
+import { PRODUCT_VALIDATION_MESSAGES as MESSAGES } from "@Forms/product/productDetails/productDetails.validation.messages";
 import {
   PRODUCT_CODE_MAX_LENGTH,
   PRODUCT_CODE_MIN_LENGTH,
@@ -21,7 +21,7 @@ import {
   PRODUCT_SALE_PRICE_MIN,
   PRODUCT_SUPPORTED_CATEGORIES,
   PRODUCT_SUPPORTED_GST_RATES,
-} from "@Forms/product/product.validation.constants";
+} from "@Forms/product/productDetails/productDetails.validation.constants";
 
 const optionalNumber = (typeError) =>
   Yup.number()

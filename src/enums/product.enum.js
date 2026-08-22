@@ -1,5 +1,3 @@
-import { SORT_ORDERS, TABLE_DEFAULTS } from "./dataTable.enum";
-
 export const PRODUCT_CATEGORIES = Object.freeze({
   MOTOR: "motor",
   DRIVE: "drive",
@@ -51,11 +49,3 @@ export const PRODUCT_STATUS_OPTIONS = Object.freeze([
   { value: "true", label: "Active" },
   { value: "false", label: "Inactive" },
 ]);
-
-export const PRODUCT_TABLE_DEFAULTS = Object.freeze({
-  LIMIT: TABLE_DEFAULTS.LIMIT,
-  SORT: Object.freeze([
-    Object.freeze({ field: "name", order: SORT_ORDERS.ASC }),
-  ]),
-  FILTERS: Object.freeze({ is_active: "true" }),
-});

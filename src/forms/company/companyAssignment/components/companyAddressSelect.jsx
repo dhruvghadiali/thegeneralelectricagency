@@ -20,7 +20,7 @@ function CompanyAddressSelect({ company, value, error, onChange }) {
         <SelectTrigger
           id="company-assignment-address"
           aria-invalid={Boolean(error)}
-          className="min-w-0 max-w-full overflow-hidden bg-background text-left"
+          className="min-w-0 max-w-full overflow-hidden bg-background text-left aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40"
         >
           <SelectValue placeholder="Select company address" />
         </SelectTrigger>

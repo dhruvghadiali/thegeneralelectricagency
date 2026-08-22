@@ -1,6 +1,5 @@
 import { Trash2 } from "lucide-react";
 
-import FormErrorAlert from "@commonComponent/alert/formErrorAlert";
 import { Button } from "@shadcnComponent/button";
 import {
   Dialog,
@@ -11,6 +10,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@shadcnComponent/dialog";
+
+import FormErrorAlert from "@commonComponent/alert/formErrorAlert";
 
 function ProductDialogs({
   dialog,
@@ -28,8 +29,9 @@ function ProductDialogs({
         <DialogHeader>
           <DialogTitle>Delete product?</DialogTitle>
           <DialogDescription>
-            This will permanently remove {dialog?.product?.name ?? "this product"}
-            . This action cannot be undone.
+            This will permanently remove{" "}
+            {dialog?.product?.name ?? "this product"}. This action cannot be
+            undone.
           </DialogDescription>
         </DialogHeader>
         <FormErrorAlert message={deleteError} />
