@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, ShoppingCart } from "lucide-react";
+import { ChartNoAxesCombined, Plus, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import DataTable from "@commonComponent/dataTable";
@@ -17,8 +17,16 @@ function PurchaseOrders() {
 
   return (
     <main className="flex w-full flex-col gap-6 pb-2 roomy:h-full roomy:min-h-0">
-      <header className="flex justify-end">
+      <header className="flex flex-col justify-end gap-2 sm:flex-row">
         <h1 className="sr-only">Purchase orders</h1>
+        <Button
+          variant="outline"
+          onClick={() => navigate("/purchases/financial-summary")}
+          className="w-full sm:w-auto"
+        >
+          <ChartNoAxesCombined className="size-4" />
+          Financial summary
+        </Button>
         <Button
           onClick={() => navigate("/purchases/new")}
           className="w-full sm:w-auto"

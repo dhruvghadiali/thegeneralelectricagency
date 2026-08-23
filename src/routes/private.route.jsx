@@ -41,6 +41,13 @@ function buildBreadcrumbItems(pathname, navItems) {
     ];
   }
 
+  if (pathname === "/purchases/financial-summary") {
+    return [
+      { label: "Purchase orders", href: "/purchases" },
+      { label: "Financial summary" },
+    ];
+  }
+
   if (/^\/products\/[^/]+\/edit$/.test(pathname)) {
     return [
       { label: "Products", href: "/products" },

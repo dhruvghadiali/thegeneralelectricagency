@@ -22,6 +22,7 @@ import ProductDetailsPage from "@/pages/product-details.page";
 import CompanyDetailsPage from "@/pages/company-details.page";
 import PurchaseOrderPage from "@/pages/purchase-order.page";
 import PurchaseOrdersPage from "@/pages/purchase-orders.page";
+import PurchaseFinancialSummaryPage from "@/pages/purchase-financial-summary.page";
 import LenisScrollProvider from "@/components/LenisScrollProvider";
 import PlaceholderScreen from "@commonComponent/pageBreadcrumb/placeholderScreen";
 
@@ -65,6 +66,10 @@ function App() {
                 element={<RoleRoute allowedRoles={[ROLE_PATHS.EMPLOYEE]} />}
               >
                 <Route path="/purchases" element={<PurchaseOrdersPage />} />
+                <Route
+                  path="/purchases/financial-summary"
+                  element={<PurchaseFinancialSummaryPage />}
+                />
                 <Route path="/purchases/new" element={<PurchaseOrderPage />} />
                 <Route path="/companies/new" element={<CompanyDetailsPage />} />
                 <Route
