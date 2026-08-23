@@ -18,6 +18,7 @@ import {
 import DataTable from "@commonComponent/dataTable";
 import ProductHeader from "@screenComponent/products/header/productHeader";
 import ProductDialogs from "@screenComponent/products/dialogs/productDialogs";
+import ProductStockSheet from "@screenComponent/products/sheet/productStockSheet";
 import ProductQuotationSheet from "@screenComponent/products/quotation/productQuotationSheet";
 
 function Products() {
@@ -27,9 +28,11 @@ function Products() {
   const role = useSelector((state) => state.auth.role);
   const table = useProductTable();
   const canManage = role === ROLE_PATHS.EMPLOYEE;
+  const canView = [ROLE_PATHS.SUPER_ADMIN, ROLE_PATHS.EMPLOYEE].includes(role);
 
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [quotationProducts, setQuotationProducts] = useState([]);
+  const [viewedProduct, setViewedProduct] = useState(null);
   const { dialog, isDeleting, deleteError } = useSelector(
     selectProductDialogState,
   );
@@ -114,10 +117,12 @@ function Products() {
         isLoading={table.isLoading}
         error={table.error}
         rowActions={
-          canManage
+          canView
             ? (product) => (
                 <ProductTableActions
                   product={product}
+                  onView={setViewedProduct}
+                  canManage={canManage}
                   onEdit={(row) =>
                     navigate(`/products/${row.id}/edit`, {
                       state: { product: row },
@@ -135,6 +140,11 @@ function Products() {
             ? "Add your first product to start building the catalogue."
             : "Products will appear here when an employee adds them."
         }
+      />
+
+      <ProductStockSheet
+        product={viewedProduct}
+        onClose={() => setViewedProduct(null)}
       />
 
       {canManage && (

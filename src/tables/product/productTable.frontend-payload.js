@@ -11,6 +11,16 @@ function discountRange(value) {
   return { min: value ?? null, max: value ?? null };
 }
 
+function reservedStockItem(reservation = {}) {
+  return {
+    reservedBy: reservation.reserved_by ?? reservation.reservedBy ?? "",
+    reservedFor: reservation.reserved_for ?? reservation.reservedFor ?? "",
+    startDate: reservation.start_date ?? reservation.startDate ?? null,
+    endDate: reservation.end_date ?? reservation.endDate ?? null,
+    reservedAt: reservation.reserved_at ?? reservation.reservedAt ?? null,
+  };
+}
+
 export function fromProductResponse(product = {}) {
   const agencySource = product.agency ?? product.company ?? "";
   const agency = _.isObject(agencySource)
@@ -40,6 +50,11 @@ export function fromProductResponse(product = {}) {
     ),
     discountPercentage: discountRange(
       product.discount_percentage ?? product.discountPercentage ?? null,
+    ),
+    stocks: _.toNumber(product.stocks) || 0,
+    reservedStock: _.map(
+      product.reserved_stock ?? product.reservedStock ?? [],
+      reservedStockItem,
     ),
     isActive: _.isNil(product.is_active ?? product.isActive)
       ? true
