@@ -90,7 +90,6 @@ export function getFinancialSummaryData(financialYear) {
       totalPaid,
       outstanding: totalBill - totalPaid,
       paymentProgress: totalBill ? (totalPaid / totalBill) * 100 : 0,
-      averageOrderValue: totalBill / _.sumBy(months, "orders"),
     },
     paymentAllocation: [
       { name: "Paid", value: totalPaid, fill: "var(--color-paid)" },

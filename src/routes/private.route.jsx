@@ -1,7 +1,12 @@
 import { useEffect } from "react";
-import { Clock3, ShieldCheck } from "lucide-react";
+import { CalendarRange, Clock3, ShieldCheck } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import {
+  Navigate,
+  Outlet,
+  useLocation,
+  useSearchParams,
+} from "react-router-dom";
 
 import AppSidebar from "@commonComponent/appSidebar";
 import PageBreadcrumb from "@commonComponent/pageBreadcrumb";
@@ -11,6 +16,14 @@ import { loggedOut } from "@/store/auth/auth.slice";
 import { getTokenExpiration, isAuthTokenValid } from "@/routes/auth-token.util";
 import { SIDEBAR_NAV_ITEMS_BY_ROLE } from "@commonComponent/appSidebar/appSidebar.constants";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@shadcnComponent/sidebar";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@shadcnComponent/select";
+import { FINANCIAL_YEAR_OPTIONS } from "@screenComponent/purchaseFinancialSummary/purchaseFinancialSummary.data";
 
 function buildBreadcrumbItems(pathname, navItems) {
   if (pathname === "/companies/new") {
@@ -66,6 +79,18 @@ function buildBreadcrumbItems(pathname, navItems) {
 function PrivateRoute() {
   const dispatch = useDispatch();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const requestedFinancialYear = searchParams.get("financial_year");
+  const purchaseFinancialYear = FINANCIAL_YEAR_OPTIONS.some(
+    (option) => option.value === requestedFinancialYear,
+  )
+    ? requestedFinancialYear
+    : FINANCIAL_YEAR_OPTIONS[0].value;
+  const changePurchaseFinancialYear = (value) => {
+    const nextSearchParams = new URLSearchParams(searchParams);
+    nextSearchParams.set("financial_year", value);
+    setSearchParams(nextSearchParams, { replace: true });
+  };
 
   const { token, role } = useSelector((state) => state.auth);
   
@@ -108,6 +133,32 @@ function PrivateRoute() {
           </div>
 
           <div className="flex shrink-0 items-center gap-3 text-xs text-muted-foreground sm:gap-5">
+            {location.pathname === "/purchases/financial-summary" && (
+              <div className="flex items-center gap-2">
+                <CalendarRange className="hidden size-4 sm:block" aria-hidden="true" />
+                <label htmlFor="header-financial-year" className="sr-only">
+                  Financial year
+                </label>
+                <Select
+                  value={purchaseFinancialYear}
+                  onValueChange={changePurchaseFinancialYear}
+                >
+                  <SelectTrigger
+                    id="header-financial-year"
+                    className="h-8 w-[132px] bg-background sm:w-[156px]"
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {FINANCIAL_YEAR_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
             <div className="flex items-center gap-1.5" title={`Signed in as ${roleLabel}`}>
               <ShieldCheck className="size-4" aria-hidden="true" />
               <span className="hidden lg:inline">Role:</span>

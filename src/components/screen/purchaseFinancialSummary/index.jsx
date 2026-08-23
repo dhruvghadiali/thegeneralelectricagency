@@ -1,16 +1,12 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
-  ArrowLeft,
-  CalendarRange,
   CircleDollarSign,
   IndianRupee,
   ReceiptIndianRupee,
   ShoppingCart,
-  TrendingUp,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
-import { Button } from "@shadcnComponent/button";
 import {
   Card,
   CardContent,
@@ -18,13 +14,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@shadcnComponent/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@shadcnComponent/select";
 import SummaryCard from "@commonComponent/summaryCard";
 import { formatCurrency } from "@Tables/product/productTable.utils";
 import {
@@ -41,8 +30,13 @@ import {
 } from "@screenComponent/purchaseFinancialSummary/purchaseFinancialTables";
 
 function PurchaseFinancialSummary() {
-  const navigate = useNavigate();
-  const [financialYear, setFinancialYear] = useState("2026-27");
+  const [searchParams] = useSearchParams();
+  const requestedFinancialYear = searchParams.get("financial_year");
+  const financialYear = FINANCIAL_YEAR_OPTIONS.some(
+    (option) => option.value === requestedFinancialYear,
+  )
+    ? requestedFinancialYear
+    : FINANCIAL_YEAR_OPTIONS[0].value;
   const data = useMemo(
     () => getFinancialSummaryData(financialYear),
     [financialYear],
@@ -51,52 +45,7 @@ function PurchaseFinancialSummary() {
 
   return (
     <main className="w-full space-y-6 pb-8">
-      <section className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
-        <div>
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate("/purchases")}
-            className="-ml-3 mb-2 text-muted-foreground"
-          >
-            <ArrowLeft className="size-4" />
-            Purchase orders
-          </Button>
-          <p className="text-sm font-medium text-primary">Purchase analytics</p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
-            Financial summary
-          </h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Track purchase spending, payments, and supplier performance across
-            the selected financial year.
-          </p>
-        </div>
-
-        <div className="w-full rounded-xl border bg-card p-3 lg:w-auto">
-          <label
-            htmlFor="financial-year"
-            className="mb-2 flex items-center gap-2 text-xs font-medium text-muted-foreground"
-          >
-            <CalendarRange className="size-3.5" />
-            Financial year
-          </label>
-          <Select value={financialYear} onValueChange={setFinancialYear}>
-            <SelectTrigger id="financial-year" className="w-full lg:w-[190px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {FINANCIAL_YEAR_OPTIONS.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </section>
-
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <SummaryCard
           icon={ShoppingCart}
           iconClassName="bg-primary/10 text-primary"
@@ -120,12 +69,6 @@ function PurchaseFinancialSummary() {
           iconClassName="bg-amber-500/10 text-amber-600"
           value={formatCurrency(summary.outstanding)}
           label="Outstanding"
-        />
-        <SummaryCard
-          icon={TrendingUp}
-          iconClassName="bg-violet-500/10 text-violet-600"
-          value={formatCurrency(summary.averageOrderValue)}
-          label="Average order value"
         />
       </section>
 
