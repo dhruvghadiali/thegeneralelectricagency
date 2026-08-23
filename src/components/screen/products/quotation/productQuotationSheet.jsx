@@ -78,10 +78,6 @@ function QuotationPopoverContent({
   );
 }
 
-const QUANTITY_OPTIONS = Object.freeze(
-  Array.from({ length: 100 }, (_, index) => String(index + 1)),
-);
-
 const EMPTY_COMPANY_PAGINATION = Object.freeze({
   page: TABLE_DEFAULTS.PAGE,
   totalPages: 0,
@@ -114,11 +110,21 @@ const numericValue = (value) => {
 
 const quotationItemId = (product) => product.id || product.productCode;
 
+const reservedStockCount = (product) => product.reservedStock?.length ?? 0;
+
+const availableStock = (product) =>
+  Math.max(
+    Math.floor(numericValue(product.stocks)) - reservedStockCount(product),
+    0,
+  );
+
 function createQuotationItem(product) {
+  const maximumQuantity = availableStock(product);
+
   return {
     id: quotationItemId(product),
     product,
-    quantity: "1",
+    quantity: maximumQuantity > 0 ? "1" : "",
     salePrice: product.salePrice ?? "",
     gstPercentage: product.gstPercentage ?? "",
     discountAmount: product.discountAmount?.min ?? "",
@@ -127,7 +133,10 @@ function createQuotationItem(product) {
 }
 
 function calculateItemTotals(item) {
-  const quantity = Math.max(Math.floor(numericValue(item.quantity)), 1);
+  const quantity = Math.min(
+    Math.max(Math.floor(numericValue(item.quantity)), 0),
+    availableStock(item.product),
+  );
   const unitPrice = Math.max(numericValue(item.salePrice), 0);
   const discountPerUnit = Math.max(numericValue(item.discountAmount), 0);
   const gstPercentage = Math.max(numericValue(item.gstPercentage), 0);
@@ -150,10 +159,18 @@ function calculateItemTotals(item) {
 
 function validateQuotationItem(item) {
   const next = {};
+  const quantity = Math.floor(numericValue(item.quantity));
+  const maximumQuantity = availableStock(item.product);
   const salePrice = Number(item.salePrice);
   const gst = item.gstPercentage === "" ? null : Number(item.gstPercentage);
   const discount =
     item.discountAmount === "" ? null : Number(item.discountAmount);
+
+  if (maximumQuantity === 0) {
+    next.quantity = "No stock is currently available for quotation.";
+  } else if (quantity < 1 || quantity > maximumQuantity) {
+    next.quantity = `Quantity must be between 1 and ${maximumQuantity}.`;
+  }
 
   if (item.salePrice === "" || !Number.isFinite(salePrice) || salePrice < 0) {
     next.salePrice = "Enter a valid sale price.";
@@ -226,6 +243,13 @@ function QuotationProductCard({
   onToggleField,
 }) {
   const { product, enabledFields } = item;
+  const totalStock = Math.max(Math.floor(numericValue(product.stocks)), 0);
+  const reservedStock = reservedStockCount(product);
+  const maximumQuantity = availableStock(product);
+  const quantityOptions = Array.from(
+    { length: maximumQuantity },
+    (_, index) => String(index + 1),
+  );
 
   return (
     <article className="rounded-xl border bg-card p-4 sm:p-5">
@@ -242,6 +266,17 @@ function QuotationProductCard({
           <p className="mt-1 text-xs text-muted-foreground">
             Product code: {staticValue(product.productCode)}
           </p>
+          <div className="mt-3 flex flex-wrap gap-2 text-xs">
+            <span className="rounded-md border bg-muted/30 px-2.5 py-1">
+              Total stock: <strong>{totalStock}</strong>
+            </span>
+            <span className="rounded-md border bg-muted/30 px-2.5 py-1">
+              Reserved stock: <strong>{reservedStock}</strong>
+            </span>
+            <span className="rounded-md border bg-primary/10 px-2.5 py-1 text-primary">
+              Available stock: <strong>{maximumQuantity}</strong>
+            </span>
+          </div>
         </div>
         <Button
           type="button"
@@ -262,18 +297,28 @@ function QuotationProductCard({
           <Select
             value={item.quantity}
             onValueChange={(value) => onUpdate("quantity", value)}
+            disabled={maximumQuantity === 0}
           >
-            <SelectTrigger>
-              <SelectValue placeholder="Select quantity" />
+            <SelectTrigger aria-invalid={Boolean(errors.quantity)}>
+              <SelectValue
+                placeholder={
+                  maximumQuantity === 0 ? "No stock available" : "Select quantity"
+                }
+              />
             </SelectTrigger>
             <SelectContent>
-              {QUANTITY_OPTIONS.map((quantity) => (
+              {quantityOptions.map((quantity) => (
                 <SelectItem key={quantity} value={quantity}>
                   {quantity} {quantity === "1" ? "unit" : "units"}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
+          {errors.quantity && (
+            <p className="text-xs font-medium text-destructive">
+              {errors.quantity}
+            </p>
+          )}
         </div>
 
         <div className="grid content-start gap-2">
