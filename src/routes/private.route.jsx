@@ -47,10 +47,17 @@ function buildBreadcrumbItems(pathname, navItems) {
     ];
   }
 
-  if (pathname === "/credit/new") {
+  if (pathname === "/purchase-credit/new") {
     return [
-      { label: "Credit", href: "/credit" },
-      { label: "Add credit" },
+      { label: "Purchase credit", href: "/purchase-credit" },
+      { label: "Add purchase credit" },
+    ];
+  }
+
+  if (/^\/purchase-credit\/[^/]+\/edit$/.test(pathname)) {
+    return [
+      { label: "Purchase credit", href: "/purchase-credit" },
+      { label: "Update purchase credit" },
     ];
   }
 

@@ -3,26 +3,26 @@ import { useNavigate } from "react-router-dom";
 
 import { Button } from "@shadcnComponent/button";
 
-function CreditPage() {
+function PurchaseCreditPage() {
   const navigate = useNavigate();
 
   return (
     <main className="flex w-full flex-col gap-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-          Supiler Credit
+          Supplier Purchase Credit
         </h1>
         <Button
           type="button"
           className="w-full sm:w-auto"
-          onClick={() => navigate("/credit/new")}
+          onClick={() => navigate("/purchase-credit/new")}
         >
           <Plus className="size-4" />
-          Add credit
+          Add purchase credit
         </Button>
       </div>
     </main>
   );
 }
 
-export default CreditPage;
+export default PurchaseCreditPage;

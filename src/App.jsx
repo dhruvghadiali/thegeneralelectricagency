@@ -17,8 +17,8 @@ import PrivateRoute from "@/routes/private.route";
 import DashboardPage from "@/pages/dashboard.page";
 import EmployeesPage from "@/pages/employees.page";
 import CompaniesPage from "@/pages/companies.page";
-import CreditPage from "@/pages/credit.page";
-import CreditFormPage from "@/pages/credit-form.page";
+import PurchaseCreditPage from "@/pages/purchase-credit.page";
+import PurchaseCreditFormPage from "@/pages/purchase-credit-form.page";
 import ProductsPage from "@/pages/products.page";
 import ProductDetailsPage from "@/pages/product-details.page";
 import CompanyDetailsPage from "@/pages/company-details.page";
@@ -71,8 +71,12 @@ function App() {
                   />
                 }
               >
-                <Route path="/credit" element={<CreditPage />} />
-                <Route path="/credit/new" element={<CreditFormPage />} />
+                <Route path="/purchase-credit" element={<PurchaseCreditPage />} />
+                <Route path="/purchase-credit/new" element={<PurchaseCreditFormPage />} />
+                <Route
+                  path="/purchase-credit/:purchaseCreditId/edit"
+                  element={<PurchaseCreditFormPage />}
+                />
               </Route>
               <Route
                 element={<RoleRoute allowedRoles={[ROLE_PATHS.EMPLOYEE]} />}
