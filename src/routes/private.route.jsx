@@ -47,6 +47,13 @@ function buildBreadcrumbItems(pathname, navItems) {
     ];
   }
 
+  if (pathname === "/credit/new") {
+    return [
+      { label: "Credit", href: "/credit" },
+      { label: "Add credit" },
+    ];
+  }
+
   if (pathname === "/purchases/new") {
     return [
       { label: "Purchase orders", href: "/purchases" },
