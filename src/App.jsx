@@ -17,6 +17,7 @@ import PrivateRoute from "@/routes/private.route";
 import DashboardPage from "@/pages/dashboard.page";
 import EmployeesPage from "@/pages/employees.page";
 import CompaniesPage from "@/pages/companies.page";
+import CreditPage from "@/pages/credit.page";
 import ProductsPage from "@/pages/products.page";
 import ProductDetailsPage from "@/pages/product-details.page";
 import CompanyDetailsPage from "@/pages/company-details.page";
@@ -61,6 +62,15 @@ function App() {
                 }
               >
                 <Route path="/products" element={<ProductsPage />} />
+              </Route>
+              <Route
+                element={
+                  <RoleRoute
+                    allowedRoles={[ROLE_PATHS.SUPER_ADMIN, ROLE_PATHS.EMPLOYEE]}
+                  />
+                }
+              >
+                <Route path="/credit" element={<CreditPage />} />
               </Route>
               <Route
                 element={<RoleRoute allowedRoles={[ROLE_PATHS.EMPLOYEE]} />}

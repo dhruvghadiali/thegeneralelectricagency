@@ -1,6 +1,7 @@
 import {
   Boxes,
   Building2,
+  CreditCard,
   Settings,
   Users,
   LucideHome,
@@ -17,15 +18,17 @@ import { ROLE_PATHS } from "@Enums";
 export const SIDEBAR_NAV_ITEMS_BY_ROLE = {
   [ROLE_PATHS.SUPER_ADMIN]: [
     { title: "Dashboard", url: "/dashboard", icon: LucideHome },
-    { title: "Employees", url: "/employees", icon: Users },
-    { title: "Companies", url: "/companies", icon: Building2 },
+    { title: "Credit", url: "/credit", icon: CreditCard },
     { title: "Products", url: "/products", icon: Boxes },
     { title: "Stocks", url: "/stocks", icon: TrendingUp },
+    { title: "Employees", url: "/employees", icon: Users },
+    { title: "Companies", url: "/companies", icon: Building2 },
     { title: "Settings", url: "/settings", icon: Settings },
   ],
   [ROLE_PATHS.EMPLOYEE]: [
     { title: "Dashboard", url: "/dashboard", icon: LucideHome },
     { title: "Purchase orders", url: "/purchases", icon: ShoppingCart },
+    { title: "Credit", url: "/credit", icon: CreditCard },
     { title: "Products", url: "/products", icon: Boxes },
     { title: "Companies", url: "/companies", icon: Building2 },
     { title: "Settings", url: "/settings", icon: Settings },
