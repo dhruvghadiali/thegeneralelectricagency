@@ -10,6 +10,19 @@ function unwrapPayload(data) {
   return _.isArray(data) && data.length > 0 ? data[0] : (data ?? {});
 }
 
+export function createPurchaseCreditListApi(rolePath) {
+  return {
+    getPurchaseCredits: async (params = {}, config = {}) => {
+      const { data } = await apiClient.get(purchaseCreditsPath(rolePath), {
+        params,
+        ...config,
+      });
+
+      return unwrapPayload(data);
+    },
+  };
+}
+
 export function createPurchaseCreditMutationApi(rolePath) {
   return {
     createPurchaseCredit: async (payload) => {

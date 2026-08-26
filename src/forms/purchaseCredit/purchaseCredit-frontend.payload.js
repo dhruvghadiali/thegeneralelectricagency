@@ -9,7 +9,7 @@ import {
 } from "@Forms/purchaseCredit/purchaseCredit.initialValues";
 
 const entityId = (value) =>
-  _.isObject(value) ? value._id ?? value.id ?? "" : value ?? "";
+  _.isObject(value) ? (value._id ?? value.id ?? "") : (value ?? "");
 
 const toFormDate = (value) => {
   if (!value) return "";
@@ -23,7 +23,7 @@ const toFormNumberString = (value) =>
 
 const fromProductResponse = (item = {}) => ({
   ...EMPTY_PURCHASE_CREDIT_PRODUCT,
-  product: entityId(item.product),
+  product: entityId(item.product ?? item.productId),
   stock: toFormNumberString(item.stock),
 });
 
@@ -38,11 +38,16 @@ const fromPaymentResponse = (payment = {}) => ({
   referenceId: payment.reference_id ?? payment.referenceId ?? "",
   paymentDate: toFormDate(payment.payment_date ?? payment.paymentDate),
   receivedPaymentDate: toFormDate(
-    payment.received_payment_date ?? payment.receivedPaymentDate,
+    payment.received_payment_date ??
+      payment.receivedPaymentDate ??
+      payment.settlementDate,
   ),
   notes: payment.notes ?? "",
   paymentReceipts:
-    payment.payment_receipts ?? payment.paymentReceipts ?? [],
+    payment.payment_receipts ??
+    payment.paymentReceipts ??
+    payment.receipts ??
+    [],
 });
 
 const fromPaymentPlanResponse = (plan = {}) => ({
@@ -66,28 +71,37 @@ export function fromPurchaseCreditResponse(purchaseCredit = {}) {
 
   return {
     id: purchaseCredit._id ?? purchaseCredit.id ?? null,
-    supplier: entityId(purchaseCredit.supplier),
-    products: products.length ? products : [{ ...EMPTY_PURCHASE_CREDIT_PRODUCT }],
+    supplier: entityId(purchaseCredit.supplier ?? purchaseCredit.supplierId),
+    products: products.length
+      ? products
+      : [{ ...EMPTY_PURCHASE_CREDIT_PRODUCT }],
     purchaseCreditAt: toFormDate(
       purchaseCredit.credited_at ??
         purchaseCredit.creditedAt ??
-        purchaseCredit.purchaseCreditAt,
+        purchaseCredit.purchaseCreditAt ??
+        purchaseCredit.purchaseAt,
     ),
     purchaseCreditAmount: toFormNumberString(
       purchaseCredit.credit_amount ??
         purchaseCredit.creditAmount ??
-        purchaseCredit.purchaseCreditAmount,
+        purchaseCredit.purchaseCreditAmount ??
+        purchaseCredit.purchaseAmount,
     ),
     expectedDeliveryDate: toFormDate(
-      purchaseCredit.expected_delivery_date ?? purchaseCredit.expectedDeliveryDate,
+      purchaseCredit.expected_delivery_date ??
+        purchaseCredit.expectedDeliveryDate,
     ),
     acknowledgementId:
-      purchaseCredit.acknowledgement_id ?? purchaseCredit.acknowledgementId ?? "",
+      purchaseCredit.acknowledgement_id ??
+      purchaseCredit.acknowledgementId ??
+      "",
     acknowledgementReceipts:
       purchaseCredit.acknowledgement_receipts ??
       purchaseCredit.acknowledgementReceipts ??
       [],
-    payments: payments.length ? payments : [{ ...EMPTY_PURCHASE_CREDIT_PAYMENT }],
+    payments: payments.length
+      ? payments
+      : [{ ...EMPTY_PURCHASE_CREDIT_PAYMENT }],
     paymentPlanning,
   };
 }

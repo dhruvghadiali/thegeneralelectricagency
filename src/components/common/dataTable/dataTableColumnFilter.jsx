@@ -98,6 +98,7 @@ function DataTableColumnFilter({ column, value, onChange, compact = false }) {
           label={filterLabel}
           controlHeight={controlHeight}
           compact={compact}
+          maximum={range.to}
           onChange={updateBound("from")}
         />
         <span className="shrink-0 text-xs text-muted-foreground">–</span>
@@ -108,6 +109,7 @@ function DataTableColumnFilter({ column, value, onChange, compact = false }) {
           label={filterLabel}
           controlHeight={controlHeight}
           compact={compact}
+          minimum={range.from}
           onChange={updateBound("to")}
         />
       </div>,

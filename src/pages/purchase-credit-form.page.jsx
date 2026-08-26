@@ -3,16 +3,19 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import PurchaseCreditForm from "@Forms/purchaseCredit/purchaseCreditForm";
-import { toPurchaseCreditUpdatePayload } from "@Forms/purchaseCredit/purchaseCredit-api.payload";
 import { createPurchaseCredit } from "@Redux/purchaseCredit/purchaseCredit.action";
 import { selectPurchaseCreditCreateState } from "@Redux/purchaseCredit/purchaseCredit.selector";
-import { purchaseCreditCreateCleared } from "@Redux/purchaseCredit/purchaseCredit.slice";
+import { toPurchaseCreditUpdatePayload } from "@Forms/purchaseCredit/purchaseCredit-api.payload";
+import {
+  filtersCleared,
+  purchaseCreditCreateCleared,
+} from "@Redux/purchaseCredit/purchaseCredit.slice";
 
 function PurchaseCreditFormPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { isCreating, createError, createdPurchaseCredit } = useSelector(
+  const { isCreating, createError } = useSelector(
     selectPurchaseCreditCreateState,
   );
   const { purchaseCreditId } = useParams();
@@ -30,7 +33,16 @@ function PurchaseCreditFormPage() {
       return toPurchaseCreditUpdatePayload(values);
     }
 
-    return dispatch(createPurchaseCredit(values)).unwrap();
+    const createdPurchaseCredit = await dispatch(
+      createPurchaseCredit(values),
+    ).unwrap();
+
+    // Return to the first, unfiltered, latest-first page so the list request
+    // made on mount includes the record that was just created.
+    dispatch(filtersCleared());
+    navigate("/purchase-credit", { replace: true });
+
+    return createdPurchaseCredit;
   };
 
   return (
@@ -41,9 +53,6 @@ function PurchaseCreditFormPage() {
       onCancel={() => navigate("/purchase-credit")}
       isSubmitting={isCreating}
       submissionError={createError}
-      submissionMessage={
-        createdPurchaseCredit ? "Purchase credit added successfully." : null
-      }
     />
   );
 }

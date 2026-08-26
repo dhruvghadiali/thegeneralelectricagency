@@ -37,10 +37,14 @@ function DataTableDatePicker({
   label,
   controlHeight,
   compact,
+  minimum,
+  maximum,
   onChange,
 }) {
   const [open, setOpen] = useState(false);
   const selected = parseValue(value);
+  const minimumDate = parseValue(minimum);
+  const maximumDate = parseValue(maximum);
   const isDateTime = type === COLUMN_TYPES.DATE_TIME;
   const [draftDate, setDraftDate] = useState(selected);
   const defaultTime = bound === "to" ? "23:59" : "00:00";
@@ -133,6 +137,10 @@ function DataTableDatePicker({
           selected={isDateTime ? draftDate : selected}
           defaultMonth={isDateTime ? draftDate : selected}
           onSelect={changeDate}
+          disabled={[
+            ...(minimumDate ? [{ before: minimumDate }] : []),
+            ...(maximumDate ? [{ after: maximumDate }] : []),
+          ]}
           captionLayout="label"
         />
         {(isDateTime || selected) && (
