@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import _ from "lodash";
 import { Check, ChevronsUpDown, LoaderCircle, Search } from "lucide-react";
 
 import { Button } from "@shadcnComponent/button";
@@ -109,7 +110,7 @@ function PurchaseCreditRemoteSelect({
           )}
           {!isLoading &&
             !error &&
-            options.map((option) => (
+            _.map(options, (option) => (
               <button
                 key={option.value}
                 type="button"

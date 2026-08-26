@@ -6,7 +6,7 @@ export const EMPTY_PURCHASE_CREDIT_PRODUCT = Object.freeze({
 });
 
 export const EMPTY_PURCHASE_CREDIT_PAYMENT = Object.freeze({
-  paymentStatus: PURCHASE_CREDIT_PAYMENT_STATUSES.PENDING,
+  paymentStatus: PURCHASE_CREDIT_PAYMENT_STATUSES.IN_PROGRESS,
   amount: "",
   paymentType: "",
   referenceId: "",

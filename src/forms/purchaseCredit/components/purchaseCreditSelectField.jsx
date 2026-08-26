@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 import {
   Select,
   SelectContent,
@@ -32,7 +34,7 @@ function PurchaseCreditSelectField({
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
-        {options.map((option) => (
+        {_.map(options, (option) => (
           <SelectItem key={option.value} value={String(option.value)}>
             {option.label}
           </SelectItem>

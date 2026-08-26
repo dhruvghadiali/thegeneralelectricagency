@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { Trash2 } from "lucide-react";
 
 import {
@@ -6,7 +7,6 @@ import {
 } from "@Enums";
 import {
   PURCHASE_CREDIT_AMOUNT_MAX,
-  PURCHASE_CREDIT_AMOUNT_MIN,
   PURCHASE_CREDIT_NOTES_MAX_LENGTH,
 } from "@Forms/purchaseCredit/purchaseCredit.validation.constants";
 import { Button } from "@shadcnComponent/button";
@@ -25,6 +25,12 @@ function PurchaseCreditPaymentPlanningFields({
   inputProps,
   onRemove,
 }) {
+  const purchaseCreditAmount = _.toNumber(formik.values.purchaseCreditAmount);
+  const paymentsTotal = _.sumBy(formik.values.payments, (payment) => {
+    const amount = _.toNumber(payment.amount);
+    return _.isFinite(amount) ? amount : 0;
+  });
+
   if (plans.length === 0) {
     return (
       <div className="rounded-lg border border-dashed px-4 py-8 text-center text-sm text-muted-foreground">
@@ -35,9 +41,24 @@ function PurchaseCreditPaymentPlanningFields({
 
   return (
     <div className="space-y-4">
-      {plans.map((plan, index) => {
+      {_.map(plans, (plan, index) => {
         const prefix = `paymentPlanning[${index}]`;
         const path = (field) => `${prefix}.${field}`;
+        const otherPlansTotal = _.sumBy(plans, (item, itemIndex) => {
+          if (itemIndex === index) return 0;
+
+          const amount = _.toNumber(item.amount);
+          return _.isFinite(amount) ? amount : 0;
+        });
+        const availablePlanningAmount = _.isFinite(purchaseCreditAmount)
+          ? _.max([
+              0,
+              _.min([
+                PURCHASE_CREDIT_AMOUNT_MAX,
+                purchaseCreditAmount - paymentsTotal - otherPlansTotal,
+              ]),
+            ])
+          : PURCHASE_CREDIT_AMOUNT_MAX;
 
         return (
           <div key={index} className="rounded-xl border bg-muted/10 p-4 sm:p-5">
@@ -75,15 +96,14 @@ function PurchaseCreditPaymentPlanningFields({
                 id={`purchase-credit-plan-amount-${index}`}
                 label="Amount"
                 required
+                hint={`Available amount: ₹${availablePlanningAmount.toLocaleString("en-IN")}`}
                 error={errorFor(path("amount"))}
               >
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">₹</span>
                   <Input
                     id={`purchase-credit-plan-amount-${index}`}
-                    type="number"
-                    min={PURCHASE_CREDIT_AMOUNT_MIN}
-                    max={PURCHASE_CREDIT_AMOUNT_MAX}
+                    type="text"
                     inputMode="decimal"
                     className="pl-7"
                     {...inputProps(path("amount"), `purchase-credit-plan-amount-${index}`)}

@@ -1,12 +1,14 @@
+import _ from "lodash";
 import { Trash2 } from "lucide-react";
+import moment from "moment";
 
 import {
+  PURCHASE_CREDIT_PAYMENT_TYPES,
   PURCHASE_CREDIT_PAYMENT_STATUS_OPTIONS,
   PURCHASE_CREDIT_PAYMENT_TYPE_OPTIONS,
 } from "@Enums";
 import {
   PURCHASE_CREDIT_AMOUNT_MAX,
-  PURCHASE_CREDIT_AMOUNT_MIN,
   PURCHASE_CREDIT_NOTES_MAX_LENGTH,
   PURCHASE_CREDIT_REFERENCE_ID_MAX_LENGTH,
 } from "@Forms/purchaseCredit/purchaseCredit.validation.constants";
@@ -27,11 +29,73 @@ function PurchaseCreditPaymentFields({
   inputProps,
   onRemove,
 }) {
+  const purchaseCreditAt = moment(
+    formik.values.purchaseCreditAt,
+    "YYYY-MM-DD",
+    true,
+  );
+  const minimumPaymentDate = purchaseCreditAt.isValid()
+    ? purchaseCreditAt.format("YYYY-MM-DD")
+    : undefined;
+  const purchaseCreditAmount = _.toNumber(formik.values.purchaseCreditAmount);
+  const paymentPlanningTotal = _.sumBy(
+    formik.values.paymentPlanning,
+    (plan) => {
+      const amount = _.toNumber(plan.amount);
+      return _.isFinite(amount) ? amount : 0;
+    },
+  );
+
   return (
     <div className="space-y-4">
-      {payments.map((payment, index) => {
+      {_.map(payments, (payment, index) => {
         const prefix = `payments[${index}]`;
         const path = (field) => `${prefix}.${field}`;
+        const referenceIdDisabled =
+          payment.paymentType === PURCHASE_CREDIT_PAYMENT_TYPES.CASH;
+        const referenceIdRequired =
+          Boolean(payment.paymentType) && !referenceIdDisabled;
+        const otherPaymentsTotal = _.sumBy(payments, (item, itemIndex) => {
+          if (itemIndex === index) return 0;
+
+          const amount = _.toNumber(item.amount);
+          return _.isFinite(amount) ? amount : 0;
+        });
+        const availablePaymentAmount = _.isFinite(purchaseCreditAmount)
+          ? _.max([
+              0,
+              _.min([
+                PURCHASE_CREDIT_AMOUNT_MAX,
+                purchaseCreditAmount -
+                  otherPaymentsTotal -
+                  paymentPlanningTotal,
+              ]),
+            ])
+          : PURCHASE_CREDIT_AMOUNT_MAX;
+
+        const changePaymentType = (value) => {
+          formik.setValues(
+            (current) => ({
+              ...current,
+              payments: _.map(current.payments, (item, itemIndex) =>
+                itemIndex === index
+                  ? {
+                      ...item,
+                      paymentType: value,
+                      ...(value === PURCHASE_CREDIT_PAYMENT_TYPES.CASH
+                        ? { referenceId: "" }
+                        : {}),
+                    }
+                  : item,
+              ),
+            }),
+            true,
+          );
+
+          if (value === PURCHASE_CREDIT_PAYMENT_TYPES.CASH) {
+            formik.setFieldTouched(path("referenceId"), false, false);
+          }
+        };
 
         return (
           <div key={index} className="rounded-xl border bg-muted/10 p-4 sm:p-5">
@@ -54,7 +118,11 @@ function PurchaseCreditPaymentFields({
                 id={`purchase-credit-payment-status-${index}`}
                 label="Payment status"
                 required
-                hint={!isEditing ? "New purchase credits start as Pending." : undefined}
+                hint={
+                  !isEditing
+                    ? "New purchase credits start as In progress."
+                    : undefined
+                }
                 error={errorFor(path("paymentStatus"))}
               >
                 <PurchaseCreditSelectField
@@ -73,15 +141,14 @@ function PurchaseCreditPaymentFields({
                 id={`purchase-credit-payment-amount-${index}`}
                 label="Amount"
                 required
+                hint={`Available amount: ₹${availablePaymentAmount.toLocaleString("en-IN")}`}
                 error={errorFor(path("amount"))}
               >
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">₹</span>
                   <Input
                     id={`purchase-credit-payment-amount-${index}`}
-                    type="number"
-                    min={PURCHASE_CREDIT_AMOUNT_MIN}
-                    max={PURCHASE_CREDIT_AMOUNT_MAX}
+                    type="text"
                     inputMode="decimal"
                     className="pl-7"
                     {...inputProps(path("amount"), `purchase-credit-payment-amount-${index}`)}
@@ -101,7 +168,7 @@ function PurchaseCreditPaymentFields({
                   options={PURCHASE_CREDIT_PAYMENT_TYPE_OPTIONS}
                   placeholder="Select payment type"
                   error={errorFor(path("paymentType"))}
-                  onChange={(value) => formik.setFieldValue(path("paymentType"), value, true)}
+                  onChange={changePaymentType}
                   onBlur={() => formik.setFieldTouched(path("paymentType"), true, true)}
                 />
               </PurchaseCreditFormField>
@@ -109,13 +176,18 @@ function PurchaseCreditPaymentFields({
               <PurchaseCreditFormField
                 id={`purchase-credit-reference-id-${index}`}
                 label="Reference ID"
-                hint={!isEditing ? "Available when updating the purchase credit." : undefined}
+                required={referenceIdRequired}
+                hint={
+                  referenceIdDisabled
+                    ? "Reference ID is not required for cash payments."
+                    : undefined
+                }
                 error={errorFor(path("referenceId"))}
               >
                 <Input
                   id={`purchase-credit-reference-id-${index}`}
                   maxLength={PURCHASE_CREDIT_REFERENCE_ID_MAX_LENGTH}
-                  disabled={!isEditing}
+                  disabled={referenceIdDisabled}
                   placeholder="Transaction reference"
                   {...inputProps(path("referenceId"), `purchase-credit-reference-id-${index}`)}
                 />
@@ -131,6 +203,7 @@ function PurchaseCreditPaymentFields({
                   id={`purchase-credit-payment-date-${index}`}
                   label="Payment date"
                   value={payment.paymentDate}
+                  min={minimumPaymentDate}
                   max={today}
                   required
                   error={errorFor(path("paymentDate"))}
@@ -141,14 +214,14 @@ function PurchaseCreditPaymentFields({
 
               <PurchaseCreditFormField
                 id={`purchase-credit-received-payment-date-${index}`}
-                label="Received payment date"
+                label="Settlement date"
                 required={isEditing}
                 hint={!isEditing ? "Available when updating the purchase credit." : undefined}
                 error={errorFor(path("receivedPaymentDate"))}
               >
                 <PurchaseCreditDatePicker
                   id={`purchase-credit-received-payment-date-${index}`}
-                  label="Received payment date"
+                  label="Settlement date"
                   value={payment.receivedPaymentDate}
                   max={today}
                   disabled={!isEditing}

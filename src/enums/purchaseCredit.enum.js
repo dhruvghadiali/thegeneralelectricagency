@@ -1,13 +1,11 @@
 export const PURCHASE_CREDIT_PAYMENT_STATUSES = Object.freeze({
-  PENDING: "pending",
+  IN_PROGRESS: "in_progress",
   PAID: "paid",
   FAILED: "failed",
-  IN_PROGRESS: "in_progress",
   REFUND: "refund",
 });
 
 export const PURCHASE_CREDIT_PAYMENT_STATUS_OPTIONS = Object.freeze([
-  { value: PURCHASE_CREDIT_PAYMENT_STATUSES.PENDING, label: "Pending" },
   { value: PURCHASE_CREDIT_PAYMENT_STATUSES.PAID, label: "Paid" },
   { value: PURCHASE_CREDIT_PAYMENT_STATUSES.FAILED, label: "Failed" },
   { value: PURCHASE_CREDIT_PAYMENT_STATUSES.IN_PROGRESS, label: "In progress" },

@@ -1,6 +1,8 @@
 import _ from "lodash";
 import moment from "moment";
 
+import { PURCHASE_CREDIT_PAYMENT_TYPES } from "@Enums";
+
 const toIsoDateTime = (value) => {
   if (!value) return undefined;
 
@@ -9,7 +11,7 @@ const toIsoDateTime = (value) => {
 };
 
 const optionalText = (value) => _.trim(value ?? "") || undefined;
-const receiptValues = (receipts = []) => receipts.filter(Boolean);
+const receiptValues = (receipts = []) => _.filter(receipts, Boolean);
 
 const toProductPayload = (item = {}) => ({
   product: item.product,
@@ -22,7 +24,10 @@ const toPaymentPayload = (payment = {}) =>
       payment_status: payment.paymentStatus,
       amount: _.toNumber(payment.amount),
       payment_type: payment.paymentType,
-      reference_id: optionalText(payment.referenceId),
+      reference_id:
+        payment.paymentType === PURCHASE_CREDIT_PAYMENT_TYPES.CASH
+          ? undefined
+          : optionalText(payment.referenceId),
       payment_date: toIsoDateTime(payment.paymentDate),
       received_payment_date: toIsoDateTime(payment.receivedPaymentDate),
       notes: optionalText(payment.notes),

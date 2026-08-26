@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import _ from "lodash";
 
 import {
   employeeCompanyApi,
@@ -42,7 +43,7 @@ function useRemoteOptions({ query, enabled = true, load }) {
       setState((current) => ({ ...current, isLoading: true, error: null }));
 
       try {
-        const items = await load(query.trim(), controller.signal);
+        const items = await load(_.trim(query), controller.signal);
         setState({ items, isLoading: false, error: null });
       } catch (error) {
         if (error?.name === "CanceledError" || error?.name === "AbortError") {
@@ -93,12 +94,14 @@ export function usePurchaseCreditOptions({ role, supplierId, supplierQuery, prod
         limit: OPTION_LIMIT,
       });
 
-      return items
-        .filter(
+      return _.sortBy(
+        _.filter(
+          items,
           (company) =>
             company.isActive && company.type === COMPANY_TYPES.SUPPLIER,
-        )
-        .sort((left, right) => left.name.localeCompare(right.name));
+        ),
+        (company) => _.lowerCase(company.name),
+      );
     },
     [role],
   );
@@ -124,12 +127,14 @@ export function usePurchaseCreditOptions({ role, supplierId, supplierQuery, prod
         limit: OPTION_LIMIT,
       });
 
-      const activeSupplierProducts = items
-        .filter(
+      const activeSupplierProducts = _.sortBy(
+        _.filter(
+          items,
           (product) =>
             product.isActive && String(product.agency) === String(supplierId),
-        )
-        .sort((left, right) => left.name.localeCompare(right.name));
+        ),
+        (product) => _.lowerCase(product.name),
+      );
 
       if (!search) {
         setProductCount({

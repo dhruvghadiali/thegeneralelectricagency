@@ -18,11 +18,13 @@ const toFormDate = (value) => {
 };
 
 const toBoolean = (value) => value === true || value === "true";
+const toFormNumberString = (value) =>
+  value === undefined || value === null ? "" : String(value);
 
 const fromProductResponse = (item = {}) => ({
   ...EMPTY_PURCHASE_CREDIT_PRODUCT,
   product: entityId(item.product),
-  stock: item.stock ?? "",
+  stock: toFormNumberString(item.stock),
 });
 
 const fromPaymentResponse = (payment = {}) => ({
@@ -30,8 +32,8 @@ const fromPaymentResponse = (payment = {}) => ({
   paymentStatus:
     payment.payment_status ??
     payment.paymentStatus ??
-    PURCHASE_CREDIT_PAYMENT_STATUSES.PENDING,
-  amount: payment.amount ?? "",
+    PURCHASE_CREDIT_PAYMENT_STATUSES.IN_PROGRESS,
+  amount: toFormNumberString(payment.amount),
   paymentType: payment.payment_type ?? payment.paymentType ?? "",
   referenceId: payment.reference_id ?? payment.referenceId ?? "",
   paymentDate: toFormDate(payment.payment_date ?? payment.paymentDate),
@@ -46,7 +48,7 @@ const fromPaymentResponse = (payment = {}) => ({
 const fromPaymentPlanResponse = (plan = {}) => ({
   ...EMPTY_PURCHASE_CREDIT_PAYMENT_PLAN,
   remindingDate: toFormDate(plan.reminding_date ?? plan.remindingDate),
-  amount: plan.amount ?? "",
+  amount: toFormNumberString(plan.amount),
   paymentType: plan.payment_type ?? plan.paymentType ?? "",
   isPaymentCompleted: toBoolean(
     plan.is_payment_completed ?? plan.isPaymentCompleted ?? false,
@@ -71,11 +73,11 @@ export function fromPurchaseCreditResponse(purchaseCredit = {}) {
         purchaseCredit.creditedAt ??
         purchaseCredit.purchaseCreditAt,
     ),
-    purchaseCreditAmount:
+    purchaseCreditAmount: toFormNumberString(
       purchaseCredit.credit_amount ??
-      purchaseCredit.creditAmount ??
-      purchaseCredit.purchaseCreditAmount ??
-      "",
+        purchaseCredit.creditAmount ??
+        purchaseCredit.purchaseCreditAmount,
+    ),
     expectedDeliveryDate: toFormDate(
       purchaseCredit.expected_delivery_date ?? purchaseCredit.expectedDeliveryDate,
     ),

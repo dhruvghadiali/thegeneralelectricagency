@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { format, isValid, parseISO, startOfDay } from "date-fns";
 import { CalendarIcon, X } from "lucide-react";
+import moment from "moment";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@shadcnComponent/button";
@@ -13,8 +13,8 @@ import {
 
 const parseDate = (value) => {
   if (!value) return undefined;
-  const parsed = parseISO(value);
-  return isValid(parsed) ? parsed : undefined;
+  const parsed = moment(value, "YYYY-MM-DD", true);
+  return parsed.isValid() ? parsed.toDate() : undefined;
 };
 
 function PurchaseCreditDatePicker({
@@ -34,8 +34,8 @@ function PurchaseCreditDatePicker({
   const minimum = parseDate(min);
   const maximum = parseDate(max);
   const disabledDates = [
-    ...(minimum ? [{ before: startOfDay(minimum) }] : []),
-    ...(maximum ? [{ after: startOfDay(maximum) }] : []),
+    ...(minimum ? [{ before: moment(minimum).startOf("day").toDate() }] : []),
+    ...(maximum ? [{ after: moment(maximum).startOf("day").toDate() }] : []),
   ];
 
   return (
@@ -66,7 +66,7 @@ function PurchaseCreditDatePicker({
         >
           <CalendarIcon className="size-4 shrink-0" aria-hidden="true" />
           <span className="truncate">
-            {selected ? format(selected, "dd MMM yyyy") : "Select a date"}
+            {selected ? moment(selected).format("DD MMM YYYY") : "Select a date"}
           </span>
         </Button>
       </PopoverTrigger>
@@ -78,7 +78,7 @@ function PurchaseCreditDatePicker({
           disabled={disabledDates.length ? disabledDates : undefined}
           onSelect={(date) => {
             if (disabled || !date) return;
-            onChange(format(date, "yyyy-MM-dd"));
+            onChange(moment(date).format("YYYY-MM-DD"));
             setOpen(false);
           }}
           captionLayout="dropdown"

@@ -1,10 +1,11 @@
+import _ from "lodash";
 import { FileText, Upload, X } from "lucide-react";
 
 import { Button } from "@shadcnComponent/button";
 
 const receiptName = (receipt) => {
   if (typeof receipt === "string") {
-    return receipt.split("/").at(-1) || receipt;
+    return _.last(receipt.split("/")) || receipt;
   }
 
   return receipt?.name ?? "Attached receipt";
@@ -12,10 +13,10 @@ const receiptName = (receipt) => {
 
 function PurchaseCreditFileUploader({ id, value = [], onChange, onBlur, error }) {
   const addFiles = (event) => {
-    const nextFiles = Array.from(event.target.files ?? []);
+    const nextFiles = _.toArray(event.target.files);
     if (nextFiles.length === 0) return;
 
-    onChange([...value, ...nextFiles]);
+    onChange(_.concat(value, nextFiles));
     event.target.value = "";
   };
 
@@ -44,7 +45,7 @@ function PurchaseCreditFileUploader({ id, value = [], onChange, onBlur, error })
           className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4"
           aria-label="Selected receipts"
         >
-          {value.map((receipt, index) => (
+          {_.map(value, (receipt, index) => (
             <li
               key={`${receiptName(receipt)}-${index}`}
               className="flex min-w-0 items-center gap-2 rounded-md border bg-muted/20 px-3 py-2 text-sm"
@@ -56,7 +57,11 @@ function PurchaseCreditFileUploader({ id, value = [], onChange, onBlur, error })
                 variant="ghost"
                 size="icon"
                 aria-label={`Remove ${receiptName(receipt)}`}
-                onClick={() => onChange(value.filter((_, itemIndex) => itemIndex !== index))}
+                onClick={() =>
+                  onChange(
+                    _.filter(value, (_, itemIndex) => itemIndex !== index),
+                  )
+                }
                 className="size-7"
               >
                 <X className="size-3.5" aria-hidden="true" />

@@ -9,4 +9,5 @@ export { superAdminProductApi } from "@Api/superAdmin/product.api";
 export { superAdminCompanyApi } from "@Api/superAdmin/company.api";
 export { superAdminEmployeeApi } from "@Api/superAdmin/employee.api";
 export { warehouseManagerAuthApi } from "@Api/warehouseManager/auth.api";
+export { employeePurchaseCreditApi } from "@Api/employee/purchaseCredit.api";
 export { apiClient, API_BASE_URL, extractErrorMessage } from "@Api/client.api";

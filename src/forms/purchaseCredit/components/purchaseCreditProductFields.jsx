@@ -1,9 +1,6 @@
+import _ from "lodash";
 import { Trash2 } from "lucide-react";
 
-import {
-  PURCHASE_CREDIT_STOCK_MAX,
-  PURCHASE_CREDIT_STOCK_MIN,
-} from "@Forms/purchaseCredit/purchaseCredit.validation.constants";
 import { Button } from "@shadcnComponent/button";
 import { Input } from "@shadcnComponent/input";
 import PurchaseCreditFormField from "@Forms/purchaseCredit/components/purchaseCreditFormField";
@@ -23,19 +20,21 @@ function PurchaseCreditProductFields({
   onRemove,
 }) {
   const selectedProductValues = new Set(
-    products.map((item) => String(item.product || "")).filter(Boolean),
+    _.compact(_.map(products, (item) => String(item.product || ""))),
   );
 
   return (
     <div className="space-y-4">
-      {products.map((item, index) => {
+      {_.map(products, (item, index) => {
         const prefix = `products[${index}]`;
         const productPath = `${prefix}.product`;
         const stockPath = `${prefix}.stock`;
-        const selected = productOptions.find(
+        const selected = _.find(
+          productOptions,
           (option) => option.value === String(item.product),
         );
-        const availableOptions = productOptions.filter(
+        const availableOptions = _.filter(
+          productOptions,
           (option) =>
             option.value === String(item.product) ||
             !selectedProductValues.has(option.value),
@@ -96,11 +95,9 @@ function PurchaseCreditProductFields({
               >
                 <Input
                   id={`purchase-credit-stock-${index}`}
-                  type="number"
-                  min={PURCHASE_CREDIT_STOCK_MIN}
-                  max={PURCHASE_CREDIT_STOCK_MAX}
-                  step="1"
+                  type="text"
                   inputMode="numeric"
+                  pattern="[0-9]*"
                   placeholder="e.g. 12"
                   {...inputProps(stockPath, `purchase-credit-stock-${index}`)}
                 />
