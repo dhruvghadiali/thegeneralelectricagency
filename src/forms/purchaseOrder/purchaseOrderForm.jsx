@@ -1,10 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { getIn, useFormik } from "formik";
-import { CheckCircle2, PackageCheck, Plus, Save } from "lucide-react";
+import {
+  CheckCircle2,
+  FileText,
+  PackageCheck,
+  Plus,
+  Save,
+  UserCheck,
+} from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import FormErrorAlert from "@commonComponent/alert/formErrorAlert";
+import PurchaseOrderBillUploader from "@Forms/purchaseOrder/components/purchaseOrderBillUploader";
 import PurchaseOrderFormField from "@Forms/purchaseOrder/components/purchaseOrderFormField";
 import PurchaseOrderProductFields from "@Forms/purchaseOrder/components/purchaseOrderProductFields";
 import PurchaseOrderSectionHeading from "@Forms/purchaseOrder/components/purchaseOrderSectionHeading";
@@ -13,7 +21,9 @@ import {
   EMPTY_PURCHASE_PRODUCT,
   PURCHASE_ORDER_INITIAL_VALUES,
 } from "@Forms/purchaseOrder/purchaseOrder.initialValues";
+import { PURCHASE_ORDER_EMPLOYEE_OPTIONS } from "@Forms/purchaseOrder/purchaseOrder.options";
 import { purchaseOrderValidationSchema } from "@Forms/purchaseOrder/purchaseOrder.validation.schema";
+import { calculatePurchaseProductPricing } from "@Forms/purchaseOrder/purchaseOrderForm.utils";
 import { usePurchaseOrderOptions } from "@Forms/purchaseOrder/hooks/usePurchaseOrderOptions";
 import { useStandaloneStockCounts } from "@Forms/purchaseOrder/hooks/useStandaloneStockCounts";
 import { createPurchase } from "@Redux/purchase/purchase.action";
@@ -27,6 +37,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@shadcnComponent/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@shadcnComponent/select";
 
 function PurchaseOrderForm() {
   const dispatch = useDispatch();
@@ -128,10 +145,8 @@ function PurchaseOrderForm() {
         products: current.products.map((product, index) =>
           index === productIndex
             ? {
-                ...product,
+                ...EMPTY_PURCHASE_PRODUCT,
                 product: option.value,
-                quantityPurchased: "",
-                standaloneStock: "",
               }
             : product,
         ),
@@ -170,6 +185,24 @@ function PurchaseOrderForm() {
       "products",
       [...formik.values.products, { ...EMPTY_PURCHASE_PRODUCT }],
       false,
+    );
+    setCreateSucceeded(false);
+  };
+  const updateProductPricing = (productIndex, field, value) => {
+    formik.setValues(
+      (current) => ({
+        ...current,
+        products: current.products.map((product, index) => {
+          if (index !== productIndex) return product;
+
+          const updatedProduct = { ...product, [field]: value };
+          return {
+            ...updatedProduct,
+            ...calculatePurchaseProductPricing(updatedProduct),
+          };
+        }),
+      }),
+      true,
     );
     setCreateSucceeded(false);
   };
@@ -280,7 +313,91 @@ function PurchaseOrderForm() {
                 }
                 onSelect={selectProduct}
                 onRemove={removeProduct}
+                onPricingChange={updateProductPricing}
               />
+            </section>
+
+            <section className="space-y-5">
+              <PurchaseOrderSectionHeading
+                icon={FileText}
+                title="Bills"
+                description="Upload one or more PDF bills for this purchase order."
+              />
+              <PurchaseOrderFormField
+                id="purchase-bills"
+                label="Bill files"
+                hint="You can select multiple PDF files."
+                error={errorFor("bills")}
+              >
+                <PurchaseOrderBillUploader
+                  id="purchase-bills"
+                  value={formik.values.bills}
+                  disabled={isCreating || formik.isSubmitting}
+                  error={errorFor("bills")}
+                  onChange={(bills) => {
+                    setCreateSucceeded(false);
+                    formik.setFieldValue("bills", bills, true);
+                    formik.setFieldTouched("bills", true, false);
+                  }}
+                  onBlur={() => formik.setFieldTouched("bills", true, true)}
+                />
+              </PurchaseOrderFormField>
+            </section>
+
+            <section className="space-y-5">
+              <PurchaseOrderSectionHeading
+                icon={UserCheck}
+                title="Warehouse receiving information"
+                description="Select the employee who received the products at ware house."
+              />
+              <PurchaseOrderFormField
+                id="purchase-received-or-collected-by"
+                label="Received or collected by"
+                required
+                error={errorFor("receivedOrCollectedBy")}
+              >
+                <Select
+                  value={formik.values.receivedOrCollectedBy}
+                  onValueChange={(value) => {
+                    setCreateSucceeded(false);
+                    formik.setFieldValue(
+                      "receivedOrCollectedBy",
+                      value,
+                      true,
+                    );
+                  }}
+                  onOpenChange={(open) =>
+                    !open &&
+                    formik.setFieldTouched(
+                      "receivedOrCollectedBy",
+                      true,
+                      true,
+                    )
+                  }
+                  disabled={isCreating || formik.isSubmitting}
+                >
+                  <SelectTrigger
+                    id="purchase-received-or-collected-by"
+                    aria-invalid={Boolean(
+                      errorFor("receivedOrCollectedBy"),
+                    )}
+                    aria-describedby={
+                      errorFor("receivedOrCollectedBy")
+                        ? "purchase-received-or-collected-by-error"
+                        : undefined
+                    }
+                  >
+                    <SelectValue placeholder="Select an employee" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PURCHASE_ORDER_EMPLOYEE_OPTIONS.map((employee) => (
+                      <SelectItem key={employee.value} value={employee.value}>
+                        {employee.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </PurchaseOrderFormField>
             </section>
 
             <div className="flex flex-col-reverse gap-2 border-t pt-6 sm:flex-row sm:justify-end">

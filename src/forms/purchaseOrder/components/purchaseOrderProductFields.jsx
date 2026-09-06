@@ -1,9 +1,19 @@
 import { LoaderCircle, Trash2 } from "lucide-react";
 
+import { INDIAN_GST_OPTIONS } from "@Enums";
+import { PURCHASE_PRODUCT_NOTES_MAX_LENGTH } from "@Forms/purchaseOrder/purchaseOrder.validation.constants";
 import PurchaseOrderFormField from "@Forms/purchaseOrder/components/purchaseOrderFormField";
 import { SearchableApiSelect } from "@Forms/purchaseOrder/components/purchaseOrderSelectors";
 import { Button } from "@shadcnComponent/button";
 import { Input } from "@shadcnComponent/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@shadcnComponent/select";
+import { Textarea } from "@shadcnComponent/textarea";
 
 function PurchaseOrderProductFields({
   products,
@@ -19,6 +29,7 @@ function PurchaseOrderProductFields({
   onProductBlur,
   onSelect,
   onRemove,
+  onPricingChange,
 }) {
   const selectedProductValues = new Set(
     products.map((item) => String(item.product || "")).filter(Boolean),
@@ -30,6 +41,12 @@ function PurchaseOrderProductFields({
         const productPath = `products[${index}].product`;
         const standaloneStockPath = `products[${index}].standaloneStock`;
         const quantityPath = `products[${index}].quantityPurchased`;
+        const unitPricePath = `products[${index}].unitPrice`;
+        const unitDiscountPath = `products[${index}].unitDiscount`;
+        const unitGstPath = `products[${index}].unitGst`;
+        const unitGstAmountPath = `products[${index}].unitGstAmount`;
+        const finalPricePath = `products[${index}].finalPrice`;
+        const notesPath = `products[${index}].notes`;
         const standaloneStockState = getStandaloneStockState(item.product);
         const availableOptions = productOptions.filter(
           (option) =>
@@ -125,6 +142,147 @@ function PurchaseOrderProductFields({
                   pattern="[0-9]*"
                   placeholder="e.g. 10"
                   {...inputProps(quantityPath, `quantity-purchased-${index}`)}
+                />
+              </PurchaseOrderFormField>
+            </div>
+            <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              <PurchaseOrderFormField
+                id={`unit-price-${index}`}
+                label="Unit price"
+                required
+                error={errorFor(unitPricePath)}
+              >
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                    ₹
+                  </span>
+                  <Input
+                    id={`unit-price-${index}`}
+                    name={unitPricePath}
+                    type="text"
+                    inputMode="decimal"
+                    placeholder="0.00"
+                    value={item.unitPrice}
+                    onChange={(event) =>
+                      onPricingChange(index, "unitPrice", event.target.value)
+                    }
+                    onBlur={inputProps(unitPricePath, `unit-price-${index}`).onBlur}
+                    aria-invalid={Boolean(errorFor(unitPricePath))}
+                    aria-describedby={
+                      errorFor(unitPricePath)
+                        ? `unit-price-${index}-error`
+                        : undefined
+                    }
+                    className="pl-7"
+                  />
+                </div>
+              </PurchaseOrderFormField>
+              <PurchaseOrderFormField
+                id={`unit-discount-${index}`}
+                label="Unit discount"
+                required
+                error={errorFor(unitDiscountPath)}
+              >
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                    ₹
+                  </span>
+                  <Input
+                    id={`unit-discount-${index}`}
+                    name={unitDiscountPath}
+                    type="text"
+                    inputMode="decimal"
+                    placeholder="0.00"
+                    value={item.unitDiscount}
+                    onChange={(event) =>
+                      onPricingChange(index, "unitDiscount", event.target.value)
+                    }
+                    onBlur={
+                      inputProps(unitDiscountPath, `unit-discount-${index}`).onBlur
+                    }
+                    aria-invalid={Boolean(errorFor(unitDiscountPath))}
+                    aria-describedby={
+                      errorFor(unitDiscountPath)
+                        ? `unit-discount-${index}-error`
+                        : undefined
+                    }
+                    className="pl-7"
+                  />
+                </div>
+              </PurchaseOrderFormField>
+              <PurchaseOrderFormField
+                id={`unit-gst-${index}`}
+                label="Unit GST"
+                required
+                error={errorFor(unitGstPath)}
+              >
+                <Select
+                  value={String(item.unitGst ?? "")}
+                  onValueChange={(value) =>
+                    onPricingChange(index, "unitGst", value)
+                  }
+                  onOpenChange={(open) => !open && onProductBlur(unitGstPath)}
+                >
+                  <SelectTrigger
+                    id={`unit-gst-${index}`}
+                    aria-invalid={Boolean(errorFor(unitGstPath))}
+                    aria-describedby={
+                      errorFor(unitGstPath)
+                        ? `unit-gst-${index}-error`
+                        : undefined
+                    }
+                  >
+                    <SelectValue placeholder="Select GST rate" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {INDIAN_GST_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </PurchaseOrderFormField>
+              <PurchaseOrderFormField
+                id={`unit-gst-amount-${index}`}
+                label="Unit GST amount"
+                required
+                error={errorFor(unitGstAmountPath)}
+              >
+                <Input
+                  id={`unit-gst-amount-${index}`}
+                  type="text"
+                  value={item.unitGstAmount}
+                  placeholder="Calculated automatically"
+                  disabled
+                />
+              </PurchaseOrderFormField>
+              <PurchaseOrderFormField
+                id={`final-price-${index}`}
+                label="Final price"
+                required
+                error={errorFor(finalPricePath)}
+              >
+                <Input
+                  id={`final-price-${index}`}
+                  type="text"
+                  value={item.finalPrice}
+                  placeholder="Calculated automatically"
+                  disabled
+                />
+              </PurchaseOrderFormField>
+            </div>
+            <div className="mt-5">
+              <PurchaseOrderFormField
+                id={`product-notes-${index}`}
+                label="Notes"
+                error={errorFor(notesPath)}
+              >
+                <Textarea
+                  id={`product-notes-${index}`}
+                  maxLength={PURCHASE_PRODUCT_NOTES_MAX_LENGTH}
+                  placeholder="Add notes for this product"
+                  {...inputProps(notesPath, `product-notes-${index}`)}
                 />
               </PurchaseOrderFormField>
             </div>
