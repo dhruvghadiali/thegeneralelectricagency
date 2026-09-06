@@ -16,6 +16,8 @@ const formattedMaxAmount = PURCHASE_AMOUNT_MAX.toLocaleString("en-IN");
 
 export const PURCHASE_ORDER_VALIDATION_MESSAGES = Object.freeze({
   PRODUCT_REQUIRED: "Select a product.",
+  PRODUCTS_REQUIRED: "Add at least one product.",
+  PRODUCTS_UNIQUE: "Each product can only be selected once.",
   SUPPLIER_REQUIRED: "Select a supplier.",
   PURCHASE_DATE_INVALID: "Enter a valid purchase date.",
   PURCHASE_DATE_REQUIRED: "Purchase date is required.",

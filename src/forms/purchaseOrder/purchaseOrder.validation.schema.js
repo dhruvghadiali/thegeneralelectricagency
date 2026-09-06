@@ -52,8 +52,27 @@ const optionalDate = (typeError) =>
   Yup.date().transform(emptyToUndefined).typeError(typeError).optional();
 
 export const purchaseOrderValidationSchema = Yup.object({
-  product: Yup.string().required(MESSAGES.PRODUCT_REQUIRED),
   supplier: Yup.string().required(MESSAGES.SUPPLIER_REQUIRED),
+  products: Yup.array()
+    .of(
+      Yup.object({
+        product: Yup.string().required(MESSAGES.PRODUCT_REQUIRED),
+        quantityPurchased: Yup.number()
+          .transform(emptyToUndefined)
+          .typeError(MESSAGES.QUANTITY_NUMBER)
+          .integer(MESSAGES.QUANTITY_INTEGER)
+          .min(PURCHASE_QUANTITY_MIN, MESSAGES.QUANTITY_MIN)
+          .max(PURCHASE_QUANTITY_MAX, MESSAGES.QUANTITY_MAX)
+          .required(MESSAGES.QUANTITY_REQUIRED),
+      }),
+    )
+    .min(1, MESSAGES.PRODUCTS_REQUIRED)
+    .test("unique-products", MESSAGES.PRODUCTS_UNIQUE, (products = []) => {
+      const selectedProducts = products
+        .map((item) => item?.product)
+        .filter(Boolean);
+      return new Set(selectedProducts).size === selectedProducts.length;
+    }),
   purchaseDate: Yup.date()
     .typeError(MESSAGES.PURCHASE_DATE_INVALID)
     .required(MESSAGES.PURCHASE_DATE_REQUIRED),
@@ -65,13 +84,6 @@ export const purchaseOrderValidationSchema = Yup.object({
     Yup.ref("purchaseDate"),
     MESSAGES.ACTUAL_DELIVERY_DATE_ORDER,
   ),
-  quantityPurchased: Yup.number()
-    .transform(emptyToUndefined)
-    .typeError(MESSAGES.QUANTITY_NUMBER)
-    .integer(MESSAGES.QUANTITY_INTEGER)
-    .min(PURCHASE_QUANTITY_MIN, MESSAGES.QUANTITY_MIN)
-    .max(PURCHASE_QUANTITY_MAX, MESSAGES.QUANTITY_MAX)
-    .required(MESSAGES.QUANTITY_REQUIRED),
   billAmount: requiredAmount({
     type: MESSAGES.BILL_AMOUNT_NUMBER,
     min: MESSAGES.BILL_AMOUNT_MIN,

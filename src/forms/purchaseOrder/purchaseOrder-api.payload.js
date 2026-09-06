@@ -26,13 +26,17 @@ const toPaymentPayload = (payment = {}) =>
     _.isUndefined,
   );
 
+const toProductPayload = (item = {}) => ({
+  product: item.product,
+  quantity_purchased: _.toNumber(item.quantityPurchased),
+});
+
 export function toPurchaseCreatePayload(values = {}) {
   return {
-    product: values.product,
     supplier: values.supplier,
+    products: _.map(values.products ?? [], toProductPayload),
     purchase_date: toIsoDateTime(values.purchaseDate),
     expected_delivery_date: toIsoDateTime(values.expectedDeliveryDate),
-    quantity_purchased: _.toNumber(values.quantityPurchased),
     bill_amount: _.toNumber(values.billAmount),
     actual_paid_amount: _.toNumber(values.actualPaidAmount),
     gst_amount: _.toNumber(values.gstAmount),

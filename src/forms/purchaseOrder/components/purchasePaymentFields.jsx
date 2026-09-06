@@ -8,7 +8,7 @@ import {
 } from "@Forms/purchaseOrder/purchaseOrder.validation.constants";
 import { Button } from "@shadcnComponent/button";
 import { Input } from "@shadcnComponent/input";
-import PurchaseOrderDatePicker from "@screenComponent/purchaseOrder/purchaseOrderDatePicker";
+import PurchaseOrderDatePicker from "@Forms/purchaseOrder/components/purchaseOrderDatePicker";
 import {
   Select,
   SelectContent,

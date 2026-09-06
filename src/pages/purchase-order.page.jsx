@@ -1,4 +1,4 @@
-import PurchaseOrderForm from "@screenComponent/purchaseOrder/purchaseOrderForm";
+import PurchaseOrderForm from "@Forms/purchaseOrder/purchaseOrderForm";
 
 function PurchaseOrderPage() {
   return <PurchaseOrderForm />;

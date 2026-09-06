@@ -1,13 +1,13 @@
-import { createElement, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getIn, useFormik } from "formik";
 import {
   CheckCircle2,
-  CircleAlert,
   FileText,
   IndianRupee,
   PackageCheck,
   Plus,
   Save,
+  Trash2,
   WalletCards,
   Warehouse,
 } from "lucide-react";
@@ -17,13 +17,13 @@ import { useNavigate } from "react-router-dom";
 import FormErrorAlert from "@commonComponent/alert/formErrorAlert";
 import { INDIAN_GST_OPTIONS } from "@Enums";
 import {
+  EMPTY_PURCHASE_PRODUCT,
   EMPTY_PURCHASE_PAYMENT,
   PURCHASE_ORDER_INITIAL_VALUES,
 } from "@Forms/purchaseOrder/purchaseOrder.initialValues";
 import { purchaseOrderValidationSchema } from "@Forms/purchaseOrder/purchaseOrder.validation.schema";
 import {
   PURCHASE_AMOUNT_MAX,
-  PURCHASE_AMOUNT_MIN,
   PURCHASE_ORDER_PDF_MAX_LENGTH,
   PURCHASE_ORDER_PDF_MIN_LENGTH,
   PURCHASE_PAYMENTS_MAX,
@@ -43,7 +43,6 @@ import {
   CardTitle,
 } from "@shadcnComponent/card";
 import { Input } from "@shadcnComponent/input";
-import { Label } from "@shadcnComponent/label";
 import {
   Select,
   SelectContent,
@@ -51,55 +50,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@shadcnComponent/select";
-import PurchasePaymentFields from "@screenComponent/purchaseOrder/purchasePaymentFields";
-import PurchaseOrderDatePicker from "@screenComponent/purchaseOrder/purchaseOrderDatePicker";
+import PurchasePaymentFields from "@Forms/purchaseOrder/components/purchasePaymentFields";
+import CurrencyField from "@Forms/purchaseOrder/components/purchaseOrderCurrencyField";
+import PurchaseOrderDatePicker from "@Forms/purchaseOrder/components/purchaseOrderDatePicker";
+import FormField from "@Forms/purchaseOrder/components/purchaseOrderFormField";
+import SectionHeading from "@Forms/purchaseOrder/components/purchaseOrderSectionHeading";
 import {
   SearchableApiSelect,
   StockMultiSelect,
-} from "@screenComponent/purchaseOrder/purchaseOrderSelectors";
-import { usePurchaseOrderOptions } from "@screenComponent/purchaseOrder/usePurchaseOrderOptions";
-
-function FormField({ id, label, required = false, hint, error, children }) {
-  return (
-    <div className="grid content-start gap-2">
-      <Label htmlFor={id}>
-        {label}
-        {required && <span className="text-destructive"> *</span>}
-      </Label>
-      {children}
-      {hint && !error && (
-        <p className="text-xs leading-4 text-muted-foreground">{hint}</p>
-      )}
-      {error && (
-        <p
-          id={`${id}-error`}
-          role="alert"
-          className="flex items-start gap-1.5 text-xs font-medium leading-4 text-destructive"
-        >
-          <CircleAlert className="mt-px size-3.5 shrink-0" aria-hidden="true" />
-          <span>{error}</span>
-        </p>
-      )}
-    </div>
-  );
-}
-
-function SectionHeading({ icon, title, description, action }) {
-  return (
-    <div className="flex flex-col gap-3 border-b pb-4 sm:flex-row sm:items-start sm:justify-between">
-      <div className="flex items-start gap-3">
-        <div className="rounded-lg bg-primary/10 p-2 text-primary">
-          {createElement(icon, { className: "size-4", "aria-hidden": true })}
-        </div>
-        <div>
-          <h3 className="font-semibold">{title}</h3>
-          <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-        </div>
-      </div>
-      {action}
-    </div>
-  );
-}
+} from "@Forms/purchaseOrder/components/purchaseOrderSelectors";
+import { usePurchaseOrderOptions } from "@Forms/purchaseOrder/hooks/usePurchaseOrderOptions";
 
 const calculateInclusiveGst = (billAmount, gstPercentage) => {
   const bill = Number(billAmount);
@@ -119,44 +79,6 @@ function PurchaseOrderForm() {
   const [selectedLabels, setSelectedLabels] = useState({});
   const stocks = useSelector((state) => state.stocks.items ?? []);
   const { isCreating, createError } = useSelector(selectPurchaseCreateState);
-  const { productState, supplierState } = usePurchaseOrderOptions(
-    productQuery,
-    supplierQuery,
-  );
-
-  useEffect(() => {
-    dispatch(fetchStocks());
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(purchaseCreateCleared());
-
-    return () => dispatch(purchaseCreateCleared());
-  }, [dispatch]);
-
-  const productOptions = useMemo(
-    () =>
-      productState.items.map((product) => ({
-        value: String(product.id),
-        label: [product.name, product.productCode].filter(Boolean).join(" · "),
-        supplierId: product.agency ? String(product.agency) : "",
-        supplierName:
-          product.agencyName &&
-          String(product.agencyName) !== String(product.agency)
-            ? product.agencyName
-            : "",
-      })),
-    [productState.items],
-  );
-  const supplierOptions = useMemo(
-    () =>
-      supplierState.items.map((company) => ({
-        value: String(company.id),
-        label: company.name,
-      })),
-    [supplierState.items],
-  );
-
   const formik = useFormik({
     initialValues: PURCHASE_ORDER_INITIAL_VALUES,
     validationSchema: purchaseOrderValidationSchema,
@@ -177,6 +99,40 @@ function PurchaseOrderForm() {
       }
     },
   });
+  const { availableProductCount, productState, supplierState } =
+    usePurchaseOrderOptions({
+      productQuery,
+      supplierId: formik?.values.supplier,
+      supplierQuery,
+    });
+
+  useEffect(() => {
+    dispatch(fetchStocks());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(purchaseCreateCleared());
+
+    return () => dispatch(purchaseCreateCleared());
+  }, [dispatch]);
+
+  const productOptions = useMemo(
+    () =>
+      productState.items.map((product) => ({
+        value: String(product.id),
+        label: [product.name, product.productCode].filter(Boolean).join(" · "),
+      })),
+    [productState.items],
+  );
+  const supplierOptions = useMemo(
+    () =>
+      supplierState.items.map((company) => ({
+        value: String(company.id),
+        label: company.name,
+      })),
+    [supplierState.items],
+  );
+
   const errorFor = (field) => {
     const error = getIn(formik.errors, field);
     return getIn(formik.touched, field) && typeof error === "string"
@@ -211,31 +167,56 @@ function PurchaseOrderForm() {
     );
     setCreateSucceeded(false);
   };
-  const selectRemoteOption = (field, option) => {
-    formik.setFieldValue(field, option.value, true);
-    setSelectedLabels((current) => ({ ...current, [field]: option.label }));
-    setCreateSucceeded(false);
-  };
-  const selectProductOption = (option) => {
-    const matchedSupplier = supplierOptions.find(
-      (supplier) => supplier.value === option.supplierId,
-    );
-    const supplierName = option.supplierName || matchedSupplier?.label || "";
-
+  const selectSupplier = (option) => {
     formik.setValues(
       (current) => ({
         ...current,
-        product: option.value,
-        supplier: option.supplierId,
+        supplier: option.value,
+        products: [{ ...EMPTY_PURCHASE_PRODUCT }],
       }),
+      true,
+    );
+    setSelectedLabels({ supplier: option.label });
+    setSupplierQuery(option.label);
+    setProductQuery("");
+    setCreateSucceeded(false);
+  };
+  const selectProduct = (productIndex, option) => {
+    formik.setFieldValue(
+      `products[${productIndex}].product`,
+      option.value,
       true,
     );
     setSelectedLabels((current) => ({
       ...current,
-      product: option.label,
-      supplier: supplierName,
+      [`product-${productIndex}`]: option.label,
     }));
-    setSupplierQuery(supplierName);
+    setProductQuery("");
+    setCreateSucceeded(false);
+  };
+  const addProduct = () => {
+    formik.setFieldValue(
+      "products",
+      [...formik.values.products, { ...EMPTY_PURCHASE_PRODUCT }],
+      false,
+    );
+    setCreateSucceeded(false);
+  };
+  const removeProduct = (productIndex) => {
+    formik.setFieldValue(
+      "products",
+      formik.values.products.filter((_, index) => index !== productIndex),
+      true,
+    );
+    setSelectedLabels((current) => {
+      const nextLabels = { supplier: current.supplier };
+      formik.values.products.forEach((_, index) => {
+        if (index === productIndex) return;
+        const nextIndex = index > productIndex ? index - 1 : index;
+        nextLabels[`product-${nextIndex}`] = current[`product-${index}`];
+      });
+      return nextLabels;
+    });
     setCreateSucceeded(false);
   };
 
@@ -268,14 +249,13 @@ function PurchaseOrderForm() {
     );
     setCreateSucceeded(false);
   };
+  const selectedProductValues = new Set(
+    formik.values.products.map((item) => String(item.product || "")).filter(Boolean),
+  );
 
   return (
     <main className="mx-auto w-full max-w-6xl space-y-6 pb-8">
       <section className="max-w-3xl">
-        <p className="text-sm font-medium text-primary">Purchase management</p>
-        <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
-          Add purchase order
-        </h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Record supplier, delivery, stock, GST-inclusive billing, and payment
           details.
@@ -309,39 +289,30 @@ function PurchaseOrderForm() {
               <SectionHeading
                 icon={PackageCheck}
                 title="Order information"
-                description="Search active products and suppliers, then set the order and delivery dates."
-              />
-              <div className="grid gap-5 sm:grid-cols-2">
-                <FormField
-                  id="purchase-product"
-                  label="Product"
-                  required
-                  error={errorFor("product")}
-                >
-                  <SearchableApiSelect
-                    id="purchase-product"
-                    label="Product"
-                    value={formik.values.product}
-                    selectedLabel={selectedLabels.product}
-                    placeholder="Search and select a product"
-                    searchPlaceholder="Search products"
-                    query={productQuery}
-                    onQueryChange={setProductQuery}
-                    options={productOptions}
-                    isLoading={productState.isLoading}
-                    error={productState.error}
-                    fieldError={errorFor("product")}
-                    onSelect={selectProductOption}
-                    onBlur={() =>
-                      formik.setFieldTouched("product", true, true)
+                description="Select a supplier first, then add one or more of its active products."
+                action={
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={
+                      !formik.values.supplier ||
+                      productState.isLoading ||
+                      formik.values.products.length >= availableProductCount
                     }
-                  />
-                </FormField>
+                    onClick={addProduct}
+                    className="w-full sm:w-auto"
+                  >
+                    <Plus className="size-4" aria-hidden="true" />
+                    Add product
+                  </Button>
+                }
+              />
+              <div>
                 <FormField
                   id="purchase-supplier"
                   label="Supplier"
                   required
-                  hint="Automatically selected from the product, or search for another active company."
+                  hint="Changing the supplier clears the selected products."
                   error={errorFor("supplier")}
                 >
                   <SearchableApiSelect
@@ -357,14 +328,99 @@ function PurchaseOrderForm() {
                     isLoading={supplierState.isLoading}
                     error={supplierState.error}
                     fieldError={errorFor("supplier")}
-                    onSelect={(option) =>
-                      selectRemoteOption("supplier", option)
-                    }
+                    onSelect={selectSupplier}
                     onBlur={() =>
                       formik.setFieldTouched("supplier", true, true)
                     }
                   />
                 </FormField>
+              </div>
+
+              <div className="space-y-4">
+                {formik.values.products.map((item, index) => {
+                  const productPath = `products[${index}].product`;
+                  const quantityPath = `products[${index}].quantityPurchased`;
+                  const availableOptions = productOptions.filter(
+                    (option) =>
+                      option.value === String(item.product) ||
+                      !selectedProductValues.has(option.value),
+                  );
+
+                  return (
+                    <div
+                      key={index}
+                      className="rounded-xl border bg-muted/10 p-4 sm:p-5"
+                    >
+                      <div className="mb-4 flex items-center justify-between gap-3">
+                        <p className="font-medium">Product {index + 1}</p>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          disabled={formik.values.products.length === 1}
+                          aria-label={`Remove product ${index + 1}`}
+                          onClick={() => removeProduct(index)}
+                          className="text-muted-foreground hover:text-destructive"
+                        >
+                          <Trash2 className="size-4" aria-hidden="true" />
+                        </Button>
+                      </div>
+                      <div className="grid gap-5 sm:grid-cols-2">
+                        <FormField
+                          id={`purchase-product-${index}`}
+                          label="Product"
+                          required
+                          hint={
+                            !formik.values.supplier
+                              ? "Select a supplier first."
+                              : undefined
+                          }
+                          error={errorFor(productPath)}
+                        >
+                          <SearchableApiSelect
+                            id={`purchase-product-${index}`}
+                            label={`Product ${index + 1}`}
+                            value={String(item.product ?? "")}
+                            selectedLabel={selectedLabels[`product-${index}`]}
+                            placeholder="Search and select a product"
+                            searchPlaceholder="Search active products"
+                            query={productQuery}
+                            disabled={!formik.values.supplier}
+                            onQueryChange={setProductQuery}
+                            options={availableOptions}
+                            isLoading={productState.isLoading}
+                            error={productState.error}
+                            fieldError={errorFor(productPath)}
+                            onSelect={(option) => selectProduct(index, option)}
+                            onBlur={() =>
+                              formik.setFieldTouched(productPath, true, true)
+                            }
+                          />
+                        </FormField>
+                        <FormField
+                          id={`quantity-purchased-${index}`}
+                          label="Quantity purchased"
+                          required
+                          error={errorFor(quantityPath)}
+                        >
+                          <Input
+                            id={`quantity-purchased-${index}`}
+                            type="number"
+                            min={PURCHASE_QUANTITY_MIN}
+                            max={PURCHASE_QUANTITY_MAX}
+                            step="1"
+                            inputMode="numeric"
+                            placeholder="e.g. 10"
+                            {...inputProps(
+                              quantityPath,
+                              `quantity-purchased-${index}`,
+                            )}
+                          />
+                        </FormField>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
 
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -474,24 +530,7 @@ function PurchaseOrderForm() {
                 title="Quantity and billing"
                 description="Enter GST-inclusive values. GST is calculated from the bill total and selected slab."
               />
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                <FormField
-                  id="quantity-purchased"
-                  label="Quantity purchased"
-                  required
-                  error={errorFor("quantityPurchased")}
-                >
-                  <Input
-                    id="quantity-purchased"
-                    type="number"
-                    min={PURCHASE_QUANTITY_MIN}
-                    max={PURCHASE_QUANTITY_MAX}
-                    step="1"
-                    inputMode="numeric"
-                    placeholder="e.g. 10"
-                    {...inputProps("quantityPurchased", "quantity-purchased")}
-                  />
-                </FormField>
+              <div className="grid gap-5 sm:grid-cols-2">
                 <CurrencyField
                   id="bill-amount"
                   label="Bill amount"
@@ -644,37 +683,6 @@ function PurchaseOrderForm() {
         </CardContent>
       </Card>
     </main>
-  );
-}
-
-function CurrencyField({
-  id,
-  label,
-  hint,
-  max = PURCHASE_AMOUNT_MAX,
-  inputProps,
-  error,
-  disabled = false,
-}) {
-  return (
-    <FormField id={id} label={label} required hint={hint} error={error}>
-      <div className="relative">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-          ₹
-        </span>
-        <Input
-          id={id}
-          type="number"
-          min={PURCHASE_AMOUNT_MIN}
-          max={max}
-          step="0.01"
-          inputMode="decimal"
-          disabled={disabled}
-          {...inputProps}
-          className="pl-7"
-        />
-      </div>
-    </FormField>
   );
 }
 
