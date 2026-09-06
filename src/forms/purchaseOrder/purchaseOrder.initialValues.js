@@ -1,5 +1,6 @@
 export const EMPTY_PURCHASE_PRODUCT = Object.freeze({
   product: "",
+  standaloneStock: "",
   quantityPurchased: "",
 });
 

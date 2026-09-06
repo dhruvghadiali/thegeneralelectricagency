@@ -18,6 +18,8 @@ export const PURCHASE_ORDER_VALIDATION_MESSAGES = Object.freeze({
   PRODUCT_REQUIRED: "Select a product.",
   PRODUCTS_REQUIRED: "Add at least one product.",
   PRODUCTS_UNIQUE: "Each product can only be selected once.",
+  STANDALONE_STOCK_REQUIRED:
+    "Standalone stock count is unavailable. Select the product again.",
   SUPPLIER_REQUIRED: "Select a supplier.",
   PURCHASE_DATE_INVALID: "Enter a valid purchase date.",
   PURCHASE_DATE_REQUIRED: "Purchase date is required.",
@@ -32,6 +34,8 @@ export const PURCHASE_ORDER_VALIDATION_MESSAGES = Object.freeze({
   QUANTITY_MIN: `Quantity must be at least ${PURCHASE_QUANTITY_MIN}.`,
   QUANTITY_MAX: `Quantity cannot exceed ${PURCHASE_QUANTITY_MAX.toLocaleString("en-IN")}.`,
   QUANTITY_REQUIRED: "Quantity is required.",
+  QUANTITY_STANDALONE_MAX:
+    "Quantity purchased cannot exceed available standalone stock.",
   BILL_AMOUNT_NUMBER: "Bill amount must be a number.",
   BILL_AMOUNT_MIN: `Bill amount must be at least ₹${PURCHASE_AMOUNT_MIN}.`,
   BILL_AMOUNT_MAX: `Bill amount cannot exceed ₹${formattedMaxAmount}.`,

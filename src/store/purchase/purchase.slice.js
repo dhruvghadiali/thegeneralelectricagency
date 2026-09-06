@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import {
   createPurchase,
+  fetchPurchaseStandaloneStockCount,
   fetchPurchases,
 } from "@Redux/purchase/purchase.action";
 import {
@@ -23,6 +24,7 @@ const initialState = {
   },
   isCreating: false,
   createError: null,
+  standaloneStockByProduct: {},
 };
 
 const purchaseSlice = createSlice({
@@ -33,6 +35,9 @@ const purchaseSlice = createSlice({
     purchaseCreateCleared(state) {
       state.isCreating = false;
       state.createError = null;
+    },
+    purchaseStandaloneStockCountsCleared(state) {
+      state.standaloneStockByProduct = {};
     },
   },
   extraReducers: (builder) => {
@@ -60,6 +65,41 @@ const purchaseSlice = createSlice({
       .addCase(createPurchase.rejected, (state, action) => {
         state.isCreating = false;
         state.createError = action.payload ?? "Unable to create purchase.";
+      })
+      .addCase(fetchPurchaseStandaloneStockCount.pending, (state, action) => {
+        const productId = String(action.meta.arg);
+        state.standaloneStockByProduct[productId] = {
+          count: "",
+          error: null,
+          isLoading: true,
+          requestId: action.meta.requestId,
+        };
+      })
+      .addCase(fetchPurchaseStandaloneStockCount.fulfilled, (state, action) => {
+        const productId = action.payload.productId;
+        const current = state.standaloneStockByProduct[productId];
+        if (current?.requestId !== action.meta.requestId) return;
+
+        state.standaloneStockByProduct[productId] = {
+          count: action.payload.totalStandaloneStocks,
+          error: null,
+          isLoading: false,
+          requestId: null,
+        };
+      })
+      .addCase(fetchPurchaseStandaloneStockCount.rejected, (state, action) => {
+        const productId = String(action.meta.arg);
+        const current = state.standaloneStockByProduct[productId];
+        if (current?.requestId !== action.meta.requestId) return;
+
+        state.standaloneStockByProduct[productId] = {
+          count: "",
+          error: action.meta.aborted
+            ? null
+            : (action.payload ?? "Unable to load standalone stock count."),
+          isLoading: false,
+          requestId: null,
+        };
       });
   },
 });
@@ -71,6 +111,7 @@ export const {
   limitChanged,
   pageChanged,
   purchaseCreateCleared,
+  purchaseStandaloneStockCountsCleared,
   searchChanged,
   searchCommitted,
   sortChanged,

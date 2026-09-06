@@ -57,12 +57,20 @@ export const purchaseOrderValidationSchema = Yup.object({
     .of(
       Yup.object({
         product: Yup.string().required(MESSAGES.PRODUCT_REQUIRED),
+        standaloneStock: Yup.number()
+          .transform(emptyToUndefined)
+          .min(0, MESSAGES.STANDALONE_STOCK_REQUIRED)
+          .required(MESSAGES.STANDALONE_STOCK_REQUIRED),
         quantityPurchased: Yup.number()
           .transform(emptyToUndefined)
           .typeError(MESSAGES.QUANTITY_NUMBER)
           .integer(MESSAGES.QUANTITY_INTEGER)
           .min(PURCHASE_QUANTITY_MIN, MESSAGES.QUANTITY_MIN)
           .max(PURCHASE_QUANTITY_MAX, MESSAGES.QUANTITY_MAX)
+          .max(
+            Yup.ref("standaloneStock"),
+            MESSAGES.QUANTITY_STANDALONE_MAX,
+          )
           .required(MESSAGES.QUANTITY_REQUIRED),
       }),
     )

@@ -14,3 +14,8 @@ export const selectPurchaseCreateState = createSelector(
   selectPurchaseState,
   ({ isCreating, createError }) => ({ isCreating, createError }),
 );
+
+export const selectPurchaseStandaloneStockStates = createSelector(
+  selectPurchaseState,
+  (purchases) => purchases.standaloneStockByProduct,
+);

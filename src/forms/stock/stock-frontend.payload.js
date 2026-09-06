@@ -62,3 +62,11 @@ export function fromStockListResponse(response = {}, requested = {}) {
     },
   };
 }
+
+export function fromStandaloneStockCountResponse(response = {}) {
+  const count = Number(
+    response.total_standalone_stocks ?? response.totalStandaloneStocks,
+  );
+
+  return { totalStandaloneStocks: Number.isFinite(count) ? count : 0 };
+}

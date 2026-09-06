@@ -4,6 +4,7 @@ import {
   CheckCircle2,
   FileText,
   IndianRupee,
+  LoaderCircle,
   PackageCheck,
   Plus,
   Save,
@@ -27,8 +28,6 @@ import {
   PURCHASE_ORDER_PDF_MAX_LENGTH,
   PURCHASE_ORDER_PDF_MIN_LENGTH,
   PURCHASE_PAYMENTS_MAX,
-  PURCHASE_QUANTITY_MAX,
-  PURCHASE_QUANTITY_MIN,
 } from "@Forms/purchaseOrder/purchaseOrder.validation.constants";
 import { fetchStocks } from "@Redux/stock/stock.action";
 import { createPurchase } from "@Redux/purchase/purchase.action";
@@ -60,6 +59,7 @@ import {
   StockMultiSelect,
 } from "@Forms/purchaseOrder/components/purchaseOrderSelectors";
 import { usePurchaseOrderOptions } from "@Forms/purchaseOrder/hooks/usePurchaseOrderOptions";
+import { useStandaloneStockCounts } from "@Forms/purchaseOrder/hooks/useStandaloneStockCounts";
 
 const calculateInclusiveGst = (billAmount, gstPercentage) => {
   const bill = Number(billAmount);
@@ -93,6 +93,7 @@ function PurchaseOrderForm() {
         setProductQuery("");
         setSupplierQuery("");
         setStockQuery("");
+        resetStandaloneStockCounts();
         setCreateSucceeded(true);
       } catch {
         // The purchases slice exposes the request error above the form.
@@ -105,6 +106,11 @@ function PurchaseOrderForm() {
       supplierId: formik?.values.supplier,
       supplierQuery,
     });
+  const {
+    getStandaloneStockState,
+    loadStandaloneStockCount,
+    resetStandaloneStockCounts,
+  } = useStandaloneStockCounts();
 
   useEffect(() => {
     dispatch(fetchStocks());
@@ -179,12 +185,24 @@ function PurchaseOrderForm() {
     setSelectedLabels({ supplier: option.label });
     setSupplierQuery(option.label);
     setProductQuery("");
+    resetStandaloneStockCounts();
     setCreateSucceeded(false);
   };
-  const selectProduct = (productIndex, option) => {
-    formik.setFieldValue(
-      `products[${productIndex}].product`,
-      option.value,
+  const selectProduct = async (productIndex, option) => {
+    formik.setValues(
+      (current) => ({
+        ...current,
+        products: current.products.map((product, index) =>
+          index === productIndex
+            ? {
+                ...product,
+                product: option.value,
+                quantityPurchased: "",
+                standaloneStock: "",
+              }
+            : product,
+        ),
+      }),
       true,
     );
     setSelectedLabels((current) => ({
@@ -193,6 +211,26 @@ function PurchaseOrderForm() {
     }));
     setProductQuery("");
     setCreateSucceeded(false);
+
+    const standaloneStock = await loadStandaloneStockCount(option.value);
+    if (standaloneStock === undefined) return;
+
+    formik.setValues(
+      (current) => ({
+        ...current,
+        products: current.products.map((product, index) =>
+          index === productIndex &&
+          String(product.product) === String(option.value)
+            ? {
+                ...product,
+                quantityPurchased: String(standaloneStock),
+                standaloneStock,
+              }
+            : product,
+        ),
+      }),
+      true,
+    );
   };
   const addProduct = () => {
     formik.setFieldValue(
@@ -339,7 +377,12 @@ function PurchaseOrderForm() {
               <div className="space-y-4">
                 {formik.values.products.map((item, index) => {
                   const productPath = `products[${index}].product`;
+                  const standaloneStockPath =
+                    `products[${index}].standaloneStock`;
                   const quantityPath = `products[${index}].quantityPurchased`;
+                  const standaloneStockState = getStandaloneStockState(
+                    item.product,
+                  );
                   const availableOptions = productOptions.filter(
                     (option) =>
                       option.value === String(item.product) ||
@@ -365,7 +408,7 @@ function PurchaseOrderForm() {
                           <Trash2 className="size-4" aria-hidden="true" />
                         </Button>
                       </div>
-                      <div className="grid gap-5 sm:grid-cols-2">
+                      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                         <FormField
                           id={`purchase-product-${index}`}
                           label="Product"
@@ -398,6 +441,44 @@ function PurchaseOrderForm() {
                           />
                         </FormField>
                         <FormField
+                          id={`standalone-stock-${index}`}
+                          label="Standalone stock"
+                          error={
+                            standaloneStockState.error ||
+                            errorFor(standaloneStockPath)
+                          }
+                        >
+                          <div className="relative">
+                            <Input
+                              id={`standalone-stock-${index}`}
+                              type="text"
+                              value={
+                                standaloneStockState.isLoading
+                                  ? "Loading..."
+                                  : standaloneStockState.count
+                              }
+                              placeholder={
+                                item.product
+                                  ? "Stock count unavailable"
+                                  : "Select a product first"
+                              }
+                              disabled
+                              aria-busy={standaloneStockState.isLoading}
+                              className={
+                                standaloneStockState.isLoading
+                                  ? "pr-9"
+                                  : undefined
+                              }
+                            />
+                            {standaloneStockState.isLoading && (
+                              <LoaderCircle
+                                className="absolute right-3 top-1/2 size-4 -translate-y-1/2 animate-spin text-muted-foreground"
+                                aria-hidden="true"
+                              />
+                            )}
+                          </div>
+                        </FormField>
+                        <FormField
                           id={`quantity-purchased-${index}`}
                           label="Quantity purchased"
                           required
@@ -405,11 +486,9 @@ function PurchaseOrderForm() {
                         >
                           <Input
                             id={`quantity-purchased-${index}`}
-                            type="number"
-                            min={PURCHASE_QUANTITY_MIN}
-                            max={PURCHASE_QUANTITY_MAX}
-                            step="1"
+                            type="text"
                             inputMode="numeric"
+                            pattern="[0-9]*"
                             placeholder="e.g. 10"
                             {...inputProps(
                               quantityPath,

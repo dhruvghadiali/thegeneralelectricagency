@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { employeePurchaseApi } from "@Api";
+import { employeePurchaseApi, employeeStockApi } from "@Api";
 import { extractErrorMessage } from "@Api/client.api";
 import { ROLE_PATHS } from "@Enums";
 import {
@@ -8,6 +8,32 @@ import {
   toPurchaseListParams,
 } from "@Forms/purchaseOrder/purchaseOrder-api.payload";
 import { fromPurchaseListResponse } from "@Forms/purchaseOrder/purchaseOrder-frontend.payload";
+import { fromStandaloneStockCountResponse } from "@Forms/stock/stock-frontend.payload";
+
+export const fetchPurchaseStandaloneStockCount = createAsyncThunk(
+  "purchases/fetchStandaloneStockCount",
+  async (productId, { getState, signal, rejectWithValue }) => {
+    if (getState().auth.role !== ROLE_PATHS.EMPLOYEE) {
+      return rejectWithValue(
+        "Only employees can view standalone stock counts.",
+      );
+    }
+
+    try {
+      const response = await employeeStockApi.getStandaloneStockCount(
+        productId,
+        { signal },
+      );
+
+      return {
+        productId: String(productId),
+        ...fromStandaloneStockCountResponse(response),
+      };
+    } catch (error) {
+      return rejectWithValue(extractErrorMessage(error));
+    }
+  },
+);
 
 export const fetchPurchases = createAsyncThunk(
   "purchases/fetchPurchases",
