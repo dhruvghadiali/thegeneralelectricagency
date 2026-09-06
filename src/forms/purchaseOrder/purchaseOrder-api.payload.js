@@ -1,30 +1,7 @@
 import _ from "lodash";
-import moment from "moment";
 
 import { TABLE_DEFAULTS } from "@Enums";
 import { buildListQueryParams } from "@/utils/listQuery.util";
-
-const toIsoDateTime = (value) => {
-  if (!value) return undefined;
-  const date = value instanceof Date
-    ? moment(value)
-    : moment(value, "YYYY-MM-DD", true);
-  return date.isValid() ? date.startOf("day").format() : undefined;
-};
-
-const optionalText = (value) => _.trim(value ?? "") || undefined;
-
-const toPaymentPayload = (payment = {}) =>
-  _.omitBy(
-    {
-      payment_status: payment.paymentStatus,
-      payment_amount: _.toNumber(payment.paymentAmount),
-      payment_date: toIsoDateTime(payment.paymentDate),
-      expected_payment_date: toIsoDateTime(payment.expectedPaymentDate),
-      payment_mode: optionalText(payment.paymentMode),
-    },
-    _.isUndefined,
-  );
 
 const toProductPayload = (item = {}) => ({
   product: item.product,
@@ -35,14 +12,6 @@ export function toPurchaseCreatePayload(values = {}) {
   return {
     supplier: values.supplier,
     products: _.map(values.products ?? [], toProductPayload),
-    purchase_date: toIsoDateTime(values.purchaseDate),
-    expected_delivery_date: toIsoDateTime(values.expectedDeliveryDate),
-    bill_amount: _.toNumber(values.billAmount),
-    actual_paid_amount: _.toNumber(values.actualPaidAmount),
-    gst_amount: _.toNumber(values.gstAmount),
-    gst_percentage: _.toNumber(values.gstPercentage),
-    purchase_order_pdf: _.trim(values.purchaseOrderPdf ?? ""),
-    payments: _.map(values.payments ?? [], toPaymentPayload),
   };
 }
 
