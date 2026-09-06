@@ -8,6 +8,7 @@ import PurchaseCreditRemoteSelect from "@Forms/purchaseCredit/components/purchas
 
 function PurchaseCreditProductFields({
   products,
+  isEditing,
   supplierSelected,
   productOptions,
   productState,
@@ -44,17 +45,19 @@ function PurchaseCreditProductFields({
           <div key={index} className="rounded-xl border bg-muted/10 p-4 sm:p-5">
             <div className="mb-4 flex items-center justify-between gap-3">
               <p className="font-medium">Product {index + 1}</p>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                disabled={products.length === 1}
-                aria-label={`Remove product ${index + 1}`}
-                onClick={() => onRemove(index)}
-                className="text-muted-foreground hover:text-destructive"
-              >
-                <Trash2 className="size-4" aria-hidden="true" />
-              </Button>
+              {!isEditing && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  disabled={products.length === 1}
+                  aria-label={`Remove product ${index + 1}`}
+                  onClick={() => onRemove(index)}
+                  className="text-muted-foreground hover:text-destructive"
+                >
+                  <Trash2 className="size-4" aria-hidden="true" />
+                </Button>
+              )}
             </div>
             <div className="grid gap-5 sm:grid-cols-2">
               <PurchaseCreditFormField
@@ -74,7 +77,11 @@ function PurchaseCreditProductFields({
                   placeholder="Search and select a product"
                   searchPlaceholder="Search active products"
                   query={productQuery}
-                  disabled={!supplierSelected || availableProductCount === 0}
+                  disabled={
+                    isEditing ||
+                    !supplierSelected ||
+                    availableProductCount === 0
+                  }
                   onQueryChange={onProductQueryChange}
                   options={availableOptions}
                   isLoading={productState.isLoading}
@@ -100,6 +107,7 @@ function PurchaseCreditProductFields({
                   pattern="[0-9]*"
                   placeholder="e.g. 12"
                   {...inputProps(stockPath, `purchase-credit-stock-${index}`)}
+                  disabled={isEditing}
                 />
               </PurchaseCreditFormField>
             </div>

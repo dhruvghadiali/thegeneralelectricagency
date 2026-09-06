@@ -2,7 +2,11 @@ import _ from "lodash";
 import moment from "moment";
 import * as Yup from "yup";
 
-import { PURCHASE_CREDIT_PAYMENT_TYPES } from "@Enums";
+import {
+  PURCHASE_CREDIT_PAYMENT_STATUSES,
+  PURCHASE_CREDIT_PAYMENT_STATUS_TRANSITIONS,
+  PURCHASE_CREDIT_PAYMENT_TYPES,
+} from "@Enums";
 import {
   PURCHASE_CREDIT_ACKNOWLEDGEMENT_ID_MAX_LENGTH,
   PURCHASE_CREDIT_ACKNOWLEDGEMENT_ID_MIN_LENGTH,
@@ -18,6 +22,7 @@ import {
   PURCHASE_CREDIT_SUPPORTED_PAYMENT_TYPES,
 } from "@Forms/purchaseCredit/purchaseCredit.validation.constants";
 import { PURCHASE_CREDIT_VALIDATION_MESSAGES as MESSAGES } from "@Forms/purchaseCredit/purchaseCredit.validation.messages";
+import { isPurchaseCreditPaymentAmountAllocated } from "@Forms/purchaseCredit/purchaseCreditForm.utils";
 
 const emptyToUndefined = (value, originalValue) =>
   originalValue === "" || originalValue === null ? undefined : value;
@@ -82,6 +87,59 @@ const todayOrFutureDate = (invalid, past, required = null) => {
   return required ? schema.required(required) : schema.optional();
 };
 
+const updateRemindingDateSchema = Yup.date()
+  .transform(emptyToUndefined)
+  .typeError(MESSAGES.REMINDING_DATE_INVALID)
+  .test(
+    "not-in-past-unless-unchanged",
+    MESSAGES.REMINDING_DATE_PAST,
+    function remindingDateIsValidForUpdate(value) {
+      if (!value) return true;
+
+      const remindingDate = moment(value);
+      const savedRemindingDate = moment(this.parent?.savedRemindingDate);
+
+      if (
+        remindingDate.isValid() &&
+        savedRemindingDate.isValid() &&
+        remindingDate.isSame(savedRemindingDate, "day")
+      ) {
+        return true;
+      }
+
+      return (
+        remindingDate.isValid() &&
+        remindingDate.isSameOrAfter(moment(), "day")
+      );
+    },
+  )
+  .optional();
+
+const settlementDateSchema = ({ required = false } = {}) =>
+  pastOrTodayDate(
+    MESSAGES.RECEIVED_PAYMENT_DATE_INVALID,
+    MESSAGES.RECEIVED_PAYMENT_DATE_FUTURE,
+    required ? MESSAGES.RECEIVED_PAYMENT_DATE_REQUIRED : null,
+  ).test(
+    "on-or-after-payment-date",
+    MESSAGES.RECEIVED_PAYMENT_DATE_BEFORE_PAYMENT_DATE,
+    function settlementDateIsOnOrAfterPaymentDate(value) {
+      const paymentDate = moment(this.parent?.paymentDate);
+      const settlementDate = moment(value);
+
+      if (
+        !value ||
+        !this.parent?.paymentDate ||
+        !paymentDate.isValid() ||
+        !settlementDate.isValid()
+      ) {
+        return true;
+      }
+
+      return settlementDate.isSameOrAfter(paymentDate, "day");
+    },
+  );
+
 const notesSchema = optionalText(
   PURCHASE_CREDIT_NOTES_MIN_LENGTH,
   PURCHASE_CREDIT_NOTES_MAX_LENGTH,
@@ -113,6 +171,12 @@ function paymentsAreOnOrAfterPurchaseCredit(payments = []) {
   });
 }
 
+const sumAmounts = (items = []) =>
+  _.sumBy(items, (item) => {
+    const amount = _.toNumber(item?.amount);
+    return _.isFinite(amount) ? amount : 0;
+  });
+
 function paymentAmountsAreWithinPurchaseCredit(values = {}) {
   const purchaseCreditAmount = _.toNumber(values.purchaseCreditAmount);
 
@@ -123,6 +187,8 @@ function paymentAmountsAreWithinPurchaseCredit(values = {}) {
   let cumulativeAmount = 0;
 
   _.forEach(payments, (payment, index) => {
+    if (!isPurchaseCreditPaymentAmountAllocated(payment)) return;
+
     const paymentAmount = _.toNumber(payment?.amount);
     if (!_.isFinite(paymentAmount)) return;
 
@@ -153,21 +219,20 @@ function paymentAmountsAreWithinPurchaseCredit(values = {}) {
     : true;
 }
 
-const sumAmounts = (items = []) =>
-  _.sumBy(items, (item) => {
-    const amount = _.toNumber(item?.amount);
-    return _.isFinite(amount) ? amount : 0;
-  });
-
 function paymentPlanningIsWithinAvailableCredit(values = {}) {
   const purchaseCreditAmount = _.toNumber(values.purchaseCreditAmount);
 
   if (!_.isFinite(purchaseCreditAmount)) return true;
 
   const validationErrors = [];
-  let allocatedAmount = sumAmounts(values.payments);
+  const allocatedPayments = _.filter(values.payments, (payment) =>
+    isPurchaseCreditPaymentAmountAllocated(payment),
+  );
+  let allocatedAmount = sumAmounts(allocatedPayments);
 
   _.forEach(values.paymentPlanning ?? [], (plan, index) => {
+    if (plan?.isPaymentCompleted) return;
+
     const planAmount = _.toNumber(plan?.amount);
     if (!_.isFinite(planAmount)) return;
 
@@ -198,10 +263,151 @@ function paymentPlanningIsWithinAvailableCredit(values = {}) {
     : true;
 }
 
-export const createPurchaseCreditValidationSchema = ({
-  isEditing = false,
+export const createPurchaseCreditPaymentUpdateValidationSchema = ({
+  currentStatus,
+} = {}) => {
+  const allowedStatuses =
+    PURCHASE_CREDIT_PAYMENT_STATUS_TRANSITIONS[currentStatus] ?? [];
+
+  return Yup.object({
+    paymentStatus: Yup.string()
+      .oneOf(
+        _.uniq([currentStatus, ...allowedStatuses]),
+        MESSAGES.PAYMENT_STATUS_TRANSITION_INVALID,
+      )
+      .required(MESSAGES.PAYMENT_STATUS_REQUIRED),
+    receivedPaymentDate: Yup.mixed().when("paymentStatus", {
+      is: PURCHASE_CREDIT_PAYMENT_STATUSES.PAID,
+      then: () => settlementDateSchema({ required: true }),
+      otherwise: (schema) => schema.optional(),
+    }),
+    notes: notesSchema.when("paymentStatus", {
+      is: PURCHASE_CREDIT_PAYMENT_STATUSES.REFUND,
+      then: (schema) => schema.required(MESSAGES.REFUND_NOTES_REQUIRED),
+      otherwise: (schema) => schema.optional(),
+    }),
+  });
+};
+
+export const createPurchaseCreditPaymentCreateValidationSchema = ({
+  purchaseCreditAt,
+  maximumAmount = PURCHASE_CREDIT_AMOUNT_MAX,
 } = {}) =>
   Yup.object({
+    paymentStatus: Yup.string()
+      .oneOf(
+        [PURCHASE_CREDIT_PAYMENT_STATUSES.IN_PROGRESS],
+        MESSAGES.PAYMENT_STATUS_INVALID,
+      )
+      .required(MESSAGES.PAYMENT_STATUS_REQUIRED),
+    amount: requiredAmount.max(
+      maximumAmount,
+      MESSAGES.PAYMENT_AMOUNT_EXCEEDS_AVAILABLE_CREDIT,
+    ),
+    paymentType: Yup.string()
+      .oneOf(
+        PURCHASE_CREDIT_SUPPORTED_PAYMENT_TYPES,
+        MESSAGES.PAYMENT_TYPE_INVALID,
+      )
+      .required(MESSAGES.PAYMENT_TYPE_REQUIRED),
+    referenceId: referenceIdSchema,
+    paymentDate: pastOrTodayDate(
+      MESSAGES.PAYMENT_DATE_INVALID,
+      MESSAGES.PAYMENT_DATE_FUTURE,
+      MESSAGES.PAYMENT_DATE_REQUIRED,
+    ).test(
+      "on-or-after-purchase-credit",
+      MESSAGES.PAYMENT_DATE_ON_OR_AFTER_PURCHASE_CREDIT,
+      (value) => {
+        if (!value || !purchaseCreditAt) return true;
+
+        const paymentDate = moment(value);
+        const purchaseDate = moment(purchaseCreditAt);
+        return (
+          !paymentDate.isValid() ||
+          !purchaseDate.isValid() ||
+          paymentDate.isSameOrAfter(purchaseDate, "day")
+        );
+      },
+    ),
+    notes: notesSchema,
+    paymentReceipts: filesSchema,
+  });
+
+export const plannedPaymentCompletionValidationSchema = Yup.object({
+  paymentStatus: Yup.string()
+    .oneOf(
+      [PURCHASE_CREDIT_PAYMENT_STATUSES.IN_PROGRESS],
+      MESSAGES.PAYMENT_STATUS_INVALID,
+    )
+    .required(MESSAGES.PAYMENT_STATUS_REQUIRED),
+  amount: requiredAmount,
+  paymentType: Yup.string()
+    .oneOf(
+      PURCHASE_CREDIT_SUPPORTED_PAYMENT_TYPES,
+      MESSAGES.PAYMENT_TYPE_INVALID,
+    )
+    .required(MESSAGES.PAYMENT_TYPE_REQUIRED),
+  referenceId: referenceIdSchema,
+  paymentDate: pastOrTodayDate(
+    MESSAGES.PAYMENT_DATE_INVALID,
+    MESSAGES.PAYMENT_DATE_FUTURE,
+    MESSAGES.PAYMENT_DATE_REQUIRED,
+  ),
+  receivedPaymentDate: settlementDateSchema(),
+  notes: notesSchema,
+  paymentReceipts: filesSchema,
+});
+
+export const createPurchaseCreditPaymentPlanningCreateValidationSchema = ({
+  maximumAmount = PURCHASE_CREDIT_AMOUNT_MAX,
+} = {}) =>
+  Yup.object({
+    remindingDate: todayOrFutureDate(
+      MESSAGES.REMINDING_DATE_INVALID,
+      MESSAGES.REMINDING_DATE_PAST,
+    ),
+    amount: requiredAmount.max(
+      maximumAmount,
+      MESSAGES.PAYMENT_PLAN_AMOUNT_EXCEEDS_AVAILABLE_CREDIT,
+    ),
+    paymentType: Yup.string()
+      .oneOf(
+        PURCHASE_CREDIT_SUPPORTED_PAYMENT_TYPES,
+        MESSAGES.PAYMENT_TYPE_INVALID,
+      )
+      .required(MESSAGES.PAYMENT_TYPE_REQUIRED),
+    isPaymentCompleted: Yup.boolean()
+      .oneOf([false], MESSAGES.PAYMENT_COMPLETION_REQUIRED)
+      .required(MESSAGES.PAYMENT_COMPLETION_REQUIRED),
+    notes: notesSchema,
+  });
+
+export const createPurchaseCreditPaymentPlanningUpdateValidationSchema = ({
+  maximumAmount = PURCHASE_CREDIT_AMOUNT_MAX,
+} = {}) =>
+  Yup.object({
+    remindingDate: updateRemindingDateSchema,
+    amount: requiredAmount.max(
+      maximumAmount,
+      MESSAGES.PAYMENT_PLAN_AMOUNT_EXCEEDS_AVAILABLE_CREDIT,
+    ),
+    paymentType: Yup.string()
+      .oneOf(
+        PURCHASE_CREDIT_SUPPORTED_PAYMENT_TYPES,
+        MESSAGES.PAYMENT_TYPE_INVALID,
+      )
+      .required(MESSAGES.PAYMENT_TYPE_REQUIRED),
+    isPaymentCompleted: Yup.boolean().required(
+      MESSAGES.PAYMENT_COMPLETION_REQUIRED,
+    ),
+    notes: notesSchema,
+  });
+
+export const createPurchaseCreditValidationSchema = ({
+  isEditing = false,
+} = {}) => {
+  const schema = Yup.object({
     supplier: Yup.string().trim().required(MESSAGES.SUPPLIER_REQUIRED),
     products: Yup.array()
       .of(
@@ -233,6 +439,24 @@ export const createPurchaseCreditValidationSchema = ({
       .typeError(MESSAGES.PURCHASE_CREDIT_AMOUNT_NUMBER)
       .min(PURCHASE_CREDIT_AMOUNT_MIN, MESSAGES.PURCHASE_CREDIT_AMOUNT_MIN)
       .max(PURCHASE_CREDIT_AMOUNT_MAX, MESSAGES.PURCHASE_CREDIT_AMOUNT_MAX)
+      .test(
+        "not-below-allocated-payment-amount",
+        MESSAGES.PURCHASE_CREDIT_AMOUNT_BELOW_PAID,
+        function purchaseAmountIsNotBelowAllocatedPayments(value) {
+          if (!isEditing || !_.isFinite(value)) return true;
+
+          const allocatedSavedPayments = _.filter(
+            this.parent?.payments ?? [],
+            (payment) =>
+              payment?.id &&
+              isPurchaseCreditPaymentAmountAllocated(payment, {
+                preferSavedStatus: true,
+              }),
+          );
+
+          return value >= sumAmounts(allocatedSavedPayments);
+        },
+      )
       .required(MESSAGES.PURCHASE_CREDIT_AMOUNT_REQUIRED),
     expectedDeliveryDate: todayOrFutureDate(
       MESSAGES.EXPECTED_DELIVERY_DATE_INVALID,
@@ -246,63 +470,68 @@ export const createPurchaseCreditValidationSchema = ({
       MESSAGES.ACKNOWLEDGEMENT_ID_MAX,
     ),
     acknowledgementReceipts: filesSchema,
-    payments: Yup.array()
-      .of(
-        Yup.object({
-          paymentStatus: Yup.string()
-            .oneOf(
-              PURCHASE_CREDIT_SUPPORTED_PAYMENT_STATUSES,
-              MESSAGES.PAYMENT_STATUS_INVALID,
-            )
-            .required(MESSAGES.PAYMENT_STATUS_REQUIRED),
-          amount: requiredAmount,
-          paymentType: Yup.string()
-            .oneOf(
-              PURCHASE_CREDIT_SUPPORTED_PAYMENT_TYPES,
-              MESSAGES.PAYMENT_TYPE_INVALID,
-            )
-            .required(MESSAGES.PAYMENT_TYPE_REQUIRED),
-          referenceId: referenceIdSchema,
-          paymentDate: pastOrTodayDate(
-            MESSAGES.PAYMENT_DATE_INVALID,
-            MESSAGES.PAYMENT_DATE_FUTURE,
-            MESSAGES.PAYMENT_DATE_REQUIRED,
-          ),
-          receivedPaymentDate: pastOrTodayDate(
-            MESSAGES.RECEIVED_PAYMENT_DATE_INVALID,
-            MESSAGES.RECEIVED_PAYMENT_DATE_FUTURE,
-            isEditing ? MESSAGES.RECEIVED_PAYMENT_DATE_REQUIRED : null,
-          ),
-          notes: notesSchema,
-          paymentReceipts: filesSchema,
-        }),
-      )
-      .min(1, MESSAGES.PAYMENTS_REQUIRED)
-      .test(
-        "payments-on-or-after-purchase-credit",
-        MESSAGES.PAYMENT_DATE_ON_OR_AFTER_PURCHASE_CREDIT,
-        paymentsAreOnOrAfterPurchaseCredit,
-      ),
-    paymentPlanning: Yup.array().of(
-      Yup.object({
-        remindingDate: todayOrFutureDate(
-          MESSAGES.REMINDING_DATE_INVALID,
-          MESSAGES.REMINDING_DATE_PAST,
-        ),
-        amount: requiredAmount,
-        paymentType: Yup.string()
-          .oneOf(
-            PURCHASE_CREDIT_SUPPORTED_PAYMENT_TYPES,
-            MESSAGES.PAYMENT_TYPE_INVALID,
+    payments: isEditing
+      ? Yup.mixed().optional()
+      : Yup.array()
+          .of(
+            Yup.object({
+              id: Yup.string().nullable(),
+              paymentStatus: Yup.string()
+                .oneOf(
+                  PURCHASE_CREDIT_SUPPORTED_PAYMENT_STATUSES,
+                  MESSAGES.PAYMENT_STATUS_INVALID,
+                )
+                .required(MESSAGES.PAYMENT_STATUS_REQUIRED),
+              amount: requiredAmount,
+              paymentType: Yup.string()
+                .oneOf(
+                  PURCHASE_CREDIT_SUPPORTED_PAYMENT_TYPES,
+                  MESSAGES.PAYMENT_TYPE_INVALID,
+                )
+                .required(MESSAGES.PAYMENT_TYPE_REQUIRED),
+              referenceId: referenceIdSchema,
+              paymentDate: pastOrTodayDate(
+                MESSAGES.PAYMENT_DATE_INVALID,
+                MESSAGES.PAYMENT_DATE_FUTURE,
+                MESSAGES.PAYMENT_DATE_REQUIRED,
+              ),
+              receivedPaymentDate: settlementDateSchema(),
+              notes: notesSchema,
+              paymentReceipts: filesSchema,
+            }),
           )
-          .required(MESSAGES.PAYMENT_TYPE_REQUIRED),
-        isPaymentCompleted: Yup.boolean().required(
-          MESSAGES.PAYMENT_COMPLETION_REQUIRED,
+          .min(1, MESSAGES.PAYMENTS_REQUIRED)
+          .test(
+            "payments-on-or-after-purchase-credit",
+            MESSAGES.PAYMENT_DATE_ON_OR_AFTER_PURCHASE_CREDIT,
+            paymentsAreOnOrAfterPurchaseCredit,
+          ),
+    paymentPlanning: isEditing
+      ? Yup.mixed().optional()
+      : Yup.array().of(
+          Yup.object({
+            remindingDate: todayOrFutureDate(
+              MESSAGES.REMINDING_DATE_INVALID,
+              MESSAGES.REMINDING_DATE_PAST,
+            ),
+            amount: requiredAmount,
+            paymentType: Yup.string()
+              .oneOf(
+                PURCHASE_CREDIT_SUPPORTED_PAYMENT_TYPES,
+                MESSAGES.PAYMENT_TYPE_INVALID,
+              )
+              .required(MESSAGES.PAYMENT_TYPE_REQUIRED),
+            isPaymentCompleted: Yup.boolean().required(
+              MESSAGES.PAYMENT_COMPLETION_REQUIRED,
+            ),
+            notes: notesSchema,
+          }),
         ),
-        notes: notesSchema,
-      }),
-    ),
-  })
+  });
+
+  if (isEditing) return schema;
+
+  return schema
     .test(
       "payment-amounts-within-purchase-credit",
       MESSAGES.TOTAL_PAYMENT_AMOUNT_EXCEEDS_PURCHASE_CREDIT,
@@ -313,6 +542,7 @@ export const createPurchaseCreditValidationSchema = ({
       MESSAGES.PAYMENT_ALLOCATION_EXCEEDS_PURCHASE_CREDIT,
       paymentPlanningIsWithinAvailableCredit,
     );
+};
 
 export const purchaseCreditValidationSchema =
   createPurchaseCreditValidationSchema();

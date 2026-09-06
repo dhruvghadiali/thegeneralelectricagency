@@ -30,5 +30,6 @@ export const ENDPOINTS = {
   },
   PURCHASE_CREDIT: {
     BASE: "supplier-credits",
+    PAYMENT_PLANNINGS: "payment-plannings",
   },
 };

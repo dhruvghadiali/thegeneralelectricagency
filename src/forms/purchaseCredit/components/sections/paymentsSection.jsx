@@ -1,6 +1,7 @@
 import _ from "lodash";
 import { Plus, WalletCards } from "lucide-react";
 
+import { PURCHASE_CREDIT_PAYMENT_STATUSES } from "@Enums";
 import { Button } from "@shadcnComponent/button";
 import { formatPurchaseCreditAmount } from "@Forms/purchaseCredit/purchaseCreditForm.utils";
 import { PURCHASE_CREDIT_SECTION_IDS } from "@Forms/purchaseCredit/purchaseCreditForm.constants";
@@ -17,6 +18,13 @@ function PaymentsSection({
   formik,
   isEditing,
   today,
+  updatingPaymentId,
+  paymentUpdateError,
+  creatingPaymentIndex = null,
+  paymentCreateError,
+  onChangePaymentStatus,
+  onSaveNewPayment,
+  onSavePayment,
   errorFor,
   inputProps,
   addItem,
@@ -27,6 +35,18 @@ function PaymentsSection({
     const amount = _.toNumber(payment.amount);
     return _.isFinite(amount) ? amount : 0;
   });
+  const paidPaymentsTotal = _.sumBy(
+    _.filter(
+      formik.values.payments,
+      (payment) =>
+        (payment.savedPaymentStatus ?? payment.paymentStatus) ===
+        PURCHASE_CREDIT_PAYMENT_STATUSES.PAID,
+    ),
+    (payment) => {
+      const amount = _.toNumber(payment.amount);
+      return _.isFinite(amount) ? amount : 0;
+    },
+  );
 
   return (
     <FormSection
@@ -41,6 +61,7 @@ function PaymentsSection({
       isOpen={activeSection === sectionId}
       errorCount={errorCount}
       amountSummary={`Payments ${formatPurchaseCreditAmount(paymentsTotal)}`}
+      secondaryAmountSummary={`Paid ${formatPurchaseCreditAmount(paidPaymentsTotal)}`}
       disabled={!canManagePayments}
       onOpen={() => toggleSection(sectionId)}
       action={
@@ -56,6 +77,14 @@ function PaymentsSection({
         </Button>
       }
     >
+      {(paymentCreateError || paymentUpdateError) && (
+        <div
+          role="alert"
+          className="rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive"
+        >
+          {paymentCreateError || paymentUpdateError}
+        </div>
+      )}
       <PurchaseCreditPaymentFields
         payments={formik.values.payments}
         isEditing={isEditing}
@@ -63,6 +92,11 @@ function PaymentsSection({
         formik={formik}
         errorFor={errorFor}
         inputProps={inputProps}
+        updatingPaymentId={updatingPaymentId}
+        creatingPaymentIndex={creatingPaymentIndex}
+        onChangePaymentStatus={onChangePaymentStatus}
+        onSaveNewPayment={onSaveNewPayment}
+        onSavePayment={onSavePayment}
         onRemove={(index) => removeItem("payments", index)}
       />
     </FormSection>

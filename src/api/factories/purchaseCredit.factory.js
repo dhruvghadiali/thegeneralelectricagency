@@ -33,5 +33,61 @@ export function createPurchaseCreditMutationApi(rolePath) {
 
       return unwrapPayload(data);
     },
+
+    updatePurchaseCredit: async (purchaseCreditId, payload) => {
+      const { data } = await apiClient.patch(
+        `${purchaseCreditsPath(rolePath)}/${purchaseCreditId}`,
+        payload,
+      );
+
+      return unwrapPayload(data);
+    },
+
+    updatePurchaseCreditPayment: async (
+      purchaseCreditId,
+      paymentId,
+      payload,
+    ) => {
+      const { data } = await apiClient.patch(
+        `${purchaseCreditsPath(rolePath)}/${purchaseCreditId}/payments/${paymentId}`,
+        payload,
+      );
+
+      return unwrapPayload(data);
+    },
+
+    createPurchaseCreditPayment: async (purchaseCreditId, payload) => {
+      const { data } = await apiClient.post(
+        `${purchaseCreditsPath(rolePath)}/${purchaseCreditId}/payments`,
+        payload,
+      );
+
+      return unwrapPayload(data);
+    },
+
+    createPurchaseCreditPaymentPlanning: async (
+      purchaseCreditId,
+      payload,
+    ) => {
+      const { data } = await apiClient.post(
+        `${purchaseCreditsPath(rolePath)}/${purchaseCreditId}/${ENDPOINTS.PURCHASE_CREDIT.PAYMENT_PLANNINGS}`,
+        payload,
+      );
+
+      return unwrapPayload(data);
+    },
+
+    updatePurchaseCreditPaymentPlanning: async (
+      purchaseCreditId,
+      paymentPlanningId,
+      payload,
+    ) => {
+      const { data } = await apiClient.patch(
+        `${purchaseCreditsPath(rolePath)}/${purchaseCreditId}/${ENDPOINTS.PURCHASE_CREDIT.PAYMENT_PLANNINGS}/${paymentPlanningId}`,
+        payload,
+      );
+
+      return unwrapPayload(data);
+    },
   };
 }

@@ -11,8 +11,17 @@ const receiptName = (receipt) => {
   return receipt?.name ?? "Attached receipt";
 };
 
-function PurchaseCreditFileUploader({ id, value = [], onChange, onBlur, error }) {
+function PurchaseCreditFileUploader({
+  id,
+  value = [],
+  disabled = false,
+  onChange,
+  onBlur,
+  error,
+}) {
   const addFiles = (event) => {
+    if (disabled) return;
+
     const nextFiles = _.toArray(event.target.files);
     if (nextFiles.length === 0) return;
 
@@ -24,7 +33,11 @@ function PurchaseCreditFileUploader({ id, value = [], onChange, onBlur, error })
     <div className="space-y-3">
       <label
         htmlFor={id}
-        className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed px-4 py-6 text-sm font-medium transition-colors hover:bg-muted/50"
+        className={`flex items-center justify-center gap-2 rounded-lg border border-dashed px-4 py-6 text-sm font-medium transition-colors ${
+          disabled
+            ? "cursor-not-allowed opacity-50"
+            : "cursor-pointer hover:bg-muted/50"
+        }`}
       >
         <Upload className="size-4" aria-hidden="true" />
         Choose receipt files
@@ -32,6 +45,7 @@ function PurchaseCreditFileUploader({ id, value = [], onChange, onBlur, error })
       <input
         id={id}
         type="file"
+        disabled={disabled}
         multiple
         accept="application/pdf,image/*"
         onChange={addFiles}
@@ -52,20 +66,22 @@ function PurchaseCreditFileUploader({ id, value = [], onChange, onBlur, error })
             >
               <FileText className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
               <span className="min-w-0 flex-1 truncate">{receiptName(receipt)}</span>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                aria-label={`Remove ${receiptName(receipt)}`}
-                onClick={() =>
-                  onChange(
-                    _.filter(value, (_, itemIndex) => itemIndex !== index),
-                  )
-                }
-                className="size-7"
-              >
-                <X className="size-3.5" aria-hidden="true" />
-              </Button>
+              {!disabled && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Remove ${receiptName(receipt)}`}
+                  onClick={() =>
+                    onChange(
+                      _.filter(value, (_, itemIndex) => itemIndex !== index),
+                    )
+                  }
+                  className="size-7"
+                >
+                  <X className="size-3.5" aria-hidden="true" />
+                </Button>
+              )}
             </li>
           ))}
         </ul>

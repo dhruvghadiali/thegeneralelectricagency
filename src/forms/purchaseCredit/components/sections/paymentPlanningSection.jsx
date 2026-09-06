@@ -17,6 +17,15 @@ function PaymentPlanningSection({
   formik,
   isEditing,
   today,
+  creatingPaymentPlanningIndex = null,
+  paymentPlanningCreateError,
+  updatingPaymentPlanningId,
+  paymentPlanningUpdateError,
+  completingPaymentPlanningId,
+  paymentPlanningCompletionError,
+  onSaveNewPaymentPlanning,
+  onSavePaymentPlanning,
+  onCompletePaymentPlanning,
   errorFor,
   inputProps,
   addItem,
@@ -24,7 +33,10 @@ function PaymentPlanningSection({
 }) {
   const sectionId = PURCHASE_CREDIT_SECTION_IDS.PAYMENT_PLANNING;
   const paymentPlanningTotal = _.sumBy(
-    formik.values.paymentPlanning,
+    _.filter(
+      formik.values.paymentPlanning,
+      (plan) => !plan.isPaymentCompleted,
+    ),
     (plan) => {
       const amount = _.toNumber(plan.amount);
       return _.isFinite(amount) ? amount : 0;
@@ -43,14 +55,19 @@ function PaymentPlanningSection({
       }
       isOpen={activeSection === sectionId}
       errorCount={errorCount}
-      amountSummary={`Planned ${formatPurchaseCreditAmount(paymentPlanningTotal)}`}
+      amountSummary={`Pending ${formatPurchaseCreditAmount(paymentPlanningTotal)}`}
       disabled={!canManagePayments}
       onOpen={() => toggleSection(sectionId)}
       action={
         <Button
           type="button"
           variant="outline"
-          disabled={!canManagePayments}
+          disabled={
+            !canManagePayments ||
+            creatingPaymentPlanningIndex !== null ||
+            Boolean(updatingPaymentPlanningId) ||
+            Boolean(completingPaymentPlanningId)
+          }
           onClick={() =>
             addItem("paymentPlanning", EMPTY_PURCHASE_CREDIT_PAYMENT_PLAN)
           }
@@ -61,6 +78,18 @@ function PaymentPlanningSection({
         </Button>
       }
     >
+      {(paymentPlanningCreateError ||
+        paymentPlanningUpdateError ||
+        paymentPlanningCompletionError) && (
+        <div
+          role="alert"
+          className="rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive"
+        >
+          {paymentPlanningCreateError ||
+            paymentPlanningUpdateError ||
+            paymentPlanningCompletionError}
+        </div>
+      )}
       <PurchaseCreditPaymentPlanningFields
         plans={formik.values.paymentPlanning}
         isEditing={isEditing}
@@ -68,6 +97,13 @@ function PaymentPlanningSection({
         formik={formik}
         errorFor={errorFor}
         inputProps={inputProps}
+        creatingPaymentPlanningIndex={creatingPaymentPlanningIndex}
+        updatingPaymentPlanningId={updatingPaymentPlanningId}
+        completingPaymentPlanningId={completingPaymentPlanningId}
+        paymentPlanningCompletionError={paymentPlanningCompletionError}
+        onSaveNewPaymentPlanning={onSaveNewPaymentPlanning}
+        onSavePaymentPlanning={onSavePaymentPlanning}
+        onCompletePaymentPlanning={onCompletePaymentPlanning}
         onRemove={(index) => removeItem("paymentPlanning", index)}
       />
     </FormSection>

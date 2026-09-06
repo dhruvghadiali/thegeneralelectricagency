@@ -11,6 +11,10 @@ export const PURCHASE_CREDIT_STATUS_VARIANTS = Object.freeze({
 });
 
 export function purchaseCreditPaymentStatusLabel(value) {
+  if (value === PURCHASE_CREDIT_PAYMENT_STATUSES.PAID) {
+    return "Settled payment";
+  }
+
   return (
     PURCHASE_CREDIT_PAYMENT_STATUS_OPTIONS.find(
       (option) => option.value === value,

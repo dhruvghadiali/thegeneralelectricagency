@@ -20,3 +20,70 @@ export const selectPurchaseCreditCreateState = createSelector(
     createdPurchaseCredit,
   }),
 );
+
+export const selectPurchaseCreditUpdateState = createSelector(
+  selectPurchaseCreditState,
+  ({ isUpdating, updateError, updatedPurchaseCredit }) => ({
+    isUpdating,
+    updateError,
+    updatedPurchaseCredit,
+  }),
+);
+
+export const selectPurchaseCreditPaymentUpdateState = createSelector(
+  selectPurchaseCreditState,
+  ({ updatingPaymentId, paymentUpdateError, updatedPayment }) => ({
+    updatingPaymentId,
+    paymentUpdateError,
+    updatedPayment,
+  }),
+);
+
+export const selectPurchaseCreditPaymentCreateState = createSelector(
+  selectPurchaseCreditState,
+  ({ creatingPaymentIndex, paymentCreateError, createdPayment }) => ({
+    creatingPaymentIndex,
+    paymentCreateError,
+    createdPayment,
+  }),
+);
+
+export const selectPurchaseCreditPaymentPlanningCreateState = createSelector(
+  selectPurchaseCreditState,
+  ({
+    creatingPaymentPlanningIndex,
+    paymentPlanningCreateError,
+    createdPaymentPlanning,
+  }) => ({
+    creatingPaymentPlanningIndex,
+    paymentPlanningCreateError,
+    createdPaymentPlanning,
+  }),
+);
+
+export const selectPurchaseCreditPaymentPlanningUpdateState = createSelector(
+  selectPurchaseCreditState,
+  ({
+    updatingPaymentPlanningId,
+    paymentPlanningUpdateError,
+    updatedPaymentPlanning,
+  }) => ({
+    updatingPaymentPlanningId,
+    paymentPlanningUpdateError,
+    updatedPaymentPlanning,
+  }),
+);
+
+export const selectPurchaseCreditPaymentPlanningCompletionState =
+  createSelector(
+    selectPurchaseCreditState,
+    ({
+      completingPaymentPlanningId,
+      paymentPlanningCompletionError,
+      completedPaymentPlanning,
+    }) => ({
+      completingPaymentPlanningId,
+      paymentPlanningCompletionError,
+      completedPaymentPlanning,
+    }),
+  );

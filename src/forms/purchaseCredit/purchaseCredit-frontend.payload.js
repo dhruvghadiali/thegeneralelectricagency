@@ -27,39 +27,65 @@ const fromProductResponse = (item = {}) => ({
   stock: toFormNumberString(item.stock),
 });
 
-const fromPaymentResponse = (payment = {}) => ({
-  ...EMPTY_PURCHASE_CREDIT_PAYMENT,
-  paymentStatus:
+const fromPaymentResponse = (payment = {}) => {
+  const paymentStatus =
     payment.payment_status ??
     payment.paymentStatus ??
-    PURCHASE_CREDIT_PAYMENT_STATUSES.IN_PROGRESS,
-  amount: toFormNumberString(payment.amount),
-  paymentType: payment.payment_type ?? payment.paymentType ?? "",
-  referenceId: payment.reference_id ?? payment.referenceId ?? "",
-  paymentDate: toFormDate(payment.payment_date ?? payment.paymentDate),
-  receivedPaymentDate: toFormDate(
+    PURCHASE_CREDIT_PAYMENT_STATUSES.IN_PROGRESS;
+  const receivedPaymentDate = toFormDate(
     payment.received_payment_date ??
       payment.receivedPaymentDate ??
       payment.settlementDate,
-  ),
-  notes: payment.notes ?? "",
-  paymentReceipts:
-    payment.payment_receipts ??
-    payment.paymentReceipts ??
-    payment.receipts ??
-    [],
-});
+  );
+  const notes = payment.notes ?? "";
 
-const fromPaymentPlanResponse = (plan = {}) => ({
-  ...EMPTY_PURCHASE_CREDIT_PAYMENT_PLAN,
-  remindingDate: toFormDate(plan.reminding_date ?? plan.remindingDate),
-  amount: toFormNumberString(plan.amount),
-  paymentType: plan.payment_type ?? plan.paymentType ?? "",
-  isPaymentCompleted: toBoolean(
+  return {
+    ...EMPTY_PURCHASE_CREDIT_PAYMENT,
+    id: payment._id ?? payment.id ?? null,
+    paymentStatus,
+    savedPaymentStatus: paymentStatus,
+    amount: toFormNumberString(payment.amount),
+    paymentType: payment.payment_type ?? payment.paymentType ?? "",
+    referenceId: payment.reference_id ?? payment.referenceId ?? "",
+    paymentDate: toFormDate(payment.payment_date ?? payment.paymentDate),
+    receivedPaymentDate,
+    savedReceivedPaymentDate: receivedPaymentDate,
+    notes,
+    savedNotes: notes,
+    paymentReceipts:
+      payment.payment_receipts ??
+      payment.paymentReceipts ??
+      payment.receipts ??
+      [],
+  };
+};
+
+const fromPaymentPlanResponse = (plan = {}) => {
+  const remindingDate = toFormDate(
+    plan.reminding_date ?? plan.remindingDate,
+  );
+  const amount = toFormNumberString(plan.amount);
+  const paymentType = plan.payment_type ?? plan.paymentType ?? "";
+  const isPaymentCompleted = toBoolean(
     plan.is_payment_completed ?? plan.isPaymentCompleted ?? false,
-  ),
-  notes: plan.notes ?? "",
-});
+  );
+  const notes = plan.notes ?? "";
+
+  return {
+    ...EMPTY_PURCHASE_CREDIT_PAYMENT_PLAN,
+    id: plan._id ?? plan.id ?? null,
+    remindingDate,
+    savedRemindingDate: remindingDate,
+    amount,
+    savedAmount: amount,
+    paymentType,
+    savedPaymentType: paymentType,
+    isPaymentCompleted,
+    savedIsPaymentCompleted: isPaymentCompleted,
+    notes,
+    savedNotes: notes,
+  };
+};
 
 export function fromPurchaseCreditResponse(purchaseCredit = {}) {
   const products = _.map(purchaseCredit.products ?? [], fromProductResponse);

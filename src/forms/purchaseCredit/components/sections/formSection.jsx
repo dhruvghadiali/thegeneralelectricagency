@@ -13,6 +13,7 @@ function FormSection({
   isOpen,
   errorCount,
   amountSummary,
+  secondaryAmountSummary,
   action,
   disabled = false,
   onOpen,
@@ -39,7 +40,9 @@ function FormSection({
               {description}
             </p>
           </div>
-          {(amountSummary || (!isOpen && errorCount > 0)) && (
+          {(amountSummary ||
+            secondaryAmountSummary ||
+            (!isOpen && errorCount > 0)) && (
             <div className="flex shrink-0 flex-col items-end gap-1 sm:flex-row sm:items-center sm:gap-2">
               {amountSummary && (
                 <Badge
@@ -47,6 +50,11 @@ function FormSection({
                   className="border-green-200 bg-green-50 text-green-700 whitespace-nowrap tabular-nums dark:border-green-900 dark:bg-green-950/50 dark:text-green-300"
                 >
                   {amountSummary}
+                </Badge>
+              )}
+              {secondaryAmountSummary && (
+                <Badge variant="success" className="whitespace-nowrap tabular-nums">
+                  {secondaryAmountSummary}
                 </Badge>
               )}
               {!isOpen && errorCount > 0 && (

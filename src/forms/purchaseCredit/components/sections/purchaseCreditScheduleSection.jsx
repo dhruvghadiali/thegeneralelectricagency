@@ -12,12 +12,18 @@ function PurchaseCreditScheduleSection({
   activeSection,
   toggleSection,
   errorCount,
+  isEditing,
   formik,
   today,
   errorFor,
   inputProps,
 }) {
   const sectionId = PURCHASE_CREDIT_SECTION_IDS.PURCHASE_CREDIT_SCHEDULE;
+  const purchaseAmountField = "purchaseCreditAmount";
+  const purchaseAmountInputProps = inputProps(
+    purchaseAmountField,
+    "purchase-credit-amount",
+  );
 
   return (
     <FormSection
@@ -42,6 +48,7 @@ function PurchaseCreditScheduleSection({
             label="Purchase at"
             value={formik.values.purchaseCreditAt}
             max={today}
+            disabled={isEditing}
             required
             error={errorFor("purchaseCreditAt")}
             onChange={(value) =>
@@ -67,10 +74,13 @@ function PurchaseCreditScheduleSection({
               type="text"
               inputMode="decimal"
               className="pl-7"
-              {...inputProps(
-                "purchaseCreditAmount",
-                "purchase-credit-amount",
-              )}
+              {...purchaseAmountInputProps}
+              onChange={(event) => {
+                const value = event.target.value;
+
+                formik.setFieldTouched(purchaseAmountField, true, false);
+                formik.setFieldValue(purchaseAmountField, value, true);
+              }}
             />
           </div>
         </PurchaseCreditFormField>

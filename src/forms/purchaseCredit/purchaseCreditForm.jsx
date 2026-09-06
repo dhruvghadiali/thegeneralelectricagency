@@ -16,8 +16,16 @@ import {
 } from "@Forms/purchaseCredit/purchaseCredit.validation.constants";
 import { createPurchaseCreditValidationSchema } from "@Forms/purchaseCredit/purchaseCredit.validation.schema";
 import { PURCHASE_CREDIT_SECTION_IDS } from "@Forms/purchaseCredit/purchaseCreditForm.constants";
-import { countPurchaseCreditValidationErrors } from "@Forms/purchaseCredit/purchaseCreditForm.utils";
+import {
+  countPurchaseCreditValidationErrors,
+  hasPurchaseCreditPaymentChanges,
+  hasPurchaseCreditPaymentPlanningChanges,
+} from "@Forms/purchaseCredit/purchaseCreditForm.utils";
 import { usePurchaseCreditOptions } from "@Forms/purchaseCredit/hooks/usePurchaseCreditOptions";
+import { usePurchaseCreditPaymentPlanningCreate } from "@Forms/purchaseCredit/hooks/usePurchaseCreditPaymentPlanningCreate";
+import { usePurchaseCreditPaymentPlanningUpdate } from "@Forms/purchaseCredit/hooks/usePurchaseCreditPaymentPlanningUpdate";
+import { usePurchaseCreditPaymentUpdate } from "@Forms/purchaseCredit/hooks/usePurchaseCreditPaymentUpdate";
+import PurchaseCreditRaiseTicketDialog from "@Forms/purchaseCredit/components/dialogs/purchaseCreditRaiseTicketDialog";
 import {
   AcknowledgementSection,
   PaymentPlanningSection,
@@ -31,10 +39,25 @@ function PurchaseCreditForm({
   purchaseCredit,
   isEditing = false,
   onSubmit,
+  onCreatePayment,
+  onCreatePaymentPlanning,
+  onUpdatePayment,
+  onUpdatePaymentPlanning,
+  onCompletePaymentPlanning,
   onCancel,
   isSubmitting = false,
   submissionError,
   submissionMessage,
+  updatingPaymentId,
+  paymentUpdateError,
+  creatingPaymentIndex = null,
+  paymentCreateError,
+  creatingPaymentPlanningIndex = null,
+  paymentPlanningCreateError,
+  updatingPaymentPlanningId,
+  paymentPlanningUpdateError,
+  completingPaymentPlanningId,
+  paymentPlanningCompletionError,
 }) {
   const role = useSelector((state) => state.auth.role);
   const today = moment().format("YYYY-MM-DD");
@@ -46,14 +69,36 @@ function PurchaseCreditForm({
   );
 
   const initialValues = useMemo(
-    () =>
-      isEditing && purchaseCredit
+    () => {
+      const values =
+        isEditing && purchaseCredit
         ? fromPurchaseCreditResponse(purchaseCredit)
-        : fromPurchaseCreditResponse(PURCHASE_CREDIT_INITIAL_VALUES),
+        : fromPurchaseCreditResponse(PURCHASE_CREDIT_INITIAL_VALUES);
+
+      return isEditing && purchaseCredit && _.isEmpty(purchaseCredit.payments)
+        ? { ...values, payments: [] }
+        : values;
+    },
     [purchaseCredit, isEditing],
   );
+  const persistedPurchaseAmount = _.toNumber(
+    initialValues.purchaseCreditAmount,
+  );
+  const persistedPaymentPlanningAmount = _.sumBy(
+    _.filter(
+      initialValues.paymentPlanning,
+      (plan) => !plan.isPaymentCompleted,
+    ),
+    ({ amount }) => {
+      const numericAmount = _.toNumber(amount);
+      return _.isFinite(numericAmount) ? numericAmount : 0;
+    },
+  );
   const validationSchema = useMemo(
-    () => createPurchaseCreditValidationSchema({ isEditing }),
+    () =>
+      createPurchaseCreditValidationSchema({
+        isEditing,
+      }),
     [isEditing],
   );
 
@@ -73,6 +118,23 @@ function PurchaseCreditForm({
         );
       }
     },
+  });
+  const paymentUpdate = usePurchaseCreditPaymentUpdate({
+    formik,
+    onCreatePayment,
+    onUpdatePayment,
+    persistedPurchaseAmount,
+    persistedPaymentPlanningAmount,
+  });
+  const paymentPlanningCreate = usePurchaseCreditPaymentPlanningCreate({
+    formik,
+    onCreatePaymentPlanning,
+    persistedPurchaseAmount,
+  });
+  const paymentPlanningUpdate = usePurchaseCreditPaymentPlanningUpdate({
+    formik,
+    onUpdatePaymentPlanning,
+    persistedPurchaseAmount,
   });
 
   const { supplierState, productState, availableProductCount } =
@@ -210,7 +272,34 @@ function PurchaseCreditForm({
   const sectionControlProps = { activeSection, toggleSection };
   const fieldProps = { formik, errorFor, inputProps };
   const collectionProps = { addItem, removeItem };
-  const isBusy = isSubmitting || formik.isSubmitting;
+  const hasUnsavedPaymentUpdate =
+    isEditing &&
+    _.some(
+      formik.values.payments,
+      (payment) =>
+        payment.id &&
+        hasPurchaseCreditPaymentChanges(payment),
+    );
+  const hasUnsavedNewPayment =
+    isEditing && _.some(formik.values.payments, (payment) => !payment.id);
+  const hasUnsavedNewPaymentPlanning =
+    isEditing &&
+    _.some(formik.values.paymentPlanning, (plan) => !plan.id);
+  const hasUnsavedPaymentPlanningUpdate =
+    isEditing &&
+    _.some(
+      formik.values.paymentPlanning,
+      (plan) =>
+        plan.id && hasPurchaseCreditPaymentPlanningChanges(plan),
+    );
+  const isBusy =
+    isSubmitting ||
+    formik.isSubmitting ||
+    Boolean(updatingPaymentId) ||
+    creatingPaymentIndex !== null ||
+    creatingPaymentPlanningIndex !== null ||
+    Boolean(updatingPaymentPlanningId) ||
+    Boolean(completingPaymentPlanningId);
 
   return (
     <main className="mx-auto w-full max-w-6xl space-y-6 pb-10">
@@ -238,6 +327,7 @@ function PurchaseCreditForm({
           {...sectionControlProps}
           {...fieldProps}
           {...collectionProps}
+          isEditing={isEditing}
           errorCount={errorCountFor(["supplier", "products"])}
           supplierOptions={supplierOptions}
           selectedSupplier={selectedSupplier}
@@ -255,6 +345,7 @@ function PurchaseCreditForm({
         <PurchaseCreditScheduleSection
           {...sectionControlProps}
           {...fieldProps}
+          isEditing={isEditing}
           errorCount={errorCountFor([
             "purchaseCreditAt",
             "purchaseCreditAmount",
@@ -278,6 +369,13 @@ function PurchaseCreditForm({
           canManagePayments={canManagePayments}
           isEditing={isEditing}
           today={today}
+          updatingPaymentId={updatingPaymentId}
+          paymentUpdateError={paymentUpdateError}
+          creatingPaymentIndex={creatingPaymentIndex}
+          paymentCreateError={paymentCreateError}
+          onChangePaymentStatus={paymentUpdate.changePaymentStatus}
+          onSaveNewPayment={paymentUpdate.saveNewPayment}
+          onSavePayment={paymentUpdate.savePayment}
         />
         <PaymentPlanningSection
           {...sectionControlProps}
@@ -287,9 +385,25 @@ function PurchaseCreditForm({
           canManagePayments={canManagePayments}
           isEditing={isEditing}
           today={today}
+          creatingPaymentPlanningIndex={creatingPaymentPlanningIndex}
+          paymentPlanningCreateError={paymentPlanningCreateError}
+          updatingPaymentPlanningId={updatingPaymentPlanningId}
+          paymentPlanningUpdateError={paymentPlanningUpdateError}
+          completingPaymentPlanningId={completingPaymentPlanningId}
+          paymentPlanningCompletionError={paymentPlanningCompletionError}
+          onSaveNewPaymentPlanning={
+            paymentPlanningCreate.saveNewPaymentPlanning
+          }
+          onSavePaymentPlanning={
+            paymentPlanningUpdate.savePaymentPlanning
+          }
+          onCompletePaymentPlanning={onCompletePaymentPlanning}
         />
 
         <div className="flex flex-col-reverse gap-3 pt-3 sm:flex-row sm:justify-end">
+          {isEditing && (
+            <PurchaseCreditRaiseTicketDialog disabled={isBusy} />
+          )}
           <Button
             type="button"
             variant="outline"
@@ -298,7 +412,24 @@ function PurchaseCreditForm({
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={isBusy}>
+          <Button
+            type="submit"
+            disabled={
+              isBusy ||
+              hasUnsavedPaymentUpdate ||
+              hasUnsavedNewPayment ||
+              hasUnsavedNewPaymentPlanning ||
+              hasUnsavedPaymentPlanningUpdate
+            }
+            title={
+              hasUnsavedPaymentUpdate ||
+              hasUnsavedNewPayment ||
+              hasUnsavedNewPaymentPlanning ||
+              hasUnsavedPaymentPlanningUpdate
+                ? "Save or remove each pending payment or payment plan first"
+                : undefined
+            }
+          >
             <Save className="size-4" aria-hidden="true" />
             {isBusy
               ? "Saving…"

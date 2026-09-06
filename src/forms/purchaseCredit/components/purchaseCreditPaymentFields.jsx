@@ -1,10 +1,13 @@
+import { useState } from "react";
 import _ from "lodash";
-import { Trash2 } from "lucide-react";
+import { LoaderCircle, Save, Trash2 } from "lucide-react";
 import moment from "moment";
 
 import {
+  PURCHASE_CREDIT_PAYMENT_STATUSES,
   PURCHASE_CREDIT_PAYMENT_TYPES,
   PURCHASE_CREDIT_PAYMENT_STATUS_OPTIONS,
+  PURCHASE_CREDIT_PAYMENT_STATUS_TRANSITIONS,
   PURCHASE_CREDIT_PAYMENT_TYPE_OPTIONS,
 } from "@Enums";
 import {
@@ -12,6 +15,7 @@ import {
   PURCHASE_CREDIT_NOTES_MAX_LENGTH,
   PURCHASE_CREDIT_REFERENCE_ID_MAX_LENGTH,
 } from "@Forms/purchaseCredit/purchaseCredit.validation.constants";
+import { Badge } from "@shadcnComponent/badge";
 import { Button } from "@shadcnComponent/button";
 import { Input } from "@shadcnComponent/input";
 import { Textarea } from "@shadcnComponent/textarea";
@@ -19,6 +23,11 @@ import PurchaseCreditDatePicker from "@Forms/purchaseCredit/components/purchaseC
 import PurchaseCreditFileUploader from "@Forms/purchaseCredit/components/purchaseCreditFileUploader";
 import PurchaseCreditFormField from "@Forms/purchaseCredit/components/purchaseCreditFormField";
 import PurchaseCreditSelectField from "@Forms/purchaseCredit/components/purchaseCreditSelectField";
+import PurchaseCreditCollectionCardHeader from "@Forms/purchaseCredit/components/purchaseCreditCollectionCardHeader";
+import {
+  hasPurchaseCreditPaymentChanges,
+  isPurchaseCreditPaymentAmountAllocated,
+} from "@Forms/purchaseCredit/purchaseCreditForm.utils";
 
 function PurchaseCreditPaymentFields({
   payments,
@@ -27,8 +36,14 @@ function PurchaseCreditPaymentFields({
   formik,
   errorFor,
   inputProps,
+  updatingPaymentId,
+  creatingPaymentIndex = null,
+  onChangePaymentStatus,
+  onSaveNewPayment,
+  onSavePayment,
   onRemove,
 }) {
+  const [collapsedCards, setCollapsedCards] = useState({});
   const purchaseCreditAt = moment(
     formik.values.purchaseCreditAt,
     "YYYY-MM-DD",
@@ -39,7 +54,10 @@ function PurchaseCreditPaymentFields({
     : undefined;
   const purchaseCreditAmount = _.toNumber(formik.values.purchaseCreditAmount);
   const paymentPlanningTotal = _.sumBy(
-    formik.values.paymentPlanning,
+    _.filter(
+      formik.values.paymentPlanning,
+      (plan) => !plan.isPaymentCompleted,
+    ),
     (plan) => {
       const amount = _.toNumber(plan.amount);
       return _.isFinite(amount) ? amount : 0;
@@ -51,12 +69,67 @@ function PurchaseCreditPaymentFields({
       {_.map(payments, (payment, index) => {
         const prefix = `payments[${index}]`;
         const path = (field) => `${prefix}.${field}`;
+        const cardKey = payment.id ?? `payment-${index}`;
+        const isCollapsed = collapsedCards[cardKey] ?? true;
+        const isSavedPayment = Boolean(payment.id);
+        const savedPaymentStatus = payment.savedPaymentStatus;
+        const allowedPaymentStatuses =
+          PURCHASE_CREDIT_PAYMENT_STATUS_TRANSITIONS[savedPaymentStatus] ?? [];
+        const paymentStatusOptions = isSavedPayment
+          ? _.filter(
+              PURCHASE_CREDIT_PAYMENT_STATUS_OPTIONS,
+              ({ value }) =>
+                value === savedPaymentStatus ||
+                _.includes(allowedPaymentStatuses, value),
+            )
+          : PURCHASE_CREDIT_PAYMENT_STATUS_OPTIONS;
+        const isSavingPayment = updatingPaymentId === payment.id;
+        const hasSavedPaymentChanges =
+          isSavedPayment && hasPurchaseCreditPaymentChanges(payment);
+        const isCreatingPayment =
+          !isSavedPayment && creatingPaymentIndex === index;
+        const isAnyPaymentSaving =
+          Boolean(updatingPaymentId) || creatingPaymentIndex !== null;
+        const savedPaymentReadOnly = isEditing && isSavedPayment;
+        const settlementDateRequired =
+          isEditing &&
+          payment.paymentStatus === PURCHASE_CREDIT_PAYMENT_STATUSES.PAID &&
+          (!isSavedPayment || payment.paymentStatus !== savedPaymentStatus);
+        const settlementDateDisabled =
+          !isEditing ||
+          !isSavedPayment ||
+          (isSavedPayment && !settlementDateRequired) ||
+          isAnyPaymentSaving;
+        const canRemovePayment =
+          !isSavedPayment && (isEditing || payments.length > 1);
         const referenceIdDisabled =
           payment.paymentType === PURCHASE_CREDIT_PAYMENT_TYPES.CASH;
         const referenceIdRequired =
           Boolean(payment.paymentType) && !referenceIdDisabled;
+        const statusLabel =
+          _.find(
+            PURCHASE_CREDIT_PAYMENT_STATUS_OPTIONS,
+            ({ value }) => value === payment.paymentStatus,
+          )?.label ?? "Unknown";
+        const statusVariant =
+          payment.paymentStatus === PURCHASE_CREDIT_PAYMENT_STATUSES.PAID
+            ? "success"
+            : payment.paymentStatus ===
+                PURCHASE_CREDIT_PAYMENT_STATUSES.FAILED
+              ? "destructive"
+              : payment.paymentStatus ===
+                  PURCHASE_CREDIT_PAYMENT_STATUSES.IN_PROGRESS
+                ? "warning"
+                : "outline";
         const otherPaymentsTotal = _.sumBy(payments, (item, itemIndex) => {
-          if (itemIndex === index) return 0;
+          if (
+            itemIndex === index ||
+            !isPurchaseCreditPaymentAmountAllocated(item, {
+              preferSavedStatus: isEditing,
+            })
+          ) {
+            return 0;
+          }
 
           const amount = _.toNumber(item.amount);
           return _.isFinite(amount) ? amount : 0;
@@ -98,21 +171,81 @@ function PurchaseCreditPaymentFields({
         };
 
         return (
-          <div key={index} className="rounded-xl border bg-muted/10 p-4 sm:p-5">
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <p className="font-medium">Payment {index + 1}</p>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                disabled={payments.length === 1}
-                aria-label={`Remove payment ${index + 1}`}
-                onClick={() => onRemove(index)}
-                className="text-muted-foreground hover:text-destructive"
-              >
-                <Trash2 className="size-4" aria-hidden="true" />
-              </Button>
-            </div>
+          <div key={cardKey} className="rounded-xl border bg-muted/10 p-4 sm:p-5">
+            <PurchaseCreditCollectionCardHeader
+              title={`Payment ${index + 1}`}
+              isCollapsed={isCollapsed}
+              statusLabel={statusLabel}
+              statusVariant={statusVariant}
+              amount={payment.amount}
+              expandedBadge={
+                isSavedPayment &&
+                savedPaymentStatus ===
+                  PURCHASE_CREDIT_PAYMENT_STATUSES.PAID ? (
+                  <Badge variant="success">Settled payment</Badge>
+                ) : null
+              }
+              onToggle={() =>
+                setCollapsedCards((current) => ({
+                  ...current,
+                  [cardKey]: !isCollapsed,
+                }))
+              }
+            >
+                {isEditing && !isSavedPayment && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    disabled={isAnyPaymentSaving}
+                    onClick={() => onSaveNewPayment(payment, index)}
+                  >
+                    {isCreatingPayment ? (
+                      <LoaderCircle
+                        className="size-4 animate-spin"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <Save className="size-4" aria-hidden="true" />
+                    )}
+                    Save payment
+                  </Button>
+                )}
+                {isEditing && isSavedPayment && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    disabled={
+                      isAnyPaymentSaving ||
+                      !hasSavedPaymentChanges
+                    }
+                    onClick={() => onSavePayment(payment, index)}
+                  >
+                    {isSavingPayment ? (
+                      <LoaderCircle
+                        className="size-4 animate-spin"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <Save className="size-4" aria-hidden="true" />
+                    )}
+                    Save payment
+                  </Button>
+                )}
+                {canRemovePayment && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    aria-label={`Remove payment ${index + 1}`}
+                    disabled={isAnyPaymentSaving}
+                    onClick={() => onRemove(index)}
+                    className="text-muted-foreground hover:text-destructive"
+                  >
+                    <Trash2 className="size-4" aria-hidden="true" />
+                  </Button>
+                )}
+            </PurchaseCreditCollectionCardHeader>
+            {!isCollapsed && (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               <PurchaseCreditFormField
                 id={`purchase-credit-payment-status-${index}`}
@@ -128,11 +261,21 @@ function PurchaseCreditPaymentFields({
                 <PurchaseCreditSelectField
                   id={`purchase-credit-payment-status-${index}`}
                   value={payment.paymentStatus}
-                  options={PURCHASE_CREDIT_PAYMENT_STATUS_OPTIONS}
+                  options={paymentStatusOptions}
                   placeholder="Select status"
-                  disabled={!isEditing}
+                  disabled={
+                    !isEditing ||
+                    !isSavedPayment ||
+                    (isSavedPayment &&
+                      (allowedPaymentStatuses.length === 0 ||
+                        isAnyPaymentSaving))
+                  }
                   error={errorFor(path("paymentStatus"))}
-                  onChange={(value) => formik.setFieldValue(path("paymentStatus"), value, true)}
+                  onChange={(value) =>
+                    isSavedPayment
+                      ? onChangePaymentStatus(index, value)
+                      : formik.setFieldValue(path("paymentStatus"), value, true)
+                  }
                   onBlur={() => formik.setFieldTouched(path("paymentStatus"), true, true)}
                 />
               </PurchaseCreditFormField>
@@ -152,6 +295,7 @@ function PurchaseCreditPaymentFields({
                     inputMode="decimal"
                     className="pl-7"
                     {...inputProps(path("amount"), `purchase-credit-payment-amount-${index}`)}
+                    disabled={savedPaymentReadOnly || isCreatingPayment}
                   />
                 </div>
               </PurchaseCreditFormField>
@@ -167,6 +311,7 @@ function PurchaseCreditPaymentFields({
                   value={payment.paymentType}
                   options={PURCHASE_CREDIT_PAYMENT_TYPE_OPTIONS}
                   placeholder="Select payment type"
+                  disabled={savedPaymentReadOnly || isCreatingPayment}
                   error={errorFor(path("paymentType"))}
                   onChange={changePaymentType}
                   onBlur={() => formik.setFieldTouched(path("paymentType"), true, true)}
@@ -187,7 +332,11 @@ function PurchaseCreditPaymentFields({
                 <Input
                   id={`purchase-credit-reference-id-${index}`}
                   maxLength={PURCHASE_CREDIT_REFERENCE_ID_MAX_LENGTH}
-                  disabled={referenceIdDisabled}
+                  disabled={
+                    referenceIdDisabled ||
+                    savedPaymentReadOnly ||
+                    isCreatingPayment
+                  }
                   placeholder="Transaction reference"
                   {...inputProps(path("referenceId"), `purchase-credit-reference-id-${index}`)}
                 />
@@ -205,6 +354,7 @@ function PurchaseCreditPaymentFields({
                   value={payment.paymentDate}
                   min={minimumPaymentDate}
                   max={today}
+                  disabled={savedPaymentReadOnly || isCreatingPayment}
                   required
                   error={errorFor(path("paymentDate"))}
                   onChange={(value) => formik.setFieldValue(path("paymentDate"), value, true)}
@@ -215,7 +365,7 @@ function PurchaseCreditPaymentFields({
               <PurchaseCreditFormField
                 id={`purchase-credit-received-payment-date-${index}`}
                 label="Settlement date"
-                required={isEditing}
+                required={settlementDateRequired}
                 hint={!isEditing ? "Available when updating the purchase credit." : undefined}
                 error={errorFor(path("receivedPaymentDate"))}
               >
@@ -223,9 +373,10 @@ function PurchaseCreditPaymentFields({
                   id={`purchase-credit-received-payment-date-${index}`}
                   label="Settlement date"
                   value={payment.receivedPaymentDate}
+                  min={payment.paymentDate || undefined}
                   max={today}
-                  disabled={!isEditing}
-                  required={isEditing}
+                  disabled={settlementDateDisabled}
+                  required={settlementDateRequired}
                   error={errorFor(path("receivedPaymentDate"))}
                   onChange={(value) => formik.setFieldValue(path("receivedPaymentDate"), value, true)}
                   onBlur={() => formik.setFieldTouched(path("receivedPaymentDate"), true, true)}
@@ -236,6 +387,11 @@ function PurchaseCreditPaymentFields({
                 <PurchaseCreditFormField
                   id={`purchase-credit-payment-notes-${index}`}
                   label="Notes"
+                  required={
+                    isSavedPayment &&
+                    payment.paymentStatus ===
+                      PURCHASE_CREDIT_PAYMENT_STATUSES.REFUND
+                  }
                   error={errorFor(path("notes"))}
                 >
                   <Textarea
@@ -243,6 +399,10 @@ function PurchaseCreditPaymentFields({
                     maxLength={PURCHASE_CREDIT_NOTES_MAX_LENGTH}
                     placeholder="Optional payment notes"
                     {...inputProps(path("notes"), `purchase-credit-payment-notes-${index}`)}
+                    disabled={
+                      isCreatingPayment ||
+                      (savedPaymentReadOnly && isAnyPaymentSaving)
+                    }
                   />
                 </PurchaseCreditFormField>
               </div>
@@ -256,6 +416,7 @@ function PurchaseCreditPaymentFields({
                   <PurchaseCreditFileUploader
                     id={`purchase-credit-payment-receipts-${index}`}
                     value={payment.paymentReceipts}
+                    disabled={savedPaymentReadOnly || isCreatingPayment}
                     error={errorFor(path("paymentReceipts"))}
                     onChange={(value) => formik.setFieldValue(path("paymentReceipts"), value, true)}
                     onBlur={() => formik.setFieldTouched(path("paymentReceipts"), true, true)}
@@ -263,6 +424,7 @@ function PurchaseCreditPaymentFields({
                 </PurchaseCreditFormField>
               </div>
             </div>
+            )}
           </div>
         );
       })}

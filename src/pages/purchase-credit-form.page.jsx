@@ -3,12 +3,33 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import PurchaseCreditForm from "@Forms/purchaseCredit/purchaseCreditForm";
-import { createPurchaseCredit } from "@Redux/purchaseCredit/purchaseCredit.action";
-import { selectPurchaseCreditCreateState } from "@Redux/purchaseCredit/purchaseCredit.selector";
-import { toPurchaseCreditUpdatePayload } from "@Forms/purchaseCredit/purchaseCredit-api.payload";
+import {
+  completePurchaseCreditPaymentPlanning,
+  createPurchaseCredit,
+  createPurchaseCreditPayment,
+  createPurchaseCreditPaymentPlanning,
+  updatePurchaseCredit,
+  updatePurchaseCreditPayment,
+  updatePurchaseCreditPaymentPlanning,
+} from "@Redux/purchaseCredit/purchaseCredit.action";
+import {
+  selectPurchaseCreditCreateState,
+  selectPurchaseCreditPaymentCreateState,
+  selectPurchaseCreditPaymentPlanningCreateState,
+  selectPurchaseCreditPaymentPlanningCompletionState,
+  selectPurchaseCreditPaymentPlanningUpdateState,
+  selectPurchaseCreditPaymentUpdateState,
+  selectPurchaseCreditUpdateState,
+} from "@Redux/purchaseCredit/purchaseCredit.selector";
 import {
   filtersCleared,
   purchaseCreditCreateCleared,
+  purchaseCreditPaymentCreateCleared,
+  purchaseCreditPaymentPlanningCreateCleared,
+  purchaseCreditPaymentPlanningCompletionCleared,
+  purchaseCreditPaymentPlanningUpdateCleared,
+  purchaseCreditPaymentUpdateCleared,
+  purchaseCreditUpdateCleared,
 } from "@Redux/purchaseCredit/purchaseCredit.slice";
 
 function PurchaseCreditFormPage() {
@@ -18,19 +39,61 @@ function PurchaseCreditFormPage() {
   const { isCreating, createError } = useSelector(
     selectPurchaseCreditCreateState,
   );
+  const { isUpdating, updateError } = useSelector(
+    selectPurchaseCreditUpdateState,
+  );
+  const { updatingPaymentId, paymentUpdateError } = useSelector(
+    selectPurchaseCreditPaymentUpdateState,
+  );
+  const { creatingPaymentIndex, paymentCreateError } = useSelector(
+    selectPurchaseCreditPaymentCreateState,
+  );
+  const {
+    creatingPaymentPlanningIndex,
+    paymentPlanningCreateError,
+  } = useSelector(selectPurchaseCreditPaymentPlanningCreateState);
+  const {
+    updatingPaymentPlanningId,
+    paymentPlanningUpdateError,
+  } = useSelector(selectPurchaseCreditPaymentPlanningUpdateState);
+  const {
+    completingPaymentPlanningId,
+    paymentPlanningCompletionError,
+  } = useSelector(selectPurchaseCreditPaymentPlanningCompletionState);
   const { purchaseCreditId } = useParams();
   const isEditing = Boolean(purchaseCreditId);
   const purchaseCredit = location.state?.purchaseCredit;
 
   useEffect(() => {
     dispatch(purchaseCreditCreateCleared());
+    dispatch(purchaseCreditPaymentCreateCleared());
+    dispatch(purchaseCreditPaymentPlanningCreateCleared());
+    dispatch(purchaseCreditPaymentPlanningCompletionCleared());
+    dispatch(purchaseCreditPaymentPlanningUpdateCleared());
+    dispatch(purchaseCreditPaymentUpdateCleared());
+    dispatch(purchaseCreditUpdateCleared());
 
-    return () => dispatch(purchaseCreditCreateCleared());
+    return () => {
+      dispatch(purchaseCreditCreateCleared());
+      dispatch(purchaseCreditPaymentCreateCleared());
+      dispatch(purchaseCreditPaymentPlanningCreateCleared());
+      dispatch(purchaseCreditPaymentPlanningCompletionCleared());
+      dispatch(purchaseCreditPaymentPlanningUpdateCleared());
+      dispatch(purchaseCreditPaymentUpdateCleared());
+      dispatch(purchaseCreditUpdateCleared());
+    };
   }, [dispatch]);
 
   const submitPurchaseCredit = async (values) => {
     if (isEditing) {
-      return toPurchaseCreditUpdatePayload(values);
+      const updatedPurchaseCredit = await dispatch(
+        updatePurchaseCredit({ id: purchaseCreditId, values }),
+      ).unwrap();
+
+      dispatch(filtersCleared());
+      navigate("/purchase-credit", { replace: true });
+
+      return updatedPurchaseCredit;
     }
 
     const createdPurchaseCredit = await dispatch(
@@ -45,14 +108,79 @@ function PurchaseCreditFormPage() {
     return createdPurchaseCredit;
   };
 
+  const submitPaymentUpdate = (paymentId, values) =>
+    dispatch(
+      updatePurchaseCreditPayment({
+        purchaseCreditId,
+        paymentId,
+        values,
+      }),
+    ).unwrap();
+
+  const submitNewPayment = (paymentIndex, values) =>
+    dispatch(
+      createPurchaseCreditPayment({
+        purchaseCreditId,
+        paymentIndex,
+        values,
+      }),
+    ).unwrap();
+
+  const submitNewPaymentPlanning = (paymentPlanningIndex, values) =>
+    dispatch(
+      createPurchaseCreditPaymentPlanning({
+        purchaseCreditId,
+        paymentPlanningIndex,
+        values,
+      }),
+    ).unwrap();
+
+  const submitPaymentPlanningUpdate = (paymentPlanningId, values) =>
+    dispatch(
+      updatePurchaseCreditPaymentPlanning({
+        purchaseCreditId,
+        paymentPlanningId,
+        values,
+      }),
+    ).unwrap();
+
+  const submitPaymentPlanningCompletion = (
+    paymentPlanningId,
+    paymentPlanningValues,
+    paymentValues,
+  ) =>
+    dispatch(
+      completePurchaseCreditPaymentPlanning({
+        purchaseCreditId,
+        paymentPlanningId,
+        paymentPlanningValues,
+        paymentValues,
+      }),
+    ).unwrap();
+
   return (
     <PurchaseCreditForm
       purchaseCredit={purchaseCredit}
       isEditing={isEditing}
       onSubmit={submitPurchaseCredit}
+      onCreatePayment={submitNewPayment}
+      onCreatePaymentPlanning={submitNewPaymentPlanning}
+      onUpdatePaymentPlanning={submitPaymentPlanningUpdate}
+      onCompletePaymentPlanning={submitPaymentPlanningCompletion}
+      onUpdatePayment={submitPaymentUpdate}
       onCancel={() => navigate("/purchase-credit")}
-      isSubmitting={isCreating}
-      submissionError={createError}
+      isSubmitting={isEditing ? isUpdating : isCreating}
+      submissionError={isEditing ? updateError : createError}
+      updatingPaymentId={updatingPaymentId}
+      paymentUpdateError={paymentUpdateError}
+      creatingPaymentIndex={creatingPaymentIndex}
+      paymentCreateError={paymentCreateError}
+      creatingPaymentPlanningIndex={creatingPaymentPlanningIndex}
+      paymentPlanningCreateError={paymentPlanningCreateError}
+      updatingPaymentPlanningId={updatingPaymentPlanningId}
+      paymentPlanningUpdateError={paymentPlanningUpdateError}
+      completingPaymentPlanningId={completingPaymentPlanningId}
+      paymentPlanningCompletionError={paymentPlanningCompletionError}
     />
   );
 }

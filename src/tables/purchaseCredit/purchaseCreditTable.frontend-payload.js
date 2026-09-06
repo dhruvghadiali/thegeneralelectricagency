@@ -67,8 +67,18 @@ function fromPurchaseCreditResponse(purchaseCredit = {}) {
     purchaseCredit.payment_planning ?? purchaseCredit.paymentPlanning ?? [],
     fromPaymentPlanResponse,
   );
-  const paymentAmount = _.sumBy(payments, "amount");
-  const plannedAmount = _.sumBy(paymentPlanning, "amount");
+  const paymentAmount = _.sumBy(
+    _.filter(
+      payments,
+      ({ paymentStatus }) =>
+        paymentStatus === PURCHASE_CREDIT_PAYMENT_STATUSES.PAID,
+    ),
+    "amount",
+  );
+  const plannedAmount = _.sumBy(
+    _.reject(paymentPlanning, "isPaymentCompleted"),
+    "amount",
+  );
   const purchaseAmount =
     _.toNumber(purchaseCredit.credit_amount ?? purchaseCredit.creditAmount) || 0;
   const latestPayment = payments.at(-1);

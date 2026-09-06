@@ -13,6 +13,7 @@ function SupplierProductsSection({
   activeSection,
   toggleSection,
   errorCount,
+  isEditing,
   formik,
   supplierOptions,
   selectedSupplier,
@@ -42,7 +43,7 @@ function SupplierProductsSection({
       isOpen={activeSection === sectionId}
       errorCount={errorCount}
       onOpen={() => toggleSection(sectionId)}
-      action={
+      action={!isEditing ? (
         <Button
           type="button"
           variant="outline"
@@ -57,7 +58,7 @@ function SupplierProductsSection({
           <Plus className="size-4" aria-hidden="true" />
           Add product
         </Button>
-      }
+      ) : null}
     >
       <PurchaseCreditFormField
         id="purchase-credit-supplier"
@@ -77,6 +78,7 @@ function SupplierProductsSection({
           placeholder="Search and select a supplier"
           searchPlaceholder="Search active suppliers"
           query={supplierQuery}
+          disabled={isEditing}
           onQueryChange={setSupplierQuery}
           options={supplierOptions}
           isLoading={supplierState.isLoading}
@@ -89,6 +91,7 @@ function SupplierProductsSection({
       </PurchaseCreditFormField>
       <PurchaseCreditProductFields
         products={formik.values.products}
+        isEditing={isEditing}
         supplierSelected={Boolean(formik.values.supplier)}
         productOptions={productOptions}
         productState={productState}

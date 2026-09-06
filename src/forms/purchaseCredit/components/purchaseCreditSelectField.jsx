@@ -23,7 +23,9 @@ function PurchaseCreditSelectField({
       value={value === undefined || value === null ? "" : String(value)}
       disabled={disabled}
       onValueChange={onChange}
-      onOpenChange={(open) => !open && onBlur?.()}
+      onOpenChange={(open) => {
+        if (!open) onBlur?.();
+      }}
     >
       <SelectTrigger
         id={id}

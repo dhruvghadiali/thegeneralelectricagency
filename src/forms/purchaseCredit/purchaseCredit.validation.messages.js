@@ -28,6 +28,8 @@ export const PURCHASE_CREDIT_VALIDATION_MESSAGES = Object.freeze({
   PURCHASE_CREDIT_AMOUNT_MIN: `Purchase amount must be at least ₹${PURCHASE_CREDIT_AMOUNT_MIN}`,
   PURCHASE_CREDIT_AMOUNT_MAX: `Purchase amount cannot exceed ₹${PURCHASE_CREDIT_AMOUNT_MAX.toLocaleString("en-IN")}`,
   PURCHASE_CREDIT_AMOUNT_REQUIRED: "Purchase amount is required",
+  PURCHASE_CREDIT_AMOUNT_BELOW_PAID:
+    "Purchase amount cannot be less than the total paid and in-progress payment amount",
   EXPECTED_DELIVERY_DATE_INVALID: "Enter a valid expected delivery date",
   EXPECTED_DELIVERY_DATE_PAST: "Expected delivery date cannot be in the past",
   EXPECTED_DELIVERY_DATE_REQUIRED: "Expected delivery date is required",
@@ -36,15 +38,21 @@ export const PURCHASE_CREDIT_VALIDATION_MESSAGES = Object.freeze({
   PAYMENTS_REQUIRED: "Add at least one payment",
   PAYMENT_STATUS_INVALID: "Select a valid payment status",
   PAYMENT_STATUS_REQUIRED: "Payment status is required",
+  PAYMENT_STATUS_TRANSITION_INVALID:
+    "Select an allowed next payment status",
   PAYMENT_AMOUNT_NUMBER: "Payment amount must be a number",
   PAYMENT_AMOUNT_MIN: `Payment amount must be at least ₹${PURCHASE_CREDIT_AMOUNT_MIN}`,
   PAYMENT_AMOUNT_MAX: `Payment amount cannot exceed ₹${PURCHASE_CREDIT_AMOUNT_MAX.toLocaleString("en-IN")}`,
   PAYMENT_AMOUNT_EXCEEDS_PURCHASE_CREDIT:
     "Payment amount cannot exceed the purchase credit amount",
+  PAYMENT_AMOUNT_EXCEEDS_AVAILABLE_CREDIT:
+    "Payment amount cannot exceed the available purchase amount",
   TOTAL_PAYMENT_AMOUNT_EXCEEDS_PURCHASE_CREDIT:
     "Total payment amount cannot exceed the purchase credit amount",
   PAYMENT_PLAN_AMOUNT_EXCEEDS_PURCHASE_CREDIT:
     "Payment plan amount cannot exceed the purchase credit amount",
+  PAYMENT_PLAN_AMOUNT_EXCEEDS_AVAILABLE_CREDIT:
+    "Payment plan amount cannot exceed the available purchase amount",
   PAYMENT_ALLOCATION_EXCEEDS_PURCHASE_CREDIT:
     "Payments and payment planning cannot exceed the purchase credit amount",
   PAYMENT_AMOUNT_REQUIRED: "Payment amount is required",
@@ -60,10 +68,13 @@ export const PURCHASE_CREDIT_VALIDATION_MESSAGES = Object.freeze({
   PAYMENT_DATE_REQUIRED: "Payment date is required",
   RECEIVED_PAYMENT_DATE_INVALID: "Enter a valid settlement date",
   RECEIVED_PAYMENT_DATE_FUTURE: "Settlement date cannot be in the future",
+  RECEIVED_PAYMENT_DATE_BEFORE_PAYMENT_DATE:
+    "Settlement date must be on or after the payment date",
   RECEIVED_PAYMENT_DATE_REQUIRED: "Settlement date is required",
   REMINDING_DATE_INVALID: "Enter a valid reminding date",
   REMINDING_DATE_PAST: "Reminding date cannot be in the past",
   PAYMENT_COMPLETION_REQUIRED: "Payment completion is required",
   NOTES_MIN: `Notes must be at least ${PURCHASE_CREDIT_NOTES_MIN_LENGTH} character`,
   NOTES_MAX: `Notes must be ${PURCHASE_CREDIT_NOTES_MAX_LENGTH.toLocaleString("en-IN")} characters or fewer`,
+  REFUND_NOTES_REQUIRED: "Notes are required for a refund",
 });
