@@ -75,6 +75,7 @@ function PurchaseOrderForm() {
         setSupplierQuery("");
         resetStandaloneStockCounts();
         setCreateSucceeded(true);
+        navigate("/purchases");
       } catch {
         // The purchases slice exposes the request error above the form.
       }
