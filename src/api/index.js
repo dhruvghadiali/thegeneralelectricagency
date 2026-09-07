@@ -3,6 +3,7 @@ export { ENDPOINTS } from "@Api/endpoints.constants";
 export { employeeAuthApi } from "@Api/employee/auth.api";
 export { superAdminAuthApi } from "@Api/superAdmin/auth.api";
 export { employeeCompanyApi } from "@Api/employee/company.api";
+export { employeeEmployeeApi } from "@Api/employee/employee.api";
 export { employeeProductApi } from "@Api/employee/product.api";
 export { employeePurchaseApi } from "@Api/employee/purchase.api";
 export { employeeStockApi } from "@Api/employee/stock.api";

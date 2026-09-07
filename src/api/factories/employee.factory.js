@@ -49,6 +49,22 @@ export function createEmployeeListApi(rolePath) {
   };
 }
 
+export function createWarehouseManagerListApi(rolePath) {
+  return {
+    getWarehouseManagers: async (params = {}, config = {}) => {
+      const { data } = await apiClient.get(
+        `${employeesPath(rolePath)}/${ENDPOINTS.EMPLOYEE.WAREHOUSE_MANAGERS}`,
+        {
+          params,
+          ...config,
+        },
+      );
+
+      return unwrapPayload(data);
+    },
+  };
+}
+
 /**
  * Write side of the directory.
  */

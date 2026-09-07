@@ -3,6 +3,7 @@ import { getIn, useFormik } from "formik";
 import {
   CheckCircle2,
   FileText,
+  LoaderCircle,
   PackageCheck,
   Plus,
   Save,
@@ -21,11 +22,11 @@ import {
   EMPTY_PURCHASE_PRODUCT,
   PURCHASE_ORDER_INITIAL_VALUES,
 } from "@Forms/purchaseOrder/purchaseOrder.initialValues";
-import { PURCHASE_ORDER_EMPLOYEE_OPTIONS } from "@Forms/purchaseOrder/purchaseOrder.options";
 import { purchaseOrderValidationSchema } from "@Forms/purchaseOrder/purchaseOrder.validation.schema";
 import { calculatePurchaseProductPricing } from "@Forms/purchaseOrder/purchaseOrderForm.utils";
 import { usePurchaseOrderOptions } from "@Forms/purchaseOrder/hooks/usePurchaseOrderOptions";
 import { useStandaloneStockCounts } from "@Forms/purchaseOrder/hooks/useStandaloneStockCounts";
+import { useWarehouseManagerOptions } from "@Forms/purchaseOrder/hooks/useWarehouseManagerOptions";
 import { createPurchase } from "@Redux/purchase/purchase.action";
 import { selectPurchaseCreateState } from "@Redux/purchase/purchase.selector";
 import { purchaseCreateCleared } from "@Redux/purchase/purchase.slice";
@@ -53,6 +54,7 @@ function PurchaseOrderForm() {
   const [supplierQuery, setSupplierQuery] = useState("");
   const [selectedLabels, setSelectedLabels] = useState({});
   const { isCreating, createError } = useSelector(selectPurchaseCreateState);
+  const warehouseManagerState = useWarehouseManagerOptions();
   const {
     getStandaloneStockState,
     loadStandaloneStockCount,
@@ -354,49 +356,88 @@ function PurchaseOrderForm() {
                 id="purchase-received-or-collected-by"
                 label="Received or collected by"
                 required
-                error={errorFor("receivedOrCollectedBy")}
+                error={
+                  errorFor("receivedOrCollectedBy") ||
+                  warehouseManagerState.error
+                }
               >
-                <Select
-                  value={formik.values.receivedOrCollectedBy}
-                  onValueChange={(value) => {
-                    setCreateSucceeded(false);
-                    formik.setFieldValue(
-                      "receivedOrCollectedBy",
-                      value,
-                      true,
-                    );
-                  }}
-                  onOpenChange={(open) =>
-                    !open &&
-                    formik.setFieldTouched(
-                      "receivedOrCollectedBy",
-                      true,
-                      true,
-                    )
-                  }
-                  disabled={isCreating || formik.isSubmitting}
-                >
-                  <SelectTrigger
-                    id="purchase-received-or-collected-by"
-                    aria-invalid={Boolean(
-                      errorFor("receivedOrCollectedBy"),
-                    )}
-                    aria-describedby={
-                      errorFor("receivedOrCollectedBy")
-                        ? "purchase-received-or-collected-by-error"
-                        : undefined
+                <>
+                  <Select
+                    value={formik.values.receivedOrCollectedBy}
+                    onValueChange={(value) => {
+                      setCreateSucceeded(false);
+                      formik.setFieldValue(
+                        "receivedOrCollectedBy",
+                        value,
+                        true,
+                      );
+                    }}
+                    onOpenChange={(open) =>
+                      !open &&
+                      formik.setFieldTouched(
+                        "receivedOrCollectedBy",
+                        true,
+                        true,
+                      )
+                    }
+                    disabled={
+                      isCreating ||
+                      formik.isSubmitting ||
+                      warehouseManagerState.isLoading ||
+                      Boolean(warehouseManagerState.error)
                     }
                   >
-                    <SelectValue placeholder="Select an employee" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PURCHASE_ORDER_EMPLOYEE_OPTIONS.map((employee) => (
-                      <SelectItem key={employee.value} value={employee.value}>
-                        {employee.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                    <SelectTrigger
+                      id="purchase-received-or-collected-by"
+                      aria-invalid={Boolean(
+                        errorFor("receivedOrCollectedBy") ||
+                          warehouseManagerState.error,
+                      )}
+                      aria-describedby={
+                        errorFor("receivedOrCollectedBy") ||
+                        warehouseManagerState.error
+                          ? "purchase-received-or-collected-by-error"
+                          : warehouseManagerState.isLoading
+                            ? "purchase-received-or-collected-by-loading"
+                            : undefined
+                      }
+                    >
+                      <SelectValue
+                        placeholder={
+                          warehouseManagerState.isLoading
+                            ? "Loading warehouse managers..."
+                            : "Select a warehouse manager"
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {warehouseManagerState.items.length === 0 && (
+                        <SelectItem value="no-warehouse-managers" disabled>
+                          No warehouse managers available
+                        </SelectItem>
+                      )}
+                      {warehouseManagerState.items.map((employee) => (
+                        <SelectItem key={employee.value} value={employee.value}>
+                          {employee.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {warehouseManagerState.isLoading && (
+                    <p
+                      id="purchase-received-or-collected-by-loading"
+                      role="status"
+                      aria-live="polite"
+                      className="flex items-center gap-1.5 text-xs text-muted-foreground"
+                    >
+                      <LoaderCircle
+                        className="size-3.5 animate-spin"
+                        aria-hidden="true"
+                      />
+                      Loading warehouse managers from the server...
+                    </p>
+                  )}
+                </>
               </PurchaseOrderFormField>
             </section>
 

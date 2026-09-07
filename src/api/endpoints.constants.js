@@ -10,6 +10,7 @@ export const ENDPOINTS = {
   EMPLOYEE: {
     BASE: "employees",
     RESTORE: "restore",
+    WAREHOUSE_MANAGERS: "warehouse-managers",
   },
   COMPANY: {
     BASE: "companies",

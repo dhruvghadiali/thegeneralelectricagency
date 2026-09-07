@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   createPurchase,
   fetchPurchaseStandaloneStockCount,
+  fetchPurchaseWarehouseManagers,
   fetchPurchases,
 } from "@Redux/purchase/purchase.action";
 import {
@@ -25,6 +26,11 @@ const initialState = {
   isCreating: false,
   createError: null,
   standaloneStockByProduct: {},
+  warehouseManagers: {
+    items: [],
+    isLoading: false,
+    error: null,
+  },
 };
 
 const purchaseSlice = createSlice({
@@ -42,6 +48,21 @@ const purchaseSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchPurchaseWarehouseManagers.pending, (state) => {
+        state.warehouseManagers.isLoading = true;
+        state.warehouseManagers.error = null;
+      })
+      .addCase(fetchPurchaseWarehouseManagers.fulfilled, (state, action) => {
+        state.warehouseManagers.items = action.payload;
+        state.warehouseManagers.isLoading = false;
+        state.warehouseManagers.error = null;
+      })
+      .addCase(fetchPurchaseWarehouseManagers.rejected, (state, action) => {
+        state.warehouseManagers.isLoading = false;
+        state.warehouseManagers.error = action.meta.aborted
+          ? null
+          : (action.payload ?? "Unable to load warehouse managers.");
+      })
       .addCase(fetchPurchases.pending, tableFetchCases.pending)
       .addCase(fetchPurchases.fulfilled, (state, action) => {
         tableFetchCases.fulfilled(state, action);

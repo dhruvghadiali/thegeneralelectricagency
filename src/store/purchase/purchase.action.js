@@ -1,14 +1,42 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { employeePurchaseApi, employeeStockApi } from "@Api";
+import {
+  employeeEmployeeApi,
+  employeePurchaseApi,
+  employeeStockApi,
+} from "@Api";
 import { extractErrorMessage } from "@Api/client.api";
 import { ROLE_PATHS } from "@Enums";
 import {
   toPurchaseCreatePayload,
   toPurchaseListParams,
 } from "@Forms/purchaseOrder/purchaseOrder-api.payload";
-import { fromPurchaseListResponse } from "@Forms/purchaseOrder/purchaseOrder-frontend.payload";
+import {
+  fromPurchaseListResponse,
+  fromWarehouseManagerListResponse,
+} from "@Forms/purchaseOrder/purchaseOrder-frontend.payload";
 import { fromStandaloneStockCountResponse } from "@Forms/stock/stock-frontend.payload";
+
+export const fetchPurchaseWarehouseManagers = createAsyncThunk(
+  "purchases/fetchWarehouseManagers",
+  async (_, { getState, signal, rejectWithValue }) => {
+    if (getState().auth.role !== ROLE_PATHS.EMPLOYEE) {
+      return rejectWithValue(
+        "Only employees can load warehouse managers for purchases.",
+      );
+    }
+
+    try {
+      const response = await employeeEmployeeApi.getWarehouseManagers(
+        {},
+        { signal },
+      );
+      return fromWarehouseManagerListResponse(response);
+    } catch (error) {
+      return rejectWithValue(extractErrorMessage(error));
+    }
+  },
+);
 
 export const fetchPurchaseStandaloneStockCount = createAsyncThunk(
   "purchases/fetchStandaloneStockCount",

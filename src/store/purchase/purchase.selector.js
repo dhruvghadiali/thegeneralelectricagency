@@ -19,3 +19,8 @@ export const selectPurchaseStandaloneStockStates = createSelector(
   selectPurchaseState,
   (purchases) => purchases.standaloneStockByProduct,
 );
+
+export const selectPurchaseWarehouseManagerOptionsState = createSelector(
+  selectPurchaseState,
+  (purchases) => purchases.warehouseManagers,
+);
