@@ -53,6 +53,7 @@ function PurchaseOrderForm() {
   const [productQuery, setProductQuery] = useState("");
   const [supplierQuery, setSupplierQuery] = useState("");
   const [selectedLabels, setSelectedLabels] = useState({});
+  const [openProductIndex, setOpenProductIndex] = useState(0);
   const { isCreating, createError } = useSelector(selectPurchaseCreateState);
   const warehouseManagerState = useWarehouseManagerOptions();
   const {
@@ -127,6 +128,7 @@ function PurchaseOrderForm() {
     "aria-describedby": errorFor(field) ? `${id}-error` : undefined,
   });
   const selectSupplier = (option) => {
+    setOpenProductIndex(0);
     formik.setValues(
       (current) => ({
         ...current,
@@ -184,6 +186,7 @@ function PurchaseOrderForm() {
     );
   };
   const addProduct = () => {
+    setOpenProductIndex(formik.values.products.length);
     formik.setFieldValue(
       "products",
       [...formik.values.products, { ...EMPTY_PURCHASE_PRODUCT }],
@@ -210,6 +213,11 @@ function PurchaseOrderForm() {
     setCreateSucceeded(false);
   };
   const removeProduct = (productIndex) => {
+    setOpenProductIndex((current) =>
+      current === productIndex
+        ? Math.max(0, productIndex - 1)
+        : current > productIndex ? current - 1 : current,
+    );
     formik.setFieldValue(
       "products",
       formik.values.products.filter((_, index) => index !== productIndex),
@@ -301,6 +309,8 @@ function PurchaseOrderForm() {
                 />
               </PurchaseOrderFormField>
               <PurchaseOrderProductFields
+                openProductIndex={openProductIndex}
+                onOpenProductChange={setOpenProductIndex}
                 products={formik.values.products}
                 supplierSelected={Boolean(formik.values.supplier)}
                 productOptions={productOptions}

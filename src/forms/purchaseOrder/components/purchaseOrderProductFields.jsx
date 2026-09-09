@@ -1,4 +1,4 @@
-import { LoaderCircle, Trash2 } from "lucide-react";
+import { ChevronDown, LoaderCircle, Trash2 } from "lucide-react";
 
 import { INDIAN_GST_OPTIONS } from "@Enums";
 import { PURCHASE_PRODUCT_NOTES_MAX_LENGTH } from "@Forms/purchaseOrder/purchaseOrder.validation.constants";
@@ -16,6 +16,8 @@ import {
 import { Textarea } from "@shadcnComponent/textarea";
 
 function PurchaseOrderProductFields({
+  openProductIndex,
+  onOpenProductChange,
   products,
   supplierSelected,
   productOptions,
@@ -38,6 +40,10 @@ function PurchaseOrderProductFields({
   return (
     <div className="space-y-4">
       {products.map((item, index) => {
+        const isOpen = openProductIndex === index;
+        const hasErrors = Object.keys(item).some((field) =>
+          errorFor(`products[${index}].${field}`),
+        );
         const productPath = `products[${index}].product`;
         const standaloneStockPath = `products[${index}].standaloneStock`;
         const quantityPath = `products[${index}].quantityPurchased`;
@@ -56,8 +62,27 @@ function PurchaseOrderProductFields({
 
         return (
           <div key={index} className="rounded-xl border bg-muted/10 p-4 sm:p-5">
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <p className="font-medium">Product {index + 1}</p>
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="min-w-0 flex-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  id={`product-heading-${index}`}
+                  aria-expanded={isOpen}
+                  aria-controls={`product-panel-${index}`}
+                  onClick={() => onOpenProductChange(isOpen ? null : index)}
+                  className="h-auto w-full justify-between gap-3 whitespace-normal px-0 text-left hover:bg-transparent"
+                >
+                  <span className="min-w-0">
+                    <span className="block font-medium">Product {index + 1}</span>
+                    <span className="block truncate text-xs font-normal text-muted-foreground">
+                      {selectedLabels[`product-${index}`] || "Select a product"}
+                    </span>
+                    {hasErrors && <span className="block text-xs text-destructive">Review required fields</span>}
+                  </span>
+                  <ChevronDown aria-hidden="true" className={`size-4 shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                </Button>
+              </h3>
               <Button
                 type="button"
                 variant="ghost"
@@ -70,6 +95,13 @@ function PurchaseOrderProductFields({
                 <Trash2 className="size-4" aria-hidden="true" />
               </Button>
             </div>
+            <div
+              id={`product-panel-${index}`}
+              role="region"
+              aria-labelledby={`product-heading-${index}`}
+              hidden={!isOpen}
+              className="mt-4 border-t pt-4"
+            >
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               <PurchaseOrderFormField
                 id={`purchase-product-${index}`}
@@ -285,6 +317,7 @@ function PurchaseOrderProductFields({
                   {...inputProps(notesPath, `product-notes-${index}`)}
                 />
               </PurchaseOrderFormField>
+            </div>
             </div>
           </div>
         );
