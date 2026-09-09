@@ -1,18 +1,19 @@
 import { useState } from "react";
-import { ChartNoAxesCombined, Plus, ShoppingCart } from "lucide-react";
+import { ChartNoAxesCombined, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import DataTable from "@commonComponent/dataTable";
 import { Button } from "@shadcnComponent/button";
-import PurchaseOrderActions from "@screenComponent/purchaseOrders/purchaseOrderActions";
-import { PURCHASE_ORDER_COLUMNS } from "@screenComponent/purchaseOrders/purchaseOrder.columns";
 import PurchaseOrderDetailSheet from "@screenComponent/purchaseOrders/purchaseOrderDetailSheet";
-import PurchaseOrderSummary from "@screenComponent/purchaseOrders/purchaseOrderSummary";
-import { usePurchaseOrderList } from "@screenComponent/purchaseOrders/usePurchaseOrderList";
+import {
+  PURCHASE_TABLE_CONFIG,
+  PurchaseTableActions,
+  usePurchaseTable,
+} from "@Tables/purchase";
 
 function PurchaseOrders() {
   const navigate = useNavigate();
-  const table = usePurchaseOrderList();
+  const table = usePurchaseTable();
   const [selectedPurchase, setSelectedPurchase] = useState(null);
 
   return (
@@ -36,12 +37,9 @@ function PurchaseOrders() {
         </Button>
       </header>
 
-      <PurchaseOrderSummary />
-
       <DataTable
-        columns={PURCHASE_ORDER_COLUMNS}
+        {...PURCHASE_TABLE_CONFIG}
         rows={table.rows}
-        rowKey={(purchase) => purchase.id}
         search={table.search}
         sort={table.sort}
         columnFilters={table.columnFilters}
@@ -61,18 +59,11 @@ function PurchaseOrders() {
         isLoading={table.isLoading}
         error={table.error}
         rowActions={(purchase) => (
-          <PurchaseOrderActions
+          <PurchaseTableActions
             purchase={purchase}
             onView={setSelectedPurchase}
           />
         )}
-        searchPlaceholder="Search by purchase ID, product, or supplier..."
-        rowNoun="purchase orders"
-        emptyIcon={ShoppingCart}
-        emptyTitle="No purchase orders found"
-        emptyDescription="Create your first purchase order to start tracking supplier purchases."
-        filteredEmptyDescription="Try changing your search or filters."
-        fillHeight
       />
 
       <PurchaseOrderDetailSheet

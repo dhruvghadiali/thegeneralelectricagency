@@ -11,17 +11,18 @@ import {
   tableFetchCases,
   TABLE_REDUCERS,
 } from "@Redux/factories/table.factory";
+import { PURCHASE_TABLE_DEFAULTS } from "@Tables/purchase/purchaseTable.defaults";
 
 const initialState = {
   ...createTableState({
-    sort: [{ field: "expected_delivery_date", order: "asc" }],
+    sort: PURCHASE_TABLE_DEFAULTS.sort,
+    columnFilters: PURCHASE_TABLE_DEFAULTS.filters,
+    limit: PURCHASE_TABLE_DEFAULTS.limit,
   }),
   summary: {
     totalPurchases: 0,
-    pendingDeliveries: 0,
-    totalBillAmount: 0,
-    totalPaidAmount: 0,
-    outstandingAmount: 0,
+    totalUnitsReceived: 0,
+    totalReceivedValue: 0,
   },
   isCreating: false,
   createError: null,

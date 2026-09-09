@@ -1,9 +1,6 @@
 import _ from "lodash";
 import moment from "moment";
 
-import { TABLE_DEFAULTS } from "@Enums";
-import { buildListQueryParams } from "@/utils/listQuery.util";
-
 const toReceivedProductPayload = (item = {}) => ({
   product: item.product,
   stock: _.toNumber(item.quantityPurchased),
@@ -23,15 +20,4 @@ export function toPurchaseCreatePayload(values = {}) {
     received_at: receivedAt,
     received_by: values.receivedOrCollectedBy,
   }));
-}
-
-export function toPurchaseListParams({
-  columns = [],
-  page = TABLE_DEFAULTS.PAGE,
-  limit = TABLE_DEFAULTS.LIMIT,
-  search = "",
-  sort = [],
-  filters = {},
-} = {}) {
-  return buildListQueryParams({ columns, page, limit, search, sort, filters });
 }

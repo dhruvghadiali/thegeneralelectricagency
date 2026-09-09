@@ -2,7 +2,7 @@ import { Eye } from "lucide-react";
 
 import { Button } from "@shadcnComponent/button";
 
-function PurchaseOrderActions({ purchase, onView }) {
+function PurchaseTableActions({ purchase, onView }) {
   return (
     <Button
       type="button"
@@ -17,4 +17,4 @@ function PurchaseOrderActions({ purchase, onView }) {
   );
 }
 
-export default PurchaseOrderActions;
+export default PurchaseTableActions;
