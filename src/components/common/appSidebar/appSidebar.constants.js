@@ -6,6 +6,7 @@ import {
   Users,
   LucideHome,
   ShoppingCart,
+  Receipt,
   TrendingUp,
 } from "lucide-react";
 
@@ -28,6 +29,7 @@ export const SIDEBAR_NAV_ITEMS_BY_ROLE = {
   [ROLE_PATHS.EMPLOYEE]: [
     { title: "Dashboard", url: "/dashboard", icon: LucideHome },
     { title: "Purchase orders", url: "/purchases", icon: ShoppingCart },
+    { title: "Sales", url: "/sales", icon: Receipt },
     { title: "Purchase credit", url: "/purchase-credit", icon: HandCoins },
     { title: "Products", url: "/products", icon: Boxes },
     { title: "Companies", url: "/companies", icon: Building2 },
