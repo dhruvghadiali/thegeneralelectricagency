@@ -1,0 +1,2 @@
+export const SALES_ORDER_NUMBER_MIN = 0;
+export const SALES_ORDER_PERCENTAGE_MAX = 100;

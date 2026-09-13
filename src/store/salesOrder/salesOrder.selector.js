@@ -6,3 +6,8 @@ export const selectSalesOrderCompanyOptionsState = createSelector(
   selectSalesOrderState,
   (salesOrders) => salesOrders.companyOptions,
 );
+
+export const selectSalesOrderProductOptionsState = createSelector(
+  selectSalesOrderState,
+  (salesOrders) => salesOrders.productOptions,
+);
