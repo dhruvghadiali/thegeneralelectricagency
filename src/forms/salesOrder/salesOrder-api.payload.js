@@ -1,16 +1,10 @@
-import _ from "lodash";
+const COMPANY_OPTION_LIMIT = 30;
 
-import { SALES_ORDER_CUSTOMER_COMPANY_TYPES } from "@Forms/salesOrder/salesOrder.options";
-
-const CUSTOMER_OPTION_LIMIT = 30;
-
-export function toSalesOrderCustomerListParams(search = "") {
+export function toSalesOrderCompanyListParams() {
   return {
     page: 1,
-    limit: CUSTOMER_OPTION_LIMIT,
-    search: _.trim(search) || undefined,
+    limit: COMPANY_OPTION_LIMIT,
     sort: "company_name:asc",
     is_active: true,
-    company_type: SALES_ORDER_CUSTOMER_COMPANY_TYPES.join(","),
   };
 }

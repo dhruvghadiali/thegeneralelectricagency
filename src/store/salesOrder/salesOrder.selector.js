@@ -2,7 +2,7 @@ import { createSelector } from "@reduxjs/toolkit";
 
 const selectSalesOrderState = (state) => state.salesOrders;
 
-export const selectSalesOrderCustomerOptionsState = createSelector(
+export const selectSalesOrderCompanyOptionsState = createSelector(
   selectSalesOrderState,
-  (salesOrders) => salesOrders.customers,
+  (salesOrders) => salesOrders.companyOptions,
 );

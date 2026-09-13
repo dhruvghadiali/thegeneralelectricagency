@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { fetchSalesOrderCustomers } from "@Redux/salesOrder/salesOrder.action";
+import { fetchSalesOrderCompanies } from "@Redux/salesOrder/salesOrder.action";
 
 const initialState = {
-  customers: {
-    items: [],
+  companyOptions: {
+    customers: [],
+    suppliers: [],
     isLoading: true,
     error: null,
     requestId: null,
@@ -17,27 +18,28 @@ const salesOrderSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchSalesOrderCustomers.pending, (state, action) => {
-        state.customers.isLoading = true;
-        state.customers.error = null;
-        state.customers.requestId = action.meta.requestId;
+      .addCase(fetchSalesOrderCompanies.pending, (state, action) => {
+        state.companyOptions.isLoading = true;
+        state.companyOptions.error = null;
+        state.companyOptions.requestId = action.meta.requestId;
       })
-      .addCase(fetchSalesOrderCustomers.fulfilled, (state, action) => {
-        if (state.customers.requestId !== action.meta.requestId) return;
+      .addCase(fetchSalesOrderCompanies.fulfilled, (state, action) => {
+        if (state.companyOptions.requestId !== action.meta.requestId) return;
 
-        state.customers.items = action.payload;
-        state.customers.isLoading = false;
-        state.customers.error = null;
-        state.customers.requestId = null;
+        state.companyOptions.customers = action.payload.customers;
+        state.companyOptions.suppliers = action.payload.suppliers;
+        state.companyOptions.isLoading = false;
+        state.companyOptions.error = null;
+        state.companyOptions.requestId = null;
       })
-      .addCase(fetchSalesOrderCustomers.rejected, (state, action) => {
-        if (state.customers.requestId !== action.meta.requestId) return;
+      .addCase(fetchSalesOrderCompanies.rejected, (state, action) => {
+        if (state.companyOptions.requestId !== action.meta.requestId) return;
 
-        state.customers.isLoading = false;
-        state.customers.error = action.meta.aborted
+        state.companyOptions.isLoading = false;
+        state.companyOptions.error = action.meta.aborted
           ? null
-          : (action.payload ?? "Unable to load customers.");
-        state.customers.requestId = null;
+          : (action.payload ?? "Unable to load companies.");
+        state.companyOptions.requestId = null;
       });
   },
 });

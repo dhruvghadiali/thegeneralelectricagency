@@ -6,4 +6,7 @@ export const salesOrderValidationSchema = Yup.object({
   customer: Yup.string()
     .trim()
     .required(SALES_ORDER_VALIDATION_MESSAGES.CUSTOMER_REQUIRED),
+  supplier: Yup.string()
+    .trim()
+    .required(SALES_ORDER_VALIDATION_MESSAGES.SUPPLIER_REQUIRED),
 });
