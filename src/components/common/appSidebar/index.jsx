@@ -16,6 +16,7 @@ import {
 } from "@shadcnComponent/sidebar";
 import { Typography } from "@shadcnComponent/typography";
 import { loggedOut } from "@/store/auth/auth.slice";
+import { ROUTES } from "@routes/navigate";
 
 import { SIDEBAR_NAV_ITEMS_BY_ROLE } from "./appSidebar.constants";
 
@@ -32,7 +33,7 @@ function AppSidebar() {
 
   const handleLogOut = () => {
     dispatch(loggedOut());
-    navigate("/");
+    navigate(ROUTES.HOME);
   };
 
   return (

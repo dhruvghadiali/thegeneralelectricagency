@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@routes/navigate";
 
 import FormErrorAlert from "@commonComponent/alert/formErrorAlert";
 import PurchaseOrderBillUploader from "@Forms/purchaseOrder/components/purchaseOrderBillUploader";
@@ -76,7 +77,7 @@ function PurchaseOrderForm() {
         setSupplierQuery("");
         resetStandaloneStockCounts();
         setCreateSucceeded(true);
-        navigate("/purchases");
+        navigate(ROUTES.PURCHASES);
       } catch {
         // The purchases slice exposes the request error above the form.
       }
@@ -456,7 +457,7 @@ function PurchaseOrderForm() {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => navigate("/purchases")}
+                onClick={() => navigate(ROUTES.PURCHASES)}
               >
                 Cancel
               </Button>

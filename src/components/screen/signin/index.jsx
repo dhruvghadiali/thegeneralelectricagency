@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@routes/navigate";
 
 import {
   Card,
@@ -26,7 +27,7 @@ function SigninScreenComponent() {
         <CardHeader className="items-center text-center">
           <button
             type="button"
-            onClick={() => navigate("/")}
+            onClick={() => navigate(ROUTES.HOME)}
             aria-label="Go to home page"
             className="mb-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f0f5f7] shadow-inner hover:cursor-pointer"
           >

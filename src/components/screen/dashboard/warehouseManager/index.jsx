@@ -12,6 +12,7 @@ import {
   Truck,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { ROUTES } from "@routes/navigate";
 
 import SummaryCard from "@screenComponent/dashboard/shared/summaryCard";
 import { Badge } from "@shadcnComponent/badge";
@@ -64,7 +65,7 @@ function WarehouseDashboard() {
           <p className="mt-2 text-sm text-muted-foreground">Monitor receiving, picking, packing, and dispatch from one workspace.</p>
         </div>
         <Button asChild className="self-start">
-          <Link to="/stocks"><ScanLine className="size-4" />Open stock register</Link>
+          <Link to={ROUTES.STOCKS}><ScanLine className="size-4" />Open stock register</Link>
         </Button>
       </section>
 
@@ -106,7 +107,7 @@ function WarehouseDashboard() {
 
         <Card className="gap-4 border-amber-300/70 bg-amber-50/50 shadow-none">
           <CardHeader className="px-5"><div className="mb-2 flex size-10 items-center justify-center rounded-xl bg-amber-500/15 text-amber-700"><PackageOpen className="size-5" /></div><CardTitle>Reorder attention</CardTitle><CardDescription className="mt-1.5">12 products are below their minimum stock level.</CardDescription></CardHeader>
-          <CardContent className="px-5"><div className="mb-5 flex items-center gap-2 text-sm text-amber-800"><CheckCircle2 className="size-4" />3 purchase requests already raised</div><Button asChild variant="outline" className="w-full bg-white"><Link to="/stocks"><ClipboardList className="size-4" />Review low stock<ArrowRight className="ml-auto size-4" /></Link></Button></CardContent>
+          <CardContent className="px-5"><div className="mb-5 flex items-center gap-2 text-sm text-amber-800"><CheckCircle2 className="size-4" />3 purchase requests already raised</div><Button asChild variant="outline" className="w-full bg-white"><Link to={ROUTES.STOCKS}><ClipboardList className="size-4" />Review low stock<ArrowRight className="ml-auto size-4" /></Link></Button></CardContent>
         </Card>
       </section>
     </main>

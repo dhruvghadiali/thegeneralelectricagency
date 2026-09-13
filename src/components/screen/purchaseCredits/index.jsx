@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { ROUTES, ROUTE_BUILDERS } from "@routes/navigate";
 
 import DataTable from "@commonComponent/dataTable";
 import { Button } from "@shadcnComponent/button";
@@ -24,7 +25,7 @@ function PurchaseCredits() {
         <Button
           type="button"
           className="w-full sm:w-auto"
-          onClick={() => navigate("/purchase-credit/new")}
+          onClick={() => navigate(ROUTES.PURCHASE_CREDIT_NEW)}
         >
           <Plus className="size-4" />
           Add purchase credit
@@ -57,7 +58,7 @@ function PurchaseCredits() {
             purchaseCredit={purchaseCredit}
             onView={(row) => dispatch(purchaseCreditDetailsOpened(row))}
             onEdit={(row) =>
-              navigate(`/purchase-credit/${row.id}/edit`, {
+              navigate(ROUTE_BUILDERS.purchaseCreditEdit(row.id), {
                 state: { purchaseCredit: row },
               })
             }

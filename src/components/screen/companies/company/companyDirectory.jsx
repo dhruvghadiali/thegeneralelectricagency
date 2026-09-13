@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import DataTable from "@commonComponent/dataTable";
 import { ROLE_PATHS } from "@Enums";
+import { ROUTE_BUILDERS } from "@routes/navigate";
 import { deleteCompany, restoreCompany } from "@Redux/company/company.action";
 import {
   companyDeleteClosed,
@@ -91,7 +92,7 @@ function CompanyDirectory() {
             canManage={canManageCompany}
             onView={(row) => dispatch(companyDetailsOpened(row))}
             onEdit={(row) =>
-              navigate(`/companies/${row.id}/edit`, {
+              navigate(ROUTE_BUILDERS.companyEdit(row.id), {
                 state: { company: row },
               })
             }

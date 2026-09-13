@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { ROLE_PATHS } from "@Enums";
+import { ROUTES, ROUTE_BUILDERS } from "@routes/navigate";
 import { deleteProduct } from "@Redux/product/product.action";
 import { selectProductDialogState } from "@Redux/product/product.selector";
 import {
@@ -88,7 +89,7 @@ function Products() {
         canManage={canManage}
         selectedCount={selectedProducts.length}
         onViewQuotation={() => setQuotationProducts(selectedProducts)}
-        onAddProduct={() => navigate("/products/new")}
+        onAddProduct={() => navigate(ROUTES.PRODUCT_NEW)}
       />
 
       <DataTable
@@ -124,7 +125,7 @@ function Products() {
                   onView={setViewedProduct}
                   canManage={canManage}
                   onEdit={(row) =>
-                    navigate(`/products/${row.id}/edit`, {
+                    navigate(ROUTE_BUILDERS.productEdit(row.id), {
                       state: { product: row },
                     })
                   }

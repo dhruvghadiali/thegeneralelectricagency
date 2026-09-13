@@ -18,6 +18,7 @@ export default defineConfig({
       "@Forms": path.resolve(__dirname, "./src/forms"),
       "@Tables": path.resolve(__dirname, "./src/tables"),
       "@Api": path.resolve(__dirname, "./src/api"),
+      "@routes": path.resolve(__dirname, "./src/routes"),
     },
   },
 });

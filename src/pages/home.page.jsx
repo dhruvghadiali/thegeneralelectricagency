@@ -16,6 +16,7 @@ import {
 } from "@/utils/useMotorFrames";
 import { lazy, memo, Suspense, useEffect, useRef, useState } from "react";
 import {useNavigate} from "react-router-dom";
+import { ROUTES } from "@routes/navigate";
 
 const MotorScrollAnimation = lazy(
   () => import("@/components/MotorScrollAnimation"),
@@ -152,7 +153,7 @@ export default function HomePage() {
           activeIndex={activeIndex}
           isRevealed={isRevealed}
           onSelectSection={scrollToSection}
-          onSignIn={() => navigate("/signin")}
+          onSignIn={() => navigate(ROUTES.SIGN_IN)}
         />
         <Suspense
           fallback={<div className="h-screen bg-white" aria-hidden="true" />}

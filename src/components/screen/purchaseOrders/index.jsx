@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChartNoAxesCombined, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@routes/navigate";
 
 import DataTable from "@commonComponent/dataTable";
 import { Button } from "@shadcnComponent/button";
@@ -22,14 +23,14 @@ function PurchaseOrders() {
         <h1 className="sr-only">Purchase orders</h1>
         <Button
           variant="outline"
-          onClick={() => navigate("/purchases/financial-summary")}
+          onClick={() => navigate(ROUTES.PURCHASE_FINANCIAL_SUMMARY)}
           className="w-full sm:w-auto"
         >
           <ChartNoAxesCombined className="size-4" />
           Financial summary
         </Button>
         <Button
-          onClick={() => navigate("/purchases/new")}
+          onClick={() => navigate(ROUTES.PURCHASE_NEW)}
           className="w-full sm:w-auto"
         >
           <Plus className="size-4" />

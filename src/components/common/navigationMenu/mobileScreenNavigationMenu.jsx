@@ -12,6 +12,7 @@ import {
 } from "@shadcnComponent/popover";
 import { useNavigate } from "react-router-dom";
 import { Typography } from "@shadcnComponent/typography";
+import { HOME_SECTIONS, ROUTES } from "@routes/navigate";
 
 const getSectionId = (href) => (href?.startsWith("#") ? href.replace("#", "") : "");
 
@@ -34,7 +35,7 @@ function MobileScreenNavigationMenuComponent({ navigationLinks, useLink, activeS
   const handleNavigateAndScroll = (link) => {
     console.log("Navigating and scrolling to:", link);
     // First navigate to home page
-    navigate("/");
+    navigate(ROUTES.HOME);
 
     // Then scroll to the section after a brief delay to ensure page is loaded
     setTimeout(() => {
@@ -87,7 +88,7 @@ function MobileScreenNavigationMenuComponent({ navigationLinks, useLink, activeS
                   <>
                     <button
                       type="button"
-                      onClick={() => handleSectionScroll("#services")}
+                      onClick={() => handleSectionScroll(HOME_SECTIONS.SERVICES)}
                       className={`mb-1 w-full rounded px-2 py-1.5 text-left text-xs font-semibold transition-all duration-200 ${
                         activeSection === "services"
                           ? "bg-primary text-primary-foreground"

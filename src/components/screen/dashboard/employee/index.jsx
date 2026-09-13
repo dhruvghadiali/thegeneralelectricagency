@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { ROUTES } from "@routes/navigate";
 
 import SummaryCard from "@screenComponent/dashboard/shared/summaryCard";
 import { Badge } from "@shadcnComponent/badge";
@@ -116,7 +117,7 @@ function EmployeeDashboard() {
             </p>
           </div>
           <Button asChild variant="secondary" className="self-start bg-white text-primary hover:bg-white/90">
-            <Link to="/companies/new">
+            <Link to={ROUTES.COMPANY_NEW}>
               <Plus className="size-4" />
               Add company
             </Link>
@@ -183,7 +184,7 @@ function EmployeeDashboard() {
       </section>
 
       <section className="grid gap-4 sm:grid-cols-2">
-        <Link to="/companies" className="group rounded-xl border bg-card p-5 transition-colors hover:border-primary/40">
+        <Link to={ROUTES.COMPANIES} className="group rounded-xl border bg-card p-5 transition-colors hover:border-primary/40">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="rounded-xl bg-primary/8 p-2.5 text-primary"><Building2 className="size-5" /></div>
@@ -192,7 +193,7 @@ function EmployeeDashboard() {
             <ArrowRight className="size-5 text-muted-foreground transition-transform group-hover:translate-x-1" />
           </div>
         </Link>
-        <Link to="/products" className="group rounded-xl border bg-card p-5 transition-colors hover:border-primary/40">
+        <Link to={ROUTES.PRODUCTS} className="group rounded-xl border bg-card p-5 transition-colors hover:border-primary/40">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="rounded-xl bg-amber-500/10 p-2.5 text-amber-700"><CircleAlert className="size-5" /></div>

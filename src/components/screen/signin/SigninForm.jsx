@@ -26,6 +26,7 @@ import { togglePasswordVisibility } from "@Redux/auth/auth.slice";
 import { SIGNIN_INITIAL_VALUES } from "@Forms/signin/signin.initialValues";
 import { signinValidationSchema } from "@Forms/signin/signin.validation.schema";
 import { ROLE_OPTIONS } from "@Enums";
+import { ROUTES } from "@routes/navigate";
 
 import FormErrorAlert from "@commonComponent/alert/formErrorAlert";
 
@@ -47,7 +48,7 @@ function SigninForm() {
         }),
       ).unwrap();
 
-      navigate("/dashboard");
+      navigate(ROUTES.DASHBOARD);
     } catch {
       // signInError in the store already has a display-ready message.
     } finally {

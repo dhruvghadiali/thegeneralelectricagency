@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import CompanyDetailsForm from "@Forms/company/companyDetails/companyDetailsForm";
+import { ROUTES } from "@routes/navigate";
 import {
   createCompany,
   createCompanyAddress,
@@ -33,7 +34,7 @@ function CompanyDetailsPage() {
       await dispatch(createCompany(values)).unwrap();
     }
 
-    navigate("/companies", { replace: true });
+    navigate(ROUTES.COMPANIES, { replace: true });
   };
 
   return (
@@ -62,7 +63,7 @@ function CompanyDetailsPage() {
         ).unwrap()
       }
       onDeleteContact={(id) => dispatch(deleteCompanyContact(id)).unwrap()}
-      onCancel={() => navigate("/companies", { replace: true })}
+      onCancel={() => navigate(ROUTES.COMPANIES, { replace: true })}
     />
   );
 }

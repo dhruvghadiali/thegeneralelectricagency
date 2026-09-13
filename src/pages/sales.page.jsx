@@ -2,6 +2,7 @@ import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "@shadcnComponent/button";
+import { ROUTES } from "@routes/navigate";
 
 function SalesPage() {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ function SalesPage() {
         <Button
           type="button"
           className="w-full sm:w-auto"
-          onClick={() => navigate("/sales/new")}
+          onClick={() => navigate(ROUTES.SALES_NEW)}
         >
           <Plus className="size-4" />
           Add sales order

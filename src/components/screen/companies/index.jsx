@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Button } from "@shadcnComponent/button";
 import { ROLE_PATHS } from "@Enums";
+import { ROUTES } from "@routes/navigate";
 import { selectCompanyDirectoryView } from "@Redux/company/company.selector";
 import { companyDirectoryViewChanged } from "@Redux/company/company.slice";
 
@@ -75,7 +76,7 @@ function Companies() {
             canViewContactDirectory && <CompanyContactSummaryPopover />}
           {canAddCompany && (
             <Button
-              onClick={() => navigate("/companies/new")}
+              onClick={() => navigate(ROUTES.COMPANY_NEW)}
               className="w-full sm:w-auto"
             >
               <Plus className="size-4" />

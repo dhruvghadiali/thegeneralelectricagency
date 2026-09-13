@@ -5,15 +5,16 @@ import {
   Navigate,
 } from "react-router-dom";
 
+import { ROUTES } from "@routes/navigate";
 import { ROLE_PATHS } from "@Enums";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 
 import HomePage from "@/pages/home.page";
-import RoleRoute from "@/routes/role.route";
+import RoleRoute from "@routes/role.route";
 import StocksPage from "@/pages/stocks.page";
 import SigninPage from "@/pages/signin.page";
-import PublicRoute from "@/routes/public.route";
-import PrivateRoute from "@/routes/private.route";
+import PublicRoute from "@routes/public.route";
+import PrivateRoute from "@routes/private.route";
 import DashboardPage from "@/pages/dashboard.page";
 import EmployeesPage from "@/pages/employees.page";
 import CompaniesPage from "@/pages/companies.page";
@@ -37,16 +38,16 @@ function App() {
         <Router>
           <Routes>
             <Route element={<PublicRoute />}>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/signin" element={<SigninPage />} />
+              <Route path={ROUTES.HOME} element={<HomePage />} />
+              <Route path={ROUTES.SIGN_IN} element={<SigninPage />} />
             </Route>
 
             <Route element={<PrivateRoute />}>
-              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
               <Route
                 element={<RoleRoute allowedRoles={[ROLE_PATHS.SUPER_ADMIN]} />}
               >
-                <Route path="/employees" element={<EmployeesPage />} />
+                <Route path={ROUTES.EMPLOYEES} element={<EmployeesPage />} />
               </Route>
               <Route
                 element={
@@ -55,7 +56,7 @@ function App() {
                   />
                 }
               >
-                <Route path="/companies" element={<CompaniesPage />} />
+                <Route path={ROUTES.COMPANIES} element={<CompaniesPage />} />
               </Route>
               <Route
                 element={
@@ -64,7 +65,7 @@ function App() {
                   />
                 }
               >
-                <Route path="/products" element={<ProductsPage />} />
+                <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
               </Route>
               <Route
                 element={
@@ -73,38 +74,56 @@ function App() {
                   />
                 }
               >
-                <Route path="/purchase-credit" element={<PurchaseCreditPage />} />
-                <Route path="/purchase-credit/new" element={<PurchaseCreditFormPage />} />
                 <Route
-                  path="/purchase-credit/:purchaseCreditId/edit"
+                  path={ROUTES.PURCHASE_CREDITS}
+                  element={<PurchaseCreditPage />}
+                />
+                <Route
+                  path={ROUTES.PURCHASE_CREDIT_NEW}
+                  element={<PurchaseCreditFormPage />}
+                />
+                <Route
+                  path={ROUTES.PURCHASE_CREDIT_EDIT}
                   element={<PurchaseCreditFormPage />}
                 />
               </Route>
               <Route
                 element={<RoleRoute allowedRoles={[ROLE_PATHS.EMPLOYEE]} />}
               >
-                <Route path="/purchases" element={<PurchaseOrdersPage />} />
-                <Route path="/sales" element={<SalesPage />} />
-                <Route path="/sales/new" element={<SalesOrderPage />} />
                 <Route
-                  path="/purchases/financial-summary"
+                  path={ROUTES.PURCHASES}
+                  element={<PurchaseOrdersPage />}
+                />
+                <Route path={ROUTES.SALES} element={<SalesPage />} />
+                <Route path={ROUTES.SALES_NEW} element={<SalesOrderPage />} />
+                <Route
+                  path={ROUTES.PURCHASE_FINANCIAL_SUMMARY}
                   element={<PurchaseFinancialSummaryPage />}
                 />
-                <Route path="/purchases/new" element={<PurchaseOrderPage />} />
-                <Route path="/companies/new" element={<CompanyDetailsPage />} />
                 <Route
-                  path="/companies/:companyId/edit"
+                  path={ROUTES.PURCHASE_NEW}
+                  element={<PurchaseOrderPage />}
+                />
+                <Route
+                  path={ROUTES.COMPANY_NEW}
                   element={<CompanyDetailsPage />}
                 />
-                <Route path="/products/new" element={<ProductDetailsPage />} />
                 <Route
-                  path="/products/:productId/edit"
+                  path={ROUTES.COMPANY_EDIT}
+                  element={<CompanyDetailsPage />}
+                />
+                <Route
+                  path={ROUTES.PRODUCT_NEW}
+                  element={<ProductDetailsPage />}
+                />
+                <Route
+                  path={ROUTES.PRODUCT_EDIT}
                   element={<ProductDetailsPage />}
                 />
               </Route>
-              <Route path="/stocks" element={<StocksPage />} />
+              <Route path={ROUTES.STOCKS} element={<StocksPage />} />
               <Route
-                path="/settings"
+                path={ROUTES.SETTINGS}
                 element={
                   <PlaceholderScreen
                     eyebrow="Workspace preferences"
@@ -115,7 +134,10 @@ function App() {
               />
             </Route>
 
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route
+              path={ROUTES.NOT_FOUND}
+              element={<Navigate to={ROUTES.HOME} replace />}
+            />
           </Routes>
         </Router>
       </LenisScrollProvider>

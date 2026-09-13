@@ -21,6 +21,7 @@ import {
 
 import FormErrorAlert from "@commonComponent/alert/formErrorAlert";
 import ProductDetailsForm from "@Forms/product/productDetails/productDetailsForm";
+import { ROUTES } from "@routes/navigate";
 
 function ProductDetailsScreen() {
   const dispatch = useDispatch();
@@ -46,7 +47,7 @@ function ProductDetailsScreen() {
   }, [dispatch]);
 
   if (isEdit && !product) {
-    return <Navigate to="/products" replace />;
+    return <Navigate to={ROUTES.PRODUCTS} replace />;
   }
 
   const saveProduct = async (values) => {
@@ -57,7 +58,7 @@ function ProductDetailsScreen() {
         await dispatch(createProduct(values)).unwrap();
       }
 
-      navigate("/products", { replace: true });
+      navigate(ROUTES.PRODUCTS, { replace: true });
     } catch {
       // The product slice exposes a display-ready request error below.
     }
@@ -93,7 +94,7 @@ function ProductDetailsScreen() {
             key={`${isEdit ? "edit" : "add"}-${product.id ?? "new"}`}
             product={product}
             onSubmit={saveProduct}
-            onCancel={() => navigate("/products")}
+            onCancel={() => navigate(ROUTES.PRODUCTS)}
             submitLabel={isEdit ? "Save changes" : "Add product"}
             isSubmitting={isEdit ? isUpdating : isCreating}
           />

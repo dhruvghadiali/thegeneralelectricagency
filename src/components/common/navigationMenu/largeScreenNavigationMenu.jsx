@@ -2,6 +2,7 @@ import { ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Typography } from "@shadcnComponent/typography";
+import { HOME_SECTIONS, ROUTES } from "@routes/navigate";
 
 const getSectionId = (href) => href?.startsWith("#") ? href.replace("#", "") : "";
 
@@ -26,7 +27,7 @@ const LargeScreenNavigationMenuComponent = ({ navigationLinks, useLink, activeSe
   const handleNavigateAndScroll = (link) => {
     console.log("Navigating and scrolling to:", link);
     // First navigate to home page
-    navigate("/");
+    navigate(ROUTES.HOME);
 
     // Then scroll to the section after a brief delay to ensure page is loaded
     setTimeout(() => {
@@ -55,7 +56,7 @@ const LargeScreenNavigationMenuComponent = ({ navigationLinks, useLink, activeSe
                 onMouseLeave={handleMouseLeave}
               >
                 <button
-                  onClick={() => handleSectionScroll("#services")}
+                  onClick={() => handleSectionScroll(HOME_SECTIONS.SERVICES)}
                   className={`flex items-center bg-transparent px-3 py-2 font-medium transition-all duration-200 rounded-md ${
                     activeSection === "services"
                       ? "bg-secondary text-primary shadow-sm"

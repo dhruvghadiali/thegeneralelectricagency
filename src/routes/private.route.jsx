@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   Navigate,
   Outlet,
+  matchPath,
   useLocation,
   useSearchParams,
 } from "react-router-dom";
@@ -13,7 +14,8 @@ import PageBreadcrumb from "@commonComponent/pageBreadcrumb";
 
 import { ROLE_OPTIONS } from "@Enums";
 import { loggedOut } from "@/store/auth/auth.slice";
-import { getTokenExpiration, isAuthTokenValid } from "@/routes/auth-token.util";
+import { getTokenExpiration, isAuthTokenValid } from "@routes/auth-token.util";
+import { ROUTES } from "@routes/navigate";
 import { SIDEBAR_NAV_ITEMS_BY_ROLE } from "@commonComponent/appSidebar/appSidebar.constants";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@shadcnComponent/sidebar";
 import {
@@ -26,65 +28,65 @@ import {
 import { FINANCIAL_YEAR_OPTIONS } from "@screenComponent/purchaseFinancialSummary/purchaseFinancialSummary.data";
 
 function buildBreadcrumbItems(pathname, navItems) {
-  if (pathname === "/companies/new") {
+  if (pathname === ROUTES.COMPANY_NEW) {
     return [
-      { label: "Companies", href: "/companies" },
+      { label: "Companies", href: ROUTES.COMPANIES },
       { label: "Add company" },
     ];
   }
 
-  if (/^\/companies\/[^/]+\/edit$/.test(pathname)) {
+  if (matchPath(ROUTES.COMPANY_EDIT, pathname)) {
     return [
-      { label: "Companies", href: "/companies" },
+      { label: "Companies", href: ROUTES.COMPANIES },
       { label: "Edit company" },
     ];
   }
 
-  if (pathname === "/products/new") {
+  if (pathname === ROUTES.PRODUCT_NEW) {
     return [
-      { label: "Products", href: "/products" },
+      { label: "Products", href: ROUTES.PRODUCTS },
       { label: "Add product" },
     ];
   }
 
-  if (pathname === "/purchase-credit/new") {
+  if (pathname === ROUTES.PURCHASE_CREDIT_NEW) {
     return [
-      { label: "Purchase credit", href: "/purchase-credit" },
+      { label: "Purchase credit", href: ROUTES.PURCHASE_CREDITS },
       { label: "Add purchase credit" },
     ];
   }
 
-  if (/^\/purchase-credit\/[^/]+\/edit$/.test(pathname)) {
+  if (matchPath(ROUTES.PURCHASE_CREDIT_EDIT, pathname)) {
     return [
-      { label: "Purchase credit", href: "/purchase-credit" },
+      { label: "Purchase credit", href: ROUTES.PURCHASE_CREDITS },
       { label: "Update purchase credit" },
     ];
   }
 
-  if (pathname === "/purchases/new") {
+  if (pathname === ROUTES.PURCHASE_NEW) {
     return [
-      { label: "Purchase orders", href: "/purchases" },
+      { label: "Purchase orders", href: ROUTES.PURCHASES },
       { label: "Add purchase order" },
     ];
   }
 
-  if (pathname === "/sales/new") {
+  if (pathname === ROUTES.SALES_NEW) {
     return [
-      { label: "Sales", href: "/sales" },
+      { label: "Sales", href: ROUTES.SALES },
       { label: "Add sales order" },
     ];
   }
 
-  if (pathname === "/purchases/financial-summary") {
+  if (pathname === ROUTES.PURCHASE_FINANCIAL_SUMMARY) {
     return [
-      { label: "Purchase orders", href: "/purchases" },
+      { label: "Purchase orders", href: ROUTES.PURCHASES },
       { label: "Financial summary" },
     ];
   }
 
-  if (/^\/products\/[^/]+\/edit$/.test(pathname)) {
+  if (matchPath(ROUTES.PRODUCT_EDIT, pathname)) {
     return [
-      { label: "Products", href: "/products" },
+      { label: "Products", href: ROUTES.PRODUCTS },
       { label: "Edit product" },
     ];
   }
@@ -136,7 +138,7 @@ function PrivateRoute() {
   }, [dispatch, token, isValid]);
 
   if (!isValid) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={ROUTES.HOME} replace />;
   }
 
   return (
@@ -154,7 +156,7 @@ function PrivateRoute() {
           </div>
 
           <div className="flex shrink-0 items-center gap-3 text-xs text-muted-foreground sm:gap-5">
-            {location.pathname === "/purchases/financial-summary" && (
+            {location.pathname === ROUTES.PURCHASE_FINANCIAL_SUMMARY && (
               <div className="flex items-center gap-2">
                 <CalendarRange className="hidden size-4 sm:block" aria-hidden="true" />
                 <label htmlFor="header-financial-year" className="sr-only">

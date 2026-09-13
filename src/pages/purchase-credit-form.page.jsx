@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { ROUTES } from "@routes/navigate";
 
 import PurchaseCreditForm from "@Forms/purchaseCredit/purchaseCreditForm";
 import {
@@ -91,7 +92,7 @@ function PurchaseCreditFormPage() {
       ).unwrap();
 
       dispatch(filtersCleared());
-      navigate("/purchase-credit", { replace: true });
+      navigate(ROUTES.PURCHASE_CREDITS, { replace: true });
 
       return updatedPurchaseCredit;
     }
@@ -103,7 +104,7 @@ function PurchaseCreditFormPage() {
     // Return to the first, unfiltered, latest-first page so the list request
     // made on mount includes the record that was just created.
     dispatch(filtersCleared());
-    navigate("/purchase-credit", { replace: true });
+    navigate(ROUTES.PURCHASE_CREDITS, { replace: true });
 
     return createdPurchaseCredit;
   };
@@ -168,7 +169,7 @@ function PurchaseCreditFormPage() {
       onUpdatePaymentPlanning={submitPaymentPlanningUpdate}
       onCompletePaymentPlanning={submitPaymentPlanningCompletion}
       onUpdatePayment={submitPaymentUpdate}
-      onCancel={() => navigate("/purchase-credit")}
+      onCancel={() => navigate(ROUTES.PURCHASE_CREDITS)}
       isSubmitting={isEditing ? isUpdating : isCreating}
       submissionError={isEditing ? updateError : createError}
       updatingPaymentId={updatingPaymentId}

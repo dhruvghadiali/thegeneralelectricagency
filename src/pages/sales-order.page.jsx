@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "@shadcnComponent/button";
+import { ROUTES } from "@routes/navigate";
 import {
   Card,
   CardContent,
@@ -36,7 +37,7 @@ function SalesOrderPage() {
           <Button
             type="button"
             variant="outline"
-            onClick={() => navigate("/sales")}
+            onClick={() => navigate(ROUTES.SALES)}
           >
             Cancel
           </Button>
