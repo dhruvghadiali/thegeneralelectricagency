@@ -68,6 +68,13 @@ function buildBreadcrumbItems(pathname, navItems) {
     ];
   }
 
+  if (pathname === "/sales/new") {
+    return [
+      { label: "Sales", href: "/sales" },
+      { label: "Add sales order" },
+    ];
+  }
+
   if (pathname === "/purchases/financial-summary") {
     return [
       { label: "Purchase orders", href: "/purchases" },

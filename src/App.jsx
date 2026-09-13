@@ -18,6 +18,7 @@ import DashboardPage from "@/pages/dashboard.page";
 import EmployeesPage from "@/pages/employees.page";
 import CompaniesPage from "@/pages/companies.page";
 import SalesPage from "@/pages/sales.page";
+import SalesOrderPage from "@/pages/sales-order.page";
 import PurchaseCreditPage from "@/pages/purchase-credit.page";
 import PurchaseCreditFormPage from "@/pages/purchase-credit-form.page";
 import ProductsPage from "@/pages/products.page";
@@ -84,6 +85,7 @@ function App() {
               >
                 <Route path="/purchases" element={<PurchaseOrdersPage />} />
                 <Route path="/sales" element={<SalesPage />} />
+                <Route path="/sales/new" element={<SalesOrderPage />} />
                 <Route
                   path="/purchases/financial-summary"
                   element={<PurchaseFinancialSummaryPage />}
