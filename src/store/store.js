@@ -8,6 +8,7 @@ import stockReducer from "@Redux/stock/stock.slice";
 import productReducer from "@Redux/product/product.slice";
 import purchaseReducer from "@Redux/purchase/purchase.slice";
 import purchaseCreditReducer from "@Redux/purchaseCredit/purchaseCredit.slice";
+import salesOrderReducer from "@Redux/salesOrder/salesOrder.slice";
 
 export const store = configureStore({
   reducer: {
@@ -19,5 +20,6 @@ export const store = configureStore({
     products: productReducer,
     purchases: purchaseReducer,
     purchaseCredits: purchaseCreditReducer,
+    salesOrders: salesOrderReducer,
   },
 });
