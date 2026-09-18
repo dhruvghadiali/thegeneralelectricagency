@@ -1,7 +1,8 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES, ROUTE_BUILDERS } from "@routes/navigate";
+import { ROLE_PATHS } from "@Enums";
 
 import DataTable from "@commonComponent/dataTable";
 import { Button } from "@shadcnComponent/button";
@@ -16,20 +17,24 @@ import {
 function PurchaseCredits() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const role = useSelector((state) => state.auth.role);
+  const canManage = role === ROLE_PATHS.EMPLOYEE;
   const table = usePurchaseCreditTable();
 
   return (
     <main className="flex w-full flex-col gap-6 pb-2 roomy:h-full roomy:min-h-0">
       <header className="flex justify-end">
         <h1 className="sr-only">Supplier purchase credits</h1>
-        <Button
-          type="button"
-          className="w-full sm:w-auto"
-          onClick={() => navigate(ROUTES.PURCHASE_CREDIT_NEW)}
-        >
-          <Plus className="size-4" />
-          Add purchase credit
-        </Button>
+        {canManage && (
+          <Button
+            type="button"
+            className="w-full sm:w-auto"
+            onClick={() => navigate(ROUTES.PURCHASE_CREDIT_NEW)}
+          >
+            <Plus className="size-4" />
+            Add purchase credit
+          </Button>
+        )}
       </header>
 
       <DataTable
@@ -56,6 +61,7 @@ function PurchaseCredits() {
         rowActions={(purchaseCredit) => (
           <PurchaseCreditTableActions
             purchaseCredit={purchaseCredit}
+            canManage={canManage}
             onView={(row) => dispatch(purchaseCreditDetailsOpened(row))}
             onEdit={(row) =>
               navigate(ROUTE_BUILDERS.purchaseCreditEdit(row.id), {

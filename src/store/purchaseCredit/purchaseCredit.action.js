@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { ROLE_PATHS } from "@Enums";
-import { employeePurchaseCreditApi } from "@Api";
+import { employeePurchaseCreditApi, superAdminPurchaseCreditApi } from "@Api";
 import { extractErrorMessage } from "@Api/client.api";
 import {
   toPurchaseCreditCreatePayload,
@@ -31,7 +31,11 @@ export const fetchPurchaseCredits = createAsyncThunk(
     }
 
     try {
-      const response = await employeePurchaseCreditApi.getPurchaseCredits(
+      const purchaseCreditApi =
+        state.auth.role === ROLE_PATHS.SUPER_ADMIN
+          ? superAdminPurchaseCreditApi
+          : employeePurchaseCreditApi;
+      const response = await purchaseCreditApi.getPurchaseCredits(
         toPurchaseCreditListParams({
           columns,
           page,
@@ -53,11 +57,11 @@ export const fetchPurchaseCredits = createAsyncThunk(
 export const createPurchaseCredit = createAsyncThunk(
   "purchaseCredits/createPurchaseCredit",
   async (values, { getState, rejectWithValue }) => {
-    const allowedRoles = [ROLE_PATHS.EMPLOYEE, ROLE_PATHS.SUPER_ADMIN];
+    const allowedRoles = [ROLE_PATHS.EMPLOYEE];
 
     if (!allowedRoles.includes(getState().auth.role)) {
       return rejectWithValue(
-        "Only employees and super admins can add purchase credits.",
+        "Only employees can add purchase credits.",
       );
     }
 
@@ -74,11 +78,11 @@ export const createPurchaseCredit = createAsyncThunk(
 export const updatePurchaseCredit = createAsyncThunk(
   "purchaseCredits/updatePurchaseCredit",
   async ({ id, values }, { getState, rejectWithValue }) => {
-    const allowedRoles = [ROLE_PATHS.EMPLOYEE, ROLE_PATHS.SUPER_ADMIN];
+    const allowedRoles = [ROLE_PATHS.EMPLOYEE];
 
     if (!allowedRoles.includes(getState().auth.role)) {
       return rejectWithValue(
-        "Only employees and super admins can update purchase credits.",
+        "Only employees can update purchase credits.",
       );
     }
 
@@ -99,11 +103,11 @@ export const updatePurchaseCreditPayment = createAsyncThunk(
     { purchaseCreditId, paymentId, values },
     { getState, rejectWithValue },
   ) => {
-    const allowedRoles = [ROLE_PATHS.EMPLOYEE, ROLE_PATHS.SUPER_ADMIN];
+    const allowedRoles = [ROLE_PATHS.EMPLOYEE];
 
     if (!allowedRoles.includes(getState().auth.role)) {
       return rejectWithValue(
-        "Only employees and super admins can update purchase credit payments.",
+        "Only employees can update purchase credit payments.",
       );
     }
 
@@ -125,11 +129,11 @@ export const createPurchaseCreditPayment = createAsyncThunk(
     { purchaseCreditId, values },
     { getState, rejectWithValue },
   ) => {
-    const allowedRoles = [ROLE_PATHS.EMPLOYEE, ROLE_PATHS.SUPER_ADMIN];
+    const allowedRoles = [ROLE_PATHS.EMPLOYEE];
 
     if (!allowedRoles.includes(getState().auth.role)) {
       return rejectWithValue(
-        "Only employees and super admins can add purchase credit payments.",
+        "Only employees can add purchase credit payments.",
       );
     }
 
@@ -150,11 +154,11 @@ export const createPurchaseCreditPaymentPlanning = createAsyncThunk(
     { purchaseCreditId, values },
     { getState, rejectWithValue },
   ) => {
-    const allowedRoles = [ROLE_PATHS.EMPLOYEE, ROLE_PATHS.SUPER_ADMIN];
+    const allowedRoles = [ROLE_PATHS.EMPLOYEE];
 
     if (!allowedRoles.includes(getState().auth.role)) {
       return rejectWithValue(
-        "Only employees and super admins can add purchase credit payment plans.",
+        "Only employees can add purchase credit payment plans.",
       );
     }
 
@@ -175,11 +179,11 @@ export const updatePurchaseCreditPaymentPlanning = createAsyncThunk(
     { purchaseCreditId, paymentPlanningId, values },
     { getState, rejectWithValue },
   ) => {
-    const allowedRoles = [ROLE_PATHS.EMPLOYEE, ROLE_PATHS.SUPER_ADMIN];
+    const allowedRoles = [ROLE_PATHS.EMPLOYEE];
 
     if (!allowedRoles.includes(getState().auth.role)) {
       return rejectWithValue(
-        "Only employees and super admins can update purchase credit payment plans.",
+        "Only employees can update purchase credit payment plans.",
       );
     }
 
@@ -206,11 +210,11 @@ export const completePurchaseCreditPaymentPlanning = createAsyncThunk(
     },
     { getState, rejectWithValue },
   ) => {
-    const allowedRoles = [ROLE_PATHS.EMPLOYEE, ROLE_PATHS.SUPER_ADMIN];
+    const allowedRoles = [ROLE_PATHS.EMPLOYEE];
 
     if (!allowedRoles.includes(getState().auth.role)) {
       return rejectWithValue(
-        "Only employees and super admins can complete purchase credit payment plans.",
+        "Only employees can complete purchase credit payment plans.",
       );
     }
 

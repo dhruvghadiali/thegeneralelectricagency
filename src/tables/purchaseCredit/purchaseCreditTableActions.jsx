@@ -2,7 +2,12 @@ import { Eye, Pencil } from "lucide-react";
 
 import { Button } from "@shadcnComponent/button";
 
-function PurchaseCreditTableActions({ purchaseCredit, onView, onEdit }) {
+function PurchaseCreditTableActions({
+  purchaseCredit,
+  canManage = false,
+  onView,
+  onEdit,
+}) {
   return (
     <div className="flex items-center gap-1">
       <Button
@@ -15,16 +20,18 @@ function PurchaseCreditTableActions({ purchaseCredit, onView, onEdit }) {
       >
         <Eye className="size-4" />
       </Button>
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        onClick={() => onEdit(purchaseCredit)}
-        aria-label={`Edit purchase credit for ${purchaseCredit.supplierName}`}
-        title="Edit purchase credit"
-      >
-        <Pencil className="size-4" />
-      </Button>
+      {canManage && (
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          onClick={() => onEdit(purchaseCredit)}
+          aria-label={`Edit purchase credit for ${purchaseCredit.supplierName}`}
+          title="Edit purchase credit"
+        >
+          <Pencil className="size-4" />
+        </Button>
+      )}
     </div>
   );
 }

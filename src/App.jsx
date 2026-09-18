@@ -78,6 +78,10 @@ function App() {
                   path={ROUTES.PURCHASE_CREDITS}
                   element={<PurchaseCreditPage />}
                 />
+              </Route>
+              <Route
+                element={<RoleRoute allowedRoles={[ROLE_PATHS.EMPLOYEE]} />}
+              >
                 <Route
                   path={ROUTES.PURCHASE_CREDIT_NEW}
                   element={<PurchaseCreditFormPage />}
@@ -86,10 +90,6 @@ function App() {
                   path={ROUTES.PURCHASE_CREDIT_EDIT}
                   element={<PurchaseCreditFormPage />}
                 />
-              </Route>
-              <Route
-                element={<RoleRoute allowedRoles={[ROLE_PATHS.EMPLOYEE]} />}
-              >
                 <Route
                   path={ROUTES.PURCHASES}
                   element={<PurchaseOrdersPage />}
@@ -122,10 +122,7 @@ function App() {
                 />
               </Route>
               <Route path={ROUTES.STOCKS} element={<StocksPage />} />
-              <Route
-                path={ROUTES.SETTINGS}
-                element={<SettingsPage />}
-              />
+              <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
             </Route>
 
             <Route
