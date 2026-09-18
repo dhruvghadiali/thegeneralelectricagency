@@ -1,8 +1,5 @@
 import { Input } from "@shadcnComponent/input";
-import {
-  PRODUCT_DISCOUNT_AMOUNT_MAX,
-  PRODUCT_DISCOUNT_PERCENTAGE_MAX,
-} from "@Forms/product/productDetails/productDetails.validation.constants";
+import { PRODUCT_DISCOUNT_AMOUNT_MAX } from "@Forms/product/productDetails/productDetails.validation.constants";
 
 import MoneyInput from "@Forms/product/productDetails/components/moneyInput";
 import ProductFormField from "@Forms/product/productDetails/components/productFormField";
@@ -48,6 +45,7 @@ function DiscountRange({
                 <MoneyInput
                   id={id}
                   field={field}
+                  type="text"
                   max={PRODUCT_DISCOUNT_AMOUNT_MAX}
                   inputProps={inputProps}
                   onChange={handleChange}
@@ -56,10 +54,7 @@ function DiscountRange({
                 <div className="relative">
                   <Input
                     id={id}
-                    type="number"
-                    min="0"
-                    max={PRODUCT_DISCOUNT_PERCENTAGE_MAX}
-                    step="0.01"
+                    type="text"
                     inputMode="decimal"
                     {...inputProps(field, id)}
                     onChange={handleChange}

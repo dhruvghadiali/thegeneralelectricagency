@@ -34,6 +34,7 @@ function ProductCommercialSection({
           <MoneyInput
             id="product-purchase-price"
             field="purchasePrice"
+            type="text"
             max={PRODUCT_PURCHASE_PRICE_MAX}
             inputProps={inputProps}
           />
@@ -46,6 +47,7 @@ function ProductCommercialSection({
           <MoneyInput
             id="product-sale-price"
             field="salePrice"
+            type="text"
             max={PRODUCT_SALE_PRICE_MAX}
             inputProps={inputProps}
             onChange={(event) =>
