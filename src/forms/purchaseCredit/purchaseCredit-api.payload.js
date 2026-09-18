@@ -52,7 +52,6 @@ const toPaymentPlanPayload = (plan = {}) =>
       reminding_date: toIsoDateTime(plan.remindingDate),
       amount: _.toNumber(plan.amount),
       payment_type: plan.paymentType,
-      is_payment_completed: Boolean(plan.isPaymentCompleted),
       notes: optionalText(plan.notes),
     },
     _.isUndefined,
