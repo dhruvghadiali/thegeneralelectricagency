@@ -66,6 +66,8 @@ const authSlice = createSlice({
       state.role = null;
       state.isAuthenticated = false;
       state.isPasswordVisible = false;
+      state.isSigningIn = false;
+      state.signInError = null;
 
       clearAuthSession();
     },

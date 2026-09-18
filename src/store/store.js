@@ -1,6 +1,6 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 
-import authReducer from "@Redux/auth/auth.slice";
+import authReducer, { loggedOut } from "@Redux/auth/auth.slice";
 import employeeReducer from "@Redux/employee/employee.slice";
 import companyReducer from "@Redux/company/company.slice";
 import companyContactReducer from "@Redux/companyContact/companyContact.slice";
@@ -10,8 +10,7 @@ import purchaseReducer from "@Redux/purchase/purchase.slice";
 import purchaseCreditReducer from "@Redux/purchaseCredit/purchaseCredit.slice";
 import salesOrderReducer from "@Redux/salesOrder/salesOrder.slice";
 
-export const store = configureStore({
-  reducer: {
+const appReducer = combineReducers({
     auth: authReducer,
     employees: employeeReducer,
     companies: companyReducer,
@@ -21,5 +20,13 @@ export const store = configureStore({
     purchases: purchaseReducer,
     purchaseCredits: purchaseCreditReducer,
     salesOrders: salesOrderReducer,
-  },
+});
+
+function rootReducer(state, action) {
+  // Clear session data from every slice when the user logs out.
+  return appReducer(loggedOut.match(action) ? undefined : state, action);
+}
+
+export const store = configureStore({
+  reducer: rootReducer,
 });

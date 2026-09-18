@@ -7,6 +7,9 @@ export const ENDPOINTS = {
   AUTH: {
     SIGN_IN: "auth/signin",
   },
+  ACCOUNT: {
+    PASSWORD: "account/password",
+  },
   EMPLOYEE: {
     BASE: "employees",
     RESTORE: "restore",

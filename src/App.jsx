@@ -29,7 +29,7 @@ import PurchaseOrderPage from "@pages/purchase-order.page";
 import PurchaseOrdersPage from "@pages/purchase-orders.page";
 import PurchaseFinancialSummaryPage from "@pages/purchase-financial-summary.page";
 import LenisScrollProvider from "@/components/LenisScrollProvider";
-import PlaceholderScreen from "@commonComponent/pageBreadcrumb/placeholderScreen";
+import SettingsPage from "@pages/settings.page";
 
 function App() {
   return (
@@ -124,13 +124,7 @@ function App() {
               <Route path={ROUTES.STOCKS} element={<StocksPage />} />
               <Route
                 path={ROUTES.SETTINGS}
-                element={
-                  <PlaceholderScreen
-                    eyebrow="Workspace preferences"
-                    title="Settings"
-                    description="Manage your account and workspace preferences."
-                  />
-                }
+                element={<SettingsPage />}
               />
             </Route>
 

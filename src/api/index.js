@@ -2,6 +2,7 @@ export { ROLE_PATHS } from "@Enums";
 export { ENDPOINTS } from "@Api/endpoints.constants";
 export { employeeAuthApi } from "@Api/employee/auth.api";
 export { superAdminAuthApi } from "@Api/superAdmin/auth.api";
+export { superAdminAccountApi } from "@Api/superAdmin/account.api";
 export { employeeCompanyApi } from "@Api/employee/company.api";
 export { employeeEmployeeApi } from "@Api/employee/employee.api";
 export { employeeProductApi } from "@Api/employee/product.api";
