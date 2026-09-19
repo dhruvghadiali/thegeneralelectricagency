@@ -22,7 +22,6 @@ export const SIDEBAR_NAV_ITEMS_BY_ROLE = {
     { title: "Dashboard", url: ROUTES.DASHBOARD, icon: LucideHome },
     { title: "Purchase credit", url: ROUTES.PURCHASE_CREDITS, icon: HandCoins },
     { title: "Products", url: ROUTES.PRODUCTS, icon: Boxes },
-    { title: "Stocks", url: ROUTES.STOCKS, icon: TrendingUp },
     { title: "Employees", url: ROUTES.EMPLOYEES, icon: Users },
     { title: "Companies", url: ROUTES.COMPANIES, icon: Building2 },
     { title: "Settings", url: ROUTES.SETTINGS, icon: Settings },
