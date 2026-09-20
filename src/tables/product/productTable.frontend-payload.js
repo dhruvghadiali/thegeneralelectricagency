@@ -56,6 +56,9 @@ export function fromProductResponse(product = {}) {
       product.reserved_stock ?? product.reservedStock ?? [],
       reservedStockItem,
     ),
+    isMigrateToTally: Boolean(
+      product.is_migrate_to_tally ?? product.isMigrateToTally,
+    ),
     isActive: _.isNil(product.is_active ?? product.isActive)
       ? true
       : Boolean(product.is_active ?? product.isActive),
