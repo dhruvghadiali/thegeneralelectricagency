@@ -3,6 +3,8 @@ import * as PopoverPrimitive from "@radix-ui/react-popover";
 import {
   Building2,
   Check,
+  ChevronDown,
+  ChevronUp,
   ChevronsUpDown,
   Download,
   Loader2,
@@ -18,9 +20,7 @@ import {
 import { employeeCompanyApi, employeeProductApi } from "@Api";
 import defaultSignatureUrl from "@Assets/images/default-signature.png";
 import companyLogoUrl from "@Assets/images/logo.png";
-import {
-  TABLE_DEFAULTS,
-} from "@Enums";
+import { TABLE_DEFAULTS } from "@Enums";
 import { toProductListParams } from "@Tables/product/productTable.api-payload";
 import { fromProductListResponse } from "@Tables/product/productTable.frontend-payload";
 import { PRODUCT_TABLE_DEFAULTS } from "@Tables/product";
@@ -30,10 +30,8 @@ import { fromCompanyListResponse } from "@Tables/company/companyTable.frontend-p
 import { Button } from "@shadcnComponent/button";
 import { Input } from "@shadcnComponent/input";
 import { Label } from "@shadcnComponent/label";
-import {
-  Popover,
-  PopoverTrigger,
-} from "@shadcnComponent/popover";
+import { Textarea } from "@shadcnComponent/textarea";
+import { Popover, PopoverTrigger } from "@shadcnComponent/popover";
 import {
   Select,
   SelectContent,
@@ -91,6 +89,7 @@ const EMPTY_PRODUCT_PAGINATION = Object.freeze({
 const EMPTY_PRODUCTS = Object.freeze([]);
 
 const LOCKED_FIELDS = Object.freeze({
+  description: false,
   salePrice: false,
   gstPercentage: false,
   discountAmount: false,
@@ -125,9 +124,10 @@ function createQuotationItem(product) {
     id: quotationItemId(product),
     product,
     quantity: maximumQuantity > 0 ? "1" : "",
-    salePrice: product.salePrice ?? "",
+    description: product.description ?? "",
+    salePrice: "0",
     gstPercentage: product.gstPercentage ?? "",
-    discountAmount: product.discountAmount?.min ?? "",
+    discountAmount: "0",
     enabledFields: { ...LOCKED_FIELDS },
   };
 }
@@ -163,8 +163,7 @@ function validateQuotationItem(item) {
   const maximumQuantity = availableStock(item.product);
   const salePrice = Number(item.salePrice);
   const gst = item.gstPercentage === "" ? null : Number(item.gstPercentage);
-  const discount =
-    item.discountAmount === "" ? null : Number(item.discountAmount);
+  const discount = Number(item.discountAmount);
 
   if (maximumQuantity === 0) {
     next.quantity = "No stock is currently available for quotation.";
@@ -172,22 +171,18 @@ function validateQuotationItem(item) {
     next.quantity = `Quantity must be between 1 and ${maximumQuantity}.`;
   }
 
-  if (item.salePrice === "" || !Number.isFinite(salePrice) || salePrice < 0) {
-    next.salePrice = "Enter a valid sale price.";
+  if (item.salePrice === "" || !Number.isFinite(salePrice) || salePrice <= 0) {
+    next.salePrice = "Sale price must be greater than 0.";
   }
   if (gst !== null && (!Number.isFinite(gst) || gst < 0 || gst > 100)) {
     next.gstPercentage = "GST must be between 0 and 100.";
   }
-  if (discount !== null && (!Number.isFinite(discount) || discount < 0)) {
+  if (!Number.isFinite(discount) || discount < 0) {
     next.discountAmount = "Discount cannot be negative.";
-  } else if (
-    discount !== null &&
-    Number.isFinite(salePrice) &&
-    discount > salePrice
-  ) {
-    next.discountAmount = "Per-unit discount cannot exceed the unit sale price.";
+  } else if (Number.isFinite(salePrice) && discount > salePrice) {
+    next.discountAmount =
+      "Per-unit discount cannot exceed the unit sale price.";
   }
-
   return next;
 }
 
@@ -242,13 +237,13 @@ function QuotationProductCard({
   onUpdate,
   onToggleField,
 }) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const { product, enabledFields } = item;
   const totalStock = Math.max(Math.floor(numericValue(product.stocks)), 0);
   const reservedStock = reservedStockCount(product);
   const maximumQuantity = availableStock(product);
-  const quantityOptions = Array.from(
-    { length: maximumQuantity },
-    (_, index) => String(index + 1),
+  const quantityOptions = Array.from({ length: maximumQuantity }, (_, index) =>
+    String(index + 1),
   );
 
   return (
@@ -264,8 +259,55 @@ function QuotationProductCard({
             />
           </div>
           <p className="mt-1 text-xs text-muted-foreground">
-            Product code: {staticValue(product.productCode)}
+            Product code: {staticValue(product.productCode)} · HSN code:{" "}
+            {staticValue(product.hsnCode)}
           </p>
+          {!isExpanded && (
+            <div className="mt-3 flex flex-wrap gap-2 text-xs">
+              <span className="rounded-md border bg-muted/30 px-2.5 py-1">
+                Quantity: <strong>{staticValue(item.quantity)}</strong>
+              </span>
+              <span className="rounded-md border bg-muted/30 px-2.5 py-1">
+                Sale price:{" "}
+                <strong>
+                  {moneyFormatter.format(numericValue(item.salePrice))}
+                </strong>
+              </span>
+            </div>
+          )}
+        </div>
+        <div className="flex shrink-0 items-center gap-1">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsExpanded((current) => !current)}
+            aria-expanded={isExpanded}
+            className="text-muted-foreground"
+          >
+            {isExpanded ? (
+              <ChevronUp className="size-4" />
+            ) : (
+              <ChevronDown className="size-4" />
+            )}
+            {isExpanded ? "Hide" : "Show"}
+          </Button>
+          <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          disabled={!canRemove}
+          onClick={onRemove}
+          aria-label={`Remove ${product.name}`}
+          className="shrink-0 text-muted-foreground hover:text-destructive"
+        >
+          <Trash2 className="size-4" />
+          </Button>
+        </div>
+      </div>
+
+      {isExpanded && (
+        <>
           <div className="mt-3 flex flex-wrap gap-2 text-xs">
             <span className="rounded-md border bg-muted/30 px-2.5 py-1">
               Total stock: <strong>{totalStock}</strong>
@@ -277,21 +319,7 @@ function QuotationProductCard({
               Available stock: <strong>{maximumQuantity}</strong>
             </span>
           </div>
-        </div>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          disabled={!canRemove}
-          onClick={onRemove}
-          aria-label={`Remove ${product.name}`}
-          className="shrink-0 text-muted-foreground hover:text-destructive"
-        >
-          <Trash2 className="size-4" />
-        </Button>
-      </div>
-
-      <div className="mt-5 grid gap-5 sm:grid-cols-2">
+          <div className="mt-5 grid gap-5 sm:grid-cols-2">
         <div className="grid content-start gap-2 sm:col-span-2">
           <Label>Quantity</Label>
           <Select
@@ -302,7 +330,9 @@ function QuotationProductCard({
             <SelectTrigger aria-invalid={Boolean(errors.quantity)}>
               <SelectValue
                 placeholder={
-                  maximumQuantity === 0 ? "No stock available" : "Select quantity"
+                  maximumQuantity === 0
+                    ? "No stock available"
+                    : "Select quantity"
                 }
               />
             </SelectTrigger>
@@ -332,9 +362,8 @@ function QuotationProductCard({
               ₹
             </span>
             <Input
-              type="number"
-              min="0"
-              step="0.01"
+              type="text"
+              inputMode="decimal"
               value={item.salePrice}
               onChange={(event) => onUpdate("salePrice", event.target.value)}
               disabled={!enabledFields.salePrice}
@@ -356,10 +385,8 @@ function QuotationProductCard({
           />
           <div className="relative">
             <Input
-              type="number"
-              min="0"
-              max="100"
-              step="0.01"
+              type="text"
+              inputMode="decimal"
               value={item.gstPercentage}
               onChange={(event) =>
                 onUpdate("gstPercentage", event.target.value)
@@ -389,9 +416,8 @@ function QuotationProductCard({
               ₹
             </span>
             <Input
-              type="number"
-              min="0"
-              step="0.01"
+              type="text"
+              inputMode="decimal"
               value={item.discountAmount}
               onChange={(event) =>
                 onUpdate("discountAmount", event.target.value)
@@ -406,7 +432,23 @@ function QuotationProductCard({
             </p>
           )}
         </div>
-      </div>
+        <div className="grid content-start gap-2 sm:col-span-2">
+          <EditableHeading
+            label="Product description"
+            enabled={enabledFields.description}
+            onEdit={() => onToggleField("description")}
+          />
+          <Textarea
+            value={item.description}
+            onChange={(event) => onUpdate("description", event.target.value)}
+            disabled={!enabledFields.description}
+            placeholder="Add product description"
+            rows={3}
+          />
+        </div>
+          </div>
+        </>
+      )}
     </article>
   );
 }
@@ -653,8 +695,18 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
   );
 
   const hasItemErrors = useMemo(
-    () => Object.values(itemErrors).some((errors) => Object.keys(errors).length),
+    () =>
+      Object.values(itemErrors).some((errors) => Object.keys(errors).length),
     [itemErrors],
+  );
+
+  const hasNonPositiveSalePrice = useMemo(
+    () =>
+      quotationItems.some((item) => {
+        const salePrice = Number(item.salePrice);
+        return !Number.isFinite(salePrice) || salePrice <= 0;
+      }),
+    [quotationItems],
   );
 
   const totals = useMemo(() => {
@@ -681,14 +733,23 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
   }, [quotationItems]);
 
   const generatePdf = async () => {
-    if (!isOpen || !selectedCompany || hasItemErrors) return;
+    if (
+      !isOpen ||
+      !selectedCompany ||
+      hasNonPositiveSalePrice ||
+      hasItemErrors
+    )
+      return;
     setIsGenerating(true);
     try {
       const { downloadProductQuotationPdf } =
         await import("@screenComponent/products/quotation/productQuotationPdf");
       await downloadProductQuotationPdf(
         quotationItems.map((item) => ({
-          product: item.product,
+          product: {
+            ...item.product,
+            description: item.description,
+          },
           pricing: {
             quantity: item.quantity,
             salePrice: item.salePrice,
@@ -743,11 +804,13 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
                   <div>
                     <h3 className="text-sm font-semibold">Products</h3>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      Add products and configure commercial values for each line.
+                      Add products and configure commercial values for each
+                      line.
                     </p>
                   </div>
                   <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-                    {quotationItems.length} {quotationItems.length === 1 ? "product" : "products"}
+                    {quotationItems.length}{" "}
+                    {quotationItems.length === 1 ? "product" : "products"}
                   </span>
                 </div>
 
@@ -775,7 +838,9 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
                         <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                         <Input
                           value={productSearch}
-                          onChange={(event) => setProductSearch(event.target.value)}
+                          onChange={(event) =>
+                            setProductSearch(event.target.value)
+                          }
                           placeholder="Search product name or code..."
                           aria-label="Search products"
                           className="pl-9"
@@ -823,7 +888,9 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
                                   {availableProduct.name}
                                 </span>
                                 <span className="block truncate text-xs text-muted-foreground">
-                                  {availableProduct.productCode} · {availableProduct.agencyName || availableProduct.agency}
+                                  {availableProduct.productCode} ·{" "}
+                                  {availableProduct.agencyName ||
+                                    availableProduct.agency}
                                 </span>
                               </span>
                               {isAdded && (
@@ -1037,9 +1104,11 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
                   <div>
                     <h3 className="text-sm font-semibold">Quotation preview</h3>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      {quotationItems.length} product line{quotationItems.length === 1 ? "" : "s"}
+                      {quotationItems.length} product line
+                      {quotationItems.length === 1 ? "" : "s"}
                       {" · "}
-                      {totals.quantity} total unit{totals.quantity === 1 ? "" : "s"}
+                      {totals.quantity} total unit
+                      {totals.quantity === 1 ? "" : "s"}
                     </p>
                   </div>
                   <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
@@ -1074,15 +1143,22 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
 
             <SheetFooter className="border-t bg-background px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
               <p className="text-xs text-muted-foreground">
-                {selectedCompany
-                  ? `Billing to ${selectedCompany.name}.`
-                  : "Select a billing company to enable PDF download."}
+                {!selectedCompany
+                  ? "Select a billing company to enable PDF download."
+                  : hasNonPositiveSalePrice
+                    ? "Enter a sale price greater than 0 for every product."
+                    : hasItemErrors
+                      ? "Resolve the quotation errors to enable PDF download."
+                      : `Billing to ${selectedCompany.name}.`}
               </p>
               <Button
                 type="button"
                 onClick={generatePdf}
                 disabled={
-                  isGenerating || !selectedCompany || hasItemErrors
+                  isGenerating ||
+                  !selectedCompany ||
+                  hasNonPositiveSalePrice ||
+                  hasItemErrors
                 }
               >
                 {isGenerating ? (

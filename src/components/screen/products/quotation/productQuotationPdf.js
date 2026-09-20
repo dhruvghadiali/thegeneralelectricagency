@@ -22,6 +22,9 @@ const COLORS = Object.freeze({
   white: [255, 255, 255],
 });
 
+const WARRANTY_TEXT =
+  "WARRANTY: All materials supplied shall be Warranted for a period of 12 months from date of commissioning or 18 months from the date of supply";
+
 const moneyFormatter = new Intl.NumberFormat("en-IN", {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
@@ -187,10 +190,10 @@ function drawText(doc, text, x, y, options = {}) {
   doc.setFont("helvetica", bold ? "bold" : "normal");
   doc.setFontSize(size);
   doc.setTextColor(...color);
-  if (maxWidth) {
+  if (maxWidth && !Array.isArray(text)) {
     doc.text(doc.splitTextToSize(String(text), maxWidth), x, y, { align });
   } else {
-    doc.text(String(text), x, y, { align });
+    doc.text(Array.isArray(text) ? text : String(text), x, y, { align });
   }
 }
 
@@ -239,7 +242,6 @@ function billToDetails(company) {
   return {
     name: company?.name || "Valued Client",
     address: address || "To be confirmed",
-    phone: company?.phone || "-",
     email: company?.email || "-",
     gst: company?.gstNumber || "-",
   };
@@ -324,16 +326,13 @@ function drawBrandHeader(doc, logoDataUrl) {
   );
 }
 
-function drawBillTo(doc, client, y = 62) {
-  drawCell(doc, 12, y, 186, 7, { fill: COLORS.secondary, lineWidth: 0.35 });
-  drawText(doc, "BILL TO", 16, y + 5, { bold: true, size: 8.5 });
-  drawCell(doc, 12, y + 7, 186, 25, { lineWidth: 0.35 });
-  drawLabelLine(doc, "Company:", client.name, 16, y + 14, 33);
-  drawText(doc, "Address:", 16, y + 20, { bold: true, size: 8 });
-  drawText(doc, client.address, 33, y + 20, { size: 7.5, maxWidth: 67 });
-  drawLabelLine(doc, "Phone:", client.phone, 112, y + 14, 127);
-  drawLabelLine(doc, "Email:", client.email, 112, y + 21, 127);
-  drawLabelLine(doc, "GSTIN:", client.gst, 112, y + 28, 127);
+function drawClientDetails(doc, client, y = 62) {
+  drawCell(doc, 12, y, 186, 25, { lineWidth: 0.35 });
+  drawLabelLine(doc, "Company:", client.name, 16, y + 7, 33);
+  drawText(doc, "Address:", 16, y + 13, { bold: true, size: 8 });
+  drawText(doc, client.address, 33, y + 13, { size: 7.5, maxWidth: 67 });
+  drawLabelLine(doc, "Email:", client.email, 112, y + 7, 127);
+  drawLabelLine(doc, "GSTIN:", client.gst, 112, y + 14, 127);
 }
 
 function drawContinuationHeader(doc, quotationId, label) {
@@ -357,13 +356,49 @@ function drawContinuationHeader(doc, quotationId, label) {
   });
 }
 
+function productRowLayout(doc, item) {
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(6.5);
+  const nameLines = doc.splitTextToSize(item.product.name || "-", 57);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(5.8);
+  const descriptionLines = doc.splitTextToSize(
+    item.product.description || titleCase(item.product.category),
+    57,
+  );
+  const contentHeight = nameLines.length * 2.8 + descriptionLines.length * 2.5;
+
+  return {
+    nameLines,
+    descriptionLines,
+    height: Math.max(9, contentHeight + 3),
+  };
+}
+
+function productTableHeight(doc, items) {
+  return 11 + items.reduce((height, item) => height + productRowLayout(doc, item).height, 0);
+}
+
+function pageItemsByHeight(doc, items, startIndex, maxTableHeight) {
+  const pageItems = [];
+  let height = 11;
+
+  for (let index = startIndex; index < items.length; index += 1) {
+    const rowHeight = productRowLayout(doc, items[index]).height;
+    if (pageItems.length > 0 && height + rowHeight > maxTableHeight) break;
+    pageItems.push(items[index]);
+    height += rowHeight;
+  }
+
+  return pageItems;
+}
+
 function drawProductTable(doc, items, startY, startIndex = 0) {
-  const columns = [12, 55, 28, 16, 16, 25, 14, 20];
+  const columns = [12, 63, 32, 16, 27, 14, 22];
   const headers = [
     ["SL.", "NO."],
     ["DESCRIPTION"],
     ["PRODUCT", "CODE"],
-    ["UNIT"],
     ["QTY"],
     ["PRICE", "/ UNIT"],
     ["GST", "(%)"],
@@ -384,57 +419,72 @@ function drawProductTable(doc, items, startY, startIndex = 0) {
     runningX += columnWidth;
   });
 
+  let rowY = startY + 11;
   items.forEach((item, rowIndex) => {
-    const rowY = startY + 11 + rowIndex * 9;
+    const layout = productRowLayout(doc, item);
     const totals = calculatePricing(item.pricing);
     columnX = 12;
     columns.forEach((columnWidth, columnIndex) => {
-      drawCell(doc, columnX, rowY, columnWidth, 9, {
+      drawCell(doc, columnX, rowY, columnWidth, layout.height, {
         fill: columnIndex % 2 === 0 ? COLORS.surface : COLORS.white,
       });
       columnX += columnWidth;
     });
 
-    drawText(doc, startIndex + rowIndex + 1, centers[0], rowY + 5.7, {
+    const centerY = rowY + layout.height / 2 + 1;
+    drawText(doc, startIndex + rowIndex + 1, centers[0], centerY, {
       align: "center",
       size: 6.8,
     });
-    drawText(doc, item.product.name, 27, rowY + 3.6, {
+    drawText(doc, layout.nameLines, 27, rowY + 3.6, {
       bold: true,
       size: 6.5,
-      maxWidth: 49,
     });
-    drawText(doc, titleCase(item.product.category), 27, rowY + 7.3, {
-      color: COLORS.muted,
-      size: 5.8,
-    });
-    drawText(doc, item.product.productCode, centers[2], rowY + 5.7, {
+    drawText(
+      doc,
+      layout.descriptionLines,
+      27,
+      rowY + 3.6 + layout.nameLines.length * 2.8,
+      {
+        color: COLORS.muted,
+        size: 5.8,
+      },
+    );
+    drawText(doc, item.product.productCode || "—", centers[2], centerY - 1.8, {
       align: "center",
       size: 6.3,
     });
-    drawText(doc, "Unit", centers[3], rowY + 5.7, {
+    drawText(
+      doc,
+      `HSN: ${item.product.hsnCode || "—"}`,
+      centers[2],
+      centerY + 1.9,
+      {
+        align: "center",
+        color: COLORS.muted,
+        size: 5.5,
+      },
+    );
+    drawText(doc, totals.quantity, centers[3], centerY, {
       align: "center",
       size: 6.5,
     });
-    drawText(doc, totals.quantity, centers[4], rowY + 5.7, {
-      align: "center",
-      size: 6.5,
-    });
-    drawText(doc, moneyFormatter.format(totals.unitPrice), centers[5], rowY + 5.7, {
+    drawText(doc, moneyFormatter.format(totals.unitPrice), centers[4], centerY, {
       align: "center",
       size: 6.2,
     });
-    drawText(doc, `${totals.gstPercentage}%`, centers[6], rowY + 5.7, {
+    drawText(doc, `${totals.gstPercentage}%`, centers[5], centerY, {
       align: "center",
       size: 6.5,
     });
-    drawText(doc, moneyFormatter.format(totals.subtotal), centers[7], rowY + 5.7, {
+    drawText(doc, moneyFormatter.format(totals.subtotal), centers[6], centerY, {
       align: "center",
       size: 6.2,
     });
+    rowY += layout.height;
   });
 
-  return startY + 11 + items.length * 9;
+  return rowY;
 }
 
 function drawQuotationSummary(doc, totals, startY, signatureDataUrl) {
@@ -503,7 +553,7 @@ function drawQuotationSummary(doc, totals, startY, signatureDataUrl) {
   );
 
   const declarationY = startY + 66;
-  drawCell(doc, 12, declarationY, 186, 15, { lineWidth: 0.35 });
+  drawCell(doc, 12, declarationY, 186, 22, { lineWidth: 0.35 });
   drawCell(doc, 12, declarationY, 186, 6, { fill: COLORS.secondary });
   drawText(doc, "DECLARATION", 16, declarationY + 4.4, {
     bold: true,
@@ -516,8 +566,14 @@ function drawQuotationSummary(doc, totals, startY, signatureDataUrl) {
     declarationY + 10.5,
     { size: 6.2, maxWidth: 176 },
   );
+  drawText(doc, WARRANTY_TEXT, 16, declarationY + 16, {
+    bold: true,
+    color: COLORS.primary,
+    size: 6.2,
+    maxWidth: 176,
+  });
 
-  const signatureY = startY + 84;
+  const signatureY = startY + 91;
   drawCell(doc, 12, signatureY, 186, 14, { lineWidth: 0.35 });
   drawText(doc, `For ${BRAND.name}`, 16, signatureY + 6, {
     bold: true,
@@ -580,29 +636,29 @@ export function createProductQuotationDocument(
 
   drawQuotationTitle(doc, quotationId, generatedAt);
   drawBrandHeader(doc, logoDataUrl);
-  drawBillTo(doc, client);
+  drawClientDetails(doc, client);
 
-  if (items.length <= 7) {
-    const tableEnd = drawProductTable(doc, items, 99);
+  if (productTableHeight(doc, items) <= 81) {
+    const tableEnd = drawProductTable(doc, items, 90);
     drawQuotationSummary(doc, totals, tableEnd + 3, signatureDataUrl);
   } else {
     let itemIndex = 0;
-    const firstPageItems = items.slice(0, 18);
-    drawProductTable(doc, firstPageItems, 99, itemIndex);
+    const firstPageItems = pageItemsByHeight(doc, items, itemIndex, 180);
+    drawProductTable(doc, firstPageItems, 90, itemIndex);
     itemIndex += firstPageItems.length;
 
     while (itemIndex < items.length) {
       doc.addPage();
       drawContinuationHeader(doc, quotationId, "Product list continued");
-      const pageItems = items.slice(itemIndex, itemIndex + 25);
+      const pageItems = pageItemsByHeight(doc, items, itemIndex, 232);
       drawProductTable(doc, pageItems, 38, itemIndex);
       itemIndex += pageItems.length;
     }
 
     doc.addPage();
     drawContinuationHeader(doc, quotationId, "Quotation summary");
-    drawBillTo(doc, client, 35);
-    drawQuotationSummary(doc, totals, 71, signatureDataUrl);
+    drawClientDetails(doc, client, 35);
+    drawQuotationSummary(doc, totals, 63, signatureDataUrl);
   }
 
   const pageCount = doc.getNumberOfPages();
