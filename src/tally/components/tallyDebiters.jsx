@@ -3,12 +3,16 @@ import { RotateCw, Search } from "lucide-react";
 
 import { Button } from "@shadcnComponent/button";
 import { Input } from "@shadcnComponent/input";
+import DataTablePagination from "@commonComponent/dataTable/dataTablePagination";
+import { buildPageItems, getRowRange } from "@/utils/pagination.util";
 import DebitersTable from "@Tally/components/debitersTable";
 import { useDebiters } from "@Tally/hooks/useDebiters";
 
 function TallyDebiters() {
   const { debiters, error, isLoading, refresh } = useDebiters();
   const [search, setSearch] = useState("");
+  const [requestedPage, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const normalizedSearch = search.trim().toLocaleLowerCase();
   const filteredDebiters = useMemo(() => {
     if (!normalizedSearch) return debiters;
@@ -19,6 +23,10 @@ function TallyDebiters() {
       ),
     );
   }, [debiters, normalizedSearch]);
+  const total = filteredDebiters.length;
+  const totalPages = Math.ceil(total / limit);
+  const page = Math.min(requestedPage, Math.max(1, totalPages));
+  const pageDebiters = filteredDebiters.slice((page - 1) * limit, page * limit);
 
   return (
     <main className="flex w-full flex-col gap-6 pb-2">
@@ -52,7 +60,10 @@ function TallyDebiters() {
           <Input
             type="search"
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={(event) => {
+              setSearch(event.target.value);
+              setPage(1);
+            }}
             placeholder="Search debiters..."
             className="pl-9"
           />
@@ -63,11 +74,25 @@ function TallyDebiters() {
       </div>
 
       <DebitersTable
-        debiters={filteredDebiters}
+        debiters={pageDebiters}
         error={error}
         isLoading={isLoading}
         onRetry={refresh}
       />
+      {!error && (
+        <DataTablePagination
+          pagination={{ page, limit, total, totalPages }}
+          pageItems={buildPageItems(page, totalPages)}
+          rowRange={getRowRange({ page, limit, total, count: pageDebiters.length })}
+          isLoading={isLoading}
+          onPageChange={setPage}
+          onLimitChange={(nextLimit) => {
+            setLimit(nextLimit);
+            setPage(1);
+          }}
+          rowNoun="debiters"
+        />
+      )}
     </main>
   );
 }

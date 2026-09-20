@@ -4,7 +4,11 @@ import { getDebiters } from "@Tally/get/debiters.api";
 
 function getErrorMessage(error) {
   if (error?.code === "ERR_NETWORK") {
-    return "Could not connect to Tally at localhost:9000. Make sure Tally is open and its HTTP server is enabled.";
+    return "Cannot connect to Tally. On this computer, open Tally and run npm run tally:connector. Allow local network access for this website in your browser, then retry.";
+  }
+
+  if ([502, 504].includes(error?.response?.status)) {
+    return "The Tally connection failed or timed out. Make sure Tally is open on this computer with its HTTP server enabled on port 9000, then retry.";
   }
 
   return error?.message || "Unable to load debiters from Tally.";
