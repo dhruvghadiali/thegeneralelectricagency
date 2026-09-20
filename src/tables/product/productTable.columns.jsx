@@ -90,6 +90,16 @@ export const PRODUCT_TABLE_COLUMNS = [
     render: (product) => optionalValue(product.hsnCode),
   },
   {
+    key: "description",
+    header: "Description",
+    type: COLUMN_TYPES.TEXT,
+    field: "description",
+    filterKey: "description",
+    className: "max-w-sm truncate text-muted-foreground",
+    width: "380px",
+    render: (product) => optionalValue(product.description),
+  },
+  {
     key: "purchasePrice",
     header: "Purchase price",
     filterLabel: "Purchase price",
@@ -172,16 +182,6 @@ export const PRODUCT_TABLE_COLUMNS = [
     className: "whitespace-nowrap tabular-nums",
     width: "140px",
     render: (product) => formatPercentage(product.gstPercentage),
-  },
-  {
-    key: "description",
-    header: "Description",
-    type: COLUMN_TYPES.TEXT,
-    field: "description",
-    filterKey: "description",
-    className: "max-w-sm truncate text-muted-foreground",
-    width: "380px",
-    render: (product) => optionalValue(product.description),
   },
   {
     key: "createdAt",
