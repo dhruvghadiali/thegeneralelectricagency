@@ -20,7 +20,7 @@ import { ROUTES } from "@routes/navigate";
 export const SIDEBAR_NAV_ITEMS_BY_ROLE = {
   [ROLE_PATHS.SUPER_ADMIN]: [
     { title: "Dashboard", url: ROUTES.DASHBOARD, icon: LucideHome },
-    { title: "Purchase credit", url: ROUTES.PURCHASE_CREDITS, icon: HandCoins },
+    { title: "EUOB", url: ROUTES.PURCHASE_CREDITS, icon: HandCoins },
     { title: "Products", url: ROUTES.PRODUCTS, icon: Boxes },
     { title: "Employees", url: ROUTES.EMPLOYEES, icon: Users },
     { title: "Companies", url: ROUTES.COMPANIES, icon: Building2 },
@@ -30,7 +30,7 @@ export const SIDEBAR_NAV_ITEMS_BY_ROLE = {
     { title: "Dashboard", url: ROUTES.DASHBOARD, icon: LucideHome },
     { title: "Purchase orders", url: ROUTES.PURCHASES, icon: ShoppingCart },
     { title: "Sales", url: ROUTES.SALES, icon: Receipt },
-    { title: "Purchase credit", url: ROUTES.PURCHASE_CREDITS, icon: HandCoins },
+    { title: "EUOB", url: ROUTES.PURCHASE_CREDITS, icon: HandCoins },
     { title: "Products", url: ROUTES.PRODUCTS, icon: Boxes },
     { title: "Companies", url: ROUTES.COMPANIES, icon: Building2 },
     { title: "Settings", url: ROUTES.SETTINGS, icon: Settings },
