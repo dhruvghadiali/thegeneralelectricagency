@@ -3,9 +3,23 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
+const tallyProxy = {
+  "/tally-api": {
+    target: "http://localhost:9000",
+    changeOrigin: true,
+    rewrite: (requestPath) => requestPath.replace(/^\/tally-api/, "") || "/",
+  },
+};
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  server: {
+    proxy: tallyProxy,
+  },
+  preview: {
+    proxy: tallyProxy,
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

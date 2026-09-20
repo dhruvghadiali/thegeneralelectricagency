@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const TALLY_BASE_URL =
-  import.meta.env.VITE_TALLY_BASE_URL || "http://localhost:9000";
+  import.meta.env.VITE_TALLY_BASE_URL || "/tally-api";
 
 export async function postTallyXml(xml, config = {}) {
   const response = await axios.post(TALLY_BASE_URL, xml, {
