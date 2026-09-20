@@ -2,6 +2,8 @@ import { INDIAN_GST_RATES, PRODUCT_CATEGORIES } from "@Enums";
 
 export const PRODUCT_CODE_MIN_LENGTH = 2;
 export const PRODUCT_CODE_MAX_LENGTH = 50;
+export const PRODUCT_HSN_CODE_MIN_LENGTH = 5;
+export const PRODUCT_HSN_CODE_MAX_LENGTH = 100;
 export const PRODUCT_NAME_MIN_LENGTH = 2;
 export const PRODUCT_NAME_MAX_LENGTH = 150;
 export const PRODUCT_MODEL_NUMBER_MIN_LENGTH = 2;

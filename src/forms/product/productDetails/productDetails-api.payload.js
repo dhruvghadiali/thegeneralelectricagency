@@ -8,6 +8,7 @@ function toProductPayload(values = {}) {
   };
   const payload = {
     product_code: _.trim(values.productCode ?? ""),
+    hsn_code: _.trim(values.hsnCode ?? ""),
     name: _.trim(values.name ?? ""),
     category: values.category ?? "",
     agency: values.agency ?? "",

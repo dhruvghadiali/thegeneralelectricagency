@@ -1,5 +1,6 @@
 export const PRODUCT_INITIAL_VALUES = Object.freeze({
   productCode: "",
+  hsnCode: "",
   name: "",
   category: "",
   agency: "",

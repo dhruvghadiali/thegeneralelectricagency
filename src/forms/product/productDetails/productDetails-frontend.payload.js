@@ -6,6 +6,7 @@ const discountRangeValue = (value, boundary) => {
 export function toProductFormValues(product = {}) {
   return {
     ...product,
+    hsnCode: product.hsnCode ?? "",
     agencyName: product.agencyName ?? "",
     purchasePrice: product.purchasePrice ?? "",
     salePrice: product.salePrice ?? "",

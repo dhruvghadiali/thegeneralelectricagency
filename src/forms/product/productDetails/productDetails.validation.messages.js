@@ -1,6 +1,8 @@
 import {
   PRODUCT_CODE_MAX_LENGTH,
   PRODUCT_CODE_MIN_LENGTH,
+  PRODUCT_HSN_CODE_MAX_LENGTH,
+  PRODUCT_HSN_CODE_MIN_LENGTH,
   PRODUCT_DESCRIPTION_MAX_LENGTH,
   PRODUCT_DESCRIPTION_MIN_LENGTH,
   PRODUCT_MODEL_NUMBER_MAX_LENGTH,
@@ -18,6 +20,9 @@ export const PRODUCT_VALIDATION_MESSAGES = Object.freeze({
   PRODUCT_CODE_REQUIRED: "Product code is required",
   PRODUCT_CODE_MIN: `Product code must be at least ${PRODUCT_CODE_MIN_LENGTH} characters`,
   PRODUCT_CODE_MAX: `Product code must be ${PRODUCT_CODE_MAX_LENGTH} characters or fewer`,
+  HSN_CODE_REQUIRED: "HSN code is required",
+  HSN_CODE_MIN: `HSN code must be at least ${PRODUCT_HSN_CODE_MIN_LENGTH} characters`,
+  HSN_CODE_MAX: `HSN code must be ${PRODUCT_HSN_CODE_MAX_LENGTH} characters or fewer`,
   PRODUCT_NAME_REQUIRED: "Product name is required",
   PRODUCT_NAME_MIN: `Product name must be at least ${PRODUCT_NAME_MIN_LENGTH} characters`,
   PRODUCT_NAME_MAX: `Product name must be ${PRODUCT_NAME_MAX_LENGTH} characters or fewer`,

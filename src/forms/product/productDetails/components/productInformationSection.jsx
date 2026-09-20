@@ -10,6 +10,8 @@ import {
   PRODUCT_CODE_MIN_LENGTH,
   PRODUCT_DESCRIPTION_MAX_LENGTH,
   PRODUCT_DESCRIPTION_MIN_LENGTH,
+  PRODUCT_HSN_CODE_MAX_LENGTH,
+  PRODUCT_HSN_CODE_MIN_LENGTH,
   PRODUCT_MODEL_NUMBER_MAX_LENGTH,
   PRODUCT_MODEL_NUMBER_MIN_LENGTH,
   PRODUCT_NAME_MAX_LENGTH,
@@ -106,19 +108,35 @@ function ProductInformationSection({ formik, fieldError, inputProps, isBusy }) {
           />
         </ProductFormField>
       </div>
-      <ProductFormField
-        id="product-model-number"
-        label="Model number"
-        error={fieldError("modelNumber")}
-      >
-        <Input
+      <div className="grid gap-5 sm:grid-cols-2">
+        <ProductFormField
           id="product-model-number"
-          {...inputProps("modelNumber", "product-model-number")}
-          placeholder="Optional model number"
-          minLength={PRODUCT_MODEL_NUMBER_MIN_LENGTH}
-          maxLength={PRODUCT_MODEL_NUMBER_MAX_LENGTH}
-        />
-      </ProductFormField>
+          label="Model number"
+          error={fieldError("modelNumber")}
+        >
+          <Input
+            id="product-model-number"
+            {...inputProps("modelNumber", "product-model-number")}
+            placeholder="Optional model number"
+            minLength={PRODUCT_MODEL_NUMBER_MIN_LENGTH}
+            maxLength={PRODUCT_MODEL_NUMBER_MAX_LENGTH}
+          />
+        </ProductFormField>
+        <ProductFormField
+          id="product-hsn-code"
+          label="HSN code"
+          required
+          error={fieldError("hsnCode")}
+        >
+          <Input
+            id="product-hsn-code"
+            {...inputProps("hsnCode", "product-hsn-code")}
+            placeholder="e.g. 85015290"
+            minLength={PRODUCT_HSN_CODE_MIN_LENGTH}
+            maxLength={PRODUCT_HSN_CODE_MAX_LENGTH}
+          />
+        </ProductFormField>
+      </div>
       <ProductFormField
         id="product-description"
         label="Description"

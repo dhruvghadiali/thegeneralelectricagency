@@ -36,6 +36,7 @@ export function fromProductResponse(product = {}) {
   return {
     id: product._id ?? product.id ?? null,
     productCode: product.product_code ?? product.productCode ?? "",
+    hsnCode: product.hsn_code ?? product.hsnCode ?? "",
     name: product.name ?? "",
     category: product.category ?? "",
     agency,
