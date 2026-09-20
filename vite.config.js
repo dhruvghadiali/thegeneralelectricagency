@@ -20,6 +20,7 @@ export default defineConfig({
       "@Api": path.resolve(__dirname, "./src/api"),
       "@routes": path.resolve(__dirname, "./src/routes"),
       "@pages": path.resolve(__dirname, "./src/pages"),
+      "@Tally": path.resolve(__dirname, "./src/tally"),
     },
   },
 });
