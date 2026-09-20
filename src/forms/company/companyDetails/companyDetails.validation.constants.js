@@ -1,4 +1,8 @@
-import { COMPANY_TYPE_OPTIONS, CONTACT_POSITION_OPTIONS } from "@Enums";
+import {
+  COMPANY_TYPE_OPTIONS,
+  CONTACT_POSITION_OPTIONS,
+  INDIAN_STATE_AND_UNION_TERRITORY_OPTIONS,
+} from "@Enums";
 
 export const COMPANY_NAME_MIN_LENGTH = 5;
 export const COMPANY_NAME_MAX_LENGTH = 500;
@@ -26,4 +30,8 @@ export const COMPANY_SUPPORTED_TYPES = Object.freeze(
 
 export const COMPANY_SUPPORTED_CONTACT_POSITIONS = Object.freeze(
   CONTACT_POSITION_OPTIONS.map((option) => option.value),
+);
+
+export const COMPANY_SUPPORTED_STATES = Object.freeze(
+  INDIAN_STATE_AND_UNION_TERRITORY_OPTIONS.map((option) => option.value),
 );

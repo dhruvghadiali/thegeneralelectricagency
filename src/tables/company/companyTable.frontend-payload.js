@@ -19,6 +19,7 @@ function fromCompanyAddressResponse(address = {}) {
   return {
     id: address._id ?? address.id ?? null,
     address: address.address ?? "",
+    state: address.state ?? "",
     pincode: address.pincode ?? "",
     contacts: _.map(contacts, fromCompanyContactResponse),
   };

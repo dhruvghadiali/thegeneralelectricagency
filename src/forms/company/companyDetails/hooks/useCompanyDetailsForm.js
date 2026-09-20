@@ -52,6 +52,7 @@ export function useCompanyDetailsForm(props) {
     ...profileForm,
     ...workflowState,
     setSaveError: workflow.setSaveError,
+    changeFormState: workflow.changeFormState,
     ...addressOperations,
     ...contactOperations,
     hasPendingRecordMutation,

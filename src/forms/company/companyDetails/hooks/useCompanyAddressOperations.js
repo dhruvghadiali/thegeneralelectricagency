@@ -13,7 +13,7 @@ import {
   EMPTY_COMPANY_CONTACT,
 } from "@Forms/company/companyDetails/companyDetails.initialValues";
 
-const ADDRESS_FIELDS = ["address", "pincode"];
+const ADDRESS_FIELDS = ["address", "state", "pincode"];
 
 /** Owns adding, editing, saving, and deleting company addresses. */
 export function useCompanyAddressOperations({
@@ -69,7 +69,11 @@ export function useCompanyAddressOperations({
       addressEdit: {
         id: address.id,
         addressIndex,
-        snapshot: { address: address.address, pincode: address.pincode },
+        snapshot: {
+          address: address.address,
+          state: address.state,
+          pincode: address.pincode,
+        },
       },
     });
   };

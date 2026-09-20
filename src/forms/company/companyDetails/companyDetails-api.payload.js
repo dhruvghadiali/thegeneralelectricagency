@@ -23,6 +23,7 @@ export function toCompanyCreatePayload(values = {}) {
     ...toCompanyProfilePayload(values),
     address: _.map(values.addresses ?? [], (companyAddress) => ({
       address: companyAddress.address?.trim() ?? "",
+      state: companyAddress.state?.trim() ?? "",
       pincode: _.toNumber(companyAddress.pincode),
       contact_person: _.map(
         companyAddress.companyEmployees ?? [],
@@ -44,6 +45,7 @@ export function toCompanyUpdatePayload(values = {}) {
 export function toCompanyAddressUpdatePayload(address = {}) {
   return {
     address: address.address?.trim() ?? "",
+    state: address.state?.trim() ?? "",
     pincode: _.toNumber(address.pincode),
   };
 }

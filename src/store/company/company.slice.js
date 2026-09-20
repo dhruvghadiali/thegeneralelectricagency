@@ -22,6 +22,8 @@ const COMPANY_DETAILS_FORM_INITIAL_STATE = {
   updatingContactId: null,
   creatingAddressIndex: null,
   creatingContactKey: null,
+  statePickerAddressIndex: null,
+  stateSearch: "",
 };
 
 const initialState = {

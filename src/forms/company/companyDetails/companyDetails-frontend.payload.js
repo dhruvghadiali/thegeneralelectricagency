@@ -10,6 +10,7 @@ export function toCompanyFormValues(company) {
   const addresses = _.map(company.addresses ?? [], (companyAddress) => ({
     id: companyAddress.id ?? null,
     address: companyAddress.address ?? "",
+    state: companyAddress.state ?? "",
     pincode: String(companyAddress.pincode ?? ""),
     companyEmployees: _.map(companyAddress.contacts ?? [], (contact) => ({
       id: contact.id ?? null,

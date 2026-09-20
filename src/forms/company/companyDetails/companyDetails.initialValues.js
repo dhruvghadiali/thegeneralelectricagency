@@ -9,6 +9,7 @@ export const COMPANY_DETAILS_INITIAL_VALUES = {
   addresses: [
     {
       address: "",
+      state: "",
       pincode: "",
       companyEmployees: [
         {
@@ -23,6 +24,7 @@ export const COMPANY_DETAILS_INITIAL_VALUES = {
 
 export const EMPTY_COMPANY_ADDRESS = {
   address: "",
+  state: "",
   pincode: "",
   companyEmployees: [],
 };

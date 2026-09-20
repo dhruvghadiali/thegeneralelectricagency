@@ -34,6 +34,8 @@ export const COMPANY_VALIDATION_MESSAGES = {
   ADDRESS_REQUIRED: "Address is required",
   ADDRESS_MIN: `Address must be at least ${COMPANY_ADDRESS_MIN_LENGTH} characters`,
   ADDRESS_MAX: `Address must be ${COMPANY_ADDRESS_MAX_LENGTH} characters or fewer`,
+  STATE_REQUIRED: "State or union territory is required",
+  STATE_INVALID: "Select a supported state or union territory",
   PINCODE_REQUIRED: "PIN code is required",
   PINCODE_INVALID: "Enter a valid 6-digit PIN code",
   ADDRESSES_REQUIRED: "Add at least one address",

@@ -6,13 +6,18 @@ import { Textarea } from "@shadcnComponent/textarea";
 
 import CompanyContactsSection from "@Forms/company/companyDetails/components/companyContactsSection";
 import CompanyFormField from "@Forms/company/companyDetails/components/companyFormField";
+import CompanyStateSelect from "@Forms/company/companyDetails/components/companyStateSelect";
 
 function CompanyAddressCard({ address, addressIndex, isEditing, form }) {
   const {
     formik,
     errorFor,
     inputProps,
+    setSaveError,
+    changeFormState,
     addressEdit,
+    statePickerAddressIndex,
+    stateSearch,
     deletingAddressId,
     deletingContactId,
     updatingAddressId,
@@ -29,6 +34,8 @@ function CompanyAddressCard({ address, addressIndex, isEditing, form }) {
   const isEditingThisAddress = addressEdit?.id === address.id;
   const isReadOnly = Boolean(address.id) && !isEditingThisAddress;
   const deleteBlockReason = addressDeleteBlockReason(address);
+  const stateError = errorFor(`${addressPath}.state`);
+  const statePickerOpen = statePickerAddressIndex === addressIndex;
 
   return (
     <div className="overflow-hidden rounded-xl border bg-card shadow-xs">
@@ -145,26 +152,67 @@ function CompanyAddressCard({ address, addressIndex, isEditing, form }) {
               disabled={isReadOnly}
               className="min-h-20 resize-y"
               id={`${addressPath}.address`}
-              placeholder="Building, street, area, city and state"
+              placeholder="Building, street, area and city"
               autoComplete="street-address"
               {...inputProps(`${addressPath}.address`)}
             />
           </CompanyFormField>
-          <CompanyFormField
-            id={`${addressPath}.pincode`}
-            label="PIN code"
-            error={errorFor(`${addressPath}.pincode`)}
-          >
-            <Input
-              disabled={isReadOnly}
+          <div className="grid gap-5 sm:grid-cols-[minmax(0,2fr)_minmax(10rem,1fr)]">
+            <CompanyFormField
+              id={`${addressPath}.state`}
+              label="State / Union territory"
+              error={stateError}
+            >
+              <CompanyStateSelect
+                id={`${addressPath}.state`}
+                value={address.state}
+                error={stateError}
+                disabled={isReadOnly}
+                open={statePickerOpen}
+                search={statePickerOpen ? stateSearch : ""}
+                onOpenChange={(open) => {
+                  changeFormState({
+                    statePickerAddressIndex: open ? addressIndex : null,
+                    stateSearch: "",
+                  });
+                  if (!open) {
+                    formik.setFieldTouched(
+                      `${addressPath}.state`,
+                      true,
+                      true,
+                    );
+                  }
+                }}
+                onSearchChange={(stateSearchValue) =>
+                  changeFormState({ stateSearch: stateSearchValue })
+                }
+                onValueChange={(value) => {
+                  setSaveError(null);
+                  formik.setFieldValue(`${addressPath}.state`, value, true);
+                  formik.setFieldTouched(`${addressPath}.state`, true, false);
+                  changeFormState({
+                    statePickerAddressIndex: null,
+                    stateSearch: "",
+                  });
+                }}
+              />
+            </CompanyFormField>
+            <CompanyFormField
               id={`${addressPath}.pincode`}
-              inputMode="numeric"
-              placeholder="380001"
-              maxLength={6}
-              autoComplete="postal-code"
-              {...inputProps(`${addressPath}.pincode`)}
-            />
-          </CompanyFormField>
+              label="PIN code"
+              error={errorFor(`${addressPath}.pincode`)}
+            >
+              <Input
+                disabled={isReadOnly}
+                id={`${addressPath}.pincode`}
+                inputMode="numeric"
+                placeholder="380001"
+                maxLength={6}
+                autoComplete="postal-code"
+                {...inputProps(`${addressPath}.pincode`)}
+              />
+            </CompanyFormField>
+          </div>
         </div>
 
         <CompanyContactsSection
