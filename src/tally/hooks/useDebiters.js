@@ -11,7 +11,7 @@ function getErrorMessage(error) {
     return "The Tally connection failed or timed out. Make sure Tally is open on this computer with its HTTP server enabled on port 9000, then retry.";
   }
 
-  return error?.message || "Unable to load debiters from Tally.";
+  return error?.message || "Unable to load ledgers from Tally.";
 }
 
 export function useDebiters() {

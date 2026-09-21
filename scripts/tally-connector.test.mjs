@@ -35,7 +35,7 @@ test("rejects untrusted and missing origins, unknown routes, and unsupported met
   assert.equal((await fetch(`${url}/tally-api`, { headers: { Origin: origin } })).status, 405);
 });
 
-test("exports debtors using fixed XML and returns the Tally response", async (t) => {
+test("exports company ledgers using fixed XML and returns the Tally response", async (t) => {
   let received = "";
   const tally = await listen(http.createServer(async (req, res) => {
     for await (const chunk of req) received += chunk;
@@ -48,7 +48,9 @@ test("exports debtors using fixed XML and returns the Tally response", async (t)
   assert.equal(response.status, 200);
   assert.match(await response.text(), /LEDGER NAME='Example'/);
   assert.match(received, /<TALLYREQUEST>EXPORT<\/TALLYREQUEST>/);
-  assert.match(received, /GroupSundryDebtors/);
+  assert.match(received, /<SVCURRENTCOMPANY>THE GENERAL ELECTRIC STORES<\/SVCURRENTCOMPANY>/);
+  assert.match(received, /<TYPE>Ledger<\/TYPE>/);
+  assert.doesNotMatch(received, /<CHILDOF>|GroupSundryDebtors/);
   assert.ok(!received.includes("untrusted XML"));
   assert.equal(response.headers.get("access-control-allow-origin"), origin);
 });

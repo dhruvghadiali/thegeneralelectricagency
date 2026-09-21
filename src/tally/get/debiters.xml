@@ -3,19 +3,20 @@
         <VERSION>1</VERSION>
         <TALLYREQUEST>EXPORT</TALLYREQUEST>
         <TYPE>COLLECTION</TYPE>
-        <ID>ClientList</ID>
+        <ID>CompanyLedgers</ID>
     </HEADER>
 
     <BODY>
         <DESC>
             <STATICVARIABLES>
+                <SVCURRENTCOMPANY>THE GENERAL ELECTRIC STORES</SVCURRENTCOMPANY>
                 <SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT>
             </STATICVARIABLES>
 
             <TDL>
                 <TDLMESSAGE>
                     <COLLECTION
-                        NAME="ClientList"
+                        NAME="CompanyLedgers"
                         ISMODIFY="No"
                         ISFIXED="No"
                         ISINITIALIZE="No"
@@ -23,8 +24,7 @@
                         ISINTERNAL="No"
                     >
                         <TYPE>Ledger</TYPE>
-                        <CHILDOF>$$GroupSundryDebtors</CHILDOF>
-                        <BELONGSTO>Yes</BELONGSTO>
+                        <NATIVEMETHOD>*</NATIVEMETHOD>
                         <NATIVEMETHOD>Name</NATIVEMETHOD>
                         <NATIVEMETHOD>Parent</NATIVEMETHOD>
                         <NATIVEMETHOD>ClosingBalance</NATIVEMETHOD>

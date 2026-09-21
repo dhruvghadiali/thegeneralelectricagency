@@ -5,7 +5,7 @@ import { pathToFileURL } from "node:url";
 const debtorXml = readFileSync(new URL("../src/tally/get/debiters.xml", import.meta.url), "utf8");
 const allowedOrigin = "https://tges-ui-sit.onrender.com";
 
-// Only the bundled debtor export is sent to Tally, never arbitrary browser XML.
+// Only the bundled company ledger export is sent to Tally, never arbitrary browser XML.
 export function createTallyConnector({ tallyUrl = "http://127.0.0.1:9000", timeoutMs = 15000 } = {}) {
   return http.createServer(async (req, res) => {
     res.setHeader("Cache-Control", "no-store");
