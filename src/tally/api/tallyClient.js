@@ -1,10 +1,11 @@
 import axios from "axios";
 
-export const TALLY_BASE_URL =
-  import.meta.env.VITE_TALLY_BASE_URL || "/tally-api";
+// Requests go to the computer running the browser, including on the deployed site.
+export const TALLY_BASE_URL = "http://localhost:9000";
 
 export async function postTallyXml(xml, config = {}) {
   const response = await axios.post(TALLY_BASE_URL, xml, {
+    timeout: 15000,
     ...config,
     headers: {
       "Content-Type": "text/xml; charset=UTF-8",

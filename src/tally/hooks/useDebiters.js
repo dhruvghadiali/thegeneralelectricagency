@@ -4,10 +4,10 @@ import { getDebiters } from "@Tally/get/debiters.api";
 
 function getErrorMessage(error) {
   if (error?.code === "ERR_NETWORK") {
-    return "Cannot connect to Tally. On this computer, open Tally and run npm run tally:connector. Allow local network access for this website in your browser, then retry.";
+    return "Cannot access Tally at localhost:9000. Make sure Tally is available on this computer and allow local network access in your browser. Tally must also allow this website's requests through CORS.";
   }
 
-  if ([502, 504].includes(error?.response?.status)) {
+  if (error?.code === "ECONNABORTED" || [502, 504].includes(error?.response?.status)) {
     return "The Tally connection failed or timed out. Make sure Tally is open on this computer with its HTTP server enabled on port 9000, then retry.";
   }
 
