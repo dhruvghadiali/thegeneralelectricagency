@@ -4,18 +4,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@shadcnComponent/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@shadcnComponent/card";
 import { syncTallyProducts } from "@Tally/redux/tally.action";
-import { selectTallyProducts, selectTallyProductCount } from "@Tally/redux/tally.selector";
+import { selectTallyProducts, selectTallyProductCount, selectTallyProductRows } from "@Tally/redux/tally.selector";
+import ProductsTable from "@Tally/component/products/table";
 
 function Products() {
   const dispatch = useDispatch();
   const { status, error } = useSelector(selectTallyProducts);
   const productCount = useSelector(selectTallyProductCount);
+  const products = useSelector(selectTallyProductRows);
   const isSyncing = status === "loading";
 
   return (
-    <Card className="min-h-0 w-full flex-1">
+    <Card className="min-w-0 w-full">
       <CardHeader className="grid-cols-[1fr_auto] grid-rows-1 items-center border-b">
-        <CardTitle>Products</CardTitle>
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
+          <CardTitle>Products</CardTitle>
+          <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium tabular-nums" aria-live="polite">
+            Total: {productCount ?? "—"}
+          </span>
+        </div>
         <Button
           type="button"
           onClick={() => dispatch(syncTallyProducts())}
@@ -26,19 +33,13 @@ function Products() {
           {isSyncing ? "Syncing..." : "Sync"}
         </Button>
       </CardHeader>
-      <CardContent className="min-h-0 flex-1 space-y-4">
-        <div>
-          <p className="text-sm text-muted-foreground">Total products</p>
-          <p className="text-3xl font-semibold tabular-nums" aria-live="polite">
-            {productCount ?? "—"}
-          </p>
-        </div>
-        {status === "succeeded" && (
-          <p role="status">Product data received from Tally.</p>
-        )}
-        {status === "failed" && (
-          <p role="alert" className="text-destructive">{error}</p>
-        )}
+      <CardContent className="min-w-0 space-y-4 pb-6">
+        <ProductsTable
+          products={products}
+          status={status}
+          error={error}
+          onRetry={() => dispatch(syncTallyProducts())}
+        />
       </CardContent>
     </Card>
   );

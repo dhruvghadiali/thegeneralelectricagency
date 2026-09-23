@@ -39,6 +39,22 @@ function convertXmlElement(element) {
   return Object.fromEntries(result);
 }
 
+function removeInvalidXmlReferences(xml) {
+  // Tally can emit references such as &#4; for internal markers. XML 1.0
+  // parsers reject these even though the rest of the response is usable.
+  return xml.replace(/&#(?:x([0-9a-f]+)|([0-9]+));/gi, (reference, hex, decimal) => {
+    const codePoint = Number.parseInt(hex ?? decimal, hex ? 16 : 10);
+    const isValid =
+      codePoint === 9 ||
+      codePoint === 10 ||
+      codePoint === 13 ||
+      (codePoint >= 32 && codePoint <= 0xd7ff) ||
+      (codePoint >= 0xe000 && codePoint <= 0xfffd) ||
+      (codePoint >= 0x10000 && codePoint <= 0x10ffff);
+    return isValid ? reference : "";
+  });
+}
+
 /** Convert a Tally response to a serializable, format-tagged JSON value. */
 export function convertTallyResponse(response) {
   if (response == null || response === "") {
@@ -56,7 +72,10 @@ export function convertTallyResponse(response) {
   }
 
   if (value.startsWith("<") && typeof DOMParser !== "undefined") {
-    const document = new DOMParser().parseFromString(value, "application/xml");
+    const document = new DOMParser().parseFromString(
+      removeInvalidXmlReferences(value),
+      "application/xml",
+    );
     const hasParseError = document.getElementsByTagName("parsererror").length > 0;
 
     if (document.documentElement && !hasParseError) {
