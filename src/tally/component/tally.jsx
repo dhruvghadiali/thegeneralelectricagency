@@ -1,14 +1,9 @@
-import ConnectorDownload from "@Tally/component/connectorDownload";
+import TallyTabs from "@Tally/component/tabs";
 
 function Tally() {
   return (
-    <main className="w-full">
-      <header className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold tracking-tight">Tally</h1>
-        <div className="ml-auto">
-          <ConnectorDownload />
-        </div>
-      </header>
+    <main className="flex min-h-0 w-full flex-1 flex-col">
+      <TallyTabs />
     </main>
   );
 }

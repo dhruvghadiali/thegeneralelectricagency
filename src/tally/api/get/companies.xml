@@ -26,6 +26,9 @@
                         <TYPE>Ledger</TYPE>
                         <NATIVEMETHOD>*</NATIVEMETHOD>
                         <NATIVEMETHOD>Name</NATIVEMETHOD>
+                        <NATIVEMETHOD>GUID</NATIVEMETHOD>
+                        <NATIVEMETHOD>MasterID</NATIVEMETHOD>
+                        <NATIVEMETHOD>AlterID</NATIVEMETHOD>
                         <NATIVEMETHOD>Parent</NATIVEMETHOD>
                         <NATIVEMETHOD>ClosingBalance</NATIVEMETHOD>
                     </COLLECTION>
