@@ -1,9 +1,7 @@
+import Tally from "@Tally/component";
+
 function TallyDebitersPage() {
-  return (
-    <main>
-      <h1 className="text-2xl font-semibold tracking-tight">Tally</h1>
-    </main>
-  );
+  return <Tally />;
 }
 
 export default TallyDebitersPage;
