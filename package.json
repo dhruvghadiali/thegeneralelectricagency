@@ -4,8 +4,6 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "tally:connector": "node scripts/tally-connector.mjs",
-    "test:tally-connector": "node --test scripts/tally-connector.test.mjs",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",

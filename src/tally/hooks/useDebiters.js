@@ -4,11 +4,15 @@ import { getDebiters } from "@Tally/get/debiters.api";
 
 function getErrorMessage(error) {
   if (error?.code === "ERR_NETWORK") {
-    return "Cannot access Tally at localhost:9000. Make sure Tally is available on this computer and allow local network access in your browser. Tally must also allow this website's requests through CORS.";
+    return "Cannot reach TGES-Connector at localhost:9001. Open TGES-Connector on this computer and allow local network access for this website in your browser.";
   }
 
-  if (error?.code === "ECONNABORTED" || [502, 504].includes(error?.response?.status)) {
-    return "The Tally connection failed or timed out. Make sure Tally is open on this computer with its HTTP server enabled on port 9000, then retry.";
+  if (error?.response?.status === 502) {
+    return "TGES-Connector is reachable, but it cannot read a response from Tally. Make sure Tally is available on localhost:9000 and the company is open.";
+  }
+
+  if (error?.code === "ECONNABORTED" || error?.response?.status === 504) {
+    return "The Tally request timed out. Keep TGES-Connector running and make sure the company is open in Tally, then retry.";
   }
 
   return error?.message || "Unable to load ledgers from Tally.";
