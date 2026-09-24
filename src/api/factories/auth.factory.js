@@ -4,7 +4,7 @@ import { apiClient } from "@Api/client.api";
 import { ENDPOINTS } from "@Api/endpoints.constants";
 
 /**
- * All three roles share the same auth contract, just scoped under their own
+ * All roles share the same auth contract, just scoped under their own
  * path segment - e.g. /employee/auth/signin vs /super-admin/auth/signin.
  */
 export function createAuthApi(rolePath) {

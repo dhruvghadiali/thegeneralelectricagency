@@ -2,7 +2,12 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { ROLE_PATHS } from "@Enums";
 import { extractErrorMessage } from "@Api/client.api";
-import { employeeAuthApi, superAdminAuthApi, warehouseManagerAuthApi } from "@Api";
+import {
+  employeeAuthApi,
+  superAdminAuthApi,
+  warehouseManagerAuthApi,
+  techSupportAuthApi,
+} from "@Api";
 import { toSignInPayload } from "@Forms/signin/signin-api.payload";
 import { fromSignInResponse } from "@Forms/signin/signin-frontend.payload";
 
@@ -10,6 +15,7 @@ const authApiByRole = {
   [ROLE_PATHS.SUPER_ADMIN]: superAdminAuthApi,
   [ROLE_PATHS.EMPLOYEE]: employeeAuthApi,
   [ROLE_PATHS.WAREHOUSE_MANAGER]: warehouseManagerAuthApi,
+  [ROLE_PATHS.TECH_SUPPORT]: techSupportAuthApi,
 };
 
 /**

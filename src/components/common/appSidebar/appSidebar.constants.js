@@ -19,6 +19,9 @@ import { ROUTES } from "@routes/navigate";
  * flow wired up yet still has its menu ready to go the moment it does.
  */
 export const SIDEBAR_NAV_ITEMS_BY_ROLE = {
+  [ROLE_PATHS.TECH_SUPPORT]: [
+    { title: "Dashboard", url: ROUTES.DASHBOARD, icon: LucideHome },
+  ],
   [ROLE_PATHS.SUPER_ADMIN]: [
     { title: "Dashboard", url: ROUTES.DASHBOARD, icon: LucideHome },
     { title: "EUOB", url: ROUTES.PURCHASE_CREDITS, icon: HandCoins },
