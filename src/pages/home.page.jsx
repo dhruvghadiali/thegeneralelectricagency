@@ -1,5 +1,7 @@
 import ShowcaseScrollNavigation from "@/components/ShowcaseScrollNavigation";
 import LoadingScreen from "@shadcnComponent/loading-screen";
+import { Button } from "@shadcnComponent/button";
+import { LogIn } from "lucide-react";
 import { showcaseSections } from "@/utils/showcaseSections";
 import HomeScreenComponent from "@screenComponent/home";
 import ServicesIntroComponent from "@screenComponent/services";
@@ -15,7 +17,7 @@ import {
   usePrefersReducedMotion,
 } from "@/utils/useMotorFrames";
 import { lazy, memo, Suspense, useEffect, useRef, useState } from "react";
-import {useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "@routes/navigate";
 
 const MotorScrollAnimation = lazy(
@@ -132,15 +134,29 @@ export default function HomePage() {
   return (
     <>
       {!isGateOpen && (
-        <LoadingScreen
-          progress={preloadProgress}
-          loaded={loaded}
-          failed={failed}
-          total={total}
-          hasError={hasPreloadError}
-          onRetry={handleRetry}
-          onContinue={() => setHasDismissedError(true)}
-        />
+        <>
+          <LoadingScreen
+            progress={preloadProgress}
+            loaded={loaded}
+            failed={failed}
+            total={total}
+            hasError={hasPreloadError}
+            onRetry={handleRetry}
+            onContinue={() => setHasDismissedError(true)}
+          />
+          <div className="showcase-loading-sign-in">
+            <Button
+              asChild
+              variant="outline"
+              className="pointer-events-auto bg-[#164863] text-white hover:bg-[#0f2f46] hover:text-white border-white/20 hover:cursor-pointer"
+            >
+              <Link to={ROUTES.SIGN_IN}>
+                <LogIn aria-hidden="true" />
+                Sign in
+              </Link>
+            </Button>
+          </div>
+        </>
       )}
 
       <div

@@ -37,7 +37,8 @@
 /* Full-width bar so the intro block and the sign-in action can sit in the
    opposite top corners. Specificity is raised above the
    `.motor-scroll-animation__overlay` breakpoint rules it shares a class with. */
-.showcase-scroll-nav .showcase-scroll-nav__intro {
+.showcase-scroll-nav .showcase-scroll-nav__intro,
+.showcase-loading-sign-in {
   top: clamp(0.75rem, 2vh, 1.25rem);
   left: clamp(0.75rem, 2vw, 1.5rem);
   right: clamp(0.75rem, 2vw, 1.5rem);
@@ -48,6 +49,14 @@
     opacity 260ms ease,
     transform 260ms ease,
     visibility 260ms ease;
+}
+
+.showcase-loading-sign-in {
+  position: fixed;
+  z-index: 201;
+  display: flex;
+  justify-content: flex-end;
+  pointer-events: none;
 }
 
 .showcase-scroll-nav .showcase-scroll-nav__intro--hidden {
@@ -548,6 +557,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .showcase-loading-sign-in,
   .showcase-scroll-nav__intro,
   .showcase-scroll-nav__item,
   .showcase-scroll-nav__item::after,
