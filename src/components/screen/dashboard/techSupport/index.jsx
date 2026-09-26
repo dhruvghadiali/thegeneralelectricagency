@@ -1,19 +1,9 @@
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@shadcnComponent/card";
+import TallyCompanySyncs from "@Tally/component/companySyncs";
 
 export default function TechSupportDashboard() {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Tech Support</CardTitle>
-        <CardDescription>
-          Welcome to The General Electric Stores support dashboard.
-        </CardDescription>
-      </CardHeader>
-    </Card>
+    <main className="flex w-full flex-col gap-6 pb-2 roomy:h-full roomy:min-h-0">
+      <TallyCompanySyncs />
+    </main>
   );
 }
