@@ -31,6 +31,7 @@ import PurchaseFinancialSummaryPage from "@pages/purchase-financial-summary.page
 import LenisScrollProvider from "@/components/LenisScrollProvider";
 import SettingsPage from "@pages/settings.page";
 import TallyDebitersPage from "@pages/tally-debiters.page";
+import SyncCompaniesPage from "@pages/sync-companies.page";
 
 function App() {
   return (
@@ -45,6 +46,14 @@ function App() {
 
             <Route element={<PrivateRoute />}>
               <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
+              <Route
+                element={<RoleRoute allowedRoles={[ROLE_PATHS.TECH_SUPPORT]} />}
+              >
+                <Route
+                  path={ROUTES.SYNC_COMPANIES}
+                  element={<SyncCompaniesPage />}
+                />
+              </Route>
               <Route
                 element={<RoleRoute allowedRoles={[ROLE_PATHS.SUPER_ADMIN]} />}
               >

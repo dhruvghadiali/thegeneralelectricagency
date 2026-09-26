@@ -8,6 +8,7 @@ import {
   LucideHome,
   ShoppingCart,
   Receipt,
+  RefreshCw,
   TrendingUp,
 } from "lucide-react";
 
@@ -21,6 +22,11 @@ import { ROUTES } from "@routes/navigate";
 export const SIDEBAR_NAV_ITEMS_BY_ROLE = {
   [ROLE_PATHS.TECH_SUPPORT]: [
     { title: "Dashboard", url: ROUTES.DASHBOARD, icon: LucideHome },
+    {
+      title: "Sync companies",
+      url: ROUTES.SYNC_COMPANIES,
+      icon: RefreshCw,
+    },
   ],
   [ROLE_PATHS.SUPER_ADMIN]: [
     { title: "Dashboard", url: ROUTES.DASHBOARD, icon: LucideHome },
