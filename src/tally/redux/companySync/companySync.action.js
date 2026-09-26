@@ -31,7 +31,6 @@ export function toTallyCompanySyncPayload({
         status: "success",
         status_code: 200,
         message: "Company information retrieved from Tally.",
-        response: tallyResponse,
       }],
     };
   }

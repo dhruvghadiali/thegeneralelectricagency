@@ -132,7 +132,7 @@ function CompaniesTable({ companies, status, error, onRetry }) {
       emptyDescription={
         status === "succeeded"
           ? "Tally returned no companies."
-          : "Click Sync to fetch companies from Tally."
+          : "Get company information from Tally to load companies."
       }
       filteredEmptyDescription="No companies match your search."
       maxBodyHeight="none"

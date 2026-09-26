@@ -1,22 +1,24 @@
 import { Building2, Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
-import FormErrorAlert from "@commonComponent/alert/formErrorAlert";
 import { Button } from "@shadcnComponent/button";
+import CompaniesTable from "@Tally/component/comapnies/table";
 import { syncTallyCompanies } from "@Tally/redux/company/company.action";
 import {
   selectTallyCompanies,
   selectTallyCompanyCount,
+  selectTallyCompanyRows,
 } from "@Tally/redux/company/company.selector";
 
 function SyncCompaniesPage() {
   const dispatch = useDispatch();
   const { status, error } = useSelector(selectTallyCompanies);
   const companyCount = useSelector(selectTallyCompanyCount);
+  const companies = useSelector(selectTallyCompanyRows);
   const isSyncing = status === "loading";
 
   return (
-    <main className="w-full space-y-4">
+    <main className="min-w-0 w-full space-y-4">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <Button
           type="button"
@@ -36,12 +38,12 @@ function SyncCompaniesPage() {
         </Button>
       </div>
 
-      {status === "failed" && <FormErrorAlert message={error} />}
-      {status === "succeeded" && (
-        <p className="text-sm text-muted-foreground" aria-live="polite">
-          {companyCount ?? 0} companies retrieved from Tally.
-        </p>
-      )}
+      <CompaniesTable
+        companies={companies}
+        status={status}
+        error={error}
+        onRetry={() => dispatch(syncTallyCompanies())}
+      />
     </main>
   );
 }
