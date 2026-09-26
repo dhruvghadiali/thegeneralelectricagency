@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-import { ROLE_PATHS } from "@Enums";
+import { ASSIGNABLE_ROLE_OPTIONS } from "@Forms/employee/addEmployee/addEmployee.options";
 import { ADD_EMPLOYEE_VALIDATION_MESSAGES } from "@Forms/employee/addEmployee/addEmployee.validation.messages";
 import {
   ADD_EMPLOYEE_NAME_MAX_LENGTH,
@@ -11,7 +11,7 @@ import {
   ADD_EMPLOYEE_USERNAME_PATTERN,
 } from "@Forms/employee/addEmployee/addEmployee.validation.constants";
 
-const EMPLOYEE_ROLES = [ROLE_PATHS.EMPLOYEE, ROLE_PATHS.WAREHOUSE_MANAGER];
+const EMPLOYEE_ROLES = ASSIGNABLE_ROLE_OPTIONS.map((role) => role.value);
 
 export const addEmployeeValidationSchema = Yup.object({
   firstName: Yup.string()
