@@ -3,8 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Button } from "@shadcnComponent/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@shadcnComponent/card";
-import { syncTallyCompanies } from "@Tally/redux/tally.action";
-import { selectTallyCompanies, selectTallyCompanyCount, selectTallyCompanyRows } from "@Tally/redux/tally.selector";
+import { syncTallyCompanies } from "@Tally/redux/company/company.action";
+import {
+  selectTallyCompanies,
+  selectTallyCompanyCount,
+  selectTallyCompanyRows,
+} from "@Tally/redux/company/company.selector";
 import CompaniesTable from "@Tally/component/comapnies/table";
 
 function Companies() {

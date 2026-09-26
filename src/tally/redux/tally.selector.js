@@ -1,6 +1,5 @@
 import { createSelector } from "@reduxjs/toolkit";
 
-export const selectTallyCompanies = (state) => state.tally.companies;
 export const selectTallyProducts = (state) => state.tally.products;
 
 function asRecords(value) {
@@ -39,43 +38,6 @@ function firstListValue(ledger, listName, fieldName) {
     .find(Boolean) ?? "";
 }
 
-export const selectTallyCompanyRows = createSelector(
-  [selectTallyCompanies],
-  ({ response }) => {
-    const data = response?.data;
-    if (!data) return [];
-
-    const records = Array.isArray(data)
-      ? data
-      : asRecords(
-          data.companies ??
-            data.ledgers ??
-            data.data?.companies ??
-            data.data?.ledgers,
-        );
-    const ledgers = records.length ? records : findRecords(data, "LEDGER");
-
-    return ledgers
-      .map((ledger) => ({
-        name: tallyText(
-          ledger?.["@attributes"]?.NAME ?? ledger?.NAME ?? ledger?.name,
-        ),
-        guid: tallyText(ledger?.GUID ?? ledger?.guid),
-        masterId: tallyText(ledger?.MASTERID ?? ledger?.masterId),
-        parent: tallyText(ledger?.PARENT ?? ledger?.parent),
-        gstin: tallyText(ledger?.GSTIN) || firstListValue(ledger, "LEDGSTREGDETAILS.LIST", "GSTIN"),
-        pan: tallyText(ledger?.INCOMETAXNUMBER ?? ledger?.PAN),
-        email: tallyText(ledger?.EMAIL),
-        phone: tallyText(ledger?.LEDGERMOBILE) || tallyText(ledger?.LEDGERPHONE) ||
-          firstListValue(ledger, "CONTACTDETAILS.LIST", "PHONENUMBER"),
-        address: firstListValue(ledger, "LEDMAILINGDETAILS.LIST", "ADDRESS.LIST"),
-        state: firstListValue(ledger, "LEDMAILINGDETAILS.LIST", "STATE"),
-        pinCode: firstListValue(ledger, "LEDMAILINGDETAILS.LIST", "PINCODE"),
-      }))
-      .filter(({ name }) => name);
-  },
-);
-
 export const selectTallyProductRows = createSelector(
   [selectTallyProducts],
   ({ response }) => {
@@ -109,11 +71,6 @@ export const selectTallyProductRows = createSelector(
       }))
       .filter(({ name }) => name);
   },
-);
-
-export const selectTallyCompanyCount = createSelector(
-  [selectTallyCompanies, selectTallyCompanyRows],
-  ({ response }, rows) => (response ? rows.length : null),
 );
 
 export const selectTallyProductCount = createSelector(

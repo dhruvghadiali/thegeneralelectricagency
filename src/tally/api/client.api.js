@@ -50,14 +50,3 @@ export async function sendTallyXml(xml, config = {}) {
     );
   }
 }
-
-export async function getTallyConnectorStatus(config = {}) {
-  const healthUrl = new URL("/health", TALLY_BASE_URL);
-  const { data } = await tallyClient.get(healthUrl.href, {
-    timeout: 5000,
-    responseType: "json",
-    ...config,
-  });
-
-  return data;
-}

@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 
 import FormErrorAlert from "@commonComponent/alert/formErrorAlert";
 import { Button } from "@shadcnComponent/button";
-import { syncTallyCompanies } from "@Tally/redux/tally.action";
+import { syncTallyCompanies } from "@Tally/redux/company/company.action";
 import {
   selectTallyCompanies,
   selectTallyCompanyCount,
-} from "@Tally/redux/tally.selector";
+} from "@Tally/redux/company/company.selector";
 
 function SyncCompaniesPage() {
   const dispatch = useDispatch();
