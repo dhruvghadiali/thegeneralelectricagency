@@ -11,6 +11,10 @@ export const EMPLOYEE_USER_TYPE_OPTIONS = Object.freeze([
     value: USER_TYPE_BY_ROLE[ROLE_PATHS.WAREHOUSE_MANAGER],
     label: "Warehouse Manager",
   },
+  {
+    value: USER_TYPE_BY_ROLE[ROLE_PATHS.TECH_SUPPORT],
+    label: "Tech Support",
+  },
 ]);
 
 /**
