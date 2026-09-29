@@ -9,7 +9,7 @@ import productReducer from "@Redux/product/product.slice";
 import purchaseReducer from "@Redux/purchase/purchase.slice";
 import purchaseCreditReducer from "@Redux/purchaseCredit/purchaseCredit.slice";
 import salesOrderReducer from "@Redux/salesOrder/salesOrder.slice";
-import tallyReducer from "@Tally/redux/tally.slice";
+import tallyProductsReducer from "@Tally/redux/tallyProducts/tallyProducts.slice";
 import tallyCompanyReducer from "@Tally/redux/company/company.slice";
 import tallyCompanySyncReducer from "@Tally/redux/companySync/companySync.slice";
 import tallyCompaniesListReducer from "@Tally/redux/tallyCompanies/tallyCompanies.slice";
@@ -24,7 +24,7 @@ const appReducer = combineReducers({
     purchases: purchaseReducer,
     purchaseCredits: purchaseCreditReducer,
     salesOrders: salesOrderReducer,
-    tally: tallyReducer,
+    tallyProducts: tallyProductsReducer,
     tallyCompanies: tallyCompanyReducer,
     tallyCompanySyncs: tallyCompanySyncReducer,
     tallyCompaniesList: tallyCompaniesListReducer,

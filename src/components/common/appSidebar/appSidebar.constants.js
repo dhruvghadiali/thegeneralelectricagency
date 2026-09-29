@@ -1,5 +1,4 @@
 import {
-  BookOpen,
   Boxes,
   Building2,
   HandCoins,
@@ -45,7 +44,6 @@ export const SIDEBAR_NAV_ITEMS_BY_ROLE = {
     { title: "Products", url: ROUTES.PRODUCTS, icon: Boxes },
     { title: "Companies", url: ROUTES.COMPANIES, icon: Building2 },
     { title: "Settings", url: ROUTES.SETTINGS, icon: Settings },
-    { title: "Tally", url: ROUTES.TALLY_DEBITERS, icon: BookOpen },
   ],
   [ROLE_PATHS.WAREHOUSE_MANAGER]: [
     { title: "Dashboard", url: ROUTES.DASHBOARD, icon: LucideHome },

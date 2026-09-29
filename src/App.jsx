@@ -30,7 +30,6 @@ import PurchaseOrdersPage from "@pages/purchase-orders.page";
 import PurchaseFinancialSummaryPage from "@pages/purchase-financial-summary.page";
 import LenisScrollProvider from "@/components/LenisScrollProvider";
 import SettingsPage from "@pages/settings.page";
-import TallyDebitersPage from "@pages/tally-debiters.page";
 import SyncCompaniesPage from "@pages/sync-companies.page";
 import ProductsScreen from "@Tally/pages/products";
 
@@ -110,10 +109,6 @@ function App() {
                   element={<PurchaseOrdersPage />}
                 />
                 <Route path={ROUTES.SALES} element={<SalesPage />} />
-                <Route
-                  path={ROUTES.TALLY_DEBITERS}
-                  element={<TallyDebitersPage />}
-                />
                 <Route path={ROUTES.SALES_NEW} element={<SalesOrderPage />} />
                 <Route
                   path={ROUTES.PURCHASE_FINANCIAL_SUMMARY}
