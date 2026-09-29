@@ -1,7 +1,7 @@
-import { PRODUCT_TAB_NAMES } from "@Tally/enum/productsTabs.enum";
+import TallyProducts from "@Tally/component/products/tallyProducts";
 
 function SystemProducts() {
-  return <div>{PRODUCT_TAB_NAMES.SYSTEM_PRODUCTS}</div>;
+  return <TallyProducts />;
 }
 
 export default SystemProducts;
