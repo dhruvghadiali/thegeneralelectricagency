@@ -32,6 +32,7 @@ import LenisScrollProvider from "@/components/LenisScrollProvider";
 import SettingsPage from "@pages/settings.page";
 import TallyDebitersPage from "@pages/tally-debiters.page";
 import SyncCompaniesPage from "@pages/sync-companies.page";
+import ProductsScreen from "@Tally/pages/products";
 
 function App() {
   return (
@@ -49,6 +50,10 @@ function App() {
               <Route
                 element={<RoleRoute allowedRoles={[ROLE_PATHS.TECH_SUPPORT]} />}
               >
+                <Route
+                  path={ROUTES.SYNC_PRODUCTS}
+                  element={<ProductsScreen />}
+                />
                 <Route
                   path={ROUTES.SYNC_COMPANIES}
                   element={<SyncCompaniesPage />}

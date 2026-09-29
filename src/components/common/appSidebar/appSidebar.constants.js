@@ -22,6 +22,7 @@ import { ROUTES } from "@routes/navigate";
 export const SIDEBAR_NAV_ITEMS_BY_ROLE = {
   [ROLE_PATHS.TECH_SUPPORT]: [
     { title: "Dashboard", url: ROUTES.DASHBOARD, icon: LucideHome },
+    { title: "Sync products", url: ROUTES.SYNC_PRODUCTS, icon: Boxes },
     {
       title: "Sync companies",
       url: ROUTES.SYNC_COMPANIES,
