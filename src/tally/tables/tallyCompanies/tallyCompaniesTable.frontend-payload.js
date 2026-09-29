@@ -1,18 +1,10 @@
-import { TABLE_DEFAULTS } from "@Enums";
 import { TALLY_COMPANIES_TABLE_DEFAULTS } from "@Tally/tables/tallyCompanies/tallyCompaniesTable.defaults";
 
-export function fromTallyCompaniesResponse(response = {}, requested = {}) {
-  const pagination = response.pagination ?? {};
-  const limit = Number(pagination.limit) || requested.limit || TALLY_COMPANIES_TABLE_DEFAULTS.limit;
-  const total = Number(pagination.total) || 0;
-
+export function fromTallyCompaniesResponse(response = {}) {
+  const items = response.tally_companies ?? [];
+  const limit = TALLY_COMPANIES_TABLE_DEFAULTS.limit;
   return {
-    items: response.tally_companies ?? [],
-    pagination: {
-      page: Number(pagination.page) || requested.page || TABLE_DEFAULTS.PAGE,
-      limit,
-      total,
-      totalPages: Number(pagination.total_pages) || Math.ceil(total / limit),
-    },
+    items,
+    pagination: { page: 1, limit, total: items.length, totalPages: Math.ceil(items.length / limit) },
   };
 }

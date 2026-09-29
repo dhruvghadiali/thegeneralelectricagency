@@ -118,6 +118,9 @@ function DataTable({
   rowActions,
   selectedRowKeys = [],
   onRowSelectionChange,
+  selectionRows = rows,
+  paginationMode = "server",
+  onAllRowsSelectionChange,
   selectionLabel = (row) => `Select ${rowKey(row)}`,
   toolbarActions,
   searchPlaceholder = "Search...",
@@ -147,15 +150,19 @@ function DataTable({
   const hasRows = rows.length > 0;
   const selectedKeys = new Set(selectedRowKeys);
   const isSelectable = Boolean(onRowSelectionChange);
+  // Full-list selection is opt-in for locally paginated data only.
+  const selectableRows = paginationMode === "client" ? selectionRows : rows;
   const selectedVisibleCount = isSelectable
-    ? rows.filter((row) => selectedKeys.has(rowKey(row))).length
+    ? selectableRows.filter((row) => selectedKeys.has(rowKey(row))).length
     : 0;
   const areAllVisibleRowsSelected =
-    hasRows && selectedVisibleCount === rows.length;
+    selectableRows.length > 0 && selectedVisibleCount === selectableRows.length;
   const areSomeVisibleRowsSelected =
     selectedVisibleCount > 0 && !areAllVisibleRowsSelected;
   const toggleAllVisibleRows = (checked) =>
-    rows.forEach((row) => onRowSelectionChange(row, checked));
+    onAllRowsSelectionChange
+      ? onAllRowsSelectionChange(selectableRows, checked)
+      : selectableRows.forEach((row) => onRowSelectionChange(row, checked));
   const isFirstLoad = isLoading && !hasRows;
   // The head carries every filter control, so it stays even when the body
   // cannot - otherwise a filter that matched nothing would take away the only
@@ -224,8 +231,8 @@ function DataTable({
                             onChange={toggleAllVisibleRows}
                             label={
                               areAllVisibleRowsSelected
-                                ? "Deselect all visible products"
-                                : "Select all visible products"
+                                ? `Deselect all ${selectableRows === rows ? "visible " : ""}${rowNoun}`
+                                : `Select all ${selectableRows === rows ? "visible " : ""}${rowNoun}`
                             }
                           />
                         </span>

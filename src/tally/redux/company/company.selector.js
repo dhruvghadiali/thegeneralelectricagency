@@ -65,6 +65,17 @@ export function getTallyCompanyRows(response) {
         firstListValue(ledger, "LEDGSTREGDETAILS.LIST", "GSTIN"),
       pan: tallyText(ledger?.INCOMETAXNUMBER ?? ledger?.PAN),
       email: tallyText(ledger?.EMAIL),
+      website: tallyText(ledger?.WEBSITE),
+      addresses: asRecords(ledger?.["LEDMAILINGDETAILS.LIST"]).map((entry) => ({
+        address: tallyText(entry?.["ADDRESS.LIST"]),
+        state: tallyText(entry?.STATE),
+        pincode: tallyText(entry?.PINCODE),
+      })),
+      contacts: asRecords(ledger?.["CONTACTDETAILS.LIST"]).map((entry) => ({
+        name: tallyText(entry?.CONTACTPERSON ?? entry?.NAME),
+        mobile: tallyText(entry?.MOBILENUMBER ?? entry?.PHONENUMBER),
+        position: tallyText(entry?.DESIGNATION ?? entry?.POSITION),
+      })),
       phone:
         tallyText(ledger?.LEDGERMOBILE) ||
         tallyText(ledger?.LEDGERPHONE) ||

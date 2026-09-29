@@ -40,7 +40,7 @@ const COLUMNS = [
   },
 ];
 
-function CompaniesTable({ companies, status, error, onRetry }) {
+function CompaniesTable({ companies, status, error, onRetry, fillHeight = false }) {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [search, setSearch] = useState("");
@@ -79,8 +79,9 @@ function CompaniesTable({ companies, status, error, onRetry }) {
 
   return (
     <>
-      <div className="min-w-0 w-full max-w-full overflow-hidden">
+      <div className={`min-w-0 w-full max-w-full overflow-hidden ${fillHeight ? "roomy:h-full roomy:min-h-0" : ""}`}>
         <DataTable
+      fillHeight={fillHeight}
       columns={COLUMNS}
       rows={rows}
       rowKey={(company) => company.guid || company.masterId || company.name}

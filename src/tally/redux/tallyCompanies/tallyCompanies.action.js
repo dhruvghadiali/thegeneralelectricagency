@@ -7,19 +7,18 @@ import { toTallyCompaniesListParams } from "@Tally/tables/tallyCompanies/tallyCo
 
 export const fetchTallyCompanies = createAsyncThunk(
   "tallyCompaniesList/fetch",
-  async (columns = [], { getState, signal, rejectWithValue }) => {
+  async (_, { getState, signal, rejectWithValue }) => {
     const state = getState();
     if (state.auth.role !== ROLE_PATHS.TECH_SUPPORT) {
       return rejectWithValue("You do not have permission to view Tally companies.");
     }
 
-    const { page, limit, sort, searchQuery, appliedFilters } = state.tallyCompaniesList;
     try {
       const response = await tallyCompaniesApi.getTallyCompanies(
-        toTallyCompaniesListParams({ columns, page, limit, sort, search: searchQuery, filters: appliedFilters }),
+        toTallyCompaniesListParams(),
         { signal },
       );
-      return fromTallyCompaniesResponse(response, { page, limit });
+      return fromTallyCompaniesResponse(response);
     } catch (error) {
       return rejectWithValue(extractErrorMessage(error));
     }

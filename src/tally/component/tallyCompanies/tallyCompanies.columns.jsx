@@ -26,6 +26,7 @@ export const TALLY_COMPANIES_DETAIL_COLUMNS = [
     sortKey: "company_name",
     className: "min-w-56 font-medium",
     mobile: MOBILE_SLOTS.PRIMARY,
+    width:"500px"
   }),
   textColumn("company_id", "Tally company ID", { mobile: MOBILE_SLOTS.SECONDARY }),
   textColumn("company_code", "Company code"),
