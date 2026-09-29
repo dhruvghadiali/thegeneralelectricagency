@@ -20,8 +20,12 @@ function ProductsTabs() {
   const { error } = useSelector(selectTallyProducts);
 
   return (
-    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-2">
+    <Tabs
+      value={activeTab}
+      onValueChange={setActiveTab}
+      className="flex min-w-0 w-full flex-col gap-4 roomy:min-h-0 roomy:flex-1"
+    >
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2">
         <div className="max-w-full overflow-x-auto">
           <TabsList aria-label="Product sections">
             <TabsTrigger value={PRODUCT_TAB_NAMES.SYSTEM_PRODUCTS}>
@@ -44,7 +48,10 @@ function ProductsTabs() {
       <TabsContent value={PRODUCT_TAB_NAMES.SYSTEM_PRODUCTS}>
         <SystemProducts />
       </TabsContent>
-      <TabsContent value={PRODUCT_TAB_NAMES.TALLY_PRODUCTS}>
+      <TabsContent
+        value={PRODUCT_TAB_NAMES.TALLY_PRODUCTS}
+        className="mt-0 min-w-0 roomy:min-h-0 roomy:flex-1 data-[state=active]:flex data-[state=active]:flex-col"
+      >
         <TallyProducts />
       </TabsContent>
       <TabsContent value={PRODUCT_TAB_NAMES.SYNC_PRODUCTS}>
