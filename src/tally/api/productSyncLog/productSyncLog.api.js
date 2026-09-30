@@ -11,4 +11,12 @@ export const tallyProductSyncLogApi = {
 
     return Array.isArray(data) ? (data[0] ?? {}) : (data ?? {});
   },
+  async createTallyProductSyncLog(payload) {
+    const { data } = await apiClient.post(
+      `/${ROLE_PATHS.TECH_SUPPORT}/${TALLY_ENDPOINTS.PRODUCT_SYNC_LOGS}`,
+      payload,
+    );
+
+    return Array.isArray(data) ? (data[0] ?? null) : (data ?? null);
+  },
 };

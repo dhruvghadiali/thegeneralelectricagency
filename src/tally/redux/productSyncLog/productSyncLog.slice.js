@@ -1,7 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { TALLY_PRODUCT_SYNC_LOGS_STATUS } from "@Tally/enum/tallyProductSyncLogsStatus.enum";
-import { fetchTallyProductSyncLogs } from "@Tally/redux/productSyncLog/productSyncLog.action";
+import {
+  createTallyProductSyncLog,
+  fetchTallyProductSyncLogs,
+} from "@Tally/redux/productSyncLog/productSyncLog.action";
 
 const initialState = {
   items: [],
@@ -12,6 +15,9 @@ const initialState = {
   status: TALLY_PRODUCT_SYNC_LOGS_STATUS.IDLE,
   error: null,
   requestId: null,
+  createdLog: null,
+  createStatus: TALLY_PRODUCT_SYNC_LOGS_STATUS.IDLE,
+  createError: null,
 };
 
 const tallyProductSyncLogSlice = createSlice({
@@ -56,6 +62,19 @@ const tallyProductSyncLogSlice = createSlice({
         state.status = TALLY_PRODUCT_SYNC_LOGS_STATUS.FAILED;
         state.error =
           action.payload ?? action.error.message ?? "Unable to load Tally product sync logs.";
+      })
+      .addCase(createTallyProductSyncLog.pending, (state) => {
+        state.createStatus = TALLY_PRODUCT_SYNC_LOGS_STATUS.IN_PROGRESS;
+        state.createError = null;
+      })
+      .addCase(createTallyProductSyncLog.fulfilled, (state, action) => {
+        state.createStatus = TALLY_PRODUCT_SYNC_LOGS_STATUS.SUCCEEDED;
+        state.createdLog = action.payload;
+      })
+      .addCase(createTallyProductSyncLog.rejected, (state, action) => {
+        state.createStatus = TALLY_PRODUCT_SYNC_LOGS_STATUS.FAILED;
+        state.createError =
+          action.payload ?? action.error.message ?? "Unable to create Tally product sync log.";
       });
   },
 });

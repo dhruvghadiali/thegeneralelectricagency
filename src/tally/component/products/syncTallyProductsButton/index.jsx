@@ -6,12 +6,13 @@ import { TALLY_PRODUCTS_STATUS } from "@Tally/enum/tallyProductsStatus.enum";
 import { syncTallyProducts } from "@Tally/redux/tallyProducts/tallyProducts.action";
 import { selectTallyProducts } from "@Tally/redux/tallyProducts/tallyProducts.selector";
 
-function SyncTallyProductsButton({ onSuccess }) {
+function SyncTallyProductsButton({ onStart, onSuccess }) {
   const dispatch = useDispatch();
   const { status } = useSelector(selectTallyProducts);
   const isSyncing = status === TALLY_PRODUCTS_STATUS.LOADING;
 
   const handleSync = async () => {
+    onStart();
     try {
       await dispatch(syncTallyProducts()).unwrap();
       onSuccess();

@@ -40,6 +40,7 @@ function TallyCompanies() {
   const syncedCompanies = useSelector(selectTallyCompanyRows);
   const isSaving = useSelector((state) => state.tallyCompaniesList.saveStatus === "loading");
   const [activeTab, setActiveTab] = useState("system");
+  const [errorTab, setErrorTab] = useState(null);
   const [selectedCompanyId, setSelectedCompanyId] = useState(null);
   const table = useTallyCompaniesTable();
   const selectedCompany = table.rows.find(
@@ -49,6 +50,7 @@ function TallyCompanies() {
   const hasSyncedCompanies = syncedCompanies.length > 0;
 
   async function getCompanyInformation() {
+    setErrorTab(activeTab);
     const result = await dispatch(syncTallyCompanies());
     if (syncTallyCompanies.fulfilled.match(result)) {
       setActiveTab(
@@ -114,7 +116,9 @@ function TallyCompanies() {
               : "Get company information from Tally"}
           </Button>
         </div>
-        {status === "failed" && <FormErrorAlert message={error} />}
+        {status === "failed" && activeTab === errorTab && (
+          <FormErrorAlert message={error} />
+        )}
         <TabsContent
           value="system"
           className="mt-0 min-w-0 roomy:min-h-0 roomy:flex-1"

@@ -7,6 +7,7 @@ import {
   TabsTrigger,
 } from "@shadcnComponent/tabs";
 import { PRODUCT_TAB_NAMES } from "@Tally/enum/productsTabs.enum";
+import { TALLY_PRODUCTS_STATUS } from "@Tally/enum/tallyProductsStatus.enum";
 import { selectTallyProducts } from "@Tally/redux/tallyProducts/tallyProducts.selector";
 import ProductsErrorMessage from "@Tally/component/products/errorMessage";
 import SyncTallyProductsButton from "@Tally/component/products/syncTallyProductsButton";
@@ -17,7 +18,8 @@ import SyncProducts from "@Tally/pages/products/tabs/syncProducts";
 
 function ProductsTabs() {
   const [activeTab, setActiveTab] = useState(PRODUCT_TAB_NAMES.SYSTEM_PRODUCTS);
-  const { error } = useSelector(selectTallyProducts);
+  const [errorTab, setErrorTab] = useState(null);
+  const { status, error } = useSelector(selectTallyProducts);
 
   return (
     <Tabs
@@ -40,10 +42,13 @@ function ProductsTabs() {
           </TabsList>
         </div>
         <SyncTallyProductsButton
+          onStart={() => setErrorTab(activeTab)}
           onSuccess={() => setActiveTab(PRODUCT_TAB_NAMES.TALLY_PRODUCTS)}
         />
       </div>
-      <ProductsErrorMessage message={error} />
+      {status === TALLY_PRODUCTS_STATUS.FAILED && activeTab === errorTab && (
+        <ProductsErrorMessage message={error} />
+      )}
 
       <TabsContent value={PRODUCT_TAB_NAMES.SYSTEM_PRODUCTS}>
         <SystemProducts />

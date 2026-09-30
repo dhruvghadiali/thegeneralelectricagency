@@ -1,11 +1,7 @@
-function ProductsErrorMessage({ message }) {
-  if (!message) return null;
+import FormErrorAlert from "@commonComponent/alert/formErrorAlert";
 
-  return (
-    <p role="alert" className="mt-2 text-sm text-destructive">
-      {message}
-    </p>
-  );
+function ProductsErrorMessage({ message }) {
+  return <FormErrorAlert message={message} />;
 }
 
 export default ProductsErrorMessage;

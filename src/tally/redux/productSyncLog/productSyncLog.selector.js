@@ -11,3 +11,12 @@ export const selectTallyProductSyncLogStatus = (state) =>
 
 export const selectTallyProductSyncLogError = (state) =>
   selectTallyProductSyncLogs(state).error;
+
+export const selectTallyProductSyncLogCreateStatus = (state) =>
+  selectTallyProductSyncLogs(state).createStatus;
+
+export const selectTallyProductSyncLogCreateError = (state) =>
+  selectTallyProductSyncLogs(state).createError;
+
+export const selectCreatedTallyProductSyncLog = (state) =>
+  selectTallyProductSyncLogs(state).createdLog;
