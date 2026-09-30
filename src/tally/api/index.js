@@ -10,6 +10,7 @@ export {
 export { tallyCompanyApi } from "@Tally/api/company/company.api";
 export { tallyCompaniesApi } from "@Tally/api/tallyCompanies/tallyCompanies.api";
 export { tallyCompanySyncApi } from "@Tally/api/companySync/companySync.api";
+export { tallyProductSyncLogApi } from "@Tally/api/productSyncLog/productSyncLog.api";
 export { TALLY_ENDPOINTS } from "@Tally/api/endpoints.constants";
 export { tallyProductApi } from "@Tally/api/product/product.api";
 export { convertTallyResponse } from "@Tally/api/response.converter";

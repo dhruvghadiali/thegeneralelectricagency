@@ -12,6 +12,7 @@ import salesOrderReducer from "@Redux/salesOrder/salesOrder.slice";
 import tallyProductsReducer from "@Tally/redux/tallyProducts/tallyProducts.slice";
 import tallyCompanyReducer from "@Tally/redux/company/company.slice";
 import tallyCompanySyncReducer from "@Tally/redux/companySync/companySync.slice";
+import tallyProductSyncLogReducer from "@Tally/redux/productSyncLog/productSyncLog.slice";
 import tallyCompaniesListReducer from "@Tally/redux/tallyCompanies/tallyCompanies.slice";
 
 const appReducer = combineReducers({
@@ -27,6 +28,7 @@ const appReducer = combineReducers({
     tallyProducts: tallyProductsReducer,
     tallyCompanies: tallyCompanyReducer,
     tallyCompanySyncs: tallyCompanySyncReducer,
+    tallyProductSyncLogs: tallyProductSyncLogReducer,
     tallyCompaniesList: tallyCompaniesListReducer,
 });
 
