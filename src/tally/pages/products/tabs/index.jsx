@@ -18,8 +18,7 @@ import SyncProducts from "@Tally/pages/products/tabs/syncProducts";
 
 function ProductsTabs() {
   const [activeTab, setActiveTab] = useState(PRODUCT_TAB_NAMES.SYSTEM_PRODUCTS);
-  const [errorTab, setErrorTab] = useState(null);
-  const { status, error } = useSelector(selectTallyProducts);
+  const { status, error, errorTab, alertVisible } = useSelector(selectTallyProducts);
 
   return (
     <Tabs
@@ -42,11 +41,11 @@ function ProductsTabs() {
           </TabsList>
         </div>
         <SyncTallyProductsButton
-          onStart={() => setErrorTab(activeTab)}
+          errorTab={activeTab}
           onSuccess={() => setActiveTab(PRODUCT_TAB_NAMES.TALLY_PRODUCTS)}
         />
       </div>
-      {status === TALLY_PRODUCTS_STATUS.FAILED && activeTab === errorTab && (
+      {alertVisible && status === TALLY_PRODUCTS_STATUS.FAILED && activeTab === errorTab && (
         <ProductsErrorMessage message={error} />
       )}
 

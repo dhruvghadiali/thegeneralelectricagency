@@ -14,6 +14,7 @@ import tallyCompanyReducer from "@Tally/redux/company/company.slice";
 import tallyCompanySyncReducer from "@Tally/redux/companySync/companySync.slice";
 import tallyProductSyncLogReducer from "@Tally/redux/productSyncLog/productSyncLog.slice";
 import tallyCompaniesListReducer from "@Tally/redux/tallyCompanies/tallyCompanies.slice";
+import { syncErrorListener } from "@Tally/redux/syncError.listener";
 
 const appReducer = combineReducers({
     auth: authReducer,
@@ -39,4 +40,6 @@ function rootReducer(state, action) {
 
 export const store = configureStore({
   reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().prepend(syncErrorListener.middleware),
 });

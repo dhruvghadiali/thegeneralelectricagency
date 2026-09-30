@@ -36,11 +36,10 @@ import { TALLY_COMPANIES_DETAIL_COLUMNS } from "@Tally/component/tallyCompanies/
 
 function TallyCompanies() {
   const dispatch = useDispatch();
-  const { status, error } = useSelector(selectTallyCompanies);
+  const { status, error, errorTab, alertVisible } = useSelector(selectTallyCompanies);
   const syncedCompanies = useSelector(selectTallyCompanyRows);
   const isSaving = useSelector((state) => state.tallyCompaniesList.saveStatus === "loading");
   const [activeTab, setActiveTab] = useState("system");
-  const [errorTab, setErrorTab] = useState(null);
   const [selectedCompanyId, setSelectedCompanyId] = useState(null);
   const table = useTallyCompaniesTable();
   const selectedCompany = table.rows.find(
@@ -50,8 +49,7 @@ function TallyCompanies() {
   const hasSyncedCompanies = syncedCompanies.length > 0;
 
   async function getCompanyInformation() {
-    setErrorTab(activeTab);
-    const result = await dispatch(syncTallyCompanies());
+    const result = await dispatch(syncTallyCompanies({ errorTab: activeTab }));
     if (syncTallyCompanies.fulfilled.match(result)) {
       setActiveTab(
         getTallyCompanyRows(result.payload).length > 0 ? "sync" : "system",
@@ -116,7 +114,7 @@ function TallyCompanies() {
               : "Get company information from Tally"}
           </Button>
         </div>
-        {status === "failed" && activeTab === errorTab && (
+        {alertVisible && status === "failed" && activeTab === errorTab && (
           <FormErrorAlert message={error} />
         )}
         <TabsContent

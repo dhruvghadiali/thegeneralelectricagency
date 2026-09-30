@@ -12,6 +12,9 @@ const initialState = {
   products: [],
   status: TALLY_PRODUCTS_STATUS.IDLE,
   error: null,
+  errorTab: null,
+  alertVisible: false,
+  errorRequestId: null,
   table: {
     page: 1,
     limit: TABLE_PAGE_SIZE_OPTIONS[0],
@@ -25,6 +28,11 @@ const tallyProductsSlice = createSlice({
   name: "tallyProducts",
   initialState,
   reducers: {
+    syncErrorAlertDismissed(state, action) {
+      if (state.errorRequestId === action.payload) {
+        state.alertVisible = false;
+      }
+    },
     searchChanged(state, action) {
       state.table.search = action.payload;
       state.table.page = 1;
@@ -64,6 +72,9 @@ const tallyProductsSlice = createSlice({
       .addCase(syncTallyProducts.pending, (state) => {
         state.status = TALLY_PRODUCTS_STATUS.LOADING;
         state.error = null;
+        state.errorTab = null;
+        state.alertVisible = false;
+        state.errorRequestId = null;
       })
       .addCase(syncTallyProducts.fulfilled, (state, action) => {
         state.response = action.payload;
@@ -75,11 +86,15 @@ const tallyProductsSlice = createSlice({
         state.status = TALLY_PRODUCTS_STATUS.FAILED;
         state.error =
           action.payload || action.error.message || "Unable to sync products.";
+        state.errorTab = action.meta.arg?.errorTab ?? null;
+        state.alertVisible = Boolean(state.errorTab);
+        state.errorRequestId = action.meta.requestId;
       });
   },
 });
 
 export const {
+  syncErrorAlertDismissed,
   searchChanged,
   sortChanged,
   columnFilterChanged,
