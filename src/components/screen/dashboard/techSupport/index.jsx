@@ -33,7 +33,10 @@ export default function TechSupportDashboard() {
         >
           <TallyCompanySyncs />
         </TabsContent>
-        <TabsContent value={DASHBOARD_TAB_NAMES.PRODUCT} className="mt-0 min-w-0">
+        <TabsContent
+          value={DASHBOARD_TAB_NAMES.PRODUCT}
+          className="mt-0 min-w-0 roomy:min-h-0 roomy:flex-1 data-[state=active]:flex data-[state=active]:flex-col"
+        >
           <DashboardProducts />
         </TabsContent>
       </Tabs>

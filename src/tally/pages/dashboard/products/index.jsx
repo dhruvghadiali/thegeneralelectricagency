@@ -1,5 +1,7 @@
+import ProductSyncLogs from "@Tally/component/productSyncLog";
+
 function DashboardProducts() {
-  return <div>products sync information</div>;
+  return <ProductSyncLogs />;
 }
 
 export default DashboardProducts;
