@@ -3,10 +3,12 @@ import _ from "lodash";
 
 import { TABLE_PAGE_SIZE_OPTIONS } from "@Enums";
 import { isFilterActive } from "@/utils/dataTable.util";
+import { SYNC_PRODUCT_TABS } from "@Tally/enum/syncProductsTabs.enum";
 import { fetchSystemProducts } from "@Tally/redux/systemProducts/systemProducts.action";
 import { syncTallyProducts } from "@Tally/redux/tallyProducts/tallyProducts.action";
 
 const initialState = {
+  activeTab: SYNC_PRODUCT_TABS.NEW_PRODUCTS,
   page: 1,
   limit: TABLE_PAGE_SIZE_OPTIONS[0],
   search: "",
@@ -19,6 +21,11 @@ const syncProductsSlice = createSlice({
   name: "syncProducts",
   initialState,
   reducers: {
+    activeTabChanged(state, action) {
+      if (Object.values(SYNC_PRODUCT_TABS).includes(action.payload)) {
+        state.activeTab = action.payload;
+      }
+    },
     searchChanged(state, action) {
       state.search = action.payload;
       state.page = 1;
@@ -89,6 +96,7 @@ const syncProductsSlice = createSlice({
 });
 
 export const {
+  activeTabChanged,
   searchChanged,
   sortChanged,
   columnFilterChanged,
