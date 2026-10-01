@@ -1,7 +1,7 @@
-import { PRODUCT_TAB_NAMES } from "@Tally/enum/productsTabs.enum";
+import SyncProducts from "@Tally/component/products/syncProducts";
 
-function SyncProducts() {
-  return <div>{PRODUCT_TAB_NAMES.SYNC_PRODUCTS}</div>;
+function SyncProductsTab() {
+  return <SyncProducts />;
 }
 
-export default SyncProducts;
+export default SyncProductsTab;
