@@ -7,6 +7,7 @@ import { Button } from "@shadcnComponent/button";
 import { NEW_PRODUCT_COLUMNS } from "@Tally/component/products/syncProducts/newProducts/table/product.columns";
 import { SYSTEM_PRODUCTS_STATUS } from "@Tally/enum/systemProductsStatus.enum";
 import { TALLY_PRODUCTS_STATUS } from "@Tally/enum/tallyProductsStatus.enum";
+import { SYNC_PRODUCTS_SAVE_STATUS } from "@Tally/enum/syncProductsSaveStatus.enum";
 import {
   columnFilterChanged,
   filtersCleared,
@@ -21,6 +22,7 @@ import {
 import {
   selectNewProductSelection,
   selectNewProductsTableView,
+  selectSyncProductsSaveState,
 } from "@Tally/redux/syncProducts/syncProducts.selector";
 import { fetchSystemProducts } from "@Tally/redux/systemProducts/systemProducts.action";
 import { selectSystemProducts } from "@Tally/redux/systemProducts/systemProducts.selector";
@@ -31,6 +33,8 @@ function NewProductsTable() {
   const { status: systemStatus, error: systemError } = useSelector(selectSystemProducts);
   const { status: tallyStatus } = useSelector(selectTallyProducts);
   const selectedRowKeys = useSelector(selectNewProductSelection);
+  const { status: saveStatus } = useSelector(selectSyncProductsSaveState);
+  const isSaving = saveStatus === SYNC_PRODUCTS_SAVE_STATUS.LOADING;
   const {
     rows,
     selectionRows,
@@ -64,11 +68,11 @@ function NewProductsTable() {
       selectedRowKeys={selectedRowKeys}
       selectionRows={selectionRows}
       selectionLabel={(product) => `Select ${product.name || product.guid}`}
-      onRowSelectionChange={(product, checked) =>
-        dispatch(rowSelectionChanged({ key: product.guid, checked }))
-      }
+      onRowSelectionChange={(product, checked) => {
+        if (!isSaving) dispatch(rowSelectionChanged({ key: product.guid, checked }));
+      }}
       onAllRowsSelectionChange={(products, checked) =>
-        dispatch(rowsSelectionChanged({
+        !isSaving && dispatch(rowsSelectionChanged({
           keys: products.map((product) => product.guid),
           checked,
         }))
@@ -91,7 +95,7 @@ function NewProductsTable() {
       onClearFilters={() => dispatch(filtersCleared())}
       onPageChange={(value) => dispatch(pageChanged(value))}
       onLimitChange={(value) => dispatch(limitChanged(value))}
-      isLoading={isLoading}
+      isLoading={isLoading || isSaving}
       error={systemError}
       onRetry={() => dispatch(fetchSystemProducts())}
       searchPlaceholder="Search new Tally products..."

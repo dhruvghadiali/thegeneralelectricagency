@@ -62,6 +62,7 @@ const systemProductsSlice = createSlice({
         state.page = 1;
       })
       .addCase(fetchSystemProducts.rejected, (state, action) => {
+        state.products = [];
         state.status = action.meta.aborted
           ? SYSTEM_PRODUCTS_STATUS.IDLE
           : SYSTEM_PRODUCTS_STATUS.FAILED;

@@ -4,8 +4,10 @@ import _ from "lodash";
 import { TABLE_PAGE_SIZE_OPTIONS } from "@Enums";
 import { isFilterActive } from "@/utils/dataTable.util";
 import { SYNC_PRODUCT_TABS } from "@Tally/enum/syncProductsTabs.enum";
+import { SYNC_PRODUCTS_SAVE_STATUS } from "@Tally/enum/syncProductsSaveStatus.enum";
 import { fetchSystemProducts } from "@Tally/redux/systemProducts/systemProducts.action";
 import { syncTallyProducts } from "@Tally/redux/tallyProducts/tallyProducts.action";
+import { saveSyncProducts } from "@Tally/redux/syncProducts/syncProductsSave.action";
 
 const initialState = {
   activeTab: SYNC_PRODUCT_TABS.NEW_PRODUCTS,
@@ -15,12 +17,22 @@ const initialState = {
   sort: [],
   columnFilters: {},
   selectedRowKeys: [],
+  saveStatus: SYNC_PRODUCTS_SAVE_STATUS.IDLE,
+  saveError: null,
+  saveAlertVisible: false,
+  saveErrorRequestId: null,
+  savedCount: 0,
 };
 
 const syncProductsSlice = createSlice({
   name: "syncProducts",
   initialState,
   reducers: {
+    saveErrorAlertDismissed(state, action) {
+      if (state.saveErrorRequestId === action.payload) {
+        state.saveAlertVisible = false;
+      }
+    },
     activeTabChanged(state, action) {
       if (Object.values(SYNC_PRODUCT_TABS).includes(action.payload)) {
         state.activeTab = action.payload;
@@ -86,16 +98,45 @@ const syncProductsSlice = createSlice({
     builder
       .addCase(fetchSystemProducts.fulfilled, (state) => {
         state.page = 1;
-        state.selectedRowKeys = [];
+        if (state.saveStatus !== SYNC_PRODUCTS_SAVE_STATUS.LOADING) {
+          state.selectedRowKeys = [];
+        }
       })
       .addCase(syncTallyProducts.fulfilled, (state) => {
         state.page = 1;
         state.selectedRowKeys = [];
+      })
+      .addCase(saveSyncProducts.pending, (state) => {
+        state.saveStatus = SYNC_PRODUCTS_SAVE_STATUS.LOADING;
+        state.saveError = null;
+        state.saveAlertVisible = false;
+        state.saveErrorRequestId = null;
+        state.savedCount = 0;
+      })
+      .addCase(saveSyncProducts.fulfilled, (state, action) => {
+        const { savedIds, errors } = action.payload;
+        state.saveStatus = errors.length
+          ? SYNC_PRODUCTS_SAVE_STATUS.FAILED
+          : SYNC_PRODUCTS_SAVE_STATUS.SUCCEEDED;
+        state.saveError = errors.length ? errors.join("\n") : null;
+        state.saveAlertVisible = errors.length > 0;
+        state.saveErrorRequestId = errors.length ? action.meta.requestId : null;
+        state.savedCount = savedIds.length;
+        state.selectedRowKeys = state.selectedRowKeys.filter(
+          (key) => !savedIds.includes(key),
+        );
+      })
+      .addCase(saveSyncProducts.rejected, (state, action) => {
+        state.saveStatus = SYNC_PRODUCTS_SAVE_STATUS.FAILED;
+        state.saveError = action.payload || action.error.message || "Unable to save products.";
+        state.saveAlertVisible = true;
+        state.saveErrorRequestId = action.meta.requestId;
       });
   },
 });
 
 export const {
+  saveErrorAlertDismissed,
   activeTabChanged,
   searchChanged,
   sortChanged,

@@ -10,6 +10,7 @@ import { buildPageItems, getRowRange } from "@/utils/pagination.util";
 import { SYSTEM_PRODUCTS_STATUS } from "@Tally/enum/systemProductsStatus.enum";
 import { TALLY_PRODUCTS_STATUS } from "@Tally/enum/tallyProductsStatus.enum";
 import { SYNC_PRODUCT_TABS } from "@Tally/enum/syncProductsTabs.enum";
+import { SYNC_PRODUCTS_SAVE_STATUS } from "@Tally/enum/syncProductsSaveStatus.enum";
 import { selectSystemProducts } from "@Tally/redux/systemProducts/systemProducts.selector";
 import { selectTallyProducts } from "@Tally/redux/tallyProducts/tallyProducts.selector";
 import { findNewProducts } from "@Tally/redux/syncProducts/syncProducts.utils";
@@ -19,10 +20,30 @@ export const selectNewProductSelection = (state) =>
   state.syncProducts.selectedRowKeys;
 export const selectSyncProductsActiveTab = (state) =>
   state.syncProducts.activeTab;
+export const selectSyncProductsSaveState = createSelector(
+  [
+    (state) => state.syncProducts.saveStatus,
+    (state) => state.syncProducts.saveError,
+    (state) => state.syncProducts.saveAlertVisible,
+    (state) => state.syncProducts.savedCount,
+  ],
+  (status, error, alertVisible, savedCount) => ({
+    status,
+    error,
+    alertVisible,
+    savedCount,
+  }),
+);
 export const selectShowSaveSyncProductsButton = createSelector(
-  [selectSyncProductsActiveTab, selectNewProductSelection],
-  (activeTab, selectedRowKeys) =>
-    activeTab === SYNC_PRODUCT_TABS.NEW_PRODUCTS && selectedRowKeys.length > 0,
+  [
+    selectSyncProductsActiveTab,
+    selectNewProductSelection,
+    (state) => state.syncProducts.saveStatus,
+  ],
+  (activeTab, selectedRowKeys, saveStatus) =>
+    activeTab === SYNC_PRODUCT_TABS.NEW_PRODUCTS &&
+    (selectedRowKeys.length > 0 ||
+      saveStatus === SYNC_PRODUCTS_SAVE_STATUS.LOADING),
 );
 
 export const selectNewProducts = createSelector(

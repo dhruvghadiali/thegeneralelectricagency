@@ -11,4 +11,12 @@ export const systemProductsApi = {
 
     return data;
   },
+  async createProduct(payload) {
+    const { data } = await apiClient.post(
+      `/${ROLE_PATHS.TECH_SUPPORT}/${TALLY_ENDPOINTS.PRODUCTS}`,
+      payload,
+    );
+
+    return data;
+  },
 };
