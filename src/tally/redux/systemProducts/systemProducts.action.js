@@ -1,10 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import _ from "lodash";
 
 import { extractErrorMessage } from "@Api";
 import { ROLE_PATHS } from "@Enums";
 import { systemProductsApi } from "@Tally/api/systemProducts/systemProducts.api";
 import { SYSTEM_PRODUCTS_STATUS } from "@Tally/enum/systemProductsStatus.enum";
+import { fromSystemProductsResponse } from "@Tally/redux/systemProducts/systemProducts.frontend-payload";
 
 export const fetchSystemProducts = createAsyncThunk(
   "systemProducts/fetchProducts",
@@ -14,10 +14,8 @@ export const fetchSystemProducts = createAsyncThunk(
     }
 
     try {
-      const groups = await systemProductsApi.getProducts({ signal });
-      return _.flatMap(groups, (group) =>
-        _.isArray(group?.tally_products) ? group.tally_products : [],
-      );
+      const response = await systemProductsApi.getProducts({ signal });
+      return fromSystemProductsResponse(response);
     } catch (error) {
       return rejectWithValue(extractErrorMessage(error));
     }

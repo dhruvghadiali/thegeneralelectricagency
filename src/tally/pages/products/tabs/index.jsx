@@ -61,7 +61,10 @@ function ProductsTabs() {
       >
         <TallyProducts />
       </TabsContent>
-      <TabsContent value={PRODUCT_TAB_NAMES.SYNC_PRODUCTS}>
+      <TabsContent
+        value={PRODUCT_TAB_NAMES.SYNC_PRODUCTS}
+        className="mt-0 min-w-0 roomy:min-h-0 roomy:flex-1 data-[state=active]:flex data-[state=active]:flex-col"
+      >
         <SyncProducts />
       </TabsContent>
     </Tabs>

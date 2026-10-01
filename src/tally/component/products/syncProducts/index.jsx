@@ -5,11 +5,12 @@ import {
   TabsTrigger,
 } from "@shadcnComponent/tabs";
 import { SYNC_PRODUCT_TABS } from "@Tally/enum/syncProductsTabs.enum";
+import NewProducts from "@Tally/component/products/syncProducts/newProducts";
 
 function SyncProducts() {
   return (
-    <Tabs defaultValue={SYNC_PRODUCT_TABS.NEW_PRODUCTS} className="min-w-0">
-      <div className="max-w-full overflow-x-auto">
+    <Tabs defaultValue={SYNC_PRODUCT_TABS.NEW_PRODUCTS} className="flex min-w-0 flex-col gap-4 roomy:min-h-0 roomy:flex-1">
+      <div className="max-w-full shrink-0 overflow-x-auto">
         <TabsList aria-label="Sync product sections">
           <TabsTrigger value={SYNC_PRODUCT_TABS.NEW_PRODUCTS}>
             {SYNC_PRODUCT_TABS.NEW_PRODUCTS}
@@ -20,8 +21,11 @@ function SyncProducts() {
         </TabsList>
       </div>
 
-      <TabsContent value={SYNC_PRODUCT_TABS.NEW_PRODUCTS}>
-        {SYNC_PRODUCT_TABS.NEW_PRODUCTS}
+      <TabsContent
+        value={SYNC_PRODUCT_TABS.NEW_PRODUCTS}
+        className="mt-0 min-w-0 roomy:min-h-0 roomy:flex-1 data-[state=active]:flex data-[state=active]:flex-col"
+      >
+        <NewProducts />
       </TabsContent>
       <TabsContent value={SYNC_PRODUCT_TABS.DELETED_PRODUCTS}>
         {SYNC_PRODUCT_TABS.DELETED_PRODUCTS}

@@ -9,6 +9,6 @@ export const systemProductsApi = {
       config,
     );
 
-    return Array.isArray(data) ? data : [];
+    return data;
   },
 };
