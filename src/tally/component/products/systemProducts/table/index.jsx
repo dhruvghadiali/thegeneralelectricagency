@@ -36,6 +36,7 @@ function SystemProductsTable() {
   return (
     <DataTable
       fillHeight
+      hideHeaderWhenEmpty
       columns={PRODUCT_COLUMNS}
       rows={rows}
       rowKey={(product) => product._id || product.product_id}

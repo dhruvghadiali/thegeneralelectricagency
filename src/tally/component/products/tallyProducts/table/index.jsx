@@ -35,6 +35,7 @@ function TallyProductsTable() {
   return (
     <DataTable
       fillHeight
+      hideHeaderWhenEmpty
       columns={PRODUCT_COLUMNS}
       rows={rows}
       rowKey={(product) => product.guid || product.masterId || product.name}

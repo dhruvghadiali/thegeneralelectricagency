@@ -132,6 +132,7 @@ function DataTable({
   skeletonRows = 5,
   maxBodyHeight = DEFAULT_MAX_BODY_HEIGHT,
   fillHeight = false,
+  hideHeaderWhenEmpty = false,
   // Optional: hoist the mobile panel's open state if a screen wants it in the
   // store. Left alone, it stays internal - a disclosure toggle is
   // presentation, and making every screen add a reducer for it would be noise.
@@ -164,10 +165,10 @@ function DataTable({
       ? onAllRowsSelectionChange(selectableRows, checked)
       : selectableRows.forEach((row) => onRowSelectionChange(row, checked));
   const isFirstLoad = isLoading && !hasRows;
-  // The head carries every filter control, so it stays even when the body
-  // cannot - otherwise a filter that matched nothing would take away the only
-  // control that could undo it.
-  const showTableHead = !isFirstLoad && !error;
+  // Keep filter controls available when a query matches nothing. For an
+  // unfiltered empty list, callers can show just the centered empty state.
+  const showTableHead =
+    !isFirstLoad && !error && (!hideHeaderWhenEmpty || hasRows || isFiltered);
 
   return (
     <Card
