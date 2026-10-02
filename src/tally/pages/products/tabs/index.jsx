@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { Badge } from "@shadcnComponent/badge";
 import {
   Tabs,
   TabsContent,
@@ -8,7 +9,10 @@ import {
 } from "@shadcnComponent/tabs";
 import { PRODUCT_TAB_NAMES } from "@Tally/enum/productsTabs.enum";
 import { TALLY_PRODUCTS_STATUS } from "@Tally/enum/tallyProductsStatus.enum";
-import { selectTallyProducts } from "@Tally/redux/tallyProducts/tallyProducts.selector";
+import {
+  selectTallyProductCount,
+  selectTallyProducts,
+} from "@Tally/redux/tallyProducts/tallyProducts.selector";
 import ProductsErrorMessage from "@Tally/component/products/errorMessage";
 import SyncTallyProductsButton from "@Tally/component/products/syncTallyProductsButton";
 
@@ -19,6 +23,7 @@ import SyncProducts from "@Tally/pages/products/tabs/syncProducts";
 function ProductsTabs() {
   const [activeTab, setActiveTab] = useState(PRODUCT_TAB_NAMES.SYSTEM_PRODUCTS);
   const { status, error, errorTab, alertVisible } = useSelector(selectTallyProducts);
+  const tallyProductCount = useSelector(selectTallyProductCount);
 
   return (
     <Tabs
@@ -34,6 +39,9 @@ function ProductsTabs() {
             </TabsTrigger>
             <TabsTrigger value={PRODUCT_TAB_NAMES.TALLY_PRODUCTS}>
               {PRODUCT_TAB_NAMES.TALLY_PRODUCTS}
+              <Badge variant="secondary" className="ml-2 tabular-nums">
+                {tallyProductCount ?? 0}
+              </Badge>
             </TabsTrigger>
             <TabsTrigger value={PRODUCT_TAB_NAMES.SYNC_PRODUCTS}>
               {PRODUCT_TAB_NAMES.SYNC_PRODUCTS}
