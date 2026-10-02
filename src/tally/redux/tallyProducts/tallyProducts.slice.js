@@ -10,6 +10,7 @@ import { fromTallyProductsResponse } from "@Tally/redux/tallyProducts/tallyProdu
 const initialState = {
   response: null,
   products: [],
+  selectedProductKey: null,
   status: TALLY_PRODUCTS_STATUS.IDLE,
   error: null,
   errorTab: null,
@@ -28,6 +29,13 @@ const tallyProductsSlice = createSlice({
   name: "tallyProducts",
   initialState,
   reducers: {
+    productDetailsOpened(state, action) {
+      const product = action.payload;
+      state.selectedProductKey = product.guid || product.masterId || product.name;
+    },
+    productDetailsClosed(state) {
+      state.selectedProductKey = null;
+    },
     syncErrorAlertDismissed(state, action) {
       if (state.errorRequestId === action.payload) {
         state.alertVisible = false;
@@ -79,6 +87,7 @@ const tallyProductsSlice = createSlice({
       .addCase(syncTallyProducts.fulfilled, (state, action) => {
         state.response = action.payload;
         state.products = fromTallyProductsResponse(action.payload);
+        state.selectedProductKey = null;
         state.status = TALLY_PRODUCTS_STATUS.SUCCEEDED;
         state.table.page = 1;
       })
@@ -94,6 +103,8 @@ const tallyProductsSlice = createSlice({
 });
 
 export const {
+  productDetailsOpened,
+  productDetailsClosed,
   syncErrorAlertDismissed,
   searchChanged,
   sortChanged,

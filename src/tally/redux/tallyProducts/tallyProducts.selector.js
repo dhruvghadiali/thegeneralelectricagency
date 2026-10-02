@@ -12,6 +12,16 @@ export const selectTallyProducts = (state) => state.tallyProducts;
 
 export const selectTallyProductsList = (state) => state.tallyProducts.products;
 
+export const selectSelectedTallyProduct = createSelector(
+  [selectTallyProductsList, (state) => state.tallyProducts.selectedProductKey],
+  (products, key) =>
+    key
+      ? _.find(products, (product) =>
+          (product.guid || product.masterId || product.name) === key,
+        ) ?? null
+      : null,
+);
+
 export const selectTallyProductsTableState = (state) => state.tallyProducts.table;
 
 const selectSearch = (state) => selectTallyProductsTableState(state).search;
