@@ -6,10 +6,7 @@ import { ROLE_PATHS } from "@Enums";
 import { ROUTES, ROUTE_BUILDERS } from "@routes/navigate";
 import { deleteProduct } from "@Redux/product/product.action";
 import { selectProductDialogState } from "@Redux/product/product.selector";
-import {
-  productDialogClosed,
-  productDialogOpened,
-} from "@Redux/product/product.slice";
+import { productDialogClosed } from "@Redux/product/product.slice";
 import {
   PRODUCT_TABLE_CONFIG,
   ProductTableActions,
@@ -29,7 +26,6 @@ function Products() {
   const role = useSelector((state) => state.auth.role);
   const table = useProductTable();
   const canManage = role === ROLE_PATHS.EMPLOYEE;
-  const canView = [ROLE_PATHS.SUPER_ADMIN, ROLE_PATHS.EMPLOYEE].includes(role);
 
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [quotationProducts, setQuotationProducts] = useState([]);
@@ -62,11 +58,6 @@ function Products() {
 
       return current.filter((item) => item.id !== product.id);
     });
-  };
-
-  const openDeleteDialog = (product) => {
-    if (!canManage) return;
-    dispatch(productDialogOpened({ type: "delete", product }));
   };
 
   const deleteSelectedProduct = async () => {
@@ -119,18 +110,16 @@ function Products() {
         isLoading={table.isLoading}
         error={table.error}
         rowActions={
-          canView
+          canManage
             ? (product) => (
                 <ProductTableActions
                   product={product}
-                  onView={setViewedProduct}
                   canManage={canManage}
                   onEdit={(row) =>
                     navigate(ROUTE_BUILDERS.productEdit(row.id), {
                       state: { product: row },
                     })
                   }
-                  onDelete={openDeleteDialog}
                   onPdf={(row) => setQuotationProducts([row])}
                   showPdf={selectedProducts.length === 0}
                 />
