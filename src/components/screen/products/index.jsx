@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { ROLE_PATHS } from "@Enums";
-import { ROUTES, ROUTE_BUILDERS } from "@routes/navigate";
+import { ROUTES } from "@routes/navigate";
 import { deleteProduct } from "@Redux/product/product.action";
 import { selectProductDialogState } from "@Redux/product/product.selector";
 import { productDialogClosed } from "@Redux/product/product.slice";
@@ -115,11 +115,6 @@ function Products() {
                 <ProductTableActions
                   product={product}
                   canManage={canManage}
-                  onEdit={(row) =>
-                    navigate(ROUTE_BUILDERS.productEdit(row.id), {
-                      state: { product: row },
-                    })
-                  }
                   onPdf={(row) => setQuotationProducts([row])}
                   showPdf={selectedProducts.length === 0}
                 />
