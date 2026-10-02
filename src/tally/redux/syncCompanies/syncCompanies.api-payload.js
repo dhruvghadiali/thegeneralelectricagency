@@ -1,4 +1,8 @@
 const optionalText = (value) => String(value ?? "").trim() || null;
+const pincodeText = (value) =>
+  String(value ?? "")
+    .replace(/\s+/g, "")
+    .slice(0, 6) || null;
 
 export function fromLocalTallyCompany(company) {
   const payload = {
@@ -14,7 +18,13 @@ export function fromLocalTallyCompany(company) {
   };
   const addresses = company.addresses?.length
     ? company.addresses
-    : [{ address: company.address, state: company.state, pincode: company.pinCode }];
+    : [
+        {
+          address: company.address,
+          state: company.state,
+          pincode: company.pinCode,
+        },
+      ];
   for (let index = 1; index <= 3; index += 1) {
     const address = addresses[index - 1];
     const contact = company.contacts?.[index - 1];
@@ -25,16 +35,47 @@ export function fromLocalTallyCompany(company) {
     payload[`contact_person_mobile_number${index}`] = contact?.mobile;
     payload[`contact_person_position${index}`] = contact?.position;
   }
-  return Object.fromEntries(Object.entries(payload).map(([key, value]) => [key, optionalText(value)]));
+  return Object.fromEntries(
+    Object.entries(payload).map(([key, value]) => [key, optionalText(value)]),
+  );
 }
 
 export function toSystemCompanyCreatePayload(company) {
-  const fields = ["company_name", "company_id", "company_code", "company_type", "email", "phone_number", "gst_number", "pan_number", "website"];
+  const fields = [
+    "company_name",
+    "company_id",
+    "company_code",
+    "company_type",
+    "email",
+    "phone_number",
+    "gst_number",
+    "pan_number",
+    "website",
+  ];
   for (let index = 1; index <= 3; index += 1) {
-    fields.push(`address${index}`, `state${index}`, `pincode${index}`, `contact_person_name${index}`, `contact_person_mobile_number${index}`, `contact_person_position${index}`);
+    fields.push(
+      `address${index}`,
+      `state${index}`,
+      `pincode${index}`,
+      `contact_person_name${index}`,
+      `contact_person_mobile_number${index}`,
+      `contact_person_position${index}`,
+    );
   }
-  const payload = Object.fromEntries(fields.map((field) => [field, optionalText(company[field])]));
-  const missing = ["company_name", "company_id", "company_code"].filter((field) => !payload[field]);
-  if (missing.length) throw new Error(`${payload.company_name || "Company"}: ${missing.join(", ")} required.`);
+  const payload = Object.fromEntries(
+    fields.map((field) => [
+      field,
+      field.startsWith("pincode")
+        ? pincodeText(company[field])
+        : optionalText(company[field]),
+    ]),
+  );
+  const missing = ["company_name", "company_id", "company_code"].filter(
+    (field) => !payload[field],
+  );
+  if (missing.length)
+    throw new Error(
+      `${payload.company_name || "Company"}: ${missing.join(", ")} required.`,
+    );
   return payload;
 }

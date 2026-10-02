@@ -1,5 +1,7 @@
+import { omitEmptyPayloadFields } from "@/utils/apiPayload.util";
+
 export function toSystemProductCreatePayload(product) {
-  return {
+  return omitEmptyPayloadFields({
     name: product.name,
     product_id: product.guid,
     product_master_id: product.masterId,
@@ -9,6 +11,6 @@ export function toSystemProductCreatePayload(product) {
     stock_group: product.group,
     gst_applicable: product.gstApplicable,
     type_of_supply: product.supplyType,
-    base_unit: product.units
-  };
+    base_unit: product.units,
+  });
 }
