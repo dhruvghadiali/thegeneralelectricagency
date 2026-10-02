@@ -5,8 +5,6 @@ import {
   Settings,
   Users,
   LucideHome,
-  ShoppingCart,
-  Receipt,
   RefreshCw,
   TrendingUp,
 } from "lucide-react";
@@ -38,9 +36,9 @@ export const SIDEBAR_NAV_ITEMS_BY_ROLE = {
   ],
   [ROLE_PATHS.EMPLOYEE]: [
     { title: "Dashboard", url: ROUTES.DASHBOARD, icon: LucideHome },
-    { title: "Purchase orders", url: ROUTES.PURCHASES, icon: ShoppingCart },
-    { title: "Sales", url: ROUTES.SALES, icon: Receipt },
-    { title: "EUOB", url: ROUTES.PURCHASE_CREDITS, icon: HandCoins },
+    // { title: "Purchase orders", url: ROUTES.PURCHASES, icon: ShoppingCart },
+    // { title: "Sales", url: ROUTES.SALES, icon: Receipt },
+    // { title: "EUOB", url: ROUTES.PURCHASE_CREDITS, icon: HandCoins },
     { title: "Products", url: ROUTES.PRODUCTS, icon: Boxes },
     { title: "Companies", url: ROUTES.COMPANIES, icon: Building2 },
     { title: "Settings", url: ROUTES.SETTINGS, icon: Settings },

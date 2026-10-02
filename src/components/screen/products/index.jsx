@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@shadcnComponent/tabs";
 
 import { ROLE_PATHS } from "@Enums";
 import { ROUTES, ROUTE_BUILDERS } from "@routes/navigate";
@@ -23,8 +22,6 @@ import ProductDialogs from "@screenComponent/products/dialogs/productDialogs";
 import ProductStockSheet from "@screenComponent/products/sheet/productStockSheet";
 import ProductQuotationSheet from "@screenComponent/products/quotation/productQuotationSheet";
 
-const PRODUCT_TABS = Object.freeze({ PRODUCT: "product", TALLY: "tally-product" });
-
 function Products() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -33,7 +30,6 @@ function Products() {
   const table = useProductTable();
   const canManage = role === ROLE_PATHS.EMPLOYEE;
   const canView = [ROLE_PATHS.SUPER_ADMIN, ROLE_PATHS.EMPLOYEE].includes(role);
-  const [activeTab, setActiveTab] = useState(PRODUCT_TABS.PRODUCT);
 
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [quotationProducts, setQuotationProducts] = useState([]);
@@ -151,42 +147,8 @@ function Products() {
 
   return (
     <main className="flex w-full flex-col gap-6 pb-2 roomy:h-full roomy:min-h-0">
-      {canManage ? (
-        <Tabs
-          value={activeTab}
-          onValueChange={setActiveTab}
-          className="flex min-w-0 flex-col gap-4 roomy:min-h-0 roomy:flex-1"
-        >
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <TabsList aria-label="Product sections" className="w-full sm:w-auto">
-              <TabsTrigger value={PRODUCT_TABS.PRODUCT} className="flex-1 sm:flex-none">
-                Product
-              </TabsTrigger>
-              <TabsTrigger value={PRODUCT_TABS.TALLY} className="flex-1 sm:flex-none">
-                Tally Product
-              </TabsTrigger>
-            </TabsList>
-            {activeTab === PRODUCT_TABS.PRODUCT && productHeader}
-          </div>
-          <TabsContent
-            value={PRODUCT_TABS.PRODUCT}
-            className="mt-0 min-w-0 roomy:min-h-0 roomy:flex-1 data-[state=active]:flex data-[state=active]:flex-col"
-          >
-            {productTable}
-          </TabsContent>
-          <TabsContent
-            value={PRODUCT_TABS.TALLY}
-            className="mt-0 min-w-0 roomy:min-h-0 roomy:flex-1 data-[state=active]:flex data-[state=active]:flex-col"
-          >
-            <p>Tally Products</p>
-          </TabsContent>
-        </Tabs>
-      ) : (
-        <>
-          {productHeader}
-          {productTable}
-        </>
-      )}
+      {productHeader}
+      {productTable}
 
       <ProductStockSheet
         product={viewedProduct}
