@@ -8,6 +8,19 @@ const SEARCH_FIELDS = ["name", "hsn_code"];
 
 export const selectSystemProducts = (state) => state.systemProducts;
 
+export const selectSystemProductCount = createSelector(
+  [selectSystemProducts],
+  ({ products }) => _.size(products),
+);
+
+export const selectSelectedSystemProduct = createSelector(
+  [selectSystemProducts, (state) => state.systemProducts.selectedProductKey],
+  ({ products }, key) =>
+    key
+      ? _.find(products, (product) => (product._id || product.product_id) === key) ?? null
+      : null,
+);
+
 export const selectSystemProductsTableView = createSelector(
   [selectSystemProducts],
   ({ products, search, columnFilters, page, limit }) => {

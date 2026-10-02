@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Boxes, RefreshCw } from "lucide-react";
+import { Boxes, Eye, RefreshCw } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
 import DataTable from "@commonComponent/dataTable";
@@ -11,6 +11,7 @@ import {
   filtersCleared,
   limitChanged,
   pageChanged,
+  productDetailsOpened,
   searchChanged,
 } from "@Tally/redux/systemProducts/systemProducts.slice";
 import {
@@ -18,6 +19,7 @@ import {
   selectSystemProductsTableView,
 } from "@Tally/redux/systemProducts/systemProducts.selector";
 import { PRODUCT_COLUMNS } from "@Tally/component/products/systemProducts/table/product.columns";
+import ProductDetails from "@Tally/component/products/systemProducts/sheet";
 
 function SystemProductsTable() {
   const dispatch = useDispatch();
@@ -39,54 +41,69 @@ function SystemProductsTable() {
   }, [dispatch, status]);
 
   return (
-    <DataTable
-      fillHeight
-      hideHeaderWhenEmpty
-      columns={PRODUCT_COLUMNS}
-      rows={rows}
-      rowKey={(product) => product._id || product.product_id}
-      search={search}
-      sort={[]}
-      columnFilters={columnFilters}
-      activeFilterCount={activeFilterCount}
-      isFiltered={isFiltered}
-      onSearchChange={(value) => dispatch(searchChanged(value))}
-      onSearchSubmit={() => {}}
-      onColumnFilterChange={(key, value) =>
-        dispatch(columnFilterChanged({ key, value }))
-      }
-      onClearFilters={() => dispatch(filtersCleared())}
-      onRetry={() => dispatch(fetchSystemProducts())}
-      toolbarActions={
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => dispatch(fetchSystemProducts())}
-          disabled={isLoading}
-          aria-busy={isLoading}
-        >
-          <RefreshCw
-            className={isLoading ? "size-4 animate-spin" : "size-4"}
-            aria-hidden="true"
-          />
-          Refresh
-        </Button>
-      }
-      pagination={pagination}
-      pageItems={pageItems}
-      rowRange={rowRange}
-      isLoading={isLoading}
-      error={error}
-      onPageChange={(page) => dispatch(pageChanged(page))}
-      onLimitChange={(limit) => dispatch(limitChanged(limit))}
-      searchPlaceholder="Search product name or HSN code..."
-      rowNoun="products"
-      emptyIcon={Boxes}
-      emptyTitle="No products found"
-      emptyDescription="No system products are available."
-      filteredEmptyDescription="No products match your search or filters."
-      paginationMode="client"
-    />
+    <>
+      <DataTable
+        fillHeight
+        hideHeaderWhenEmpty
+        columns={PRODUCT_COLUMNS}
+        rows={rows}
+        rowKey={(product) => product._id || product.product_id}
+        rowActions={(product) => (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={() => dispatch(productDetailsOpened(product))}
+            aria-label={`View details for ${product.name || product.product_id}`}
+            title="View product details"
+          >
+            <Eye className="size-4" aria-hidden="true" />
+          </Button>
+        )}
+        search={search}
+        sort={[]}
+        columnFilters={columnFilters}
+        activeFilterCount={activeFilterCount}
+        isFiltered={isFiltered}
+        onSearchChange={(value) => dispatch(searchChanged(value))}
+        onSearchSubmit={() => {}}
+        onColumnFilterChange={(key, value) =>
+          dispatch(columnFilterChanged({ key, value }))
+        }
+        onClearFilters={() => dispatch(filtersCleared())}
+        onRetry={() => dispatch(fetchSystemProducts())}
+        toolbarActions={
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => dispatch(fetchSystemProducts())}
+            disabled={isLoading}
+            aria-busy={isLoading}
+          >
+            <RefreshCw
+              className={isLoading ? "size-4 animate-spin" : "size-4"}
+              aria-hidden="true"
+            />
+            Refresh
+          </Button>
+        }
+        pagination={pagination}
+        pageItems={pageItems}
+        rowRange={rowRange}
+        isLoading={isLoading}
+        error={error}
+        onPageChange={(page) => dispatch(pageChanged(page))}
+        onLimitChange={(limit) => dispatch(limitChanged(limit))}
+        searchPlaceholder="Search product name or HSN code..."
+        rowNoun="products"
+        emptyIcon={Boxes}
+        emptyTitle="No products found"
+        emptyDescription="No system products are available."
+        filteredEmptyDescription="No products match your search or filters."
+        paginationMode="client"
+      />
+      <ProductDetails />
+    </>
   );
 }
 

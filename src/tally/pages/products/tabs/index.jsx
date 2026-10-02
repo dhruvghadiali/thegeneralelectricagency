@@ -9,6 +9,7 @@ import {
 } from "@shadcnComponent/tabs";
 import { PRODUCT_TAB_NAMES } from "@Tally/enum/productsTabs.enum";
 import { TALLY_PRODUCTS_STATUS } from "@Tally/enum/tallyProductsStatus.enum";
+import { selectSystemProductCount } from "@Tally/redux/systemProducts/systemProducts.selector";
 import {
   selectTallyProductCount,
   selectTallyProducts,
@@ -23,6 +24,7 @@ import SyncProducts from "@Tally/pages/products/tabs/syncProducts";
 function ProductsTabs() {
   const [activeTab, setActiveTab] = useState(PRODUCT_TAB_NAMES.SYSTEM_PRODUCTS);
   const { status, error, errorTab, alertVisible } = useSelector(selectTallyProducts);
+  const systemProductCount = useSelector(selectSystemProductCount);
   const tallyProductCount = useSelector(selectTallyProductCount);
 
   return (
@@ -36,6 +38,9 @@ function ProductsTabs() {
           <TabsList aria-label="Product sections">
             <TabsTrigger value={PRODUCT_TAB_NAMES.SYSTEM_PRODUCTS}>
               {PRODUCT_TAB_NAMES.SYSTEM_PRODUCTS}
+              <Badge variant="secondary" className="ml-2 tabular-nums">
+                {systemProductCount}
+              </Badge>
             </TabsTrigger>
             <TabsTrigger value={PRODUCT_TAB_NAMES.TALLY_PRODUCTS}>
               {PRODUCT_TAB_NAMES.TALLY_PRODUCTS}

@@ -8,6 +8,7 @@ import { fetchSystemProducts } from "@Tally/redux/systemProducts/systemProducts.
 
 const initialState = {
   products: [],
+  selectedProductKey: null,
   status: SYSTEM_PRODUCTS_STATUS.IDLE,
   error: null,
   search: "",
@@ -20,6 +21,13 @@ const systemProductsSlice = createSlice({
   name: "systemProducts",
   initialState,
   reducers: {
+    productDetailsOpened(state, action) {
+      const product = action.payload;
+      state.selectedProductKey = product._id || product.product_id;
+    },
+    productDetailsClosed(state) {
+      state.selectedProductKey = null;
+    },
     searchChanged(state, action) {
       state.search = action.payload;
       state.page = 1;
@@ -58,11 +66,13 @@ const systemProductsSlice = createSlice({
       })
       .addCase(fetchSystemProducts.fulfilled, (state, action) => {
         state.products = action.payload;
+        state.selectedProductKey = null;
         state.status = SYSTEM_PRODUCTS_STATUS.SUCCEEDED;
         state.page = 1;
       })
       .addCase(fetchSystemProducts.rejected, (state, action) => {
         state.products = [];
+        state.selectedProductKey = null;
         state.status = action.meta.aborted
           ? SYSTEM_PRODUCTS_STATUS.IDLE
           : SYSTEM_PRODUCTS_STATUS.FAILED;
@@ -74,6 +84,8 @@ const systemProductsSlice = createSlice({
 });
 
 export const {
+  productDetailsOpened,
+  productDetailsClosed,
   searchChanged,
   columnFilterChanged,
   filtersCleared,
