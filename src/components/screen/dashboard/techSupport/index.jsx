@@ -6,7 +6,7 @@ import {
 } from "@shadcnComponent/tabs";
 import { DASHBOARD_TAB_NAMES } from "@Tally/enum/dashboardTabs.enum";
 
-import TallyCompanySyncs from "@Tally/component/companySyncs";
+import DashboardCompanies from "@Tally/pages/dashboard/companies";
 import DashboardProducts from "@Tally/pages/dashboard/products";
 
 export default function TechSupportDashboard() {
@@ -31,7 +31,7 @@ export default function TechSupportDashboard() {
           value={DASHBOARD_TAB_NAMES.COMPANY}
           className="mt-0 min-w-0 roomy:min-h-0 roomy:flex-1 data-[state=active]:flex data-[state=active]:flex-col"
         >
-          <TallyCompanySyncs />
+          <DashboardCompanies />
         </TabsContent>
         <TabsContent
           value={DASHBOARD_TAB_NAMES.PRODUCT}

@@ -11,11 +11,12 @@ import purchaseCreditReducer from "@Redux/purchaseCredit/purchaseCredit.slice";
 import salesOrderReducer from "@Redux/salesOrder/salesOrder.slice";
 import tallyProductsReducer from "@Tally/redux/tallyProducts/tallyProducts.slice";
 import systemProductsReducer from "@Tally/redux/systemProducts/systemProducts.slice";
+import systemCompaniesReducer from "@Tally/redux/systemCompanies/systemCompanies.slice";
 import syncProductsReducer from "@Tally/redux/syncProducts/syncProducts.slice";
-import tallyCompanyReducer from "@Tally/redux/company/company.slice";
-import tallyCompanySyncReducer from "@Tally/redux/companySync/companySync.slice";
+import tallyCompanyReducer from "@Tally/redux/tallyCompanies/tallyCompanies.slice";
+import tallyCompanySyncLogReducer from "@Tally/redux/companySyncLog/companySyncLog.slice";
 import tallyProductSyncLogReducer from "@Tally/redux/productSyncLog/productSyncLog.slice";
-import tallyCompaniesListReducer from "@Tally/redux/tallyCompanies/tallyCompanies.slice";
+import syncCompaniesReducer from "@Tally/redux/syncCompanies/syncCompanies.slice";
 import { syncErrorListener } from "@Tally/redux/syncError.listener";
 
 const appReducer = combineReducers({
@@ -29,12 +30,13 @@ const appReducer = combineReducers({
     purchaseCredits: purchaseCreditReducer,
     salesOrders: salesOrderReducer,
     tallyProducts: tallyProductsReducer,
-    systemProducts: systemProductsReducer,
-    syncProducts: syncProductsReducer,
     tallyCompanies: tallyCompanyReducer,
-    tallyCompanySyncs: tallyCompanySyncReducer,
+    systemProducts: systemProductsReducer,
+    systemCompanies: systemCompaniesReducer,
+    syncProducts: syncProductsReducer,
+    syncCompanies: syncCompaniesReducer,
+    tallyCompanySyncLogs: tallyCompanySyncLogReducer,
     tallyProductSyncLogs: tallyProductSyncLogReducer,
-    tallyCompaniesList: tallyCompaniesListReducer,
 });
 
 function rootReducer(state, action) {

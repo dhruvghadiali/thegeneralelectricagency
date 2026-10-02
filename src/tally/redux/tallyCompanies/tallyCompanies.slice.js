@@ -1,57 +1,119 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createTableState, TABLE_REDUCERS, tableFetchCases } from "@Redux/factories/table.factory";
-import { TALLY_COMPANIES_TABLE_DEFAULTS } from "@Tally/tables/tallyCompanies/tallyCompaniesTable.defaults";
-import { fetchTallyCompanies } from "@Tally/redux/tallyCompanies/tallyCompanies.action";
-import { fetchTallyCompaniesComparison } from "@Tally/redux/tallyCompanies/tallyCompaniesComparison.action";
-import { syncTallyCompanies } from "@Tally/redux/company/company.action";
-import { saveTallyCompanies } from "@Tally/redux/tallyCompanies/tallyCompaniesSave.action";
+import _ from "lodash";
 
-const emptyComparison = { status: "idle", error: null, requestId: null, newRecords: [], deletedRecords: [] };
+import { TABLE_PAGE_SIZE_OPTIONS } from "@Enums";
+import { isFilterActive } from "@/utils/dataTable.util";
+import { TALLY_COMPANIES_STATUS } from "@Tally/enum/tallyCompaniesStatus.enum";
+import { syncTallyCompanies } from "@Tally/redux/tallyCompanies/tallyCompanies.action";
+import { fromTallyCompaniesResponse } from "@Tally/redux/tallyCompanies/tallyCompanies.frontend-payload";
 
-const tallyCompaniesSlice = createSlice({
-  name: "tallyCompaniesList",
-  initialState: { ...createTableState(TALLY_COMPANIES_TABLE_DEFAULTS), comparison: emptyComparison, saveStatus: "idle", saveError: null, savedCount: 0 },
-  reducers: TABLE_REDUCERS,
+const initialState = {
+  response: null,
+  companies: [],
+  selectedCompanyKey: null,
+  status: TALLY_COMPANIES_STATUS.IDLE,
+  error: null,
+  errorTab: null,
+  alertVisible: false,
+  errorRequestId: null,
+  table: {
+    page: 1,
+    limit: TABLE_PAGE_SIZE_OPTIONS[0],
+    search: "",
+    sort: [],
+    columnFilters: {},
+  },
+};
+
+const tallyCompanySlice = createSlice({
+  name: "tallyCompanies",
+  initialState,
+  reducers: {
+    companyDetailsOpened(state, action) {
+      const company = action.payload;
+      state.selectedCompanyKey = company.guid || company.masterId || company.name;
+    },
+    companyDetailsClosed(state) {
+      state.selectedCompanyKey = null;
+    },
+    syncErrorAlertDismissed(state, action) {
+      if (state.errorRequestId === action.payload) {
+        state.alertVisible = false;
+      }
+    },
+    searchChanged(state, action) {
+      state.table.search = action.payload;
+      state.table.page = 1;
+    },
+    sortChanged(state, action) {
+      state.table.sort = action.payload;
+      state.table.page = 1;
+    },
+    columnFilterChanged(state, action) {
+      const { key, value } = action.payload;
+      if (isFilterActive(value)) state.table.columnFilters[key] = value;
+      else delete state.table.columnFilters[key];
+      state.table.page = 1;
+    },
+    filtersCleared(state) {
+      state.table.search = "";
+      state.table.sort = [];
+      state.table.columnFilters = {};
+      state.table.page = 1;
+    },
+    pageChanged(state, action) {
+      state.table.page = Math.max(1, _.toInteger(action.payload));
+    },
+    limitChanged(state, action) {
+      const limit = _.toInteger(action.payload);
+      state.table.limit = TABLE_PAGE_SIZE_OPTIONS.includes(limit)
+        ? limit
+        : TABLE_PAGE_SIZE_OPTIONS[0];
+      state.table.page = 1;
+    },
+  },
   extraReducers: (builder) => {
     builder
-      .addCase(saveTallyCompanies.pending, (state) => {
-        state.saveStatus = "loading";
-        state.saveError = null;
-        state.savedCount = 0;
-      })
-      .addCase(saveTallyCompanies.fulfilled, (state, action) => {
-        const { savedIds, errors } = action.payload;
-        state.saveStatus = errors.length ? "failed" : "succeeded";
-        state.saveError = errors.length ? errors.join("\n") : null;
-        state.savedCount = savedIds.length;
-        state.comparison.newRecords = state.comparison.newRecords.filter((company) => !savedIds.includes(company._id));
-      })
-      .addCase(saveTallyCompanies.rejected, (state, action) => {
-        state.saveStatus = "failed";
-        state.saveError = action.payload || "Unable to save companies.";
-      })
-      .addCase(fetchTallyCompanies.pending, tableFetchCases.pending)
-      .addCase(fetchTallyCompanies.fulfilled, tableFetchCases.fulfilled)
-      .addCase(fetchTallyCompanies.rejected, (state, action) =>
-        tableFetchCases.rejected(state, action, "Unable to load Tally companies."),
-      )
       .addCase(syncTallyCompanies.pending, (state) => {
-        state.comparison = { ...emptyComparison };
+        state.status = TALLY_COMPANIES_STATUS.LOADING;
+        state.error = null;
+        state.errorTab = null;
+        state.alertVisible = false;
+        state.errorRequestId = null;
       })
-      .addCase(fetchTallyCompaniesComparison.pending, (state, action) => {
-        state.comparison = { ...emptyComparison, status: "loading", requestId: action.meta.requestId };
+      .addCase(syncTallyCompanies.fulfilled, (state, action) => {
+        state.response = action.payload;
+        state.companies = fromTallyCompaniesResponse(action.payload);
+        state.selectedCompanyKey = null;
+        state.status = TALLY_COMPANIES_STATUS.SUCCEEDED;
+        state.table.page = 1;
       })
-      .addCase(fetchTallyCompaniesComparison.fulfilled, (state, action) => {
-        if (state.comparison.requestId !== action.meta.requestId) return;
-        state.comparison = { ...action.payload, status: "succeeded", error: null, requestId: null };
-      })
-      .addCase(fetchTallyCompaniesComparison.rejected, (state, action) => {
-        if (state.comparison.requestId !== action.meta.requestId) return;
-        state.comparison = { ...emptyComparison, status: action.meta.aborted ? "idle" : "failed", error: action.meta.aborted ? null : action.payload || "Unable to compare companies." };
+      .addCase(syncTallyCompanies.rejected, (state, action) => {
+        if (action.meta.condition) return;
+        state.status = action.meta.aborted
+          ? TALLY_COMPANIES_STATUS.IDLE
+          : TALLY_COMPANIES_STATUS.FAILED;
+        state.error =
+          action.meta.aborted
+            ? null
+            : action.payload || action.error.message || "Unable to sync companies.";
+        state.errorTab = action.meta.arg?.errorTab ?? null;
+        state.alertVisible = !action.meta.aborted && Boolean(state.errorTab);
+        state.errorRequestId = action.meta.requestId;
       });
   },
 });
 
-export const tallyCompaniesTableActions = tallyCompaniesSlice.actions;
-export default tallyCompaniesSlice.reducer;
+export const {
+  companyDetailsOpened,
+  companyDetailsClosed,
+  syncErrorAlertDismissed,
+  searchChanged,
+  sortChanged,
+  columnFilterChanged,
+  filtersCleared,
+  pageChanged,
+  limitChanged,
+} = tallyCompanySlice.actions;
 
+export default tallyCompanySlice.reducer;

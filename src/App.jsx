@@ -30,8 +30,8 @@ import PurchaseOrdersPage from "@pages/purchase-orders.page";
 import PurchaseFinancialSummaryPage from "@pages/purchase-financial-summary.page";
 import LenisScrollProvider from "@/components/LenisScrollProvider";
 import SettingsPage from "@pages/settings.page";
-import SyncCompaniesPage from "@pages/sync-companies.page";
 import ProductsScreen from "@Tally/pages/products";
+import CompaniesScreen from "@Tally/pages/companies";
 
 function App() {
   return (
@@ -55,7 +55,7 @@ function App() {
                 />
                 <Route
                   path={ROUTES.SYNC_COMPANIES}
-                  element={<SyncCompaniesPage />}
+                  element={<CompaniesScreen />}
                 />
               </Route>
               <Route
