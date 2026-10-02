@@ -33,13 +33,6 @@ import { Label } from "@shadcnComponent/label";
 import { Textarea } from "@shadcnComponent/textarea";
 import { Popover, PopoverTrigger } from "@shadcnComponent/popover";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@shadcnComponent/select";
-import {
   Sheet,
   SheetContent,
   SheetDescription,
@@ -87,6 +80,8 @@ const EMPTY_PRODUCT_PAGINATION = Object.freeze({
 });
 
 const EMPTY_PRODUCTS = Object.freeze([]);
+const QUOTATION_QUANTITY_MIN = 1;
+const QUOTATION_QUANTITY_MAX = 10_000;
 
 const LOCKED_FIELDS = Object.freeze({
   description: false,
@@ -109,21 +104,11 @@ const numericValue = (value) => {
 
 const quotationItemId = (product) => product.id || product.productCode;
 
-const reservedStockCount = (product) => product.reservedStock?.length ?? 0;
-
-const availableStock = (product) =>
-  Math.max(
-    Math.floor(numericValue(product.stocks)) - reservedStockCount(product),
-    0,
-  );
-
 function createQuotationItem(product) {
-  const maximumQuantity = availableStock(product);
-
   return {
     id: quotationItemId(product),
     product,
-    quantity: maximumQuantity > 0 ? "1" : "",
+    quantity: String(QUOTATION_QUANTITY_MIN),
     description: product.description ?? "",
     salePrice: "0",
     gstPercentage: product.gstPercentage ?? "",
@@ -133,10 +118,13 @@ function createQuotationItem(product) {
 }
 
 function calculateItemTotals(item) {
-  const quantity = Math.min(
-    Math.max(Math.floor(numericValue(item.quantity)), 0),
-    availableStock(item.product),
-  );
+  const parsedQuantity = Number(item.quantity);
+  const quantity =
+    Number.isInteger(parsedQuantity) &&
+    parsedQuantity >= QUOTATION_QUANTITY_MIN &&
+    parsedQuantity <= QUOTATION_QUANTITY_MAX
+      ? parsedQuantity
+      : 0;
   const unitPrice = Math.max(numericValue(item.salePrice), 0);
   const discountPerUnit = Math.max(numericValue(item.discountAmount), 0);
   const gstPercentage = Math.max(numericValue(item.gstPercentage), 0);
@@ -159,16 +147,18 @@ function calculateItemTotals(item) {
 
 function validateQuotationItem(item) {
   const next = {};
-  const quantity = Math.floor(numericValue(item.quantity));
-  const maximumQuantity = availableStock(item.product);
+  const quantity = Number(item.quantity);
   const salePrice = Number(item.salePrice);
   const gst = item.gstPercentage === "" ? null : Number(item.gstPercentage);
   const discount = Number(item.discountAmount);
 
-  if (maximumQuantity === 0) {
-    next.quantity = "No stock is currently available for quotation.";
-  } else if (quantity < 1 || quantity > maximumQuantity) {
-    next.quantity = `Quantity must be between 1 and ${maximumQuantity}.`;
+  if (
+    item.quantity === "" ||
+    !Number.isInteger(quantity) ||
+    quantity < QUOTATION_QUANTITY_MIN ||
+    quantity > QUOTATION_QUANTITY_MAX
+  ) {
+    next.quantity = `Quantity must be a whole number between ${QUOTATION_QUANTITY_MIN} and ${QUOTATION_QUANTITY_MAX.toLocaleString("en-IN")}.`;
   }
 
   if (item.salePrice === "" || !Number.isFinite(salePrice) || salePrice <= 0) {
@@ -239,12 +229,6 @@ function QuotationProductCard({
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const { product, enabledFields } = item;
-  const totalStock = Math.max(Math.floor(numericValue(product.stocks)), 0);
-  const reservedStock = reservedStockCount(product);
-  const maximumQuantity = availableStock(product);
-  const quantityOptions = Array.from({ length: maximumQuantity }, (_, index) =>
-    String(index + 1),
-  );
 
   return (
     <article className="rounded-xl border bg-card p-4 sm:p-5">
@@ -252,16 +236,27 @@ function QuotationProductCard({
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <h4 className="truncate text-sm font-semibold">{product.name}</h4>
-            <ProductCategoryBadge category={product.category} />
-            <ProductAgencyBadge
-              agency={product.agency}
-              label={product.agencyName}
-            />
+            {product.category && (
+              <ProductCategoryBadge category={product.category} />
+            )}
+            {(product.agency || product.agencyName) && (
+              <ProductAgencyBadge
+                agency={product.agency}
+                label={product.agencyName}
+              />
+            )}
           </div>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Product code: {staticValue(product.productCode)} · HSN code:{" "}
-            {staticValue(product.hsnCode)}
-          </p>
+          {(product.productCode || product.hsnCode) && (
+            <p className="mt-1 text-xs text-muted-foreground">
+              {product.productCode && (
+                <>
+                  Product code: {product.productCode}
+                  {product.hsnCode && " · "}
+                </>
+              )}
+              {product.hsnCode && <>HSN code: {product.hsnCode}</>}
+            </p>
+          )}
           {!isExpanded && (
             <div className="mt-3 flex flex-wrap gap-2 text-xs">
               <span className="rounded-md border bg-muted/30 px-2.5 py-1">
@@ -308,42 +303,19 @@ function QuotationProductCard({
 
       {isExpanded && (
         <>
-          <div className="mt-3 flex flex-wrap gap-2 text-xs">
-            <span className="rounded-md border bg-muted/30 px-2.5 py-1">
-              Total stock: <strong>{totalStock}</strong>
-            </span>
-            <span className="rounded-md border bg-muted/30 px-2.5 py-1">
-              Reserved stock: <strong>{reservedStock}</strong>
-            </span>
-            <span className="rounded-md border bg-primary/10 px-2.5 py-1 text-primary">
-              Available stock: <strong>{maximumQuantity}</strong>
-            </span>
-          </div>
           <div className="mt-5 grid gap-5 sm:grid-cols-2">
         <div className="grid content-start gap-2 sm:col-span-2">
-          <Label>Quantity</Label>
-          <Select
+          <Label htmlFor={`quotation-quantity-${item.id}`}>Quantity</Label>
+          <Input
+            id={`quotation-quantity-${item.id}`}
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={item.quantity}
-            onValueChange={(value) => onUpdate("quantity", value)}
-            disabled={maximumQuantity === 0}
-          >
-            <SelectTrigger aria-invalid={Boolean(errors.quantity)}>
-              <SelectValue
-                placeholder={
-                  maximumQuantity === 0
-                    ? "No stock available"
-                    : "Select quantity"
-                }
-              />
-            </SelectTrigger>
-            <SelectContent>
-              {quantityOptions.map((quantity) => (
-                <SelectItem key={quantity} value={quantity}>
-                  {quantity} {quantity === "1" ? "unit" : "units"}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            onChange={(event) => onUpdate("quantity", event.target.value)}
+            placeholder="Enter quantity"
+            aria-invalid={Boolean(errors.quantity)}
+          />
           {errors.quantity && (
             <p className="text-xs font-medium text-destructive">
               {errors.quantity}
