@@ -234,8 +234,12 @@ function imageUrlToDataUrl(url) {
 }
 
 function billToDetails(company) {
-  const primaryAddress = company?.addresses?.[0];
-  const address = [primaryAddress?.address, primaryAddress?.pincode]
+  const primaryAddress = company?.addresses?.[0] ?? {};
+  const address = [
+    primaryAddress.address || company?.address1,
+    primaryAddress.state || company?.state1,
+    primaryAddress.pincode || company?.pincode1,
+  ]
     .filter(Boolean)
     .join(" - ");
 
@@ -243,6 +247,7 @@ function billToDetails(company) {
     name: company?.name || "Valued Client",
     address: address || "To be confirmed",
     email: company?.email || "-",
+    phone: company?.phone || "-",
     gst: company?.gstNumber || "-",
   };
 }
@@ -331,8 +336,9 @@ function drawClientDetails(doc, client, y = 62) {
   drawLabelLine(doc, "Company:", client.name, 16, y + 7, 33);
   drawText(doc, "Address:", 16, y + 13, { bold: true, size: 8 });
   drawText(doc, client.address, 33, y + 13, { size: 7.5, maxWidth: 67 });
-  drawLabelLine(doc, "Email:", client.email, 112, y + 7, 127);
-  drawLabelLine(doc, "GSTIN:", client.gst, 112, y + 14, 127);
+  drawLabelLine(doc, "Email:", client.email, 112, y + 6, 127);
+  drawLabelLine(doc, "Phone:", client.phone, 112, y + 12, 127);
+  drawLabelLine(doc, "GSTIN:", client.gst, 112, y + 18, 127);
 }
 
 function drawContinuationHeader(doc, quotationId, label) {

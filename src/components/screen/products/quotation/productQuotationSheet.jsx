@@ -54,6 +54,7 @@ function QuotationPopoverContent({
   return (
     <PopoverPrimitive.Portal container={container}>
       <PopoverPrimitive.Content
+        data-lenis-prevent
         align={align}
         sideOffset={sideOffset}
         className={cn(
@@ -613,6 +614,23 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
     setCompanySearch("");
   };
 
+  const updateSelectedCompanyField = (field, value) =>
+    setSelectedCompany((current) =>
+      current ? { ...current, [field]: value } : current,
+    );
+
+  const updateSelectedCompanyAddress = (value) =>
+    setSelectedCompany((current) => {
+      if (!current) return current;
+
+      const addresses = current.addresses?.length
+        ? [...current.addresses]
+        : [{}];
+      addresses[0] = { ...addresses[0], address: value };
+
+      return { ...current, addresses };
+    });
+
   const selectedProductIds = useMemo(
     () => new Set(quotationItems.map((item) => item.id)),
     [quotationItems],
@@ -963,7 +981,7 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
                         </div>
                       </div>
 
-                      <div className="max-h-64 overflow-y-auto p-1">
+                      <div className="max-h-64 overscroll-contain overflow-y-auto p-1">
                         {isLoadingCompanies ? (
                           <div className="flex items-center justify-center gap-2 px-3 py-8 text-sm text-muted-foreground">
                             <Loader2 className="size-4 animate-spin" />
@@ -1038,34 +1056,108 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
                       <Building2 className="mt-0.5 size-4 shrink-0 text-primary" />
                       <p className="font-semibold">{selectedCompany.name}</p>
                     </div>
-                    <p className="mt-2 flex gap-2 text-xs leading-relaxed text-muted-foreground">
-                      <MapPin className="mt-0.5 size-3.5 shrink-0" />
-                      <span>
-                        {staticValue(selectedCompany.addresses?.[0]?.address)}
-                        {selectedCompany.addresses?.[0]?.pincode
-                          ? ` - ${selectedCompany.addresses[0].pincode}`
-                          : ""}
-                      </span>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      These details apply only to this quotation.
                     </p>
 
-                    <div className="mt-4 rounded-md border bg-background px-3 py-2.5 text-xs text-muted-foreground">
-                      <div className="grid gap-2 sm:grid-cols-2 sm:divide-x">
-                        <div>
-                          <p className="flex items-center gap-2 sm:pr-3">
-                            <Phone className="size-3.5 shrink-0 text-primary" />
-                            {staticValue(selectedCompany.phone)}
+                    <div className="mt-4 grid gap-4">
+                      <div className="grid gap-2">
+                        <Label
+                          htmlFor="quotation-company-address"
+                          className="flex items-center gap-2"
+                        >
+                          <MapPin className="size-3.5 text-primary" />
+                          Address
+                        </Label>
+                        <Textarea
+                          id="quotation-company-address"
+                          value={
+                            selectedCompany.addresses?.[0]?.address ||
+                            selectedCompany.address1 ||
+                            ""
+                          }
+                          onChange={(event) =>
+                            updateSelectedCompanyAddress(event.target.value)
+                          }
+                          placeholder="Enter billing address"
+                          rows={3}
+                        />
+                        {(selectedCompany.addresses?.[0]?.state ||
+                          selectedCompany.state1 ||
+                          selectedCompany.addresses?.[0]?.pincode ||
+                          selectedCompany.pincode1) && (
+                          <p className="text-xs text-muted-foreground">
+                            {(selectedCompany.addresses?.[0]?.state ||
+                              selectedCompany.state1) && (
+                              <>
+                                State:{" "}
+                                {selectedCompany.addresses?.[0]?.state ||
+                                  selectedCompany.state1}
+                                {(selectedCompany.addresses?.[0]?.pincode ||
+                                  selectedCompany.pincode1) && " · "}
+                              </>
+                            )}
+                            {(selectedCompany.addresses?.[0]?.pincode ||
+                              selectedCompany.pincode1) && (
+                              <>
+                                Pincode:{" "}
+                                {selectedCompany.addresses?.[0]?.pincode ||
+                                  selectedCompany.pincode1}
+                              </>
+                            )}
                           </p>
-                          <p className="flex items-center gap-2 sm:pr-3 mt-2">
-                            <Mail className="size-3.5 shrink-0 text-primary" />
-                            <span className="break-all">
-                              {staticValue(selectedCompany.email)}
-                            </span>
-                          </p>
-                        </div>
-                        <p className="font-medium text-foreground sm:pl-3">
-                          GSTIN: {staticValue(selectedCompany.gstNumber)}
-                        </p>
+                        )}
                       </div>
+
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="grid gap-2">
+                          <Label
+                            htmlFor="quotation-company-email"
+                            className="flex items-center gap-2"
+                          >
+                            <Mail className="size-3.5 text-primary" />
+                            Email
+                          </Label>
+                          <Input
+                            id="quotation-company-email"
+                            type="email"
+                            value={selectedCompany.email ?? ""}
+                            onChange={(event) =>
+                              updateSelectedCompanyField(
+                                "email",
+                                event.target.value,
+                              )
+                            }
+                            placeholder="Enter email address"
+                          />
+                        </div>
+
+                        <div className="grid gap-2">
+                          <Label
+                            htmlFor="quotation-company-phone"
+                            className="flex items-center gap-2"
+                          >
+                            <Phone className="size-3.5 text-primary" />
+                            Contact number
+                          </Label>
+                          <Input
+                            id="quotation-company-phone"
+                            type="tel"
+                            value={selectedCompany.phone ?? ""}
+                            onChange={(event) =>
+                              updateSelectedCompanyField(
+                                "phone",
+                                event.target.value,
+                              )
+                            }
+                            placeholder="Enter contact number"
+                          />
+                        </div>
+                      </div>
+
+                      <p className="text-xs font-medium">
+                        GSTIN: {staticValue(selectedCompany.gstNumber)}
+                      </p>
                     </div>
                   </div>
                 )}

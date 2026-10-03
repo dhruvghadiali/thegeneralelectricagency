@@ -1,14 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 
 import DataTable from "@commonComponent/dataTable";
 import { ROLE_PATHS } from "@Enums";
-import { ROUTE_BUILDERS } from "@routes/navigate";
 import { deleteCompany, restoreCompany } from "@Redux/company/company.action";
 import {
   companyDeleteClosed,
   companyDeleteOpened,
-  companyDetailsOpened,
   companyRestoreClosed,
   companyRestoreOpened,
 } from "@Redux/company/company.slice";
@@ -24,11 +21,9 @@ import {
 
 import CompanyDeleteDialog from "@screenComponent/companies/company/dialogs/companyDeleteDialog";
 import CompanyRestoreDialog from "@screenComponent/companies/company/dialogs/companyRestoreDialog";
-import CompanyDetailSheet from "@screenComponent/companies/company/sheet/companyDetailSheet";
 
 function CompanyDirectory() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const table = useCompanyTable();
   const { companyToDelete, isDeleting, deleteError } = useSelector(
     selectCompanyDeleteState,
@@ -86,23 +81,19 @@ function CompanyDirectory() {
         onRetry={table.refresh}
         isLoading={table.isLoading}
         error={table.error}
-        rowActions={(company) => (
-          <CompanyTableActions
-            company={company}
-            canManage={canManageCompany}
-            onView={(row) => dispatch(companyDetailsOpened(row))}
-            onEdit={(row) =>
-              navigate(ROUTE_BUILDERS.companyEdit(row.id), {
-                state: { company: row },
-              })
-            }
-            onDelete={(row) => dispatch(companyDeleteOpened(row))}
-            onRestore={(row) => dispatch(companyRestoreOpened(row))}
-          />
-        )}
+        rowActions={
+          canManageCompany
+            ? (company) => (
+                <CompanyTableActions
+                  company={company}
+                  canManage={canManageCompany}
+                  onDelete={(row) => dispatch(companyDeleteOpened(row))}
+                  onRestore={(row) => dispatch(companyRestoreOpened(row))}
+                />
+              )
+            : undefined
+        }
       />
-
-      <CompanyDetailSheet />
 
       <CompanyDeleteDialog
         company={companyToDelete}

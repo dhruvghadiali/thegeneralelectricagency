@@ -25,11 +25,46 @@ function fromCompanyAddressResponse(address = {}) {
   };
 }
 
+function findSystemAddressRecord(value) {
+  if (_.isArray(value)) {
+    return value.map(findSystemAddressRecord).find(Boolean) ?? null;
+  }
+
+  if (!_.isPlainObject(value)) return null;
+
+  const hasAddressValue = ["address1", "state1", "pincode1"].some((field) => {
+    const fieldValue = value[field];
+    return !_.isNil(fieldValue) && String(fieldValue).trim() !== "";
+  });
+
+  if (hasAddressValue) return value;
+
+  return Object.values(value).map(findSystemAddressRecord).find(Boolean) ?? null;
+}
+
 function fromCompanyResponse(company = {}) {
-  const addresses = _.map(
-    company.addresses ?? company.address ?? [],
-    fromCompanyAddressResponse,
-  );
+  const systemId = company.system_id ?? company.systemId;
+  const hasSystemId = !_.isNil(systemId) && String(systemId).trim() !== "";
+  const systemCompany =
+    findSystemAddressRecord(systemId) ??
+    findSystemAddressRecord(company) ??
+    company;
+  const systemAddress = systemCompany.address1 ?? company.address1 ?? "";
+  const systemState = systemCompany.state1 ?? company.state1 ?? "";
+  const systemPincode = systemCompany.pincode1 ?? company.pincode1 ?? "";
+  const addressSource = hasSystemId
+    ? [
+        {
+          address: systemAddress,
+          state: systemState,
+          pincode: systemPincode,
+          company_employees: company.company_employees,
+          contact_person: company.contact_person,
+          contacts: company.contacts,
+        },
+      ]
+    : company.addresses ?? company.address ?? [];
+  const addresses = _.map(addressSource, fromCompanyAddressResponse);
 
   return {
     id: company._id ?? company.id ?? null,
@@ -41,6 +76,10 @@ function fromCompanyResponse(company = {}) {
     gstNumber: company.gst_number ?? company.gstNumber ?? "",
     panNumber: company.pan_number ?? company.panNumber ?? "",
     website: company.website ?? "",
+    systemId,
+    address1: systemAddress,
+    state1: systemState,
+    pincode1: systemPincode,
     addresses,
     addressCount: addresses.length,
     contactCount: _.sumBy(addresses, (address) => address.contacts.length),
