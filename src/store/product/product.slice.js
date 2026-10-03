@@ -20,6 +20,7 @@ const initialState = {
     columnFilters: PRODUCT_TABLE_DEFAULTS.filters,
   }),
   dialog: null,
+  selectedProducts: [],
   summary: {
     totalProducts: 0,
     activeProducts: 0,
@@ -49,6 +50,18 @@ const productSlice = createSlice({
       state.createError = null;
       state.updateError = null;
       state.deleteError = null;
+    },
+    productRowSelectionChanged(state, action) {
+      const { product, checked } = action.payload;
+      const selectedIndex = state.selectedProducts.findIndex(
+        (selectedProduct) => selectedProduct.id === product.id,
+      );
+
+      if (checked && selectedIndex === -1) {
+        state.selectedProducts.push(product);
+      } else if (!checked && selectedIndex !== -1) {
+        state.selectedProducts.splice(selectedIndex, 1);
+      }
     },
   },
   extraReducers: (builder) => {
@@ -89,9 +102,12 @@ const productSlice = createSlice({
         state.isDeleting = true;
         state.deleteError = null;
       })
-      .addCase(deleteProduct.fulfilled, (state) => {
+      .addCase(deleteProduct.fulfilled, (state, action) => {
         state.isDeleting = false;
         state.dialog = null;
+        state.selectedProducts = state.selectedProducts.filter(
+          (product) => product.id !== action.payload,
+        );
       })
       .addCase(deleteProduct.rejected, (state, action) => {
         state.isDeleting = false;
@@ -108,6 +124,7 @@ export const {
   pageChanged,
   productDialogClosed,
   productDialogOpened,
+  productRowSelectionChanged,
   searchChanged,
   searchCommitted,
   sortChanged,

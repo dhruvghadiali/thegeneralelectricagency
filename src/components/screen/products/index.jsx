@@ -1,44 +1,32 @@
 import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { ROLE_PATHS } from "@Enums";
-import { ROUTES } from "@routes/navigate";
-import { deleteProduct } from "@Redux/product/product.action";
-import { selectProductDialogState } from "@Redux/product/product.selector";
-import { productDialogClosed } from "@Redux/product/product.slice";
+import {
+  selectCanManageProducts,
+  selectSelectedProductIds,
+  selectSelectedProducts,
+} from "@Redux/product/product.selector";
 import {
   PRODUCT_TABLE_CONFIG,
   ProductTableActions,
   useProductTable,
 } from "@Tables/product";
+import { productRowSelectionChanged } from "@Redux/product/product.slice";
 
 import DataTable from "@commonComponent/dataTable";
 import ProductHeader from "@screenComponent/products/header/productHeader";
-import ProductDialogs from "@screenComponent/products/dialogs/productDialogs";
-import ProductStockSheet from "@screenComponent/products/sheet/productStockSheet";
 import ProductQuotationSheet from "@screenComponent/products/quotation/productQuotationSheet";
 
 function Products() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
-  const role = useSelector((state) => state.auth.role);
   const table = useProductTable();
-  const canManage = role === ROLE_PATHS.EMPLOYEE;
+  const canManage = useSelector(selectCanManageProducts);
+  const selectedProducts = useSelector(selectSelectedProducts);
+  const selectedProductIds = useSelector(selectSelectedProductIds);
 
-  const [selectedProducts, setSelectedProducts] = useState([]);
   const [quotationProducts, setQuotationProducts] = useState([]);
-  const [viewedProduct, setViewedProduct] = useState(null);
-  const { dialog, isDeleting, deleteError } = useSelector(
-    selectProductDialogState,
-  );
 
-  const selectedProductIds = useMemo(
-    () => new Set(selectedProducts.map((product) => product.id)),
-    [selectedProducts],
-  );
-  
   const displayedProducts = useMemo(() => {
     if (selectedProducts.length === 0) return table.rows;
 
@@ -48,43 +36,16 @@ function Products() {
     ];
   }, [selectedProductIds, selectedProducts, table.rows]);
 
-  const changeProductSelection = (product, checked) => {
-    setSelectedProducts((current) => {
-      const alreadySelected = current.some((item) => item.id === product.id);
+  const changeProductSelection = (product, checked) =>
+    dispatch(productRowSelectionChanged({ product, checked }));
 
-      if (checked) {
-        return alreadySelected ? current : [...current, product];
-      }
+  return (
+    <main className="flex w-full flex-col gap-6 pb-2 roomy:h-full roomy:min-h-0">
+      <ProductHeader
+        onViewQuotation={() => setQuotationProducts(selectedProducts)}
+      />
 
-      return current.filter((item) => item.id !== product.id);
-    });
-  };
-
-  const deleteSelectedProduct = async () => {
-    if (!dialog?.product?.id) return;
-
-    try {
-      await dispatch(deleteProduct(dialog.product.id)).unwrap();
-      setSelectedProducts((current) =>
-        current.filter((product) => product.id !== dialog.product.id),
-      );
-      table.refresh();
-    } catch {
-      // The slice keeps the confirmation open with the request error.
-    }
-  };
-
-  const productHeader = (
-    <ProductHeader
-      canManage={canManage}
-      selectedCount={selectedProducts.length}
-      onViewQuotation={() => setQuotationProducts(selectedProducts)}
-      onAddProduct={() => navigate(ROUTES.PRODUCT_NEW)}
-    />
-  );
-
-  const productTable = (
-    <DataTable
+      <DataTable
         {...PRODUCT_TABLE_CONFIG}
         rows={displayedProducts}
         rowKey={(product) => product.id}
@@ -126,28 +87,10 @@ function Products() {
             ? "Add your first product to start building the catalogue."
             : "Products will appear here when an employee adds them."
         }
-    />
-  );
-
-  return (
-    <main className="flex w-full flex-col gap-6 pb-2 roomy:h-full roomy:min-h-0">
-      {productHeader}
-      {productTable}
-
-      <ProductStockSheet
-        product={viewedProduct}
-        onClose={() => setViewedProduct(null)}
       />
 
       {canManage && (
         <>
-          <ProductDialogs
-            dialog={dialog}
-            isDeleting={isDeleting}
-            deleteError={deleteError}
-            onClose={() => dispatch(productDialogClosed())}
-            onDelete={deleteSelectedProduct}
-          />
           <ProductQuotationSheet
             products={quotationProducts}
             onClose={() => setQuotationProducts([])}

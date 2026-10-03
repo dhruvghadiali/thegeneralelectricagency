@@ -1,38 +1,32 @@
-import { FileText, Plus } from "lucide-react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-import { Button } from "@shadcnComponent/button";
+import { ROUTES } from "@routes/navigate";
+import {
+  selectCanManageProducts,
+  selectSelectedProducts,
+} from "@Redux/product/product.selector";
 
 import ProductSummary from "@screenComponent/products/header/productSummary";
+import ProductAddButton from "@screenComponent/products/header/productAddButton";
+import ProductQuotationButton from "@screenComponent/products/header/productQuotationButton";
 
-function ProductHeader({
-  canManage,
-  selectedCount = 0,
-  onViewQuotation,
-  onAddProduct,
-}) {
+function ProductHeader({ onViewQuotation }) {
+  const canManage = useSelector(selectCanManageProducts);
+  const selectedProducts = useSelector(selectSelectedProducts);
+  const navigate = useNavigate();
+
   return (
     <header className="flex flex-col gap-2 sm:flex-row sm:justify-end">
       <h1 className="sr-only">Products</h1>
       <ProductSummary />
       {canManage && (
         <>
-          {selectedCount > 0 && (
-            <Button
-              variant="outline"
-              onClick={onViewQuotation}
-              className="w-full sm:w-auto"
-            >
-              <FileText className="size-4" />
-              View quotation details
-              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
-                {selectedCount}
-              </span>
-            </Button>
-          )}
-          <Button onClick={onAddProduct} className="w-full sm:w-auto">
-            <Plus className="size-4" />
-            Add product
-          </Button>
+          <ProductQuotationButton
+            selectedCount={selectedProducts.length}
+            onViewQuotation={onViewQuotation}
+          />
+          <ProductAddButton onAddProduct={() => navigate(ROUTES.PRODUCT_NEW)} />
         </>
       )}
     </header>
