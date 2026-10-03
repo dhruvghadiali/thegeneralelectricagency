@@ -5,7 +5,7 @@ import SummaryCard from "@commonComponent/summaryCard";
 import {
   formatCurrency,
   formatNumber,
-} from "@Tables/product/productTable.utils";
+} from "@/utils/numberFormat.util";
 export default function PurchaseOrderSummary() {
   const summary = useSelector(selectPurchaseSummary);
   return (

@@ -10,7 +10,7 @@ import {
 } from "@Api";
 import { COMPANY_TYPES, ROLE_PATHS } from "@Enums";
 import { fromCompanyListResponse } from "@Tables/company/companyTable.frontend-payload";
-import { fromProductListResponse } from "@Tables/product/productTable.frontend-payload";
+import { fromProductListResponse } from "@Redux/product/product.api-response";
 
 const SEARCH_DELAY_MS = 350;
 const OPTION_LIMIT = 30;

@@ -7,7 +7,7 @@ import {
 import {
   formatCurrency,
   formatNumber,
-} from "@Tables/product/productTable.utils";
+} from "@/utils/numberFormat.util";
 
 export const PURCHASE_CREDIT_TABLE_COLUMNS = [
   {

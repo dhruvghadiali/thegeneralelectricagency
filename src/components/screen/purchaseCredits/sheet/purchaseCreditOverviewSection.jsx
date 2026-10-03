@@ -1,5 +1,5 @@
 import { formatDate } from "@/utils/date.util";
-import { formatCurrency } from "@Tables/product/productTable.utils";
+import { formatCurrency } from "@/utils/numberFormat.util";
 
 import PurchaseCreditDetailItem from "@screenComponent/purchaseCredits/sheet/purchaseCreditDetailItem";
 import PurchaseCreditReceiptLinks from "@screenComponent/purchaseCredits/sheet/purchaseCreditReceiptLinks";

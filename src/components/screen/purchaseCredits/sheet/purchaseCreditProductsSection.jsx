@@ -1,6 +1,6 @@
 import { Package } from "lucide-react";
 
-import { formatNumber } from "@Tables/product/productTable.utils";
+import { formatNumber } from "@/utils/numberFormat.util";
 
 import PurchaseCreditEmptyState from "@screenComponent/purchaseCredits/sheet/purchaseCreditEmptyState";
 

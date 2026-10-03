@@ -1,4 +1,4 @@
-import { formatCurrency, formatPercentage } from "@Tables/product/productTable.utils";
+import { formatCurrency, formatPercentage } from "@/utils/numberFormat.util";
 import { DATE_FORMATS, formatDate } from "@/utils/date.util";
 
 const yesNo = (value) => value == null ? "—" : value ? "Yes" : "No";

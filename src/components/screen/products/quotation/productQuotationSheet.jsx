@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Building2,
   Check,
@@ -17,13 +18,13 @@ import {
   Trash2,
 } from "lucide-react";
 
-import { employeeCompanyApi, employeeProductApi } from "@Api";
+import { employeeCompanyApi } from "@Api";
 import defaultSignatureUrl from "@Assets/images/default-signature.png";
 import companyLogoUrl from "@Assets/images/logo.png";
 import { TABLE_DEFAULTS } from "@Enums";
-import { toProductListParams } from "@Tables/product/productTable.api-payload";
-import { fromProductListResponse } from "@Tables/product/productTable.frontend-payload";
-import { PRODUCT_TABLE_DEFAULTS } from "@Tables/product";
+import { fetchQuotationProducts } from "@Redux/product/product.action";
+import { selectQuotationProductOptions } from "@Redux/product/product.selector";
+import { quotationProductOptionsReset } from "@Redux/product/product.slice";
 import { toCompanyListParams } from "@Tables/company/companyTable.api-payload";
 import { COMPANY_TABLE_DEFAULTS } from "@Tables/company/companyTable.defaults";
 import { fromCompanyListResponse } from "@Tables/company/companyTable.frontend-payload";
@@ -40,8 +41,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@shadcnComponent/sheet";
-import ProductAgencyBadge from "@Tables/product/productAgencyBadge";
-import ProductCategoryBadge from "@Tables/product/productCategoryBadge";
+import ProductAgencyBadge from "@screenComponent/products/quotation/productAgencyBadge";
+import ProductCategoryBadge from "@screenComponent/products/quotation/productCategoryBadge";
 import { cn } from "@/lib/utils";
 
 function QuotationPopoverContent({
@@ -71,11 +72,6 @@ function QuotationPopoverContent({
 }
 
 const EMPTY_COMPANY_PAGINATION = Object.freeze({
-  page: TABLE_DEFAULTS.PAGE,
-  totalPages: 0,
-});
-
-const EMPTY_PRODUCT_PAGINATION = Object.freeze({
   page: TABLE_DEFAULTS.PAGE,
   totalPages: 0,
 });
@@ -427,21 +423,22 @@ function QuotationProductCard({
 }
 
 function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
+  const dispatch = useDispatch();
+  const {
+    items: availableProducts,
+    pagination: productPagination,
+    isLoading: isLoadingProducts,
+    isLoadingMore: isLoadingMoreProducts,
+    error: productError,
+  } = useSelector(selectQuotationProductOptions);
   const sheetContentRef = useRef(null);
   const isOpen = products.length > 0;
   const [quotationItems, setQuotationItems] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [availableProducts, setAvailableProducts] = useState([]);
   const [isProductPickerOpen, setIsProductPickerOpen] = useState(false);
   const [productSearch, setProductSearch] = useState("");
   const [debouncedProductSearch, setDebouncedProductSearch] = useState("");
   const [productPage, setProductPage] = useState(TABLE_DEFAULTS.PAGE);
-  const [productPagination, setProductPagination] = useState(
-    EMPTY_PRODUCT_PAGINATION,
-  );
-  const [isLoadingProducts, setIsLoadingProducts] = useState(false);
-  const [isLoadingMoreProducts, setIsLoadingMoreProducts] = useState(false);
-  const [productError, setProductError] = useState(null);
   const [companies, setCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [isCompanyPickerOpen, setIsCompanyPickerOpen] = useState(false);
@@ -463,14 +460,14 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
     setProductSearch("");
     setDebouncedProductSearch("");
     setProductPage(TABLE_DEFAULTS.PAGE);
-    setProductPagination(EMPTY_PRODUCT_PAGINATION);
+    dispatch(quotationProductOptionsReset());
     setSelectedCompany(null);
     setIsCompanyPickerOpen(false);
     setCompanySearch("");
     setDebouncedCompanySearch("");
     setCompanyPage(TABLE_DEFAULTS.PAGE);
     setCompanyPagination(EMPTY_COMPANY_PAGINATION);
-  }, [isOpen, products]);
+  }, [dispatch, isOpen, products]);
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -484,57 +481,15 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
   useEffect(() => {
     if (!isOpen) return undefined;
 
-    const controller = new AbortController();
-    const isFirstPage = productPage === TABLE_DEFAULTS.PAGE;
+    const request = dispatch(
+      fetchQuotationProducts({
+        page: productPage,
+        search: debouncedProductSearch,
+      }),
+    );
 
-    if (isFirstPage) {
-      setAvailableProducts([]);
-      setIsLoadingProducts(true);
-    } else {
-      setIsLoadingMoreProducts(true);
-    }
-    setProductError(null);
-
-    const loadProducts = async () => {
-      try {
-        const response = await employeeProductApi.getProducts(
-          toProductListParams({
-            page: productPage,
-            limit: PRODUCT_TABLE_DEFAULTS.limit,
-            search: debouncedProductSearch,
-            sort: PRODUCT_TABLE_DEFAULTS.sort,
-          }),
-          { signal: controller.signal },
-        );
-        const result = fromProductListResponse(response, {
-          page: productPage,
-          limit: PRODUCT_TABLE_DEFAULTS.limit,
-        });
-
-        setAvailableProducts((current) => {
-          if (isFirstPage) return result.items;
-          const uniqueProducts = new Map(
-            [...current, ...result.items].map((item) => [item.id, item]),
-          );
-          return [...uniqueProducts.values()];
-        });
-        setProductPagination(result.pagination);
-      } catch {
-        if (!controller.signal.aborted) {
-          if (isFirstPage) setAvailableProducts([]);
-          setProductError("Unable to load products. Try searching again.");
-        }
-      } finally {
-        if (!controller.signal.aborted) {
-          setIsLoadingProducts(false);
-          setIsLoadingMoreProducts(false);
-        }
-      }
-    };
-
-    loadProducts();
-    return () => controller.abort();
-  }, [debouncedProductSearch, isOpen, productPage]);
+    return () => request.abort();
+  }, [debouncedProductSearch, dispatch, isOpen, productPage]);
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {

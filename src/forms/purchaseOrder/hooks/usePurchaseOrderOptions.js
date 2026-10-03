@@ -6,7 +6,7 @@ import {
   extractErrorMessage,
 } from "@Api";
 import { COMPANY_TYPES } from "@Enums";
-import { fromProductListResponse } from "@Tables/product/productTable.frontend-payload";
+import { fromProductListResponse } from "@Redux/product/product.api-response";
 import { fromCompanyListResponse } from "@Tables/company/companyTable.frontend-payload";
 
 const SEARCH_DELAY_MS = 350;

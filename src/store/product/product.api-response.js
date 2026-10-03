@@ -1,7 +1,7 @@
 import _ from "lodash";
 
 import { TABLE_DEFAULTS } from "@Enums";
-import { PRODUCT_TABLE_DEFAULTS } from "@Tables/product/productTable.defaults";
+import { PRODUCT_LIST_DEFAULTS } from "@Redux/product/product.defaults";
 
 function discountRange(value) {
   if (_.isObject(value)) {
@@ -24,13 +24,13 @@ function reservedStockItem(reservation = {}) {
 export function fromProductResponse(product = {}) {
   const agencySource = product.agency ?? product.company ?? "";
   const agency = _.isObject(agencySource)
-    ? agencySource._id ?? agencySource.id ?? ""
+    ? (agencySource._id ?? agencySource.id ?? "")
     : agencySource;
   const agencyName =
     product.agency_name ??
     product.company_name ??
     (_.isObject(agencySource)
-      ? agencySource.company_name ?? agencySource.name ?? ""
+      ? (agencySource.company_name ?? agencySource.name ?? "")
       : agencySource);
 
   return {
@@ -78,12 +78,9 @@ function fromProductSummaryResponse(summary = {}) {
 
 export function fromProductListResponse(response = {}, requested = {}) {
   const pagination = response.pagination ?? {};
-  const page =
-    Number(pagination.page) || requested.page || TABLE_DEFAULTS.PAGE;
+  const page = Number(pagination.page) || requested.page || TABLE_DEFAULTS.PAGE;
   const limit =
-    Number(pagination.limit) ||
-    requested.limit ||
-    PRODUCT_TABLE_DEFAULTS.limit;
+    Number(pagination.limit) || requested.limit || PRODUCT_LIST_DEFAULTS.limit;
   const total = Number(pagination.total) || 0;
 
   return {

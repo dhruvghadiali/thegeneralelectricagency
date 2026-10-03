@@ -10,7 +10,7 @@ import {
   formatCurrency,
   formatNumber,
   formatPercentage,
-} from "@Tables/product/productTable.utils";
+} from "@/utils/numberFormat.util";
 export default function PurchaseOrderDetailSheet({ purchase, onClose }) {
   return (
     <Sheet open={Boolean(purchase)} onOpenChange={(open) => !open && onClose()}>

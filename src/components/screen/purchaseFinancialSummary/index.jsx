@@ -15,7 +15,7 @@ import {
   CardTitle,
 } from "@shadcnComponent/card";
 import SummaryCard from "@commonComponent/summaryCard";
-import { formatCurrency } from "@Tables/product/productTable.utils";
+import { formatCurrency } from "@/utils/numberFormat.util";
 import {
   MonthlyPurchaseChart,
   PaymentAllocationChart,

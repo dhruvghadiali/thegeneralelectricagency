@@ -1,6 +1,5 @@
 import { COLUMN_TYPES, MOBILE_SLOTS } from "@Enums";
-
-const optionalValue = (value) => value || "—";
+import { optionalValue } from "@screenComponent/products/table/productTable.utils";
 
 export const PRODUCT_TABLE_COLUMNS = [
   {

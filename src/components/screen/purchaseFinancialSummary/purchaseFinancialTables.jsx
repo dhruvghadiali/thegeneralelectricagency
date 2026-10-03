@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@commonComponent/appTable";
-import { formatCurrency } from "@Tables/product/productTable.utils";
+import { formatCurrency } from "@/utils/numberFormat.util";
 
 export function SupplierSpendTable({ suppliers }) {
   return (

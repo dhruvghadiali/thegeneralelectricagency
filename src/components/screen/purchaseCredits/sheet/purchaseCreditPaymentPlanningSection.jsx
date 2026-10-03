@@ -3,7 +3,7 @@ import { CalendarDays } from "lucide-react";
 import { formatDate } from "@/utils/date.util";
 import { Badge } from "@shadcnComponent/badge";
 import { PURCHASE_CREDIT_PAYMENT_TYPE_OPTIONS } from "@Enums";
-import { formatCurrency } from "@Tables/product/productTable.utils";
+import { formatCurrency } from "@/utils/numberFormat.util";
 import { purchaseCreditOptionLabel } from "@screenComponent/purchaseCredits/sheet/purchaseCreditSheet.utils";
 
 import PurchaseCreditDetailItem from "@screenComponent/purchaseCredits/sheet/purchaseCreditDetailItem";

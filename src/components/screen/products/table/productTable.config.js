@@ -1,6 +1,6 @@
 import { Boxes } from "lucide-react";
 
-import { PRODUCT_TABLE_COLUMNS } from "@Tables/product/productTable.columns";
+import { PRODUCT_TABLE_COLUMNS } from "@screenComponent/products/table/productTable.columns";
 
 export const PRODUCT_TABLE_CONFIG = Object.freeze({
   columns: PRODUCT_TABLE_COLUMNS,

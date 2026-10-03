@@ -1,38 +1,45 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { PRODUCT_TABLE_DEFAULTS } from "@Tables/product";
+import { TABLE_DEFAULTS } from "@Enums";
 import {
   createProduct,
   deleteProduct,
   fetchProducts,
+  fetchQuotationProducts,
   updateProduct,
 } from "@Redux/product/product.action";
+import { PRODUCT_ERROR_MESSAGES } from "@Redux/product/product.defaults";
 import {
-  createTableState,
+  createProductState,
+  createQuotationOptionsState,
+} from "@Redux/product/product.state";
+import {
   tableFetchCases,
   TABLE_REDUCERS,
 } from "@Redux/factories/table.factory";
 
-const initialState = {
-  ...createTableState({
-    limit: PRODUCT_TABLE_DEFAULTS.limit,
-    sort: PRODUCT_TABLE_DEFAULTS.sort,
-    columnFilters: PRODUCT_TABLE_DEFAULTS.filters,
-  }),
-  dialog: null,
-  selectedProducts: [],
-  summary: {
-    totalProducts: 0,
-    activeProducts: 0,
-    inactiveProducts: 0,
-  },
-  isCreating: false,
-  createError: null,
-  isUpdating: false,
-  updateError: null,
-  isDeleting: false,
-  deleteError: null,
-};
+const initialState = createProductState();
+
+function clearOperationErrors(state) {
+  state.operations.create.error = null;
+  state.operations.update.error = null;
+  state.operations.delete.error = null;
+}
+
+function setOperationPending(operation) {
+  operation.isLoading = true;
+  operation.error = null;
+}
+
+function setOperationFulfilled(operation) {
+  operation.isLoading = false;
+  operation.error = null;
+}
+
+function setOperationRejected(operation, action, fallbackMessage) {
+  operation.isLoading = false;
+  operation.error = action.payload ?? fallbackMessage;
+}
 
 const productSlice = createSlice({
   name: "products",
@@ -41,15 +48,11 @@ const productSlice = createSlice({
     ...TABLE_REDUCERS,
     productDialogOpened(state, action) {
       state.dialog = action.payload;
-      state.createError = null;
-      state.updateError = null;
-      state.deleteError = null;
+      clearOperationErrors(state);
     },
     productDialogClosed(state) {
       state.dialog = null;
-      state.createError = null;
-      state.updateError = null;
-      state.deleteError = null;
+      clearOperationErrors(state);
     },
     productRowSelectionChanged(state, action) {
       const { product, checked } = action.payload;
@@ -63,6 +66,9 @@ const productSlice = createSlice({
         state.selectedProducts.splice(selectedIndex, 1);
       }
     },
+    quotationProductOptionsReset(state) {
+      state.quotationOptions = createQuotationOptionsState();
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -72,46 +78,99 @@ const productSlice = createSlice({
         state.summary = action.payload.summary;
       })
       .addCase(fetchProducts.rejected, (state, action) =>
-        tableFetchCases.rejected(state, action, "Unable to load products."),
+        tableFetchCases.rejected(
+          state,
+          action,
+          PRODUCT_ERROR_MESSAGES.list,
+        ),
       )
+      .addCase(fetchQuotationProducts.pending, (state, action) => {
+        const options = state.quotationOptions;
+        const isFirstPage = action.meta.arg.page === TABLE_DEFAULTS.PAGE;
+
+        options.requestId = action.meta.requestId;
+        options.error = null;
+        options.isLoading = isFirstPage;
+        options.isLoadingMore = !isFirstPage;
+        if (isFirstPage) options.items = [];
+      })
+      .addCase(fetchQuotationProducts.fulfilled, (state, action) => {
+        const options = state.quotationOptions;
+        if (options.requestId !== action.meta.requestId) return;
+
+        if (action.payload.pagination.page === TABLE_DEFAULTS.PAGE) {
+          options.items = action.payload.items;
+        } else {
+          const uniqueProducts = new Map(
+            [...options.items, ...action.payload.items].map((product) => [
+              product.id,
+              product,
+            ]),
+          );
+          options.items = [...uniqueProducts.values()];
+        }
+
+        options.pagination = action.payload.pagination;
+        options.isLoading = false;
+        options.isLoadingMore = false;
+        options.error = null;
+        options.requestId = null;
+      })
+      .addCase(fetchQuotationProducts.rejected, (state, action) => {
+        const options = state.quotationOptions;
+        if (options.requestId !== action.meta.requestId) return;
+
+        options.isLoading = false;
+        options.isLoadingMore = false;
+        options.error = action.meta.aborted
+          ? null
+          : (action.payload ?? PRODUCT_ERROR_MESSAGES.quotationList);
+        options.requestId = null;
+      })
       .addCase(createProduct.pending, (state) => {
-        state.isCreating = true;
-        state.createError = null;
+        setOperationPending(state.operations.create);
       })
       .addCase(createProduct.fulfilled, (state) => {
-        state.isCreating = false;
+        setOperationFulfilled(state.operations.create);
         state.dialog = null;
       })
       .addCase(createProduct.rejected, (state, action) => {
-        state.isCreating = false;
-        state.createError = action.payload ?? "Unable to add product.";
+        setOperationRejected(
+          state.operations.create,
+          action,
+          PRODUCT_ERROR_MESSAGES.create,
+        );
       })
       .addCase(updateProduct.pending, (state) => {
-        state.isUpdating = true;
-        state.updateError = null;
+        setOperationPending(state.operations.update);
       })
       .addCase(updateProduct.fulfilled, (state) => {
-        state.isUpdating = false;
+        setOperationFulfilled(state.operations.update);
         state.dialog = null;
       })
       .addCase(updateProduct.rejected, (state, action) => {
-        state.isUpdating = false;
-        state.updateError = action.payload ?? "Unable to update product.";
+        setOperationRejected(
+          state.operations.update,
+          action,
+          PRODUCT_ERROR_MESSAGES.update,
+        );
       })
       .addCase(deleteProduct.pending, (state) => {
-        state.isDeleting = true;
-        state.deleteError = null;
+        setOperationPending(state.operations.delete);
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {
-        state.isDeleting = false;
+        setOperationFulfilled(state.operations.delete);
         state.dialog = null;
         state.selectedProducts = state.selectedProducts.filter(
           (product) => product.id !== action.payload,
         );
       })
       .addCase(deleteProduct.rejected, (state, action) => {
-        state.isDeleting = false;
-        state.deleteError = action.payload ?? "Unable to delete product.";
+        setOperationRejected(
+          state.operations.delete,
+          action,
+          PRODUCT_ERROR_MESSAGES.delete,
+        );
       });
   },
 });
@@ -125,6 +184,7 @@ export const {
   productDialogClosed,
   productDialogOpened,
   productRowSelectionChanged,
+  quotationProductOptionsReset,
   searchChanged,
   searchCommitted,
   sortChanged,

@@ -3,7 +3,7 @@ import { ReceiptIndianRupee } from "lucide-react";
 import { Badge } from "@shadcnComponent/badge";
 import { formatDate } from "@/utils/date.util";
 import { PURCHASE_CREDIT_PAYMENT_TYPE_OPTIONS } from "@Enums";
-import { formatCurrency } from "@Tables/product/productTable.utils";
+import { formatCurrency } from "@/utils/numberFormat.util";
 import { purchaseCreditOptionLabel } from "@screenComponent/purchaseCredits/sheet/purchaseCreditSheet.utils";
 import {
   PURCHASE_CREDIT_STATUS_VARIANTS,

@@ -3,8 +3,12 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { ROLE_PATHS } from "@Enums";
 import { extractErrorMessage } from "@Api/client.api";
 import { employeeProductApi, superAdminProductApi } from "@Api";
-import { toProductListParams } from "@Tables/product/productTable.api-payload";
-import { fromProductListResponse } from "@Tables/product/productTable.frontend-payload";
+import { toProductListParams } from "@Redux/product/product.api-payload";
+import {
+  PRODUCT_ERROR_MESSAGES,
+  PRODUCT_LIST_DEFAULTS,
+} from "@Redux/product/product.defaults";
+import { fromProductListResponse } from "@Redux/product/product.api-response";
 import {
   toProductCreatePayload,
   toProductUpdatePayload,
@@ -17,19 +21,18 @@ const productListApiByRole = {
 
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
-  async (columns = [], { getState, signal, rejectWithValue }) => {
+  async (_, { getState, signal, rejectWithValue }) => {
     const state = getState();
     const { page, limit, searchQuery, sort, appliedFilters } = state.products;
     const productApi = productListApiByRole[state.auth.role];
 
     if (!productApi) {
-      return rejectWithValue("You do not have permission to view products.");
+      return rejectWithValue(PRODUCT_ERROR_MESSAGES.viewPermission);
     }
 
     try {
       const response = await productApi.getProducts(
         toProductListParams({
-          columns,
           page,
           limit,
           search: searchQuery,
@@ -46,9 +49,35 @@ export const fetchProducts = createAsyncThunk(
   },
 );
 
+export const fetchQuotationProducts = createAsyncThunk(
+  "products/fetchQuotationProducts",
+  async ({ page, search = "" }, { getState, signal, rejectWithValue }) => {
+    const denied = employeeOnly(getState, rejectWithValue);
+    if (denied) return denied;
+
+    const limit = PRODUCT_LIST_DEFAULTS.limit;
+
+    try {
+      const response = await employeeProductApi.getProducts(
+        toProductListParams({
+          page,
+          limit,
+          search,
+          sort: PRODUCT_LIST_DEFAULTS.sort,
+        }),
+        { signal },
+      );
+
+      return fromProductListResponse(response, { page, limit });
+    } catch (error) {
+      return rejectWithValue(extractErrorMessage(error));
+    }
+  },
+);
+
 function employeeOnly(getState, rejectWithValue) {
   if (getState().auth.role !== ROLE_PATHS.EMPLOYEE) {
-    return rejectWithValue("Only employees can manage products.");
+    return rejectWithValue(PRODUCT_ERROR_MESSAGES.managePermission);
   }
 
   return null;
