@@ -4,6 +4,8 @@ import { apiClient } from "@Api/client.api";
 import { ENDPOINTS } from "@Api/endpoints.constants";
 
 const productsPath = (rolePath) => `/${rolePath}/${ENDPOINTS.PRODUCT.BASE}`;
+const tallyProductsPath = (rolePath) =>
+  `/${rolePath}/${ENDPOINTS.PRODUCT.TALLY_PRODUCTS}`;
 
 function unwrapPayload(data) {
   return _.isArray(data) && data.length > 0 ? data[0] : (data ?? {});
@@ -13,6 +15,19 @@ export function createProductListApi(rolePath) {
   return {
     getProducts: async (params = {}, config = {}) => {
       const { data } = await apiClient.get(productsPath(rolePath), {
+        params,
+        ...config,
+      });
+
+      return unwrapPayload(data);
+    },
+  };
+}
+
+export function createTallyProductListApi(rolePath) {
+  return {
+    getTallyProducts: async (params = {}, config = {}) => {
+      const { data } = await apiClient.get(tallyProductsPath(rolePath), {
         params,
         ...config,
       });

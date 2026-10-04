@@ -19,7 +19,7 @@ export const fetchSyncPendingProducts = createAsyncThunk(
     }
 
     try {
-      const response = await employeeProductApi.getProducts(
+      const response = await employeeProductApi.getTallyProducts(
         toSyncPendingProductListParams({
           page,
           limit,
