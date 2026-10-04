@@ -19,7 +19,6 @@ import {
 } from "lucide-react";
 
 import { employeeCompanyApi } from "@Api";
-import defaultSignatureUrl from "@Assets/images/default-signature.png";
 import companyLogoUrl from "@Assets/images/logo.png";
 import { TABLE_DEFAULTS } from "@Enums";
 import { fetchQuotationProducts } from "@Redux/product/product.action";
@@ -704,7 +703,6 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
         })),
         companyLogoUrl,
         selectedCompany,
-        defaultSignatureUrl,
       );
     } finally {
       setIsGenerating(false);

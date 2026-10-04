@@ -493,7 +493,7 @@ function drawProductTable(doc, items, startY, startIndex = 0) {
   return rowY;
 }
 
-function drawQuotationSummary(doc, totals, startY, signatureDataUrl) {
+function drawQuotationSummary(doc, totals, startY) {
   drawCell(doc, 12, startY, 112, 35, { lineWidth: 0.35 });
   drawText(doc, "Amount in Words:", 16, startY + 7, {
     bold: true,
@@ -581,13 +581,11 @@ function drawQuotationSummary(doc, totals, startY, signatureDataUrl) {
 
   const signatureY = startY + 91;
   drawCell(doc, 12, signatureY, 186, 14, { lineWidth: 0.35 });
-  drawText(doc, `For ${BRAND.name}`, 16, signatureY + 6, {
+  drawText(doc, "THE GENERAL ELECTRIC STORES", 194, signatureY + 5.5, {
     bold: true,
     size: 7,
+    align: "right",
   });
-  if (signatureDataUrl) {
-    doc.addImage(signatureDataUrl, "PNG", 130, signatureY + 1, 36, 11, undefined, "FAST");
-  }
   drawText(doc, "AUTHORIZED SIGNATURE", 194, signatureY + 10, {
     bold: true,
     size: 6.5,
@@ -621,7 +619,7 @@ export function createProductQuotationDocument(
     isMultiple ? undefined : pricingOrOptions,
   );
   const options = isMultiple ? pricingOrOptions ?? {} : maybeOptions;
-  const { logoDataUrl, billTo, signatureDataUrl } = options;
+  const { logoDataUrl, billTo } = options;
   const firstProduct = items[0]?.product ?? {};
   const totals = aggregatePricing(items);
   const quotationId = quoteNumber(firstProduct, items.length);
@@ -646,7 +644,7 @@ export function createProductQuotationDocument(
 
   if (productTableHeight(doc, items) <= 81) {
     const tableEnd = drawProductTable(doc, items, 90);
-    drawQuotationSummary(doc, totals, tableEnd + 3, signatureDataUrl);
+    drawQuotationSummary(doc, totals, tableEnd + 3);
   } else {
     let itemIndex = 0;
     const firstPageItems = pageItemsByHeight(doc, items, itemIndex, 180);
@@ -664,7 +662,7 @@ export function createProductQuotationDocument(
     doc.addPage();
     drawContinuationHeader(doc, quotationId, "Quotation summary");
     drawClientDetails(doc, client, 35);
-    drawQuotationSummary(doc, totals, 63, signatureDataUrl);
+    drawQuotationSummary(doc, totals, 63);
   }
 
   const pageCount = doc.getNumberOfPages();
@@ -680,27 +678,17 @@ export async function downloadProductQuotationPdf(
   items,
   logoUrl,
   billTo,
-  signatureUrl,
 ) {
   let logoDataUrl;
-  let signatureDataUrl;
   try {
     logoDataUrl = logoUrl ? await imageUrlToDataUrl(logoUrl) : undefined;
   } catch {
     logoDataUrl = undefined;
   }
-  try {
-    signatureDataUrl = signatureUrl
-      ? await imageUrlToDataUrl(signatureUrl)
-      : undefined;
-  } catch {
-    signatureDataUrl = undefined;
-  }
 
   const { doc, quoteNumber: quotationId } = createProductQuotationDocument(items, {
     logoDataUrl,
     billTo,
-    signatureDataUrl,
   });
   doc.save(`${quotationId}.pdf`);
 }
