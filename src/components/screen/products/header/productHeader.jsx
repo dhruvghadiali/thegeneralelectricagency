@@ -7,6 +7,7 @@ import {
   selectSelectedProducts,
 } from "@Redux/product/product.selector";
 
+import ProductTabs from "@screenComponent/products/tab";
 import ProductSummary from "@screenComponent/products/header/productSummary";
 import ProductAddButton from "@screenComponent/products/header/productAddButton";
 import ProductQuotationButton from "@screenComponent/products/header/productQuotationButton";
@@ -17,8 +18,8 @@ function ProductHeader({ onViewQuotation }) {
   const navigate = useNavigate();
 
   return (
-    <header className="flex flex-col gap-2 sm:flex-row sm:justify-end">
-      <h1 className="sr-only">Products</h1>
+    <header className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
+      <ProductTabs />
       <ProductSummary />
       {canManage && (
         <>

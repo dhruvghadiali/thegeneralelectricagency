@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
+import { PRODUCT_TABS } from "@Enums";
 import {
+  selectActiveProductTab,
   selectCanManageProducts,
   selectSelectedProducts,
 } from "@Redux/product/product.selector";
@@ -11,6 +13,7 @@ import ProductQuotationSheet from "@screenComponent/products/quotation/productQu
 import ProductTable from "@screenComponent/products/table";
 
 function Products() {
+  const activeTab = useSelector(selectActiveProductTab);
   const canManage = useSelector(selectCanManageProducts);
   const selectedProducts = useSelector(selectSelectedProducts);
 
@@ -22,7 +25,9 @@ function Products() {
         onViewQuotation={() => setQuotationProducts(selectedProducts)}
       />
 
-      <ProductTable onCreateQuotation={setQuotationProducts} />
+      {activeTab === PRODUCT_TABS.PRODUCTS && (
+        <ProductTable onCreateQuotation={setQuotationProducts} />
+      )}
 
       {canManage && (
         <>

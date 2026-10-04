@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { TABLE_DEFAULTS } from "@Enums";
+import { PRODUCT_TABS, TABLE_DEFAULTS } from "@Enums";
 import {
   createProduct,
   deleteProduct,
@@ -46,6 +46,11 @@ const productSlice = createSlice({
   initialState,
   reducers: {
     ...TABLE_REDUCERS,
+    productTabChanged(state, action) {
+      if (Object.values(PRODUCT_TABS).includes(action.payload)) {
+        state.activeTab = action.payload;
+      }
+    },
     productDialogOpened(state, action) {
       state.dialog = action.payload;
       clearOperationErrors(state);
@@ -78,11 +83,7 @@ const productSlice = createSlice({
         state.summary = action.payload.summary;
       })
       .addCase(fetchProducts.rejected, (state, action) =>
-        tableFetchCases.rejected(
-          state,
-          action,
-          PRODUCT_ERROR_MESSAGES.list,
-        ),
+        tableFetchCases.rejected(state, action, PRODUCT_ERROR_MESSAGES.list),
       )
       .addCase(fetchQuotationProducts.pending, (state, action) => {
         const options = state.quotationOptions;
@@ -184,6 +185,7 @@ export const {
   productDialogClosed,
   productDialogOpened,
   productRowSelectionChanged,
+  productTabChanged,
   quotationProductOptionsReset,
   searchChanged,
   searchCommitted,

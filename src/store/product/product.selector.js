@@ -8,6 +8,11 @@ const selectAuthRole = (state) => state.auth.role;
 
 export const productTableSelectors = createTableSelectors(selectProductState);
 
+export const selectActiveProductTab = createSelector(
+  selectProductState,
+  (products) => products.activeTab,
+);
+
 export const selectCanManageProducts = createSelector(
   selectAuthRole,
   (role) => role === ROLE_PATHS.EMPLOYEE,

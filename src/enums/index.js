@@ -61,6 +61,7 @@ export {
   PRODUCT_CATEGORIES,
   PRODUCT_CATEGORY_OPTIONS,
   PRODUCT_STATUS_OPTIONS,
+  PRODUCT_TABS,
 } from "./product.enum";
 
 export {

@@ -7,6 +7,11 @@ export const PRODUCT_CATEGORIES = Object.freeze({
   SPARE: "spare",
 });
 
+export const PRODUCT_TABS = Object.freeze({
+  PRODUCTS: "Products",
+  SYNC_PENDING: "Sync Pending",
+});
+
 export const AGENCIES = Object.freeze({
   CG: "CG",
   RPG_KEC: "RPG KEC",
