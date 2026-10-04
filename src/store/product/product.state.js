@@ -22,7 +22,7 @@ export const createQuotationOptionsState = () => ({
 });
 
 export const createProductState = () => ({
-  ...createTableState({
+  productTable: createTableState({
     limit: PRODUCT_LIST_DEFAULTS.limit,
     sort: PRODUCT_LIST_DEFAULTS.sort,
     columnFilters: PRODUCT_LIST_DEFAULTS.filters,

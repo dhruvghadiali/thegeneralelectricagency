@@ -19,34 +19,43 @@ const productListApiByRole = {
   [ROLE_PATHS.SUPER_ADMIN]: superAdminProductApi,
 };
 
+async function getProductList({ getState, signal, rejectWithValue }) {
+  const state = getState();
+  const { page, limit, searchQuery, sort, appliedFilters } =
+    state.products.productTable;
+  const productApi = productListApiByRole[state.auth.role];
+
+  if (!productApi) {
+    return rejectWithValue(PRODUCT_ERROR_MESSAGES.viewPermission);
+  }
+
+  try {
+    const response = await productApi.getProducts(
+      toProductListParams({
+        page,
+        limit,
+        search: searchQuery,
+        sort,
+        filters: appliedFilters,
+      }),
+      { signal },
+    );
+
+    return fromProductListResponse(response, { page, limit });
+  } catch (error) {
+    if (signal.aborted) {
+      const abortError = new Error("Product list request was cancelled.");
+      abortError.name = "AbortError";
+      throw abortError;
+    }
+
+    return rejectWithValue(extractErrorMessage(error));
+  }
+}
+
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
-  async (_, { getState, signal, rejectWithValue }) => {
-    const state = getState();
-    const { page, limit, searchQuery, sort, appliedFilters } = state.products;
-    const productApi = productListApiByRole[state.auth.role];
-
-    if (!productApi) {
-      return rejectWithValue(PRODUCT_ERROR_MESSAGES.viewPermission);
-    }
-
-    try {
-      const response = await productApi.getProducts(
-        toProductListParams({
-          page,
-          limit,
-          search: searchQuery,
-          sort,
-          filters: appliedFilters,
-        }),
-        { signal },
-      );
-
-      return fromProductListResponse(response, { page, limit });
-    } catch (error) {
-      return rejectWithValue(extractErrorMessage(error));
-    }
-  },
+  (_, thunkApi) => getProductList(thunkApi),
 );
 
 export const fetchQuotationProducts = createAsyncThunk(

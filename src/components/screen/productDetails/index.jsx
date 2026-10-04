@@ -8,7 +8,10 @@ import {
 } from "react-router-dom";
 
 import { productDialogClosed } from "@Redux/product/product.slice";
-import { selectProductDialogState } from "@Redux/product/product.selector";
+import {
+  productTableSelectors,
+  selectProductDialogState,
+} from "@Redux/product/product.selector";
 import { createProduct, updateProduct } from "@Redux/product/product.action";
 import { PRODUCT_INITIAL_VALUES } from "@Forms/product/productDetails/productDetails.initialValues";
 import {
@@ -32,7 +35,7 @@ function ProductDetailsScreen() {
   const { isCreating, createError, isUpdating, updateError } = useSelector(
     selectProductDialogState,
   );
-  const products = useSelector((state) => state.products.items);
+  const products = useSelector(productTableSelectors.selectItems);
 
   const isEdit = Boolean(productId);
   const product = isEdit

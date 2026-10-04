@@ -1,3 +1,5 @@
+import { COLUMN_TYPES } from "./dataTable.enum";
+
 export const PRODUCT_CATEGORIES = Object.freeze({
   MOTOR: "motor",
   DRIVE: "drive",
@@ -11,6 +13,11 @@ export const PRODUCT_TABS = Object.freeze({
   PRODUCTS: "Products",
   SYNC_PENDING: "Sync Pending",
 });
+
+export const SYNC_PENDING_LIST_FILTER_COLUMNS = Object.freeze([
+  Object.freeze({ type: COLUMN_TYPES.TEXT, filterKey: "name" }),
+  Object.freeze({ type: COLUMN_TYPES.TEXT, filterKey: "hsn_code" }),
+]);
 
 export const AGENCIES = Object.freeze({
   CG: "CG",

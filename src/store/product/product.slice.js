@@ -41,11 +41,23 @@ function setOperationRejected(operation, action, fallbackMessage) {
   operation.error = action.payload ?? fallbackMessage;
 }
 
+const reduceProductTable = (reducer) => (state, action) =>
+  reducer(state.productTable, action);
+
 const productSlice = createSlice({
   name: "products",
   initialState,
   reducers: {
-    ...TABLE_REDUCERS,
+    productColumnFilterChanged: reduceProductTable(
+      TABLE_REDUCERS.columnFilterChanged,
+    ),
+    productFiltersApplied: reduceProductTable(TABLE_REDUCERS.filtersApplied),
+    productFiltersCleared: reduceProductTable(TABLE_REDUCERS.filtersCleared),
+    productLimitChanged: reduceProductTable(TABLE_REDUCERS.limitChanged),
+    productPageChanged: reduceProductTable(TABLE_REDUCERS.pageChanged),
+    productSearchChanged: reduceProductTable(TABLE_REDUCERS.searchChanged),
+    productSearchCommitted: reduceProductTable(TABLE_REDUCERS.searchCommitted),
+    productSortChanged: reduceProductTable(TABLE_REDUCERS.sortChanged),
     productTabChanged(state, action) {
       if (Object.values(PRODUCT_TABS).includes(action.payload)) {
         state.activeTab = action.payload;
@@ -77,13 +89,19 @@ const productSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchProducts.pending, tableFetchCases.pending)
+      .addCase(fetchProducts.pending, (state) =>
+        tableFetchCases.pending(state.productTable),
+      )
       .addCase(fetchProducts.fulfilled, (state, action) => {
-        tableFetchCases.fulfilled(state, action);
+        tableFetchCases.fulfilled(state.productTable, action);
         state.summary = action.payload.summary;
       })
       .addCase(fetchProducts.rejected, (state, action) =>
-        tableFetchCases.rejected(state, action, PRODUCT_ERROR_MESSAGES.list),
+        tableFetchCases.rejected(
+          state.productTable,
+          action,
+          PRODUCT_ERROR_MESSAGES.list,
+        ),
       )
       .addCase(fetchQuotationProducts.pending, (state, action) => {
         const options = state.quotationOptions;
@@ -177,30 +195,30 @@ const productSlice = createSlice({
 });
 
 export const {
-  columnFilterChanged,
-  filtersApplied,
-  filtersCleared,
-  limitChanged,
-  pageChanged,
+  productColumnFilterChanged,
   productDialogClosed,
   productDialogOpened,
+  productFiltersApplied,
+  productFiltersCleared,
+  productLimitChanged,
+  productPageChanged,
   productRowSelectionChanged,
+  productSearchChanged,
+  productSearchCommitted,
+  productSortChanged,
   productTabChanged,
   quotationProductOptionsReset,
-  searchChanged,
-  searchCommitted,
-  sortChanged,
 } = productSlice.actions;
 
 export const productTableActions = {
-  columnFilterChanged,
-  filtersApplied,
-  filtersCleared,
-  limitChanged,
-  pageChanged,
-  searchChanged,
-  searchCommitted,
-  sortChanged,
+  columnFilterChanged: productColumnFilterChanged,
+  filtersApplied: productFiltersApplied,
+  filtersCleared: productFiltersCleared,
+  limitChanged: productLimitChanged,
+  pageChanged: productPageChanged,
+  searchChanged: productSearchChanged,
+  searchCommitted: productSearchCommitted,
+  sortChanged: productSortChanged,
 };
 
 export default productSlice.reducer;

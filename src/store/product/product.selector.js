@@ -4,9 +4,12 @@ import { ROLE_PATHS } from "@Enums";
 import { createTableSelectors } from "@Redux/factories/table.factory";
 
 const selectProductState = (state) => state.products;
+const selectProductTableState = (state) => state.products.productTable;
 const selectAuthRole = (state) => state.auth.role;
 
-export const productTableSelectors = createTableSelectors(selectProductState);
+export const productTableSelectors = createTableSelectors(
+  selectProductTableState,
+);
 
 export const selectActiveProductTab = createSelector(
   selectProductState,
