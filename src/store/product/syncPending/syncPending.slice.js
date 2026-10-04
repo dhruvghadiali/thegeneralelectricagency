@@ -11,7 +11,15 @@ import { createSyncPendingState } from "@Redux/product/syncPending/syncPending.s
 const syncPendingSlice = createSlice({
   name: "syncPendingProducts",
   initialState: createSyncPendingState(),
-  reducers: TABLE_REDUCERS,
+  reducers: {
+    ...TABLE_REDUCERS,
+    syncPendingDetailsOpened(state, action) {
+      state.selectedProduct = action.payload;
+    },
+    syncPendingDetailsClosed(state) {
+      state.selectedProduct = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchSyncPendingProducts.pending, tableFetchCases.pending)
@@ -35,6 +43,8 @@ export const {
   searchChanged,
   searchCommitted,
   sortChanged,
+  syncPendingDetailsClosed,
+  syncPendingDetailsOpened,
 } = syncPendingSlice.actions;
 
 export const syncPendingTableActions = {
