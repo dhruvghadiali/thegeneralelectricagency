@@ -2,18 +2,24 @@ import { Boxes } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
-import { ROUTE_BUILDERS } from "@routes/navigate";
+import { ROUTES } from "@routes/navigate";
 import { syncPendingDetailsOpened } from "@Redux/product/syncPending/syncPending.slice";
+import { SYNC_PENDING_TABLE_COLUMNS } from "@screenComponent/products/table/syncPending/syncPendingTable.columns";
+
 import DataTable from "@commonComponent/dataTable";
 import SyncPendingSheet from "@screenComponent/products/sheet/syncPending";
 import useSyncPendingTable from "@screenComponent/products/table/syncPending/useSyncPendingTable";
-import { SYNC_PENDING_TABLE_COLUMNS } from "@screenComponent/products/table/syncPending/syncPendingTable.columns";
 import SyncPendingTableActions from "@screenComponent/products/table/syncPending/syncPendingTableActions";
 
 function SyncPending() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const table = useSyncPendingTable();
+
+  const onEditClicked = (product) =>
+    navigate(ROUTES.PRODUCT_SYNC_PENDING, {
+      state: { product },
+    });
 
   return (
     <>
@@ -43,11 +49,7 @@ function SyncPending() {
           <SyncPendingTableActions
             product={product}
             onView={(row) => dispatch(syncPendingDetailsOpened(row))}
-            onEdit={(row) =>
-              navigate(ROUTE_BUILDERS.productEdit(row.id), {
-                state: { product: row },
-              })
-            }
+            onEdit={(row) => onEditClicked(row)}
           />
         )}
         searchPlaceholder="Search pending products..."

@@ -23,6 +23,7 @@ import SalesOrderPage from "@pages/sales-order.page";
 import PurchaseCreditPage from "@pages/purchase-credit.page";
 import PurchaseCreditFormPage from "@pages/purchase-credit-form.page";
 import ProductsPage from "@pages/products.page";
+import ProductSyncPendingPage from "@pages/product-sync-pending.page";
 import ProductDetailsPage from "@pages/product-details.page";
 import CompanyDetailsPage from "@pages/company-details.page";
 import PurchaseOrderPage from "@pages/purchase-order.page";
@@ -96,6 +97,10 @@ function App() {
               <Route
                 element={<RoleRoute allowedRoles={[ROLE_PATHS.EMPLOYEE]} />}
               >
+                <Route
+                  path={ROUTES.PRODUCT_SYNC_PENDING}
+                  element={<ProductSyncPendingPage />}
+                />
                 <Route
                   path={ROUTES.PURCHASE_CREDIT_NEW}
                   element={<PurchaseCreditFormPage />}
