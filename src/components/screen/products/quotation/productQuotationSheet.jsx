@@ -24,6 +24,11 @@ import { TABLE_DEFAULTS } from "@Enums";
 import { fetchQuotationProducts } from "@Redux/product/product.action";
 import { selectQuotationProductOptions } from "@Redux/product/product.selector";
 import { quotationProductOptionsReset } from "@Redux/product/product.slice";
+import {
+  selectQuotationCompany,
+  selectQuotationGstPercentage,
+  selectQuotationTaxTreatment,
+} from "@Redux/product/quotation/quotation.selector";
 import { toCompanyListParams } from "@Tables/company/companyTable.api-payload";
 import { COMPANY_TABLE_DEFAULTS } from "@Tables/company/companyTable.defaults";
 import { fromCompanyListResponse } from "@Tables/company/companyTable.frontend-payload";
@@ -42,6 +47,7 @@ import {
 } from "@shadcnComponent/sheet";
 import ProductAgencyBadge from "@screenComponent/products/quotation/productAgencyBadge";
 import ProductCategoryBadge from "@screenComponent/products/quotation/productCategoryBadge";
+import { companyAddress } from "@screenComponent/products/dialogs/quotation/quotationCompanyInformation.utils";
 import { cn } from "@/lib/utils";
 
 function QuotationPopoverContent({
@@ -82,7 +88,6 @@ const QUOTATION_QUANTITY_MAX = 10_000;
 const LOCKED_FIELDS = Object.freeze({
   description: false,
   salePrice: false,
-  gstPercentage: false,
   discountAmount: false,
 });
 
@@ -100,14 +105,14 @@ const numericValue = (value) => {
 
 const quotationItemId = (product) => product.id || product.productCode;
 
-function createQuotationItem(product) {
+function createQuotationItem(product, gstPercentage = product.gstPercentage ?? "") {
   return {
     id: quotationItemId(product),
     product,
     quantity: String(QUOTATION_QUANTITY_MIN),
     description: product.description ?? "",
     salePrice: "0",
-    gstPercentage: product.gstPercentage ?? "",
+    gstPercentage,
     discountAmount: "0",
     enabledFields: { ...LOCKED_FIELDS },
   };
@@ -123,11 +128,9 @@ function calculateItemTotals(item) {
       : 0;
   const unitPrice = Math.max(numericValue(item.salePrice), 0);
   const discountPerUnit = Math.max(numericValue(item.discountAmount), 0);
-  const gstPercentage = Math.max(numericValue(item.gstPercentage), 0);
   const subtotal = unitPrice * quantity;
   const totalDiscount = discountPerUnit * quantity;
   const taxableAmount = Math.max(subtotal - totalDiscount, 0);
-  const gstAmount = taxableAmount * (gstPercentage / 100);
 
   return {
     quantity,
@@ -136,8 +139,6 @@ function calculateItemTotals(item) {
     subtotal,
     totalDiscount,
     taxableAmount,
-    gstAmount,
-    grandTotal: taxableAmount + gstAmount,
   };
 }
 
@@ -145,7 +146,6 @@ function validateQuotationItem(item) {
   const next = {};
   const quantity = Number(item.quantity);
   const salePrice = Number(item.salePrice);
-  const gst = item.gstPercentage === "" ? null : Number(item.gstPercentage);
   const discount = Number(item.discountAmount);
 
   if (
@@ -159,9 +159,6 @@ function validateQuotationItem(item) {
 
   if (item.salePrice === "" || !Number.isFinite(salePrice) || salePrice <= 0) {
     next.salePrice = "Sale price must be greater than 0.";
-  }
-  if (gst !== null && (!Number.isFinite(gst) || gst < 0 || gst > 100)) {
-    next.gstPercentage = "GST must be between 0 and 100.";
   }
   if (!Number.isFinite(discount) || discount < 0) {
     next.discountAmount = "Discount cannot be negative.";
@@ -212,6 +209,27 @@ function SummaryItem({ label, value, emphasized = false }) {
       </span>
       <span className="text-sm font-semibold tabular-nums">{value}</span>
     </div>
+  );
+}
+
+function CardExpansionButton({ expanded, onClick, controls }) {
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      size="sm"
+      onClick={onClick}
+      aria-expanded={expanded}
+      aria-controls={controls}
+      className="w-20 shrink-0 justify-center text-muted-foreground"
+    >
+      {expanded ? (
+        <ChevronUp className="size-4" />
+      ) : (
+        <ChevronDown className="size-4" />
+      )}
+      {expanded ? "Hide" : "Show"}
+    </Button>
   );
 }
 
@@ -272,28 +290,17 @@ function QuotationProductCard({
             type="button"
             variant="ghost"
             size="sm"
-            onClick={() => setIsExpanded((current) => !current)}
-            aria-expanded={isExpanded}
-            className="text-muted-foreground"
+            disabled={!canRemove}
+            onClick={onRemove}
+            aria-label={`Remove ${product.name}`}
+            className="shrink-0 text-muted-foreground hover:text-destructive"
           >
-            {isExpanded ? (
-              <ChevronUp className="size-4" />
-            ) : (
-              <ChevronDown className="size-4" />
-            )}
-            {isExpanded ? "Hide" : "Show"}
+            <Trash2 className="size-4" />
           </Button>
-          <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          disabled={!canRemove}
-          onClick={onRemove}
-          aria-label={`Remove ${product.name}`}
-          className="shrink-0 text-muted-foreground hover:text-destructive"
-        >
-          <Trash2 className="size-4" />
-          </Button>
+          <CardExpansionButton
+            expanded={isExpanded}
+            onClick={() => setIsExpanded((current) => !current)}
+          />
         </div>
       </div>
 
@@ -347,34 +354,6 @@ function QuotationProductCard({
 
         <div className="grid content-start gap-2">
           <EditableHeading
-            label="GST"
-            enabled={enabledFields.gstPercentage}
-            onEdit={() => onToggleField("gstPercentage")}
-          />
-          <div className="relative">
-            <Input
-              type="text"
-              inputMode="decimal"
-              value={item.gstPercentage}
-              onChange={(event) =>
-                onUpdate("gstPercentage", event.target.value)
-              }
-              disabled={!enabledFields.gstPercentage}
-              className="pr-8"
-            />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-              %
-            </span>
-          </div>
-          {errors.gstPercentage && (
-            <p className="text-xs font-medium text-destructive">
-              {errors.gstPercentage}
-            </p>
-          )}
-        </div>
-
-        <div className="grid content-start gap-2 sm:col-span-2">
-          <EditableHeading
             label="Fixed discount per unit"
             enabled={enabledFields.discountAmount}
             onEdit={() => onToggleField("discountAmount")}
@@ -423,6 +402,9 @@ function QuotationProductCard({
 
 function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
   const dispatch = useDispatch();
+  const quotationCompany = useSelector(selectQuotationCompany);
+  const quotationGstPercentage = useSelector(selectQuotationGstPercentage);
+  const quotationTaxTreatment = useSelector(selectQuotationTaxTreatment);
   const {
     items: availableProducts,
     pagination: productPagination,
@@ -440,6 +422,7 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
   const [productPage, setProductPage] = useState(TABLE_DEFAULTS.PAGE);
   const [companies, setCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState(null);
+  const [isBillToExpanded, setIsBillToExpanded] = useState(false);
   const [isCompanyPickerOpen, setIsCompanyPickerOpen] = useState(false);
   const [companySearch, setCompanySearch] = useState("");
   const [debouncedCompanySearch, setDebouncedCompanySearch] = useState("");
@@ -450,23 +433,36 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
   const [isLoadingCompanies, setIsLoadingCompanies] = useState(false);
   const [isLoadingMoreCompanies, setIsLoadingMoreCompanies] = useState(false);
   const [companyError, setCompanyError] = useState(null);
+  const selectedGstPercentage =
+    quotationTaxTreatment === "sezlout" ? "0" : quotationGstPercentage;
 
   useEffect(() => {
     if (!isOpen) return;
-    setQuotationItems(products.map(createQuotationItem));
+    setQuotationItems(
+      products.map((product) =>
+        createQuotationItem(product, selectedGstPercentage),
+      ),
+    );
     setIsGenerating(false);
     setIsProductPickerOpen(false);
     setProductSearch("");
     setDebouncedProductSearch("");
     setProductPage(TABLE_DEFAULTS.PAGE);
     dispatch(quotationProductOptionsReset());
-    setSelectedCompany(null);
+    setSelectedCompany(quotationCompany);
+    setIsBillToExpanded(false);
     setIsCompanyPickerOpen(false);
     setCompanySearch("");
     setDebouncedCompanySearch("");
     setCompanyPage(TABLE_DEFAULTS.PAGE);
     setCompanyPagination(EMPTY_COMPANY_PAGINATION);
-  }, [dispatch, isOpen, products]);
+  }, [
+    dispatch,
+    isOpen,
+    products,
+    quotationCompany,
+    selectedGstPercentage,
+  ]);
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -595,7 +591,7 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
     setQuotationItems((current) =>
       current.some((item) => item.id === id)
         ? current
-        : [...current, createQuotationItem(nextProduct)],
+        : [...current, createQuotationItem(nextProduct, selectedGstPercentage)],
     );
     setIsProductPickerOpen(false);
     setProductSearch("");
@@ -654,15 +650,13 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
   );
 
   const totals = useMemo(() => {
-    return quotationItems.reduce(
+    const productTotals = quotationItems.reduce(
       (summary, item) => {
         const itemTotals = calculateItemTotals(item);
         summary.quantity += itemTotals.quantity;
         summary.subtotal += itemTotals.subtotal;
         summary.totalDiscount += itemTotals.totalDiscount;
         summary.taxableAmount += itemTotals.taxableAmount;
-        summary.gstAmount += itemTotals.gstAmount;
-        summary.grandTotal += itemTotals.grandTotal;
         return summary;
       },
       {
@@ -670,11 +664,17 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
         subtotal: 0,
         totalDiscount: 0,
         taxableAmount: 0,
-        gstAmount: 0,
-        grandTotal: 0,
       },
     );
-  }, [quotationItems]);
+    const gstRate = Math.max(numericValue(selectedGstPercentage), 0);
+    const gstAmount = productTotals.taxableAmount * (gstRate / 100);
+
+    return {
+      ...productTotals,
+      gstAmount,
+      grandTotal: productTotals.taxableAmount + gstAmount,
+    };
+  }, [quotationItems, selectedGstPercentage]);
 
   const generatePdf = async () => {
     if (
@@ -887,12 +887,39 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
               </section>
 
               <section className="rounded-xl border bg-card p-4 sm:p-5">
-                <h3 className="text-sm font-semibold">Bill to</h3>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Select the client company whose billing details should appear
-                  in the PDF.
-                </p>
-                <div className="mt-4 grid gap-2">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <h3 className="text-sm font-semibold">Bill to</h3>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Select the client company whose billing details should
+                      appear in the PDF.
+                    </p>
+                    {!isBillToExpanded && selectedCompany && (
+                      <div className="mt-3 flex items-start gap-2 text-sm">
+                        <Building2 className="mt-0.5 size-4 shrink-0 text-primary" />
+                        <div className="min-w-0">
+                          <p className="truncate font-medium">
+                            {selectedCompany.name}
+                          </p>
+                          <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                            {companyAddress(selectedCompany)}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <CardExpansionButton
+                    expanded={isBillToExpanded}
+                    onClick={() =>
+                      setIsBillToExpanded((current) => !current)
+                    }
+                    controls="quotation-bill-to-details"
+                  />
+                </div>
+
+                {isBillToExpanded && (
+                  <div id="quotation-bill-to-details">
+                    <div className="mt-4 grid gap-2">
                   <Label htmlFor="quotation-company">Company</Label>
                   <Popover
                     open={isCompanyPickerOpen}
@@ -1001,10 +1028,10 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
                       )}
                     </QuotationPopoverContent>
                   </Popover>
-                </div>
+                    </div>
 
-                {selectedCompany && (
-                  <div className="mt-4 rounded-lg border bg-muted/20 p-4 text-sm">
+                    {selectedCompany && (
+                      <div className="mt-4 rounded-lg border bg-muted/20 p-4 text-sm">
                     <div className="flex gap-2">
                       <Building2 className="mt-0.5 size-4 shrink-0 text-primary" />
                       <p className="font-semibold">{selectedCompany.name}</p>
@@ -1112,6 +1139,8 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
                         GSTIN: {staticValue(selectedCompany.gstNumber)}
                       </p>
                     </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </section>
@@ -1145,10 +1174,24 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
                     label="Taxable amount"
                     value={moneyFormatter.format(totals.taxableAmount)}
                   />
-                  <SummaryItem
-                    label="GST"
-                    value={moneyFormatter.format(totals.gstAmount)}
-                  />
+                  {quotationTaxTreatment === "gujarat" && (
+                    <>
+                      <SummaryItem
+                        label={`CGST (${numericValue(selectedGstPercentage) / 2}%)`}
+                        value={moneyFormatter.format(totals.gstAmount / 2)}
+                      />
+                      <SummaryItem
+                        label={`SGST (${numericValue(selectedGstPercentage) / 2}%)`}
+                        value={moneyFormatter.format(totals.gstAmount / 2)}
+                      />
+                    </>
+                  )}
+                  {quotationTaxTreatment === "out-of-gujarat" && (
+                    <SummaryItem
+                      label={`IGST (${numericValue(selectedGstPercentage)}%)`}
+                      value={moneyFormatter.format(totals.gstAmount)}
+                    />
+                  )}
                   <SummaryItem
                     label={`Total for ${totals.quantity} ${totals.quantity === 1 ? "unit " : "units "}`}
                     value={moneyFormatter.format(totals.grandTotal)}

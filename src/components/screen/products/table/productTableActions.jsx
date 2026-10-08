@@ -16,8 +16,8 @@ function ProductTableActions({
           variant="ghost"
           size="icon"
           onClick={() => onPdf(product)}
-          aria-label={`Product PDF for ${product.name}`}
-          title="Product PDF"
+          aria-label={`View quotation details for ${product.name}`}
+          title="View quotation details"
         >
           <FileText className="size-4" />
         </Button>

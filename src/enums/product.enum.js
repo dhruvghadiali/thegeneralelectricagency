@@ -14,6 +14,24 @@ export const PRODUCT_TABS = Object.freeze({
   SYNC_PENDING: "Sync Pending",
 });
 
+export const TAX_TREATMENTS = Object.freeze([
+  Object.freeze({
+    value: "gujarat",
+    label: "Gujarat",
+    description: "CGST + SGST",
+  }),
+  Object.freeze({
+    value: "out-of-gujarat",
+    label: "Out of Gujarat",
+    description: "IGST",
+  }),
+  Object.freeze({
+    value: "sezlout",
+    label: "SEZLOUT",
+    description: "No GST · LUT/Bond",
+  }),
+]);
+
 export const SYNC_PENDING_LIST_FILTER_COLUMNS = Object.freeze([
   Object.freeze({ type: COLUMN_TYPES.TEXT, filterKey: "name" }),
   Object.freeze({ type: COLUMN_TYPES.TEXT, filterKey: "hsn_code" }),

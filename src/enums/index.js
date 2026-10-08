@@ -63,6 +63,7 @@ export {
   SYNC_PENDING_LIST_FILTER_COLUMNS,
   PRODUCT_STATUS_OPTIONS,
   PRODUCT_TABS,
+  TAX_TREATMENTS,
 } from "./product.enum";
 
 export {
