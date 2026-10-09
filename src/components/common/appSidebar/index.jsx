@@ -23,6 +23,10 @@ import { SIDEBAR_NAV_ITEMS_BY_ROLE } from "./appSidebar.constants";
 
 import logoImage from "@Assets/images/logo.png";
 
+function isNavigationItemActive(pathname, itemUrl) {
+  return pathname === itemUrl || pathname.startsWith(`${itemUrl}/`);
+}
+
 function AppSidebar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -70,7 +74,13 @@ function AppSidebar() {
 
                 return (
                   <SidebarMenuItem key={item.url}>
-                    <SidebarMenuButton asChild isActive={location.pathname === item.url}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isNavigationItemActive(
+                        location.pathname,
+                        item.url,
+                      )}
+                    >
                       <NavLink to={item.url}>
                         <item.icon />
                         <span>{item.title}</span>
