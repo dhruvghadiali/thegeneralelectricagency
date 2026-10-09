@@ -42,7 +42,11 @@ export const SIDEBAR_NAV_ITEMS_BY_ROLE = {
     // { title: "EUOB", url: ROUTES.PURCHASE_CREDITS, icon: HandCoins },
     { title: "Products", url: ROUTES.PRODUCTS, icon: Boxes },
     { title: "Companies", url: ROUTES.COMPANIES, icon: Building2 },
-    { title: "Quotation", url: ROUTES.QUOTATIONS, icon: FileText },
+    {
+      title: "Quotation",
+      url: ROUTES.QUOTATIONS,
+      icon: FileText,
+    },
     { title: "Settings", url: ROUTES.SETTINGS, icon: Settings },
   ],
   [ROLE_PATHS.WAREHOUSE_MANAGER]: [

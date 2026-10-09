@@ -11,6 +11,7 @@ import syncPendingProductsReducer from "@Redux/product/syncPending/syncPending.s
 import purchaseReducer from "@Redux/purchase/purchase.slice";
 import purchaseCreditReducer from "@Redux/purchaseCredit/purchaseCredit.slice";
 import salesOrderReducer from "@Redux/salesOrder/salesOrder.slice";
+import keyboardNavigationReducer from "@Redux/keyboardNavigation/keyboardNavigation.slice";
 import tallyProductsReducer from "@Tally/redux/tallyProducts/tallyProducts.slice";
 import systemProductsReducer from "@Tally/redux/systemProducts/systemProducts.slice";
 import systemCompaniesReducer from "@Tally/redux/systemCompanies/systemCompanies.slice";
@@ -33,6 +34,7 @@ const appReducer = combineReducers({
     purchases: purchaseReducer,
     purchaseCredits: purchaseCreditReducer,
     salesOrders: salesOrderReducer,
+    keyboardNavigation: keyboardNavigationReducer,
     tallyProducts: tallyProductsReducer,
     tallyCompanies: tallyCompanyReducer,
     systemProducts: systemProductsReducer,

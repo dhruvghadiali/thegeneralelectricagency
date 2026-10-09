@@ -10,14 +10,19 @@ import {
 } from "react-router-dom";
 
 import AppSidebar from "@commonComponent/appSidebar";
+import GlobalKeyboardNavigation from "@commonComponent/keyboardNavigation";
 import PageBreadcrumb from "@commonComponent/pageBreadcrumb";
 
-import { ROLE_OPTIONS } from "@Enums";
+import { ROLE_OPTIONS, ROLE_PATHS } from "@Enums";
 import { loggedOut } from "@/store/auth/auth.slice";
 import { getTokenExpiration, isAuthTokenValid } from "@routes/auth-token.util";
 import { ROUTES } from "@routes/navigate";
 import { SIDEBAR_NAV_ITEMS_BY_ROLE } from "@commonComponent/appSidebar/appSidebar.constants";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@shadcnComponent/sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@shadcnComponent/sidebar";
 import {
   Select,
   SelectContent,
@@ -92,8 +97,7 @@ function buildBreadcrumbItems(pathname, navItems) {
   }
 
   const currentItem = navItems.find(
-    (item) =>
-      pathname === item.url || pathname.startsWith(`${item.url}/`),
+    (item) => pathname === item.url || pathname.startsWith(`${item.url}/`),
   );
 
   return [{ label: currentItem?.title ?? "Dashboard" }];
@@ -116,11 +120,12 @@ function PrivateRoute() {
   };
 
   const { token, role } = useSelector((state) => state.auth);
-  
+
   const isValid = isAuthTokenValid(token);
   const navItems = SIDEBAR_NAV_ITEMS_BY_ROLE[role] ?? [];
   const breadcrumbItems = buildBreadcrumbItems(location.pathname, navItems);
-  const roleLabel = ROLE_OPTIONS.find((option) => option.value === role)?.label ?? "User";
+  const roleLabel =
+    ROLE_OPTIONS.find((option) => option.value === role)?.label ?? "User";
   const expiresAt = getTokenExpiration(token);
   const expiryLabel = expiresAt
     ? new Intl.DateTimeFormat(undefined, {
@@ -158,7 +163,10 @@ function PrivateRoute() {
           <div className="flex shrink-0 items-center gap-3 text-xs text-muted-foreground sm:gap-5">
             {location.pathname === ROUTES.PURCHASE_FINANCIAL_SUMMARY && (
               <div className="flex items-center gap-2">
-                <CalendarRange className="hidden size-4 sm:block" aria-hidden="true" />
+                <CalendarRange
+                  className="hidden size-4 sm:block"
+                  aria-hidden="true"
+                />
                 <label htmlFor="header-financial-year" className="sr-only">
                   Financial year
                 </label>
@@ -182,18 +190,28 @@ function PrivateRoute() {
                 </Select>
               </div>
             )}
-            <div className="flex items-center gap-1.5" title={`Signed in as ${roleLabel}`}>
+            <div
+              className="flex items-center gap-1.5"
+              title={`Signed in as ${roleLabel}`}
+            >
               <ShieldCheck className="size-4" aria-hidden="true" />
               <span className="hidden lg:inline">Role:</span>
               <span className="font-medium text-foreground">{roleLabel}</span>
             </div>
-            <div className="hidden items-center gap-1.5 xl:flex" title={`Token expires ${expiryLabel}`}>
+            <div
+              className="hidden items-center gap-1.5 xl:flex"
+              title={`Token expires ${expiryLabel}`}
+            >
               <Clock3 className="size-4" aria-hidden="true" />
               <span>Token expires:</span>
-              <time className="font-medium text-foreground" dateTime={expiresAt?.toISOString()}>
+              <time
+                className="font-medium text-foreground"
+                dateTime={expiresAt?.toISOString()}
+              >
                 {expiryLabel}
               </time>
             </div>
+            {role === ROLE_PATHS.EMPLOYEE && <GlobalKeyboardNavigation />}
           </div>
         </header>
         <div
