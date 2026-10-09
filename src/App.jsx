@@ -24,6 +24,7 @@ import PurchaseCreditPage from "@pages/purchase-credit.page";
 import PurchaseCreditFormPage from "@pages/purchase-credit-form.page";
 import ProductsPage from "@pages/products.page";
 import QuotationsPage from "@pages/quotations.page";
+import CreateQuotationPage from "@pages/create-quotation.page";
 import ProductSyncPendingPage from "@pages/product-sync-pending.page";
 import ProductDetailsPage from "@pages/product-details.page";
 import CompanyDetailsPage from "@pages/company-details.page";
@@ -105,6 +106,10 @@ function App() {
                 <Route
                   path={ROUTES.QUOTATIONS}
                   element={<QuotationsPage />}
+                />
+                <Route
+                  path={ROUTES.QUOTATION_NEW}
+                  element={<CreateQuotationPage />}
                 />
                 <Route
                   path={ROUTES.PURCHASE_CREDIT_NEW}

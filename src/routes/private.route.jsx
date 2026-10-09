@@ -54,6 +54,13 @@ function buildBreadcrumbItems(pathname, navItems) {
     ];
   }
 
+  if (pathname === ROUTES.QUOTATION_NEW) {
+    return [
+      { label: "Quotation", href: ROUTES.QUOTATIONS },
+      { label: "Create quotation" },
+    ];
+  }
+
   if (pathname === ROUTES.PURCHASE_CREDIT_NEW) {
     return [
       { label: "Purchase credit", href: ROUTES.PURCHASE_CREDITS },

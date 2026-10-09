@@ -14,6 +14,7 @@ export const ROUTES = Object.freeze({
   COMPANY_EDIT: "/companies/:companyId/edit",
   PRODUCTS: "/products",
   QUOTATIONS: "/quotations",
+  QUOTATION_NEW: "/quotations/new",
   PRODUCT_SYNC_PENDING: "/products/sync-pending",
   PRODUCT_NEW: "/products/new",
   PRODUCT_EDIT: "/products/:productId/edit",
