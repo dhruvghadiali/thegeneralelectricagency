@@ -703,6 +703,10 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
         })),
         companyLogoUrl,
         selectedCompany,
+        {
+          taxTreatment: quotationTaxTreatment,
+          gstPercentage: selectedGstPercentage,
+        },
       );
     } finally {
       setIsGenerating(false);
@@ -1168,7 +1172,11 @@ function ProductQuotationSheet({ products = EMPTY_PRODUCTS, onClose }) {
                   />
                   <SummaryItem
                     label="Total discount"
-                    value={`- ${moneyFormatter.format(totals.totalDiscount)}`}
+                    value={
+                      totals.totalDiscount > 0
+                        ? `- ${moneyFormatter.format(totals.totalDiscount)}`
+                        : moneyFormatter.format(0)
+                    }
                   />
                   <SummaryItem
                     label="Taxable amount"

@@ -2,12 +2,14 @@ import { jsPDF } from "jspdf";
 
 const BRAND = Object.freeze({
   name: "The General Electric Stores",
-  addressLine1: "6, Ganesh Shopping Centre, Opp. Dr. Beck & Co., G.I.D.C.,",
-  addressLine2: "Ankleshwar, Gujarat 393002, India",
+  addressLine1: "7, GANESH SHOPPING CENTRE OPP. DR. BECK & CO",
+  addressLine2: "G.I.D.C ANKLESHWAR - 393002",
   email: "generalagenc@gmail.com",
-  phone: "+91 78743 49006",
-  gst: "24AABFT1083B1ZR",
-  pan: "AABFT1083B",
+  phone: "+91 9099017416 | +91 7874349006",
+  gst: "24AAZFT8619H1ZF",
+  bankName: "HDFC BANK",
+  accountNumber: "99919099017416",
+  ifscCode: "HDFC0000255",
 });
 
 const COLORS = Object.freeze({
@@ -324,7 +326,7 @@ function drawBrandHeader(doc, logoDataUrl) {
   });
   drawText(
     doc,
-    `${BRAND.email}  |  ${BRAND.phone}  |  GSTIN: ${BRAND.gst}  |  PAN: ${BRAND.pan}`,
+    `${BRAND.email}  |  ${BRAND.phone}  |  GSTIN: ${BRAND.gst}`,
     46,
     52,
     { color: COLORS.muted, size: 6.6 },
@@ -400,14 +402,13 @@ function pageItemsByHeight(doc, items, startIndex, maxTableHeight) {
 }
 
 function drawProductTable(doc, items, startY, startIndex = 0) {
-  const columns = [12, 63, 32, 16, 27, 14, 22];
+  const columns = [12, 70, 32, 16, 30, 26];
   const headers = [
     ["SL.", "NO."],
     ["DESCRIPTION"],
     ["PRODUCT", "CODE"],
     ["QTY"],
     ["PRICE", "/ UNIT"],
-    ["GST", "(%)"],
     ["AMOUNT"],
   ];
   let columnX = 12;
@@ -479,11 +480,7 @@ function drawProductTable(doc, items, startY, startIndex = 0) {
       align: "center",
       size: 6.2,
     });
-    drawText(doc, `${totals.gstPercentage}%`, centers[5], centerY, {
-      align: "center",
-      size: 6.5,
-    });
-    drawText(doc, moneyFormatter.format(totals.subtotal), centers[6], centerY, {
+    drawText(doc, moneyFormatter.format(totals.subtotal), centers[5], centerY, {
       align: "center",
       size: 6.2,
     });
@@ -493,8 +490,59 @@ function drawProductTable(doc, items, startY, startIndex = 0) {
   return rowY;
 }
 
-function drawQuotationSummary(doc, totals, startY) {
-  drawCell(doc, 12, startY, 112, 35, { lineWidth: 0.35 });
+function quotationTaxRows(totals, taxTreatment, gstPercentage) {
+  const gstRate = Math.max(numberOrZero(gstPercentage), 0);
+
+  if (taxTreatment === "gujarat") {
+    return [
+      [`CGST (${gstRate / 2}%)`, totals.gstAmount / 2],
+      [`SGST (${gstRate / 2}%)`, totals.gstAmount / 2],
+    ];
+  }
+  if (taxTreatment === "out-of-gujarat") {
+    return [[`IGST (${gstRate}%)`, totals.gstAmount]];
+  }
+  if (taxTreatment === "sezlout") {
+    return [["SEZLOUT (LUT/Bond)", 0]];
+  }
+
+  return [["Total GST", totals.gstAmount]];
+}
+
+function quotationTaxTerm(taxTreatment) {
+  if (taxTreatment === "gujarat") {
+    return "2. GST is split equally between CGST and SGST.";
+  }
+  if (taxTreatment === "out-of-gujarat") {
+    return "2. GST is applied as IGST for this quotation.";
+  }
+  if (taxTreatment === "sezlout") {
+    return "2. Supply is without GST under LUT/Bond.";
+  }
+
+  return "2. The final amount includes the GST shown above.";
+}
+
+function drawQuotationSummary(
+  doc,
+  totals,
+  startY,
+  { taxTreatment, gstPercentage } = {},
+) {
+  const taxRows = quotationTaxRows(totals, taxTreatment, gstPercentage);
+  const totalRows = [
+    ["Sub Total", totals.subtotal],
+    [
+      "Total Discount",
+      totals.totalDiscount > 0 ? -totals.totalDiscount : 0,
+    ],
+    ["Taxable Amount", totals.taxableAmount],
+    ...taxRows,
+    ["FINAL AMOUNT", totals.grandTotal],
+  ];
+  const totalsHeight = totalRows.length * 7;
+
+  drawCell(doc, 12, startY, 112, totalsHeight, { lineWidth: 0.35 });
   drawText(doc, "Amount in Words:", 16, startY + 7, {
     bold: true,
     size: 8.5,
@@ -504,13 +552,6 @@ function drawQuotationSummary(doc, totals, startY) {
     maxWidth: 102,
   });
 
-  const totalRows = [
-    ["Sub Total", totals.subtotal],
-    ["Total Discount", -totals.totalDiscount],
-    ["Taxable Amount", totals.taxableAmount],
-    ["Total GST", totals.gstAmount],
-    ["FINAL AMOUNT", totals.grandTotal],
-  ];
   totalRows.forEach(([label, value], index) => {
     const rowY = startY + index * 7;
     const isFinal = index === totalRows.length - 1;
@@ -534,15 +575,40 @@ function drawQuotationSummary(doc, totals, startY) {
     });
   });
 
-  const infoY = startY + 38;
-  drawCell(doc, 12, infoY, 91, 25, { lineWidth: 0.35 });
+  const commercialY = startY + totalsHeight + 3;
+  drawCell(doc, 12, commercialY, 186, 6, { fill: COLORS.secondary });
+  drawText(doc, "COMMERCIAL DETAILS", 16, commercialY + 4.4, {
+    bold: true,
+    size: 7.5,
+  });
+  const commercialDetails = [
+    `GST - As Actual (${numberOrZero(gstPercentage)}%)`,
+    "Delivery - EX-STOCK",
+    "PAYMENT - 30 DAYS",
+  ];
+  commercialDetails.forEach((detail, index) => {
+    const columnX = 12 + index * 62;
+    drawCell(doc, columnX, commercialY + 6, 62, 9, {
+      fill: index % 2 === 0 ? COLORS.surface : COLORS.white,
+      lineWidth: 0.35,
+    });
+    drawText(doc, detail, columnX + 31, commercialY + 11.7, {
+      bold: true,
+      size: 7,
+      align: "center",
+    });
+  });
+
+  const infoY = commercialY + 18;
+  drawCell(doc, 12, infoY, 91, 30, { lineWidth: 0.35 });
   drawCell(doc, 12, infoY, 91, 6, { fill: COLORS.secondary });
   drawText(doc, "BANK DETAILS", 16, infoY + 4.4, { bold: true, size: 7.5 });
-  drawLabelLine(doc, "Account Name:", BRAND.name, 16, infoY + 12, 38);
-  drawLabelLine(doc, "Bank Name:", "To be provided", 16, infoY + 18, 38);
-  drawLabelLine(doc, "Account / IFSC:", "To be provided", 16, infoY + 23, 40);
+  drawLabelLine(doc, "Account Name:", BRAND.name, 16, infoY + 11.5, 38);
+  drawLabelLine(doc, "Bank Name:", BRAND.bankName, 16, infoY + 17, 38);
+  drawLabelLine(doc, "A/C. No.:", BRAND.accountNumber, 16, infoY + 22.5, 38);
+  drawLabelLine(doc, "IFSC Code:", BRAND.ifscCode, 16, infoY + 28, 38);
 
-  drawCell(doc, 106, infoY, 92, 25, { lineWidth: 0.35 });
+  drawCell(doc, 106, infoY, 92, 30, { lineWidth: 0.35 });
   drawCell(doc, 106, infoY, 92, 6, { fill: COLORS.secondary });
   drawText(doc, "TERMS & CONDITIONS", 110, infoY + 4.4, {
     bold: true,
@@ -550,15 +616,16 @@ function drawQuotationSummary(doc, totals, startY) {
   });
   const terms = [
     "1. Fixed discounts apply to each selected unit.",
-    "2. The final amount includes the GST shown above.",
+    quotationTaxTerm(taxTreatment),
     "3. Availability and delivery require confirmation.",
     "4. Commercial terms remain subject to final order.",
+    "5. Make All Cheques Payable To The Company Name.",
   ];
   terms.forEach((term, index) =>
     drawText(doc, term, 110, infoY + 11 + index * 3.8, { size: 6.1 }),
   );
 
-  const declarationY = startY + 66;
+  const declarationY = infoY + 33;
   drawCell(doc, 12, declarationY, 186, 22, { lineWidth: 0.35 });
   drawCell(doc, 12, declarationY, 186, 6, { fill: COLORS.secondary });
   drawText(doc, "DECLARATION", 16, declarationY + 4.4, {
@@ -579,29 +646,86 @@ function drawQuotationSummary(doc, totals, startY) {
     maxWidth: 176,
   });
 
-  const signatureY = startY + 91;
-  drawCell(doc, 12, signatureY, 186, 14, { lineWidth: 0.35 });
-  drawText(doc, "THE GENERAL ELECTRIC STORES", 194, signatureY + 5.5, {
+  const signatureY = declarationY + 25;
+  const signatureColumnWidth = 93;
+  const signatureLeftCenter = 12 + signatureColumnWidth / 2;
+  const signatureRightCenter = 105 + signatureColumnWidth / 2;
+
+  drawCell(doc, 12, signatureY, 186, 20, { lineWidth: 0.35 });
+  drawCell(doc, 12, signatureY, 186, 6, { fill: COLORS.secondary });
+  drawText(doc, "AUTHORISATION", 16, signatureY + 4.4, {
     bold: true,
-    size: 7,
-    align: "right",
+    size: 7.5,
   });
-  drawText(doc, "AUTHORIZED SIGNATURE", 194, signatureY + 10, {
+
+  drawCell(doc, 12, signatureY + 6, signatureColumnWidth, 14, {
+    fill: COLORS.surface,
+    lineWidth: 0.35,
+  });
+  drawCell(doc, 105, signatureY + 6, signatureColumnWidth, 14, {
+    lineWidth: 0.35,
+  });
+
+  drawText(doc, "HARIKESH PATEL", signatureLeftCenter, signatureY + 11.5, {
+    align: "center",
     bold: true,
+    size: 7.2,
+  });
+  drawText(doc, "Authorised Person", signatureLeftCenter, signatureY + 16.5, {
+    align: "center",
+    color: COLORS.muted,
     size: 6.5,
-    align: "right",
   });
+  drawText(
+    doc,
+    "THE GENERAL ELECTRIC STORES",
+    signatureRightCenter,
+    signatureY + 11.5,
+    {
+      align: "center",
+      bold: true,
+      size: 7.2,
+    },
+  );
+  drawText(
+    doc,
+    "Authorised Signature",
+    signatureRightCenter,
+    signatureY + 16.5,
+    {
+      align: "center",
+      color: COLORS.muted,
+      size: 6.5,
+    },
+  );
+
+  const closingY = signatureY + 23;
+  drawCell(doc, 12, closingY, 186, 15, {
+    fill: COLORS.accent,
+    lineWidth: 0.35,
+  });
+  drawText(doc, "Thank You For Your Business!", 105, closingY + 5.5, {
+    bold: true,
+    color: COLORS.primary,
+    size: 8,
+    align: "center",
+  });
+  drawText(
+    doc,
+    "Should You Have Any Enquiries Concerning This Quote, Please Contact Us",
+    105,
+    closingY + 11,
+    {
+      color: COLORS.muted,
+      size: 6.7,
+      align: "center",
+    },
+  );
 }
 
 function drawFooter(doc, page, pageCount) {
   drawCell(doc, 12, 279, 186, 7, { fill: COLORS.accent, lineWidth: 0.35 });
   drawText(doc, BRAND.email, 16, 283.5, { size: 6.5 });
-  drawText(doc, "Thank you for your business", 105, 283.5, {
-    bold: true,
-    color: COLORS.primary,
-    size: 7,
-    align: "center",
-  });
   drawText(doc, `Page ${page} of ${pageCount}`, 194, 283.5, {
     size: 6.5,
     align: "right",
@@ -619,9 +743,23 @@ export function createProductQuotationDocument(
     isMultiple ? undefined : pricingOrOptions,
   );
   const options = isMultiple ? pricingOrOptions ?? {} : maybeOptions;
-  const { logoDataUrl, billTo } = options;
+  const { logoDataUrl, billTo, taxTreatment } = options;
   const firstProduct = items[0]?.product ?? {};
-  const totals = aggregatePricing(items);
+  const itemTotals = aggregatePricing(items);
+  const gstPercentage =
+    taxTreatment === "sezlout"
+      ? 0
+      : numberOrZero(
+          options.gstPercentage ?? items[0]?.pricing?.gstPercentage,
+        );
+  const gstAmount = itemTotals.taxableAmount * (gstPercentage / 100);
+  const totals = taxTreatment
+    ? {
+        ...itemTotals,
+        gstAmount,
+        grandTotal: itemTotals.taxableAmount + gstAmount,
+      }
+    : itemTotals;
   const quotationId = quoteNumber(firstProduct, items.length);
   const client = billToDetails(billTo);
   const generatedAt = new Date().toLocaleDateString("en-IN", {
@@ -644,7 +782,10 @@ export function createProductQuotationDocument(
 
   if (productTableHeight(doc, items) <= 81) {
     const tableEnd = drawProductTable(doc, items, 90);
-    drawQuotationSummary(doc, totals, tableEnd + 3);
+    drawQuotationSummary(doc, totals, tableEnd + 3, {
+      taxTreatment,
+      gstPercentage,
+    });
   } else {
     let itemIndex = 0;
     const firstPageItems = pageItemsByHeight(doc, items, itemIndex, 180);
@@ -662,7 +803,10 @@ export function createProductQuotationDocument(
     doc.addPage();
     drawContinuationHeader(doc, quotationId, "Quotation summary");
     drawClientDetails(doc, client, 35);
-    drawQuotationSummary(doc, totals, 63);
+    drawQuotationSummary(doc, totals, 63, {
+      taxTreatment,
+      gstPercentage,
+    });
   }
 
   const pageCount = doc.getNumberOfPages();
@@ -678,6 +822,7 @@ export async function downloadProductQuotationPdf(
   items,
   logoUrl,
   billTo,
+  taxDetails = {},
 ) {
   let logoDataUrl;
   try {
@@ -689,6 +834,7 @@ export async function downloadProductQuotationPdf(
   const { doc, quoteNumber: quotationId } = createProductQuotationDocument(items, {
     logoDataUrl,
     billTo,
+    ...taxDetails,
   });
   doc.save(`${quotationId}.pdf`);
 }
