@@ -236,7 +236,7 @@ function QuotationProductInformation({ companyInformation }) {
               onNavigateToProductInformation={openProductInformation}
             />
           )}
-          {!isProductSummaryExpanded && (
+          {!isProductSummaryExpanded && !isAddAnotherDialogOpen && (
             <QuotationProductInformationCard
               formik={formik}
               fieldError={fieldError}

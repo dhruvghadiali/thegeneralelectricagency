@@ -8,7 +8,9 @@ function useProductSummaryKeyboardShortcut({
   onNavigateToProductInformation,
 }) {
   const [activeProductIndex, setActiveProductIndex] = useState(0);
+  const [focusedProductIndex, setFocusedProductIndex] = useState(null);
   const productRefs = useRef([]);
+  const downloadButtonRef = useRef(null);
 
   useEffect(() => {
     productRefs.current[0]?.focus();
@@ -32,6 +34,18 @@ function useProductSummaryKeyboardShortcut({
 
   const handleProductFocus = useCallback((index) => {
     setActiveProductIndex(index);
+    setFocusedProductIndex(index);
+  }, []);
+
+  const handleProductBlur = useCallback((event) => {
+    if (
+      event.relatedTarget &&
+      event.currentTarget.contains(event.relatedTarget)
+    ) {
+      return;
+    }
+
+    setFocusedProductIndex(null);
   }, []);
 
   const handleProductKeyDown = useCallback(
@@ -51,6 +65,18 @@ function useProductSummaryKeyboardShortcut({
         return;
       }
 
+      const shouldFocusDownload =
+        index === productCount - 1 &&
+        event.target === event.currentTarget &&
+        ((event.altKey && event.key === "ArrowDown") ||
+          (event.key === "Tab" && !event.shiftKey));
+
+      if (shouldFocusDownload) {
+        event.preventDefault();
+        downloadButtonRef.current?.focus();
+        return;
+      }
+
       if (!event.altKey) return;
 
       if (event.key === "ArrowUp") {
@@ -67,12 +93,6 @@ function useProductSummaryKeyboardShortcut({
 
       if (event.key === "ArrowDown") {
         event.preventDefault();
-
-        if (index === productCount - 1) {
-          onNavigateToProductInformation();
-          return;
-        }
-
         focusProduct(index + 1);
       }
     },
@@ -81,9 +101,28 @@ function useProductSummaryKeyboardShortcut({
       onDeleteProduct,
       onEditProduct,
       onNavigateToCompanyInformation,
-      onNavigateToProductInformation,
       productCount,
     ],
+  );
+
+  const handleDownloadButtonKeyDown = useCallback(
+    (event) => {
+      if (event.altKey && event.key === "ArrowUp") {
+        event.preventDefault();
+        focusProduct(productCount - 1);
+        return;
+      }
+
+      const shouldOpenProductForm =
+        (event.altKey && event.key === "ArrowDown") ||
+        (event.key === "Tab" && !event.shiftKey);
+
+      if (!shouldOpenProductForm) return;
+
+      event.preventDefault();
+      onNavigateToProductInformation();
+    },
+    [focusProduct, onNavigateToProductInformation, productCount],
   );
 
   const handleProductDeleted = useCallback(
@@ -101,8 +140,12 @@ function useProductSummaryKeyboardShortcut({
 
   return {
     activeProductIndex,
+    downloadButtonRef,
+    focusedProductIndex,
     focusProduct,
+    handleDownloadButtonKeyDown,
     handleProductDeleted,
+    handleProductBlur,
     handleProductFocus,
     handleProductKeyDown,
     setProductRef,

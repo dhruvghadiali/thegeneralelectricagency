@@ -3,8 +3,9 @@ import _ from "lodash";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@shadcnComponent/button";
-import { CardContent } from "@shadcnComponent/card";
+import { CardContent, CardFooter } from "@shadcnComponent/card";
 import useProductSummaryKeyboardShortcut from "@screenComponent/quotations/create/hooks/product/useProductSummaryKeyboardShortcut";
+import CreateQuotationDownloadButton from "@screenComponent/quotations/create/productInformation/createQuotationDownloadButton";
 import QuotationProductDeleteDialog from "@screenComponent/quotations/create/productInformation/quotationProductDeleteDialog";
 
 const currencyFormatter = new Intl.NumberFormat("en-IN", {
@@ -71,14 +72,15 @@ function ExpandedProductSummary({
             role="listitem"
             tabIndex={keyboard.activeProductIndex === index ? 0 : -1}
             aria-current={
-              keyboard.activeProductIndex === index ? "true" : undefined
+              keyboard.focusedProductIndex === index ? "true" : undefined
             }
             onClick={() => keyboard.focusProduct(index)}
+            onBlur={keyboard.handleProductBlur}
             onFocus={() => keyboard.handleProductFocus(index)}
             onKeyDown={(event) => keyboard.handleProductKeyDown(event, index)}
             className={cn(
-              "grid gap-2 px-5 py-3 outline-none transition-colors last:rounded-b-xl",
-              keyboard.activeProductIndex === index &&
+              "grid gap-2 px-5 py-3 outline-none transition-colors",
+              keyboard.focusedProductIndex === index &&
                 "bg-accent text-accent-foreground ring-1 ring-inset ring-ring",
             )}
           >
@@ -142,6 +144,12 @@ function ExpandedProductSummary({
           </article>
         ))}
       </CardContent>
+      <CardFooter className="justify-end border-t px-5 py-3">
+        <CreateQuotationDownloadButton
+          buttonRef={keyboard.downloadButtonRef}
+          onKeyDown={keyboard.handleDownloadButtonKeyDown}
+        />
+      </CardFooter>
       <QuotationProductDeleteDialog
         product={products[pendingDeleteProductIndex] ?? null}
         onCancel={cancelDelete}
