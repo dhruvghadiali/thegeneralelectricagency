@@ -60,6 +60,16 @@ export const selectQuotationProductInformation = createSelector(
   (quotation) => quotation.productInformation,
 );
 
+export const selectQuotationProductSummaryExpanded = createSelector(
+  selectQuotationState,
+  (quotation) => quotation.isProductSummaryExpanded,
+);
+
+export const selectQuotationProductEditingIndex = createSelector(
+  selectQuotationState,
+  (quotation) => quotation.editingProductIndex,
+);
+
 export const selectQuotationProductPagination = createSelector(
   selectQuotationState,
   (quotation) => quotation.productPagination,

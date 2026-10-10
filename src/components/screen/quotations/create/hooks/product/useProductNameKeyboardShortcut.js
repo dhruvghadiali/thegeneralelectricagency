@@ -5,6 +5,7 @@ function useProductNameKeyboardShortcut({
   quantityInputRef,
   hasProductSummary,
   onNavigateToCompanyInformation,
+  onOpenProductSummary,
 }) {
   const handleProductNameFocus = useCallback((event) => {
     const input = event.currentTarget;
@@ -22,7 +23,11 @@ function useProductNameKeyboardShortcut({
       if (event.altKey && event.key === "ArrowUp") {
         event.preventDefault();
 
-        if (!hasProductSummary) onNavigateToCompanyInformation();
+        if (hasProductSummary) {
+          onOpenProductSummary();
+        } else {
+          onNavigateToCompanyInformation();
+        }
         return;
       }
 
@@ -52,6 +57,7 @@ function useProductNameKeyboardShortcut({
     [
       hasProductSummary,
       onNavigateToCompanyInformation,
+      onOpenProductSummary,
       productDirectoryRef,
       quantityInputRef,
     ],

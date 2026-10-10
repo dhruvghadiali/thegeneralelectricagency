@@ -39,6 +39,53 @@ const quotationSlice = createSlice({
       state.productInformation.push(action.payload);
       state.productSearch = "";
       state.selectedProduct = null;
+      state.isProductSummaryExpanded = false;
+      state.editingProductIndex = null;
+    },
+    quotationProductInformationUpdated(state, action) {
+      const { index, product } = action.payload;
+
+      if (index < 0 || index >= state.productInformation.length) return;
+
+      state.productInformation[index] = product;
+      state.productSearch = "";
+      state.selectedProduct = null;
+      state.isProductSummaryExpanded = false;
+      state.editingProductIndex = null;
+    },
+    quotationProductInformationDeleted(state, action) {
+      const deletedIndex = action.payload;
+
+      if (
+        deletedIndex < 0 ||
+        deletedIndex >= state.productInformation.length
+      ) {
+        return;
+      }
+
+      state.productInformation.splice(deletedIndex, 1);
+
+      if (state.editingProductIndex === deletedIndex) {
+        state.editingProductIndex = null;
+      } else if (state.editingProductIndex > deletedIndex) {
+        state.editingProductIndex -= 1;
+      }
+
+      if (state.productInformation.length === 0) {
+        state.isProductSummaryExpanded = false;
+      }
+    },
+    quotationProductEditingStarted(state, action) {
+      state.editingProductIndex = action.payload;
+      state.isProductSummaryExpanded = false;
+    },
+    quotationProductSummaryOpened(state) {
+      if (state.productInformation.length > 0) {
+        state.isProductSummaryExpanded = true;
+      }
+    },
+    quotationProductSummaryClosed(state) {
+      state.isProductSummaryExpanded = false;
     },
   },
   extraReducers: (builder) => {
@@ -115,9 +162,14 @@ export const {
   quotationCompanyInformationSaved,
   quotationCompanySearchChanged,
   quotationCompanySelected,
+  quotationProductEditingStarted,
+  quotationProductInformationDeleted,
   quotationProductInformationSaved,
+  quotationProductInformationUpdated,
   quotationProductSearchChanged,
   quotationProductSelected,
+  quotationProductSummaryClosed,
+  quotationProductSummaryOpened,
   quotationStepChanged,
 } = quotationSlice.actions;
 

@@ -3,14 +3,21 @@ import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
+  selectQuotationProductEditingIndex,
   selectQuotationProductInformation,
   selectQuotationProductSearch,
+  selectQuotationProductSummaryExpanded,
   selectQuotationSelectedProduct,
 } from "@Redux/quotation/quotation.selector";
 import {
+  quotationProductEditingStarted,
+  quotationProductInformationDeleted,
   quotationProductInformationSaved,
+  quotationProductInformationUpdated,
   quotationProductSearchChanged,
   quotationProductSelected,
+  quotationProductSummaryClosed,
+  quotationProductSummaryOpened,
   quotationStepChanged,
 } from "@Redux/quotation/quotation.slice";
 import { CREATE_QUOTATION_STEPS } from "@Enums";
@@ -28,6 +35,12 @@ function QuotationProductInformation({ companyInformation }) {
   const productSearch = useSelector(selectQuotationProductSearch);
   const selectedProduct = useSelector(selectQuotationSelectedProduct);
   const productInformation = useSelector(selectQuotationProductInformation);
+  const isProductSummaryExpanded = useSelector(
+    selectQuotationProductSummaryExpanded,
+  );
+  const editingProductIndex = useSelector(
+    selectQuotationProductEditingIndex,
+  );
   const productInputRef = useRef(null);
   const quantityInputRef = useRef(null);
   const sellingPriceInputRef = useRef(null);
@@ -36,7 +49,18 @@ function QuotationProductInformation({ companyInformation }) {
   const saveButtonRef = useRef(null);
   const productDirectoryRef = useRef(null);
   const openCompanyInformation = useCallback(() => {
+    dispatch(quotationProductSummaryClosed());
     dispatch(quotationStepChanged(CREATE_QUOTATION_STEPS.COMPANY_INFORMATION));
+  }, [dispatch]);
+  const openProductSummary = useCallback(() => {
+    dispatch(quotationProductSummaryOpened());
+  }, [dispatch]);
+  const openProductInformation = useCallback(() => {
+    dispatch(quotationProductSummaryClosed());
+
+    window.requestAnimationFrame(() => {
+      productInputRef.current?.focus();
+    });
   }, [dispatch]);
   const productFieldRefs = {
     productInputRef,
@@ -51,6 +75,7 @@ function QuotationProductInformation({ companyInformation }) {
     ...productFieldRefs,
     hasProductSummary: productInformation.length > 0,
     onNavigateToCompanyInformation: openCompanyInformation,
+    onOpenProductSummary: openProductSummary,
   });
   const formik = useFormik({
     initialValues: selectedProduct
@@ -64,12 +89,25 @@ function QuotationProductInformation({ companyInformation }) {
         },
     validationSchema: quotationProductValidationSchema,
     onSubmit: (values) => {
-      dispatch(
-        quotationProductInformationSaved({
-          ...quotationProductValidationSchema.cast(values),
-          productId: selectedProduct?.id ?? null,
-        }),
-      );
+      const savedProduct = {
+        ...quotationProductValidationSchema.cast(values),
+        productId:
+          selectedProduct?.id ??
+          productInformation[editingProductIndex]?.productId ??
+          null,
+      };
+
+      if (editingProductIndex === null) {
+        dispatch(quotationProductInformationSaved(savedProduct));
+      } else {
+        dispatch(
+          quotationProductInformationUpdated({
+            index: editingProductIndex,
+            product: savedProduct,
+          }),
+        );
+      }
+
       formik.resetForm({
         values: { ...QUOTATION_PRODUCT_INITIAL_VALUES },
       });
@@ -111,6 +149,41 @@ function QuotationProductInformation({ companyInformation }) {
     });
   };
 
+  const editProduct = (product, index) => {
+    dispatch(quotationProductEditingStarted(index));
+    formik.resetForm({
+      values: {
+        product: product.product ?? "",
+        sellingPrice: String(product.sellingPrice ?? ""),
+        quantity: String(product.quantity ?? "1"),
+        discount: String(product.discount ?? "0"),
+        description: product.description ?? "",
+      },
+    });
+
+    window.requestAnimationFrame(() => {
+      productInputRef.current?.focus();
+    });
+  };
+
+  const deleteProduct = (index) => {
+    const wasEditingProduct = editingProductIndex === index;
+
+    dispatch(quotationProductInformationDeleted(index));
+
+    if (wasEditingProduct) {
+      formik.resetForm({
+        values: { ...QUOTATION_PRODUCT_INITIAL_VALUES },
+      });
+    }
+
+    if (productInformation.length === 1) {
+      window.requestAnimationFrame(() => {
+        productInputRef.current?.focus();
+      });
+    }
+  };
+
   return (
     <div className="grid w-full gap-6 lg:h-full lg:min-h-0 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,0.8fr)]">
       <div className="flex min-w-0 flex-col gap-4 lg:min-h-0 lg:overflow-y-auto lg:pr-1">
@@ -119,15 +192,24 @@ function QuotationProductInformation({ companyInformation }) {
           address={companyInformation.address}
         />
         {productInformation.length > 0 && (
-          <QuotationProductSummaryCard products={productInformation} />
+          <QuotationProductSummaryCard
+            products={productInformation}
+            isExpanded={isProductSummaryExpanded}
+            onEdit={editProduct}
+            onDelete={deleteProduct}
+            onNavigateToCompanyInformation={openCompanyInformation}
+            onNavigateToProductInformation={openProductInformation}
+          />
         )}
-        <QuotationProductInformationCard
-          formik={formik}
-          fieldError={fieldError}
-          fieldRefs={productFieldRefs}
-          keyboard={keyboard}
-          onProductNameChange={changeProductName}
-        />
+        {!isProductSummaryExpanded && (
+          <QuotationProductInformationCard
+            formik={formik}
+            fieldError={fieldError}
+            fieldRefs={productFieldRefs}
+            keyboard={keyboard}
+            onProductNameChange={changeProductName}
+          />
+        )}
       </div>
       <QuotationProductList
         directoryRef={productDirectoryRef}

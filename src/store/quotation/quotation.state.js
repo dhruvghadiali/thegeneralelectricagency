@@ -24,6 +24,8 @@ export const createQuotationState = () => ({
   productSearch: "",
   selectedProduct: null,
   productInformation: [],
+  isProductSummaryExpanded: false,
+  editingProductIndex: null,
   productPagination: {
     page: QUOTATION_PRODUCT_PAGE,
     limit: QUOTATION_PRODUCT_LIMIT,

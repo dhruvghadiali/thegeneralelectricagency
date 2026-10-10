@@ -16,12 +16,14 @@ function useProductKeyboardShortcuts({
   productDirectoryRef,
   hasProductSummary,
   onNavigateToCompanyInformation,
+  onOpenProductSummary,
 }) {
   const productNameKeyboard = useProductNameKeyboardShortcut({
     productDirectoryRef,
     quantityInputRef,
     hasProductSummary,
     onNavigateToCompanyInformation,
+    onOpenProductSummary,
   });
   const handleQuantityKeyDown = useProductQuantityKeyboardShortcut({
     productInputRef,
