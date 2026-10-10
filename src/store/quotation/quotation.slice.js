@@ -15,6 +15,7 @@ const quotationSlice = createSlice({
   reducers: {
     quotationStepChanged(state, action) {
       state.currentStep = action.payload;
+      state.isProductAddAnotherDialogOpen = false;
     },
     quotationCompanySearchChanged(state, action) {
       state.companySearch = action.payload;
@@ -95,10 +96,17 @@ const quotationSlice = createSlice({
     quotationProductDeleteCancelled(state) {
       state.pendingDeleteProductIndex = null;
     },
+    quotationProductAddAnotherPromptOpened(state) {
+      state.isProductAddAnotherDialogOpen = true;
+    },
+    quotationProductAddAnotherPromptClosed(state) {
+      state.isProductAddAnotherDialogOpen = false;
+    },
     quotationProductSummaryOpened(state) {
       if (state.productInformation.length > 0) {
         state.isProductSummaryExpanded = true;
       }
+      state.isProductAddAnotherDialogOpen = false;
     },
     quotationProductSummaryClosed(state) {
       state.isProductSummaryExpanded = false;
@@ -181,6 +189,8 @@ export const {
   quotationCompanySelected,
   quotationProductDeleteCancelled,
   quotationProductDeleteRequested,
+  quotationProductAddAnotherPromptClosed,
+  quotationProductAddAnotherPromptOpened,
   quotationProductEditingStarted,
   quotationProductInformationDeleted,
   quotationProductInformationSaved,

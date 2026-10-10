@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import {
   selectQuotationPendingDeleteProductIndex,
+  selectQuotationProductAddAnotherDialogOpen,
   selectQuotationProductEditingIndex,
   selectQuotationProductInformation,
   selectQuotationProductSearch,
@@ -11,6 +12,8 @@ import {
   selectQuotationSelectedProduct,
 } from "@Redux/quotation/quotation.selector";
 import {
+  quotationProductAddAnotherPromptClosed,
+  quotationProductAddAnotherPromptOpened,
   quotationProductDeleteCancelled,
   quotationProductDeleteRequested,
   quotationProductEditingStarted,
@@ -29,6 +32,7 @@ import { toQuotationProductFormValues } from "@screenComponent/quotations/create
 import { QUOTATION_PRODUCT_INITIAL_VALUES } from "@screenComponent/quotations/create/form/createQuotation.initialValues";
 import { quotationProductValidationSchema } from "@screenComponent/quotations/create/form/createQuotation.validation.schema";
 import useProductKeyboardShortcuts from "@screenComponent/quotations/create/hooks/product";
+import QuotationProductAddAnotherDialog from "@screenComponent/quotations/create/productInformation/quotationProductAddAnotherDialog";
 import QuotationProductInformationCard from "@screenComponent/quotations/create/productInformation/quotationProductInformationCard";
 import QuotationProductList from "@screenComponent/quotations/create/productInformation/quotationProductList";
 import QuotationProductSummaryCard from "@screenComponent/quotations/create/productInformation/quotationProductSummaryCard";
@@ -46,6 +50,9 @@ function QuotationProductInformation({ companyInformation }) {
   );
   const pendingDeleteProductIndex = useSelector(
     selectQuotationPendingDeleteProductIndex,
+  );
+  const isAddAnotherDialogOpen = useSelector(
+    selectQuotationProductAddAnotherDialogOpen,
   );
   const productInputRef = useRef(null);
   const quantityInputRef = useRef(null);
@@ -117,10 +124,7 @@ function QuotationProductInformation({ companyInformation }) {
       formik.resetForm({
         values: { ...QUOTATION_PRODUCT_INITIAL_VALUES },
       });
-
-      window.requestAnimationFrame(() => {
-        productInputRef.current?.focus();
-      });
+      dispatch(quotationProductAddAnotherPromptOpened());
     },
   });
   const fieldError = (field) =>
@@ -198,43 +202,63 @@ function QuotationProductInformation({ companyInformation }) {
     dispatch(quotationProductDeleteCancelled());
   };
 
+  const addAnotherProduct = () => {
+    dispatch(quotationProductAddAnotherPromptClosed());
+
+    window.requestAnimationFrame(() => {
+      productInputRef.current?.focus();
+    });
+  };
+
+  const finishAddingProducts = () => {
+    dispatch(quotationProductAddAnotherPromptClosed());
+    dispatch(quotationProductSummaryOpened());
+  };
+
   return (
-    <div className="grid w-full gap-6 lg:h-full lg:min-h-0 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,0.8fr)]">
-      <div className="flex min-w-0 flex-col gap-4 lg:min-h-0 lg:overflow-y-auto lg:pr-1">
-        <QuotationCompanySummaryCard
-          companyName={companyInformation.companyName}
-          address={companyInformation.address}
+    <>
+      <div className="grid w-full gap-6 lg:h-full lg:min-h-0 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,0.8fr)]">
+        <div className="flex min-w-0 flex-col gap-4 lg:min-h-0 lg:overflow-y-auto lg:pr-1">
+          <QuotationCompanySummaryCard
+            companyName={companyInformation.companyName}
+            address={companyInformation.address}
+          />
+          {productInformation.length > 0 && (
+            <QuotationProductSummaryCard
+              products={productInformation}
+              isExpanded={isProductSummaryExpanded}
+              onEdit={editProduct}
+              pendingDeleteProductIndex={pendingDeleteProductIndex}
+              onDeleteRequest={requestProductDelete}
+              onDeleteCancel={cancelProductDelete}
+              onDeleteConfirm={deleteProduct}
+              onNavigateToCompanyInformation={openCompanyInformation}
+              onNavigateToProductInformation={openProductInformation}
+            />
+          )}
+          {!isProductSummaryExpanded && (
+            <QuotationProductInformationCard
+              formik={formik}
+              fieldError={fieldError}
+              fieldRefs={productFieldRefs}
+              keyboard={keyboard}
+              onProductNameChange={changeProductName}
+            />
+          )}
+        </div>
+        <QuotationProductList
+          directoryRef={productDirectoryRef}
+          selectedProduct={selectedProduct}
+          onProductSelect={selectProduct}
+          onProductOptionKeyDown={keyboard.handleProductOptionKeyDown}
         />
-        {productInformation.length > 0 && (
-          <QuotationProductSummaryCard
-            products={productInformation}
-            isExpanded={isProductSummaryExpanded}
-            onEdit={editProduct}
-            pendingDeleteProductIndex={pendingDeleteProductIndex}
-            onDeleteRequest={requestProductDelete}
-            onDeleteCancel={cancelProductDelete}
-            onDeleteConfirm={deleteProduct}
-            onNavigateToCompanyInformation={openCompanyInformation}
-            onNavigateToProductInformation={openProductInformation}
-          />
-        )}
-        {!isProductSummaryExpanded && (
-          <QuotationProductInformationCard
-            formik={formik}
-            fieldError={fieldError}
-            fieldRefs={productFieldRefs}
-            keyboard={keyboard}
-            onProductNameChange={changeProductName}
-          />
-        )}
       </div>
-      <QuotationProductList
-        directoryRef={productDirectoryRef}
-        selectedProduct={selectedProduct}
-        onProductSelect={selectProduct}
-        onProductOptionKeyDown={keyboard.handleProductOptionKeyDown}
+      <QuotationProductAddAnotherDialog
+        open={isAddAnotherDialogOpen}
+        onNo={finishAddingProducts}
+        onYes={addAnotherProduct}
       />
-    </div>
+    </>
   );
 }
 

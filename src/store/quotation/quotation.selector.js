@@ -75,6 +75,11 @@ export const selectQuotationPendingDeleteProductIndex = createSelector(
   (quotation) => quotation.pendingDeleteProductIndex,
 );
 
+export const selectQuotationProductAddAnotherDialogOpen = createSelector(
+  selectQuotationState,
+  (quotation) => quotation.isProductAddAnotherDialogOpen,
+);
+
 export const selectQuotationProductPagination = createSelector(
   selectQuotationState,
   (quotation) => quotation.productPagination,
