@@ -18,6 +18,7 @@ function useCreateQuotationKeyboardShortcut() {
     return () =>
       window.removeEventListener("keydown", handleCreateQuotationShortcut);
   }, [navigate]);
+
 }
 
 export default useCreateQuotationKeyboardShortcut;
