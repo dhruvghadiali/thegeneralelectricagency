@@ -3,6 +3,8 @@ import { useCallback } from "react";
 function useProductNameKeyboardShortcut({
   productDirectoryRef,
   quantityInputRef,
+  hasProductSummary,
+  onNavigateToCompanyInformation,
 }) {
   const handleProductNameFocus = useCallback((event) => {
     const input = event.currentTarget;
@@ -17,6 +19,13 @@ function useProductNameKeyboardShortcut({
 
   const handleProductNameKeyDown = useCallback(
     (event) => {
+      if (event.altKey && event.key === "ArrowUp") {
+        event.preventDefault();
+
+        if (!hasProductSummary) onNavigateToCompanyInformation();
+        return;
+      }
+
       if (event.altKey && event.key === "ArrowRight") {
         event.preventDefault();
         const selectedProduct = productDirectoryRef.current?.querySelector(
@@ -40,7 +49,12 @@ function useProductNameKeyboardShortcut({
       event.preventDefault();
       quantityInputRef.current?.focus();
     },
-    [productDirectoryRef, quantityInputRef],
+    [
+      hasProductSummary,
+      onNavigateToCompanyInformation,
+      productDirectoryRef,
+      quantityInputRef,
+    ],
   );
 
   return { handleProductNameFocus, handleProductNameKeyDown };

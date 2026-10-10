@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -11,7 +11,9 @@ import {
   quotationProductInformationSaved,
   quotationProductSearchChanged,
   quotationProductSelected,
+  quotationStepChanged,
 } from "@Redux/quotation/quotation.slice";
+import { CREATE_QUOTATION_STEPS } from "@Enums";
 import QuotationCompanySummaryCard from "@screenComponent/quotations/create/companyInformation/quotationCompanySummaryCard";
 import { toQuotationProductFormValues } from "@screenComponent/quotations/create/form/createQuotation-frontend.payload";
 import { QUOTATION_PRODUCT_INITIAL_VALUES } from "@screenComponent/quotations/create/form/createQuotation.initialValues";
@@ -33,6 +35,9 @@ function QuotationProductInformation({ companyInformation }) {
   const descriptionInputRef = useRef(null);
   const saveButtonRef = useRef(null);
   const productDirectoryRef = useRef(null);
+  const openCompanyInformation = useCallback(() => {
+    dispatch(quotationStepChanged(CREATE_QUOTATION_STEPS.COMPANY_INFORMATION));
+  }, [dispatch]);
   const productFieldRefs = {
     productInputRef,
     quantityInputRef,
@@ -42,7 +47,11 @@ function QuotationProductInformation({ companyInformation }) {
     saveButtonRef,
     productDirectoryRef,
   };
-  const keyboard = useProductKeyboardShortcuts(productFieldRefs);
+  const keyboard = useProductKeyboardShortcuts({
+    ...productFieldRefs,
+    hasProductSummary: productInformation.length > 0,
+    onNavigateToCompanyInformation: openCompanyInformation,
+  });
   const formik = useFormik({
     initialValues: selectedProduct
       ? {

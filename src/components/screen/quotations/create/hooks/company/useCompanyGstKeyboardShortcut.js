@@ -9,8 +9,13 @@ function useCompanyGstKeyboardShortcut({ phoneInputRef, saveButtonRef }) {
         return;
       }
 
+      if (event.altKey && event.key === "ArrowDown") {
+        event.preventDefault();
+        saveButtonRef.current?.focus();
+        return;
+      }
+
       const shouldFocusSave =
-        (event.altKey && event.key === "ArrowDown") ||
         event.key === "Enter" ||
         (event.key === "Tab" && !event.shiftKey);
 
