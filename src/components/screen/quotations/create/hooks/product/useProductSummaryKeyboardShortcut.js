@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { isAltShortcut } from "@keyboard/keyboard.utils";
+
 function useProductSummaryKeyboardShortcut({
   productCount,
   onDeleteProduct,
   onEditProduct,
   onNavigateToCompanyInformation,
   onNavigateToProductInformation,
+  onOpenQuotationSummary,
 }) {
   const [activeProductIndex, setActiveProductIndex] = useState(0);
   const [focusedProductIndex, setFocusedProductIndex] = useState(null);
@@ -15,6 +18,23 @@ function useProductSummaryKeyboardShortcut({
   useEffect(() => {
     productRefs.current[0]?.focus();
   }, []);
+
+  useEffect(() => {
+    const handleQuotationSummaryShortcut = (event) => {
+      if (!isAltShortcut(event, "d")) return;
+
+      event.preventDefault();
+      onOpenQuotationSummary();
+    };
+
+    window.addEventListener("keydown", handleQuotationSummaryShortcut, true);
+    return () =>
+      window.removeEventListener(
+        "keydown",
+        handleQuotationSummaryShortcut,
+        true,
+      );
+  }, [onOpenQuotationSummary]);
 
   const setProductRef = useCallback((index, element) => {
     productRefs.current[index] = element;

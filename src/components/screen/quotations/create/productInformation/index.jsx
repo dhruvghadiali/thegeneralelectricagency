@@ -75,6 +75,9 @@ function QuotationProductInformation({ companyInformation }) {
       productInputRef.current?.focus();
     });
   }, [dispatch]);
+  const openQuotationSummary = useCallback(() => {
+    dispatch(quotationStepChanged(CREATE_QUOTATION_STEPS.QUOTATION_SUMMARY));
+  }, [dispatch]);
   const productFieldRefs = {
     productInputRef,
     quantityInputRef,
@@ -234,6 +237,7 @@ function QuotationProductInformation({ companyInformation }) {
               onDeleteConfirm={deleteProduct}
               onNavigateToCompanyInformation={openCompanyInformation}
               onNavigateToProductInformation={openProductInformation}
+              onOpenQuotationSummary={openQuotationSummary}
             />
           )}
           {!isProductSummaryExpanded && !isAddAnotherDialogOpen && (

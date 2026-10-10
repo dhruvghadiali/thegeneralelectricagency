@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { isAltShortcut } from "@keyboard/keyboard.utils";
+import { ROUTES } from "@routes/navigate";
 import {
   selectKeyboardNavigationActiveIndex,
   selectKeyboardNavigationIsOpen,
@@ -23,6 +24,7 @@ import {
 
 function useGlobalKeyboardNavigation() {
   const dispatch = useDispatch();
+  const location = useLocation();
   const navigate = useNavigate();
   const role = useSelector((state) => state.auth.role);
   const isOpen = useSelector(selectKeyboardNavigationIsOpen);
@@ -61,6 +63,15 @@ function useGlobalKeyboardNavigation() {
 
   useEffect(() => {
     const handleGlobalShortcut = (event) => {
+      if (event.defaultPrevented) return;
+
+      const isQuotationSummaryShortcut =
+        location.pathname === ROUTES.QUOTATION_NEW &&
+        isAltShortcut(event, "d") &&
+        document.querySelector("[data-quotation-summary-trigger]");
+
+      if (isQuotationSummaryShortcut) return;
+
       const command = availableCommands.find((item) =>
         isAltShortcut(event, item.shortcutKey),
       );
@@ -73,7 +84,7 @@ function useGlobalKeyboardNavigation() {
 
     window.addEventListener("keydown", handleGlobalShortcut);
     return () => window.removeEventListener("keydown", handleGlobalShortcut);
-  }, [availableCommands, runCommand]);
+  }, [availableCommands, location.pathname, runCommand]);
 
   const changeQuery = useCallback(
     (nextQuery) => {

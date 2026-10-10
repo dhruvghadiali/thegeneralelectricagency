@@ -22,6 +22,7 @@ import { createQuotationValidationSchema } from "@screenComponent/quotations/cre
 import useCompanyKeyboardShortcuts from "@screenComponent/quotations/create/hooks/company";
 import QuotationCompanyInformation from "@screenComponent/quotations/create/companyInformation";
 import QuotationProductInformation from "@screenComponent/quotations/create/productInformation";
+import QuotationSummary from "@screenComponent/quotations/create/quotationSummary";
 
 function CreateQuotationForm() {
   const dispatch = useDispatch();
@@ -111,6 +112,7 @@ function CreateQuotationForm() {
     [CREATE_QUOTATION_STEPS.PRODUCT_INFORMATION]: (
       <QuotationProductInformation companyInformation={companyInformation} />
     ),
+    [CREATE_QUOTATION_STEPS.QUOTATION_SUMMARY]: <QuotationSummary />,
   };
 
   return quotationStepComponents[currentStep];

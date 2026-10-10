@@ -17,6 +17,7 @@ function QuotationProductSummaryCard({
   onDeleteConfirm,
   onNavigateToCompanyInformation,
   onNavigateToProductInformation,
+  onOpenQuotationSummary,
 }) {
   return (
     <Card className="w-full shrink-0 gap-0 overflow-hidden py-0">
@@ -36,6 +37,7 @@ function QuotationProductSummaryCard({
           onDeleteConfirm={onDeleteConfirm}
           onNavigateToCompanyInformation={onNavigateToCompanyInformation}
           onNavigateToProductInformation={onNavigateToProductInformation}
+          onOpenQuotationSummary={onOpenQuotationSummary}
         />
       )}
     </Card>

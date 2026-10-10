@@ -7,7 +7,7 @@ import {
 } from "@Redux/quotation/quotation.selector";
 import { Button } from "@shadcnComponent/button";
 
-function CreateQuotationDownloadButton({ buttonRef, onKeyDown }) {
+function CreateQuotationDownloadButton({ buttonRef, onClick, onKeyDown }) {
   const companyInformation = useSelector(selectQuotationCompanyInformation);
   const productInformation = useSelector(selectQuotationProductInformation);
   const shouldShow = Boolean(
@@ -21,7 +21,9 @@ function CreateQuotationDownloadButton({ buttonRef, onKeyDown }) {
       ref={buttonRef}
       type="button"
       size="sm"
+      onClick={onClick}
       onKeyDown={onKeyDown}
+      data-quotation-summary-trigger
       aria-keyshortcuts="Alt+D"
       title="Download PDF (Alt+D)"
       className="h-8"

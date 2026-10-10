@@ -27,6 +27,7 @@ function ExpandedProductSummary({
   onDeleteConfirm,
   onNavigateToCompanyInformation,
   onNavigateToProductInformation,
+  onOpenQuotationSummary,
 }) {
   const keyboard = useProductSummaryKeyboardShortcut({
     productCount: products.length,
@@ -34,6 +35,7 @@ function ExpandedProductSummary({
     onEditProduct: (index) => onEdit(products[index], index),
     onNavigateToCompanyInformation,
     onNavigateToProductInformation,
+    onOpenQuotationSummary,
   });
 
   const cancelDelete = () => {
@@ -147,6 +149,7 @@ function ExpandedProductSummary({
       <CardFooter className="justify-end border-t px-5 py-3">
         <CreateQuotationDownloadButton
           buttonRef={keyboard.downloadButtonRef}
+          onClick={onOpenQuotationSummary}
           onKeyDown={keyboard.handleDownloadButtonKeyDown}
         />
       </CardFooter>
