@@ -14,7 +14,6 @@ function useBackButtonKeyboardShortcut({
 
       const shouldFocusSubmit =
         (event.altKey && event.key === "ArrowDown") ||
-        event.key === "Enter" ||
         (event.key === "Tab" && !event.shiftKey);
 
       if (!shouldFocusSubmit) return;
