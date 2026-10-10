@@ -30,6 +30,7 @@ function ExpandedProductSummary({
   const keyboard = useProductSummaryKeyboardShortcut({
     productCount: products.length,
     onDeleteProduct: onDeleteRequest,
+    onEditProduct: (index) => onEdit(products[index], index),
     onNavigateToCompanyInformation,
     onNavigateToProductInformation,
   });

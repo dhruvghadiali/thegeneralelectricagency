@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 function useProductSummaryKeyboardShortcut({
   productCount,
   onDeleteProduct,
+  onEditProduct,
   onNavigateToCompanyInformation,
   onNavigateToProductInformation,
 }) {
@@ -35,6 +36,12 @@ function useProductSummaryKeyboardShortcut({
 
   const handleProductKeyDown = useCallback(
     (event, index) => {
+      if (event.key === "Enter" && event.target === event.currentTarget) {
+        event.preventDefault();
+        onEditProduct(index);
+        return;
+      }
+
       const isDeleteKey =
         event.key === "Delete" || event.key === "Backspace";
 
@@ -72,6 +79,7 @@ function useProductSummaryKeyboardShortcut({
     [
       focusProduct,
       onDeleteProduct,
+      onEditProduct,
       onNavigateToCompanyInformation,
       onNavigateToProductInformation,
       productCount,
