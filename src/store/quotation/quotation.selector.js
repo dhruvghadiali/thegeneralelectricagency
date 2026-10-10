@@ -39,3 +39,27 @@ export const selectQuotationCompanyRequest = createSelector(
     error: companyError,
   }),
 );
+
+export const selectQuotationProducts = createSelector(
+  selectQuotationState,
+  (quotation) => quotation.products,
+);
+
+export const selectQuotationProductSearch = createSelector(
+  selectQuotationState,
+  (quotation) => quotation.productSearch,
+);
+
+export const selectQuotationProductPagination = createSelector(
+  selectQuotationState,
+  (quotation) => quotation.productPagination,
+);
+
+export const selectQuotationProductRequest = createSelector(
+  selectQuotationState,
+  ({ isLoadingProducts, isLoadingMoreProducts, productError }) => ({
+    isLoading: isLoadingProducts,
+    isLoadingMore: isLoadingMoreProducts,
+    error: productError,
+  }),
+);

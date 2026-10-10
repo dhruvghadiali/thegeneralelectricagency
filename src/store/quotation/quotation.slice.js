@@ -1,7 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { fetchQuotationCompanies } from "@Redux/quotation/quotation.action";
-import { createQuotationState } from "@Redux/quotation/quotation.state";
+import {
+  fetchQuotationCompanies,
+  fetchQuotationProducts,
+} from "@Redux/quotation/quotation.action";
+import {
+  createQuotationState,
+  QUOTATION_PRODUCT_PAGE,
+} from "@Redux/quotation/quotation.state";
 
 const quotationSlice = createSlice({
   name: "quotation",
@@ -20,6 +26,9 @@ const quotationSlice = createSlice({
     },
     quotationCompanyInformationSaved(state, action) {
       state.companyInformation = action.payload;
+    },
+    quotationProductSearchChanged(state, action) {
+      state.productSearch = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -46,6 +55,48 @@ const quotationSlice = createSlice({
           ? null
           : (action.payload ?? "Unable to load quotation companies.");
         state.companyRequestId = null;
+      })
+      .addCase(fetchQuotationProducts.pending, (state, action) => {
+        const requestedPage =
+          action.meta.arg?.page ?? QUOTATION_PRODUCT_PAGE;
+        const isFirstPage = requestedPage === QUOTATION_PRODUCT_PAGE;
+
+        state.productRequestId = action.meta.requestId;
+        state.productError = null;
+        state.isLoadingProducts = isFirstPage;
+        state.isLoadingMoreProducts = !isFirstPage;
+        if (isFirstPage) state.products = [];
+      })
+      .addCase(fetchQuotationProducts.fulfilled, (state, action) => {
+        if (state.productRequestId !== action.meta.requestId) return;
+
+        if (action.payload.pagination.page === QUOTATION_PRODUCT_PAGE) {
+          state.products = action.payload.items;
+        } else {
+          const uniqueProducts = new Map(
+            [...state.products, ...action.payload.items].map((product) => [
+              product.id,
+              product,
+            ]),
+          );
+          state.products = [...uniqueProducts.values()];
+        }
+
+        state.productPagination = action.payload.pagination;
+        state.isLoadingProducts = false;
+        state.isLoadingMoreProducts = false;
+        state.productError = null;
+        state.productRequestId = null;
+      })
+      .addCase(fetchQuotationProducts.rejected, (state, action) => {
+        if (state.productRequestId !== action.meta.requestId) return;
+
+        state.isLoadingProducts = false;
+        state.isLoadingMoreProducts = false;
+        state.productError = action.meta.aborted
+          ? null
+          : (action.payload ?? "Unable to load quotation products.");
+        state.productRequestId = null;
       });
   },
 });
@@ -54,6 +105,7 @@ export const {
   quotationCompanyInformationSaved,
   quotationCompanySearchChanged,
   quotationCompanySelected,
+  quotationProductSearchChanged,
   quotationStepChanged,
 } = quotationSlice.actions;
 
