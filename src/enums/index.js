@@ -75,4 +75,7 @@ export {
   INDIAN_UNION_TERRITORY_OPTIONS,
 } from "./indianState.enum";
 
-export { CREATE_QUOTATION_STEPS } from "./quotation.enum";
+export {
+  CREATE_QUOTATION_STEPS,
+  QUOTATION_TAX_TREATMENTS,
+} from "./quotation.enum";

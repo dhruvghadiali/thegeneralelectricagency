@@ -1,4 +1,4 @@
-import { CREATE_QUOTATION_STEPS } from "@Enums";
+import { CREATE_QUOTATION_STEPS, INDIAN_GST_RATES } from "@Enums";
 
 export const QUOTATION_COMPANY_PAGE = 1;
 export const QUOTATION_COMPANY_LIMIT = 100;
@@ -11,6 +11,10 @@ export const createQuotationState = () => ({
   companySearch: "",
   selectedCompany: null,
   companyInformation: null,
+  taxTreatment: null,
+  gstPercentage: String(INDIAN_GST_RATES.EIGHTEEN),
+  deliveryNotes: "",
+  paymentNotes: "",
   companyPagination: {
     page: QUOTATION_COMPANY_PAGE,
     limit: QUOTATION_COMPANY_LIMIT,

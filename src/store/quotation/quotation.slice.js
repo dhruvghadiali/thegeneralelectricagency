@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+import { QUOTATION_TAX_TREATMENTS } from "@Enums";
 import {
   fetchQuotationCompanies,
   fetchQuotationProducts,
@@ -27,6 +28,23 @@ const quotationSlice = createSlice({
     },
     quotationCompanyInformationSaved(state, action) {
       state.companyInformation = action.payload;
+      state.taxTreatment = action.payload?.address
+        ?.toLocaleLowerCase()
+        .includes("gujarat")
+        ? QUOTATION_TAX_TREATMENTS.GUJARAT
+        : QUOTATION_TAX_TREATMENTS.OUT_OF_GUJARAT;
+    },
+    quotationTaxTreatmentChanged(state, action) {
+      state.taxTreatment = action.payload;
+    },
+    quotationGstPercentageChanged(state, action) {
+      state.gstPercentage = action.payload;
+    },
+    quotationDeliveryNotesChanged(state, action) {
+      state.deliveryNotes = action.payload;
+    },
+    quotationPaymentNotesChanged(state, action) {
+      state.paymentNotes = action.payload;
     },
     quotationProductSearchChanged(state, action) {
       state.productSearch = action.payload;
@@ -187,6 +205,10 @@ export const {
   quotationCompanyInformationSaved,
   quotationCompanySearchChanged,
   quotationCompanySelected,
+  quotationDeliveryNotesChanged,
+  quotationGstPercentageChanged,
+  quotationPaymentNotesChanged,
+  quotationTaxTreatmentChanged,
   quotationProductDeleteCancelled,
   quotationProductDeleteRequested,
   quotationProductAddAnotherPromptClosed,

@@ -27,6 +27,26 @@ export const selectQuotationCompanyInformation = createSelector(
   (quotation) => quotation.companyInformation,
 );
 
+export const selectQuotationTaxTreatment = createSelector(
+  selectQuotationState,
+  (quotation) => quotation.taxTreatment,
+);
+
+export const selectQuotationGstPercentage = createSelector(
+  selectQuotationState,
+  (quotation) => quotation.gstPercentage,
+);
+
+export const selectQuotationDeliveryNotes = createSelector(
+  selectQuotationState,
+  (quotation) => quotation.deliveryNotes,
+);
+
+export const selectQuotationPaymentNotes = createSelector(
+  selectQuotationState,
+  (quotation) => quotation.paymentNotes,
+);
+
 export const selectQuotationCompanyPagination = createSelector(
   selectQuotationState,
   (quotation) => quotation.companyPagination,
