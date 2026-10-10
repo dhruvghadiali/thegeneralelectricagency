@@ -31,6 +31,7 @@ import {
   SelectValue,
 } from "@shadcnComponent/select";
 import { FINANCIAL_YEAR_OPTIONS } from "@screenComponent/purchaseFinancialSummary/purchaseFinancialSummary.data";
+import CreateQuotationDownloadButton from "@screenComponent/quotations/create/createQuotationDownloadButton";
 
 function buildBreadcrumbItems(pathname, navItems) {
   if (pathname === ROUTES.COMPANY_NEW) {
@@ -196,6 +197,9 @@ function PrivateRoute() {
                   </SelectContent>
                 </Select>
               </div>
+            )}
+            {location.pathname === ROUTES.QUOTATION_NEW && (
+              <CreateQuotationDownloadButton />
             )}
             <div
               className="flex items-center gap-1.5"
