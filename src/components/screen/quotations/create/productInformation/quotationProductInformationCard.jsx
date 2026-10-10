@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@shadcnComponent/card";
+import QuotationProductForm from "@screenComponent/quotations/create/productInformation/quotationProductForm";
 
 function QuotationProductInformationCard() {
   return (
@@ -7,7 +8,7 @@ function QuotationProductInformationCard() {
         <CardTitle>Product information</CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-muted-foreground">Product info</p>
+        <QuotationProductForm />
       </CardContent>
     </Card>
   );
