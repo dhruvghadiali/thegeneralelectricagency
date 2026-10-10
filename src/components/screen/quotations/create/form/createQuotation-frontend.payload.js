@@ -35,3 +35,14 @@ export function toQuotationCompanyFormValues(company = {}) {
     gstNumber: company.gstNumber ?? "",
   };
 }
+
+export function toQuotationProductFormValues(product = {}) {
+  return {
+    product: product.name ?? "",
+    sellingPrice:
+      product.salePrice === null || product.salePrice === undefined
+        ? ""
+        : String(product.salePrice),
+    description: product.description ?? "",
+  };
+}

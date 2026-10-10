@@ -29,6 +29,16 @@ const quotationSlice = createSlice({
     },
     quotationProductSearchChanged(state, action) {
       state.productSearch = action.payload;
+      state.selectedProduct = null;
+    },
+    quotationProductSelected(state, action) {
+      state.selectedProduct = action.payload;
+      state.productSearch = action.payload?.name ?? "";
+    },
+    quotationProductInformationSaved(state, action) {
+      state.productInformation.push(action.payload);
+      state.productSearch = "";
+      state.selectedProduct = null;
     },
   },
   extraReducers: (builder) => {
@@ -105,7 +115,9 @@ export const {
   quotationCompanyInformationSaved,
   quotationCompanySearchChanged,
   quotationCompanySelected,
+  quotationProductInformationSaved,
   quotationProductSearchChanged,
+  quotationProductSelected,
   quotationStepChanged,
 } = quotationSlice.actions;
 

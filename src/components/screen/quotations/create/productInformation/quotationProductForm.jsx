@@ -1,18 +1,14 @@
-import { useFormik } from "formik";
-
-import { QUOTATION_PRODUCT_INITIAL_VALUES } from "@screenComponent/quotations/create/form/createQuotation.initialValues";
 import {
   QUOTATION_PRODUCT_DECIMAL_INPUT_PATTERN,
   QUOTATION_PRODUCT_INTEGER_INPUT_PATTERN,
 } from "@screenComponent/quotations/create/form/createQuotation.validation.constants";
-import { quotationProductValidationSchema } from "@screenComponent/quotations/create/form/createQuotation.validation.schema";
 import { Input } from "@shadcnComponent/input";
 import { Label } from "@shadcnComponent/label";
 import { Textarea } from "@shadcnComponent/textarea";
 
 function ProductFormField({ id, label, error, children }) {
   return (
-    <div className="grid gap-2">
+    <div className="grid content-start gap-2 self-start">
       <Label htmlFor={id}>{label}</Label>
       {children}
       {error && (
@@ -24,14 +20,13 @@ function ProductFormField({ id, label, error, children }) {
   );
 }
 
-function QuotationProductForm() {
-  const formik = useFormik({
-    initialValues: QUOTATION_PRODUCT_INITIAL_VALUES,
-    validationSchema: quotationProductValidationSchema,
-    onSubmit: () => undefined,
-  });
-  const fieldError = (field) =>
-    formik.touched[field] && formik.errors[field] ? formik.errors[field] : null;
+function QuotationProductForm({
+  formik,
+  fieldError,
+  fieldRefs,
+  keyboard,
+  onProductNameChange,
+}) {
   const fieldProps = (field, id) => ({
     name: field,
     value: formik.values[field],
@@ -47,28 +42,39 @@ function QuotationProductForm() {
   };
 
   return (
-    <form onSubmit={formik.handleSubmit} className="grid gap-5" noValidate>
+    <form
+      id="quotation-product-form"
+      onSubmit={formik.handleSubmit}
+      className="grid gap-5"
+      noValidate
+    >
       <ProductFormField
         id="quotation-product"
         label="Product"
         error={fieldError("product")}
       >
         <Input
+          ref={fieldRefs.productInputRef}
           id="quotation-product"
           type="text"
           {...fieldProps("product", "quotation-product")}
+          onChange={onProductNameChange}
+          onFocus={keyboard.handleProductNameFocus}
+          onKeyDown={keyboard.handleProductNameKeyDown}
           placeholder="Enter product name"
           autoComplete="off"
+          autoFocus
         />
       </ProductFormField>
 
-      <div className="grid gap-5 sm:grid-cols-3">
+      <div className="grid items-start gap-5 sm:grid-cols-3">
         <ProductFormField
           id="quotation-quantity"
           label="Quantity"
           error={fieldError("quantity")}
         >
           <Input
+            ref={fieldRefs.quantityInputRef}
             id="quotation-quantity"
             type="text"
             {...fieldProps("quantity", "quotation-quantity")}
@@ -76,6 +82,7 @@ function QuotationProductForm() {
               "quantity",
               QUOTATION_PRODUCT_INTEGER_INPUT_PATTERN,
             )}
+            onKeyDown={keyboard.handleQuantityKeyDown}
             placeholder="1"
             inputMode="numeric"
           />
@@ -87,6 +94,7 @@ function QuotationProductForm() {
           error={fieldError("sellingPrice")}
         >
           <Input
+            ref={fieldRefs.sellingPriceInputRef}
             id="quotation-sellingPrice"
             type="text"
             {...fieldProps("sellingPrice", "quotation-sellingPrice")}
@@ -94,6 +102,7 @@ function QuotationProductForm() {
               "sellingPrice",
               QUOTATION_PRODUCT_DECIMAL_INPUT_PATTERN,
             )}
+            onKeyDown={keyboard.handleSellingPriceKeyDown}
             placeholder="0.00"
             inputMode="decimal"
           />
@@ -105,6 +114,7 @@ function QuotationProductForm() {
           error={fieldError("discount")}
         >
           <Input
+            ref={fieldRefs.discountInputRef}
             id="quotation-discount"
             type="text"
             {...fieldProps("discount", "quotation-discount")}
@@ -112,6 +122,7 @@ function QuotationProductForm() {
               "discount",
               QUOTATION_PRODUCT_DECIMAL_INPUT_PATTERN,
             )}
+            onKeyDown={keyboard.handleDiscountKeyDown}
             placeholder="0.00"
             inputMode="decimal"
           />
@@ -124,8 +135,10 @@ function QuotationProductForm() {
         error={fieldError("description")}
       >
         <Textarea
+          ref={fieldRefs.descriptionInputRef}
           id="quotation-description"
           {...fieldProps("description", "quotation-description")}
+          onKeyDown={keyboard.handleDescriptionKeyDown}
           placeholder="Enter product description"
           rows={4}
           className="min-h-28 resize-y"

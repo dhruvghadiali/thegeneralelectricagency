@@ -19,7 +19,12 @@ import {
   CardTitle,
 } from "@shadcnComponent/card";
 
-function QuotationProductList() {
+function QuotationProductList({
+  directoryRef,
+  selectedProduct,
+  onProductSelect,
+  onProductOptionKeyDown,
+}) {
   const dispatch = useDispatch();
   const items = useSelector(selectQuotationProducts);
   const pagination = useSelector(selectQuotationProductPagination);
@@ -38,7 +43,10 @@ function QuotationProductList() {
   );
 
   return (
-    <Card className="min-h-[32rem] w-full gap-0 overflow-hidden pb-0 lg:h-full lg:min-h-0">
+    <Card
+      ref={directoryRef}
+      className="min-h-[32rem] w-full gap-0 overflow-hidden pb-0 lg:h-full lg:min-h-0"
+    >
       <CardHeader className="shrink-0 border-b">
         <CardTitle>Product directory</CardTitle>
         <CardDescription>{productCountLabel}</CardDescription>
@@ -82,15 +90,28 @@ function QuotationProductList() {
           </div>
         ) : (
           <>
-            <div className="divide-y" role="list" aria-label="Products">
+            <div className="divide-y" role="listbox" aria-label="Products">
               {items.map((product, index) => (
-                <div
+                <Button
                   key={product.id ?? `${product.name}-${index}`}
-                  role="listitem"
-                  className="px-6 py-3 text-sm font-medium"
+                  type="button"
+                  variant="ghost"
+                  role="option"
+                  data-product-option
+                  aria-selected={
+                    Boolean(selectedProduct) &&
+                    selectedProduct?.id === product.id
+                  }
+                  onClick={() => onProductSelect(product)}
+                  onKeyDown={(event) =>
+                    onProductOptionKeyDown(event, index)
+                  }
+                  className="h-auto w-full justify-start rounded-none px-6 py-3 text-left font-medium aria-selected:bg-accent aria-selected:text-accent-foreground focus-visible:bg-accent focus-visible:text-accent-foreground"
                 >
-                  {_.toUpper(product.name || "Unnamed product")}
-                </div>
+                  <span className="min-w-0 truncate">
+                    {_.toUpper(product.name || "Unnamed product")}
+                  </span>
+                </Button>
               ))}
             </div>
 
