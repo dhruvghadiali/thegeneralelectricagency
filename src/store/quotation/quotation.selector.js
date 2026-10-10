@@ -70,6 +70,11 @@ export const selectQuotationProductEditingIndex = createSelector(
   (quotation) => quotation.editingProductIndex,
 );
 
+export const selectQuotationPendingDeleteProductIndex = createSelector(
+  selectQuotationState,
+  (quotation) => quotation.pendingDeleteProductIndex,
+);
+
 export const selectQuotationProductPagination = createSelector(
   selectQuotationState,
   (quotation) => quotation.productPagination,

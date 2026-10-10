@@ -9,6 +9,9 @@ function useCreateQuotationKeyboardShortcut() {
   useEffect(() => {
     const handleCreateQuotationShortcut = (event) => {
       if (event.key !== "Escape") return;
+      if (event.defaultPrevented || event.target?.closest?.('[role="dialog"]')) {
+        return;
+      }
 
       event.preventDefault();
       navigate(ROUTES.QUOTATIONS);

@@ -11,7 +11,10 @@ function QuotationProductSummaryCard({
   products,
   isExpanded,
   onEdit,
-  onDelete,
+  pendingDeleteProductIndex,
+  onDeleteRequest,
+  onDeleteCancel,
+  onDeleteConfirm,
   onNavigateToCompanyInformation,
   onNavigateToProductInformation,
 }) {
@@ -27,7 +30,10 @@ function QuotationProductSummaryCard({
         <ExpandedProductSummary
           products={products}
           onEdit={onEdit}
-          onDelete={onDelete}
+          pendingDeleteProductIndex={pendingDeleteProductIndex}
+          onDeleteRequest={onDeleteRequest}
+          onDeleteCancel={onDeleteCancel}
+          onDeleteConfirm={onDeleteConfirm}
           onNavigateToCompanyInformation={onNavigateToCompanyInformation}
           onNavigateToProductInformation={onNavigateToProductInformation}
         />

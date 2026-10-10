@@ -41,6 +41,7 @@ const quotationSlice = createSlice({
       state.selectedProduct = null;
       state.isProductSummaryExpanded = false;
       state.editingProductIndex = null;
+      state.pendingDeleteProductIndex = null;
     },
     quotationProductInformationUpdated(state, action) {
       const { index, product } = action.payload;
@@ -52,6 +53,7 @@ const quotationSlice = createSlice({
       state.selectedProduct = null;
       state.isProductSummaryExpanded = false;
       state.editingProductIndex = null;
+      state.pendingDeleteProductIndex = null;
     },
     quotationProductInformationDeleted(state, action) {
       const deletedIndex = action.payload;
@@ -64,6 +66,7 @@ const quotationSlice = createSlice({
       }
 
       state.productInformation.splice(deletedIndex, 1);
+      state.pendingDeleteProductIndex = null;
 
       if (state.editingProductIndex === deletedIndex) {
         state.editingProductIndex = null;
@@ -78,6 +81,19 @@ const quotationSlice = createSlice({
     quotationProductEditingStarted(state, action) {
       state.editingProductIndex = action.payload;
       state.isProductSummaryExpanded = false;
+      state.pendingDeleteProductIndex = null;
+    },
+    quotationProductDeleteRequested(state, action) {
+      const productIndex = action.payload;
+
+      if (productIndex < 0 || productIndex >= state.productInformation.length) {
+        return;
+      }
+
+      state.pendingDeleteProductIndex = productIndex;
+    },
+    quotationProductDeleteCancelled(state) {
+      state.pendingDeleteProductIndex = null;
     },
     quotationProductSummaryOpened(state) {
       if (state.productInformation.length > 0) {
@@ -86,6 +102,7 @@ const quotationSlice = createSlice({
     },
     quotationProductSummaryClosed(state) {
       state.isProductSummaryExpanded = false;
+      state.pendingDeleteProductIndex = null;
     },
   },
   extraReducers: (builder) => {
@@ -162,6 +179,8 @@ export const {
   quotationCompanyInformationSaved,
   quotationCompanySearchChanged,
   quotationCompanySelected,
+  quotationProductDeleteCancelled,
+  quotationProductDeleteRequested,
   quotationProductEditingStarted,
   quotationProductInformationDeleted,
   quotationProductInformationSaved,

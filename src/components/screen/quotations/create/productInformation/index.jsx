@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
+  selectQuotationPendingDeleteProductIndex,
   selectQuotationProductEditingIndex,
   selectQuotationProductInformation,
   selectQuotationProductSearch,
@@ -10,6 +11,8 @@ import {
   selectQuotationSelectedProduct,
 } from "@Redux/quotation/quotation.selector";
 import {
+  quotationProductDeleteCancelled,
+  quotationProductDeleteRequested,
   quotationProductEditingStarted,
   quotationProductInformationDeleted,
   quotationProductInformationSaved,
@@ -40,6 +43,9 @@ function QuotationProductInformation({ companyInformation }) {
   );
   const editingProductIndex = useSelector(
     selectQuotationProductEditingIndex,
+  );
+  const pendingDeleteProductIndex = useSelector(
+    selectQuotationPendingDeleteProductIndex,
   );
   const productInputRef = useRef(null);
   const quantityInputRef = useRef(null);
@@ -184,6 +190,14 @@ function QuotationProductInformation({ companyInformation }) {
     }
   };
 
+  const requestProductDelete = (index) => {
+    dispatch(quotationProductDeleteRequested(index));
+  };
+
+  const cancelProductDelete = () => {
+    dispatch(quotationProductDeleteCancelled());
+  };
+
   return (
     <div className="grid w-full gap-6 lg:h-full lg:min-h-0 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,0.8fr)]">
       <div className="flex min-w-0 flex-col gap-4 lg:min-h-0 lg:overflow-y-auto lg:pr-1">
@@ -196,7 +210,10 @@ function QuotationProductInformation({ companyInformation }) {
             products={productInformation}
             isExpanded={isProductSummaryExpanded}
             onEdit={editProduct}
-            onDelete={deleteProduct}
+            pendingDeleteProductIndex={pendingDeleteProductIndex}
+            onDeleteRequest={requestProductDelete}
+            onDeleteCancel={cancelProductDelete}
+            onDeleteConfirm={deleteProduct}
             onNavigateToCompanyInformation={openCompanyInformation}
             onNavigateToProductInformation={openProductInformation}
           />

@@ -26,6 +26,7 @@ export const createQuotationState = () => ({
   productInformation: [],
   isProductSummaryExpanded: false,
   editingProductIndex: null,
+  pendingDeleteProductIndex: null,
   productPagination: {
     page: QUOTATION_PRODUCT_PAGE,
     limit: QUOTATION_PRODUCT_LIMIT,

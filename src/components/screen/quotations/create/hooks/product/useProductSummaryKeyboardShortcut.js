@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 function useProductSummaryKeyboardShortcut({
   productCount,
+  onDeleteProduct,
   onNavigateToCompanyInformation,
   onNavigateToProductInformation,
 }) {
@@ -34,6 +35,15 @@ function useProductSummaryKeyboardShortcut({
 
   const handleProductKeyDown = useCallback(
     (event, index) => {
+      const isDeleteKey =
+        event.key === "Delete" || event.key === "Backspace";
+
+      if (isDeleteKey) {
+        event.preventDefault();
+        onDeleteProduct(index);
+        return;
+      }
+
       if (!event.altKey) return;
 
       if (event.key === "ArrowUp") {
@@ -61,6 +71,7 @@ function useProductSummaryKeyboardShortcut({
     },
     [
       focusProduct,
+      onDeleteProduct,
       onNavigateToCompanyInformation,
       onNavigateToProductInformation,
       productCount,
