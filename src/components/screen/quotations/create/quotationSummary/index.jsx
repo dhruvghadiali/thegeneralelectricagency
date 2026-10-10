@@ -1,4 +1,4 @@
-import { ArrowLeft, Send } from "lucide-react";
+import { ArrowLeft, Loader2, Send } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { CREATE_QUOTATION_STEPS } from "@Enums";
@@ -9,6 +9,7 @@ import {
 import { quotationStepChanged } from "@Redux/quotation/quotation.slice";
 import { Button } from "@shadcnComponent/button";
 import { Card, CardContent, CardFooter } from "@shadcnComponent/card";
+import useDownloadQuotationPdf from "@screenComponent/quotations/create/downloadPdf";
 import useQuotationSummaryKeyboardShortcuts from "@screenComponent/quotations/create/hooks/quotationSummary";
 import QuotationCompanyInformation from "@screenComponent/quotations/create/quotationSummary/quotationCompanyInformation";
 import QuotationFinalBillDetails from "@screenComponent/quotations/create/quotationSummary/quotationFinalBillDetails";
@@ -23,6 +24,7 @@ function QuotationSummary() {
   const companyInformation = useSelector(selectQuotationCompanyInformation);
   const products = useSelector(selectQuotationProductInformation);
   const keyboard = useQuotationSummaryKeyboardShortcuts();
+  const { generatePdf, isGenerating } = useDownloadQuotationPdf();
 
   const returnToProductInformation = () => {
     dispatch(quotationStepChanged(CREATE_QUOTATION_STEPS.PRODUCT_INFORMATION));
@@ -83,10 +85,16 @@ function QuotationSummary() {
           <Button
             ref={keyboard.refs.submitButtonRef}
             type="button"
+            disabled={isGenerating}
+            onClick={generatePdf}
             onKeyDown={keyboard.handleSubmitButtonKeyDown}
           >
-            <Send className="size-4" aria-hidden="true" />
-            Submit
+            {isGenerating ? (
+              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+            ) : (
+              <Send className="size-4" aria-hidden="true" />
+            )}
+            {isGenerating ? "Generating PDF..." : "Submit"}
           </Button>
         </CardFooter>
       </Card>
