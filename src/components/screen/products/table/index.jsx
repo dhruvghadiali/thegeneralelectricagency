@@ -2,7 +2,7 @@
 import { useSelector } from "react-redux";
 
 import DataTable from "@commonComponent/dataTable";
-// import ProductTableActions from "@screenComponent/products/table/productTableActions";
+import ProductTableActions from "@screenComponent/products/table/productTableActions";
 import useProductTable from "@screenComponent/products/table/useProductTable";
 import { selectCanManageProducts } from "@Redux/product/product.selector";
 // import {
@@ -57,18 +57,7 @@ function ProductTable() {
       onRetry={table.refresh}
       isLoading={table.isLoading}
       error={table.error}
-      // rowActions={
-      //   canManage
-      //     ? (product) => (
-      //         <ProductTableActions
-      //           product={product}
-      //           canManage={canManage}
-      //           onPdf={(row) => onCreateQuotation([row])}
-      //           showPdf={selectedProducts.length === 0}
-      //         />
-      //       )
-      //     : undefined
-      // }
+      rowActions={(product) => <ProductTableActions product={product} />}
       emptyDescription={
         canManage
           ? "Add your first product to start building the catalogue."
