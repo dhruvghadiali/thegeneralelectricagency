@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { Building2, Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -124,7 +125,7 @@ function QuotationCompanyDirectory({
               >
                 <span className="min-w-0 truncate font-medium">
                   <HighlightedCompanyName
-                    name={company.name || "Unnamed company"}
+                    name={_.toUpper(company.name || "Unnamed company")}
                     search={companySearch}
                   />
                 </span>
