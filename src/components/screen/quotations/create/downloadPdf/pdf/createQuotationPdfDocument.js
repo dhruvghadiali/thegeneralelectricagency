@@ -45,8 +45,7 @@ function calculateDocumentTotals(products, commercial) {
 
 export function createQuotationPdfDocument(sections, logoDataUrl) {
   const { company, products, commercial } = sections;
-  const firstProduct = products[0]?.product ?? {};
-  const quotationId = createQuotationNumber(firstProduct, products.length);
+  const quotationId = createQuotationNumber(company.name);
   const totals = calculateDocumentTotals(products, commercial);
   const generatedAt = new Date().toLocaleDateString("en-IN", {
     day: "2-digit",

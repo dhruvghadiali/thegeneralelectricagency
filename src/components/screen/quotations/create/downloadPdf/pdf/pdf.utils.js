@@ -138,22 +138,17 @@ export function amountInWords(value) {
   return `Rupees ${integerToIndianWords(rupees)}${paiseText} Only`;
 }
 
-export function createQuotationNumber(product = {}, productCount = 1) {
-  const date = new Date();
-  const stamp = [
-    date.getFullYear(),
-    String(date.getMonth() + 1).padStart(2, "0"),
-    String(date.getDate()).padStart(2, "0"),
-  ].join("");
-  const productCode =
-    productCount > 1
-      ? `MULTI${productCount}`
-      : String(product.productCode || "PRODUCT")
-          .replace(/[^a-z0-9]/gi, "")
-          .slice(0, 12)
-          .toUpperCase();
+export function createQuotationNumber(companyName, date = new Date()) {
+  const financialYearStart =
+    date.getMonth() >= 3 ? date.getFullYear() : date.getFullYear() - 1;
+  const financialYear = `${String(financialYearStart).slice(-2)}-${String(financialYearStart + 1).slice(-2)}`;
+  const companyCode =
+    String(companyName || "COMPANY")
+      .replace(/[^a-z0-9]/gi, "")
+      .slice(0, 3)
+      .toUpperCase() || "COM";
 
-  return `Q-${stamp}-${productCode}`;
+  return `TGES/001/${financialYear}/${companyCode}/Q1/${date.getTime()}`;
 }
 
 export function titleCase(value) {

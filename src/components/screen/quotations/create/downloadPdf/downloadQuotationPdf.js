@@ -20,5 +20,5 @@ export async function downloadQuotationPdf(quotation) {
     logoDataUrl,
   );
 
-  doc.save(`${quotationId}.pdf`);
+  doc.save(`${quotationId.replaceAll("/", "-")}.pdf`);
 }

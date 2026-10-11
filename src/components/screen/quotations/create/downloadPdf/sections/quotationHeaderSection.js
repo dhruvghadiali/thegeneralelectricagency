@@ -37,24 +37,20 @@ export function drawBrandHeader(doc, logoDataUrl) {
   drawPdfCell(doc, 12, 24, 186, 34, { lineWidth: 0.35 });
 
   if (logoDataUrl) {
-    doc.addImage(logoDataUrl, "PNG", 18, 30, 22, 22, undefined, "FAST");
+    doc.addImage(logoDataUrl, "PNG", 20, 32, 18, 18, undefined, "FAST");
   }
 
-  drawPdfText(doc, PDF_BRAND.name, 46, 32, { bold: true, size: 15 });
-  drawPdfText(doc, PDF_BRAND.addressLine1, 46, 39, {
-    color: PDF_COLORS.muted,
-    size: 7.5,
-  });
-  drawPdfText(doc, PDF_BRAND.addressLine2, 46, 44, {
+  drawPdfText(doc, PDF_BRAND.name, 51, 38, { bold: true, size: 15 });
+  drawPdfText(doc, PDF_BRAND.address, 51, 44, {
     color: PDF_COLORS.muted,
     size: 7.5,
   });
   drawPdfText(
     doc,
     `${PDF_BRAND.email}  |  ${PDF_BRAND.phone}  |  GSTIN: ${PDF_BRAND.gst}`,
-    46,
-    52,
-    { color: PDF_COLORS.muted, size: 6.6 },
+    51,
+    50,
+    { color: PDF_COLORS.muted, size: 7.5 },
   );
 }
 

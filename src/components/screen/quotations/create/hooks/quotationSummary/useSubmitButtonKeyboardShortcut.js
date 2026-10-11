@@ -11,7 +11,6 @@ function useSubmitButtonKeyboardShortcut({ backButtonRef, taxTreatmentRef }) {
 
       const shouldFocusTaxTreatment =
         (event.altKey && event.key === "ArrowDown") ||
-        event.key === "Enter" ||
         (event.key === "Tab" && !event.shiftKey);
 
       if (!shouldFocusTaxTreatment) return;

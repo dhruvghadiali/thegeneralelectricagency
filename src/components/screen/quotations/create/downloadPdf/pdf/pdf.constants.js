@@ -1,7 +1,7 @@
 export const PDF_BRAND = Object.freeze({
   name: "The General Electric Stores",
-  addressLine1: "7, GANESH SHOPPING CENTRE OPP. DR. BECK & CO",
-  addressLine2: "G.I.D.C ANKLESHWAR - 393002",
+  address:
+    "7, GANESH SHOPPING CENTRE OPP. DR. BECK & CO G.I.D.C ANKLESHWAR - 393002",
   email: "generalagenc@gmail.com",
   phone: "+91 9099017416 | +91 7874349006",
   gst: "24AAZFT8619H1ZF",
