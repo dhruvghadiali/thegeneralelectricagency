@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 import { Label } from "@shadcnComponent/label";
 
 function QuotationCompanyInformation({
@@ -18,7 +20,7 @@ function QuotationCompanyInformation({
       </Label>
       <div className="rounded-md border bg-muted/15 px-3 py-2.5">
         <p className="text-sm font-semibold leading-5">
-          {companyInformation?.companyName ?? "-"}
+          {_.toUpper(companyInformation?.companyName) || "-"}
         </p>
         <p className="whitespace-pre-line text-xs leading-5 text-muted-foreground">
           {companyInformation?.address ?? "-"}

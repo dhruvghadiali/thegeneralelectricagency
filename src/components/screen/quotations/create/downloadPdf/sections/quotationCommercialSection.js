@@ -40,8 +40,8 @@ function drawCommercialDetails(doc, startY, commercial) {
       : numberOrZero(commercial.gstPercentage);
   const details = [
     `GST - As Actual (${gstPercentage}%)`,
-    `Delivery - ${commercial.deliveryNotes || "EX-STOCK"}`,
-    `PAYMENT - ${commercial.paymentNotes || "30 DAYS"}`,
+    `Delivery - ${commercial.deliveryNotes?.trim() || "-"}`,
+    `Payment - ${commercial.paymentNotes?.trim() || "-"}`,
   ];
 
   details.forEach((detail, index) => {
