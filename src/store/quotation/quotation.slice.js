@@ -14,6 +14,17 @@ const quotationSlice = createSlice({
   name: "quotation",
   initialState: createQuotationState(),
   reducers: {
+    quotationReset() {
+      return createQuotationState();
+    },
+    quotationExitRequested(state, action) {
+      state.isExitDialogOpen = true;
+      state.pendingExitRoute = action.payload;
+    },
+    quotationExitCancelled(state) {
+      state.isExitDialogOpen = false;
+      state.pendingExitRoute = null;
+    },
     quotationStepChanged(state, action) {
       state.currentStep = action.payload;
       state.isProductAddAnotherDialogOpen = false;
@@ -206,6 +217,8 @@ export const {
   quotationCompanySearchChanged,
   quotationCompanySelected,
   quotationDeliveryNotesChanged,
+  quotationExitCancelled,
+  quotationExitRequested,
   quotationGstPercentageChanged,
   quotationPaymentNotesChanged,
   quotationTaxTreatmentChanged,
@@ -221,6 +234,7 @@ export const {
   quotationProductSelected,
   quotationProductSummaryClosed,
   quotationProductSummaryOpened,
+  quotationReset,
   quotationStepChanged,
 } = quotationSlice.actions;
 

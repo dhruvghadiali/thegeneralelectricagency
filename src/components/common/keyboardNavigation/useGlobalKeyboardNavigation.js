@@ -15,6 +15,7 @@ import {
   keyboardNavigationOpened,
   keyboardNavigationQueryChanged,
 } from "@Redux/keyboardNavigation/keyboardNavigation.slice";
+import { quotationExitRequested } from "@Redux/quotation/quotation.slice";
 
 import { GLOBAL_KEYBOARD_COMMANDS } from "./keyboardNavigation.constants";
 import {
@@ -56,9 +57,16 @@ function useGlobalKeyboardNavigation() {
       }
 
       closeNavigation();
-      if (command.route) navigate(command.route);
+      if (!command.route) return;
+
+      if (location.pathname === ROUTES.QUOTATION_NEW) {
+        dispatch(quotationExitRequested(command.route));
+        return;
+      }
+
+      navigate(command.route);
     },
-    [closeNavigation, navigate, openNavigation],
+    [closeNavigation, dispatch, location.pathname, navigate, openNavigation],
   );
 
   useEffect(() => {
@@ -82,8 +90,9 @@ function useGlobalKeyboardNavigation() {
       }
     };
 
-    window.addEventListener("keydown", handleGlobalShortcut);
-    return () => window.removeEventListener("keydown", handleGlobalShortcut);
+    window.addEventListener("keydown", handleGlobalShortcut, true);
+    return () =>
+      window.removeEventListener("keydown", handleGlobalShortcut, true);
   }, [availableCommands, location.pathname, runCommand]);
 
   const changeQuery = useCallback(
