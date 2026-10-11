@@ -27,6 +27,7 @@ const quotationSlice = createSlice({
     quotationStepChanged(state, action) {
       state.currentStep = action.payload;
       state.isProductAddAnotherDialogOpen = false;
+      state.pendingDuplicateProductIndex = null;
     },
     quotationCompanySearchChanged(state, action) {
       state.companySearch = action.payload;
@@ -71,6 +72,7 @@ const quotationSlice = createSlice({
       state.isProductSummaryExpanded = false;
       state.editingProductIndex = null;
       state.pendingDeleteProductIndex = null;
+      state.pendingDuplicateProductIndex = null;
     },
     quotationProductInformationUpdated(state, action) {
       const { index, product } = action.payload;
@@ -83,6 +85,7 @@ const quotationSlice = createSlice({
       state.isProductSummaryExpanded = false;
       state.editingProductIndex = null;
       state.pendingDeleteProductIndex = null;
+      state.pendingDuplicateProductIndex = null;
     },
     quotationProductInformationDeleted(state, action) {
       const deletedIndex = action.payload;
@@ -108,9 +111,18 @@ const quotationSlice = createSlice({
       }
     },
     quotationProductEditingStarted(state, action) {
-      state.editingProductIndex = action.payload;
+      const productIndex = action.payload;
+
+      if (productIndex < 0 || productIndex >= state.productInformation.length) {
+        return;
+      }
+
+      state.editingProductIndex = productIndex;
+      state.productSearch = state.productInformation[productIndex].product;
+      state.selectedProduct = null;
       state.isProductSummaryExpanded = false;
       state.pendingDeleteProductIndex = null;
+      state.pendingDuplicateProductIndex = null;
     },
     quotationProductDeleteRequested(state, action) {
       const productIndex = action.payload;
@@ -124,6 +136,18 @@ const quotationSlice = createSlice({
     quotationProductDeleteCancelled(state) {
       state.pendingDeleteProductIndex = null;
     },
+    quotationProductDuplicateRequested(state, action) {
+      const productIndex = action.payload;
+
+      if (productIndex < 0 || productIndex >= state.productInformation.length) {
+        return;
+      }
+
+      state.pendingDuplicateProductIndex = productIndex;
+    },
+    quotationProductDuplicateCancelled(state) {
+      state.pendingDuplicateProductIndex = null;
+    },
     quotationProductAddAnotherPromptOpened(state) {
       state.isProductAddAnotherDialogOpen = true;
     },
@@ -135,6 +159,7 @@ const quotationSlice = createSlice({
         state.isProductSummaryExpanded = true;
       }
       state.isProductAddAnotherDialogOpen = false;
+      state.pendingDuplicateProductIndex = null;
     },
     quotationProductSummaryClosed(state) {
       state.isProductSummaryExpanded = false;
@@ -242,6 +267,8 @@ export const {
   quotationTaxTreatmentChanged,
   quotationProductDeleteCancelled,
   quotationProductDeleteRequested,
+  quotationProductDuplicateCancelled,
+  quotationProductDuplicateRequested,
   quotationProductAddAnotherPromptClosed,
   quotationProductAddAnotherPromptOpened,
   quotationProductEditingStarted,

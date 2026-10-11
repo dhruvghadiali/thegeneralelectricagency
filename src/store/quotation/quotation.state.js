@@ -33,6 +33,7 @@ export const createQuotationState = () => ({
   isProductSummaryExpanded: false,
   editingProductIndex: null,
   pendingDeleteProductIndex: null,
+  pendingDuplicateProductIndex: null,
   isProductAddAnotherDialogOpen: false,
   productPagination: {
     page: QUOTATION_PRODUCT_PAGE,

@@ -101,6 +101,11 @@ export const selectQuotationPendingDeleteProductIndex = createSelector(
   (quotation) => quotation.pendingDeleteProductIndex,
 );
 
+export const selectQuotationPendingDuplicateProductIndex = createSelector(
+  selectQuotationState,
+  (quotation) => quotation.pendingDuplicateProductIndex,
+);
+
 export const selectQuotationProductAddAnotherDialogOpen = createSelector(
   selectQuotationState,
   (quotation) => quotation.isProductAddAnotherDialogOpen,

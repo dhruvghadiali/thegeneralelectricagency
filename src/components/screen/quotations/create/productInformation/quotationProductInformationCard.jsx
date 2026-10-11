@@ -14,6 +14,7 @@ function QuotationProductInformationCard({
   fieldRefs,
   keyboard,
   onProductNameChange,
+  onProductNameBlur,
 }) {
   return (
     <Card className="min-h-64 w-full shrink-0">
@@ -27,6 +28,7 @@ function QuotationProductInformationCard({
           fieldRefs={fieldRefs}
           keyboard={keyboard}
           onProductNameChange={onProductNameChange}
+          onProductNameBlur={onProductNameBlur}
         />
       </CardContent>
       <CardFooter className="justify-end border-t">

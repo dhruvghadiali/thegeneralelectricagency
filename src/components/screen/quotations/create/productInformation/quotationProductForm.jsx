@@ -26,6 +26,7 @@ function QuotationProductForm({
   fieldRefs,
   keyboard,
   onProductNameChange,
+  onProductNameBlur,
 }) {
   const fieldProps = (field, id) => ({
     name: field,
@@ -59,12 +60,13 @@ function QuotationProductForm({
           type="text"
           {...fieldProps("product", "quotation-product")}
           onChange={onProductNameChange}
-                onFocus={keyboard.handleProductNameFocus}
-                onKeyDown={keyboard.handleProductNameKeyDown}
-                className="uppercase placeholder:normal-case"
-                placeholder="Enter product name"
-                autoComplete="off"
-                autoFocus
+          onBlur={onProductNameBlur}
+          onFocus={keyboard.handleProductNameFocus}
+          onKeyDown={keyboard.handleProductNameKeyDown}
+          className="uppercase placeholder:normal-case"
+          placeholder="Enter product name"
+          autoComplete="off"
+          autoFocus
         />
       </ProductFormField>
 
