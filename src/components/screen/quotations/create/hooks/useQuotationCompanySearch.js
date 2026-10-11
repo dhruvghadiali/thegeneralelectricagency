@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { fetchQuotationCompanies } from "@Redux/quotation/quotation.action";
 import { selectQuotationCompanySearch } from "@Redux/quotation/quotation.selector";
+import { QUOTATION_COMPANY_PAGE } from "@Redux/quotation/quotation.state";
 
 const COMPANY_SEARCH_DELAY = 300;
 
@@ -14,7 +15,9 @@ function useQuotationCompanySearch() {
     let companyRequest;
     const delay = companySearch.trim() ? COMPANY_SEARCH_DELAY : 0;
     const timeoutId = window.setTimeout(() => {
-      companyRequest = dispatch(fetchQuotationCompanies());
+      companyRequest = dispatch(
+        fetchQuotationCompanies({ page: QUOTATION_COMPANY_PAGE }),
+      );
     }, delay);
 
     return () => {

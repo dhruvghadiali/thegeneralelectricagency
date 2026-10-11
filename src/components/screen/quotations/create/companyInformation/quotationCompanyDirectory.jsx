@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import _ from "lodash";
 import { Building2, Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +11,7 @@ import {
   selectQuotationCompanySearch,
   selectQuotationSelectedCompany,
 } from "@Redux/quotation/quotation.selector";
+import { QUOTATION_COMPANY_PAGE } from "@Redux/quotation/quotation.state";
 import { Button } from "@shadcnComponent/button";
 import {
   Card,
@@ -56,15 +58,24 @@ function QuotationCompanyDirectory({
   const pagination = useSelector(selectQuotationCompanyPagination);
   const companySearch = useSelector(selectQuotationCompanySearch);
   const selectedCompany = useSelector(selectQuotationSelectedCompany);
-  const { isLoading, error } = useSelector(selectQuotationCompanyRequest);
+  const { isLoading, isLoadingMore, error } = useSelector(
+    selectQuotationCompanyRequest,
+  );
+  const hasMoreCompanies = pagination.page < pagination.totalPages;
   const companyCountLabel = pagination.total
     ? `${companies.length} of ${pagination.total} companies`
     : `${companies.length} companies`;
 
+  const loadCompanies = useCallback(
+    (page = QUOTATION_COMPANY_PAGE) =>
+      dispatch(fetchQuotationCompanies({ page })),
+    [dispatch],
+  );
+
   return (
     <Card
       ref={directoryRef}
-      className="min-h-[32rem] overflow-hidden lg:h-full lg:min-h-0"
+      className="min-h-[32rem] gap-0 overflow-hidden pb-0 lg:h-full lg:min-h-0"
     >
       <CardHeader className="shrink-0 border-b">
         <CardTitle>Company directory</CardTitle>
@@ -80,14 +91,14 @@ function QuotationCompanyDirectory({
             <Loader2 className="size-4 animate-spin" aria-hidden="true" />
             Loading companies...
           </div>
-        ) : error ? (
+        ) : error && companies.length === 0 ? (
           <div className="flex h-full min-h-48 flex-col items-center justify-center gap-3 px-6 text-center">
             <p className="text-sm text-destructive">{error}</p>
             <Button
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => dispatch(fetchQuotationCompanies())}
+              onClick={() => loadCompanies()}
             >
               Try again
             </Button>
@@ -102,36 +113,71 @@ function QuotationCompanyDirectory({
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => dispatch(fetchQuotationCompanies())}
+              onClick={() => loadCompanies()}
             >
               Try again
             </Button>
           </div>
         ) : (
-          <div className="divide-y" role="listbox" aria-label="Companies">
-            {companies.map((company, index) => (
-              <Button
-                key={company.id ?? `${company.name}-${index}`}
-                type="button"
-                variant="ghost"
-                role="option"
-                data-company-option
-                aria-selected={selectedCompany?.id === company.id}
-                onClick={() => onCompanySelect(company)}
-                onKeyDown={(event) =>
-                  onCompanyOptionKeyDown(event, index)
-                }
-                className="h-auto w-full justify-start rounded-none px-6 py-3 text-left aria-selected:bg-accent aria-selected:text-accent-foreground focus-visible:bg-accent focus-visible:text-accent-foreground"
-              >
-                <span className="min-w-0 truncate font-medium">
-                  <HighlightedCompanyName
-                    name={_.toUpper(company.name || "Unnamed company")}
-                    search={companySearch}
-                  />
-                </span>
-              </Button>
-            ))}
-          </div>
+          <>
+            <div className="divide-y" role="listbox" aria-label="Companies">
+              {companies.map((company, index) => (
+                <Button
+                  key={company.id ?? `${company.name}-${index}`}
+                  type="button"
+                  variant="ghost"
+                  role="option"
+                  data-company-option
+                  aria-selected={selectedCompany?.id === company.id}
+                  onClick={() => onCompanySelect(company)}
+                  onKeyDown={(event) =>
+                    onCompanyOptionKeyDown(event, index)
+                  }
+                  className="h-auto w-full justify-start rounded-none px-6 py-3 text-left aria-selected:bg-accent aria-selected:text-accent-foreground focus-visible:bg-accent focus-visible:text-accent-foreground"
+                >
+                  <span className="min-w-0 truncate font-medium">
+                    <HighlightedCompanyName
+                      name={_.toUpper(company.name || "Unnamed company")}
+                      search={companySearch}
+                    />
+                  </span>
+                </Button>
+              ))}
+            </div>
+
+            {(pagination.totalPages > 1 || error) && (
+              <div className="sticky bottom-0 space-y-2 border-t bg-card p-3">
+                {error && (
+                  <p className="text-center text-sm text-destructive">
+                    {error}
+                  </p>
+                )}
+                {(hasMoreCompanies || error) && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={isLoadingMore}
+                    onClick={() => loadCompanies(pagination.page + 1)}
+                    className="w-full"
+                  >
+                    {isLoadingMore && (
+                      <Loader2
+                        className="size-4 animate-spin"
+                        aria-hidden="true"
+                      />
+                    )}
+                    {isLoadingMore ? "Loading..." : "Load more companies"}
+                  </Button>
+                )}
+                {pagination.totalPages > 0 && (
+                  <p className="text-center text-xs text-muted-foreground">
+                    Page {pagination.page} of {pagination.totalPages}
+                  </p>
+                )}
+              </div>
+            )}
+          </>
         )}
       </CardContent>
     </Card>

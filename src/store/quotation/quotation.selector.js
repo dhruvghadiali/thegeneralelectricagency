@@ -59,8 +59,9 @@ export const selectQuotationCompanyPagination = createSelector(
 
 export const selectQuotationCompanyRequest = createSelector(
   selectQuotationState,
-  ({ isLoadingCompanies, companyError }) => ({
+  ({ isLoadingCompanies, isLoadingMoreCompanies, companyError }) => ({
     isLoading: isLoadingCompanies,
+    isLoadingMore: isLoadingMoreCompanies,
     error: companyError,
   }),
 );

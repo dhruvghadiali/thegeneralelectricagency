@@ -7,6 +7,7 @@ import {
 } from "@Redux/quotation/quotation.action";
 import {
   createQuotationState,
+  QUOTATION_COMPANY_PAGE,
   QUOTATION_PRODUCT_PAGE,
 } from "@Redux/quotation/quotation.state";
 
@@ -143,16 +144,34 @@ const quotationSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchQuotationCompanies.pending, (state, action) => {
-        state.isLoadingCompanies = true;
+        const requestedPage =
+          action.meta.arg?.page ?? QUOTATION_COMPANY_PAGE;
+        const isFirstPage = requestedPage === QUOTATION_COMPANY_PAGE;
+
         state.companyError = null;
         state.companyRequestId = action.meta.requestId;
+        state.isLoadingCompanies = isFirstPage;
+        state.isLoadingMoreCompanies = !isFirstPage;
+        if (isFirstPage) state.companies = [];
       })
       .addCase(fetchQuotationCompanies.fulfilled, (state, action) => {
         if (state.companyRequestId !== action.meta.requestId) return;
 
-        state.companies = action.payload.items;
+        if (action.payload.pagination.page === QUOTATION_COMPANY_PAGE) {
+          state.companies = action.payload.items;
+        } else {
+          const uniqueCompanies = new Map(
+            [...state.companies, ...action.payload.items].map((company) => [
+              company.id,
+              company,
+            ]),
+          );
+          state.companies = [...uniqueCompanies.values()];
+        }
+
         state.companyPagination = action.payload.pagination;
         state.isLoadingCompanies = false;
+        state.isLoadingMoreCompanies = false;
         state.companyError = null;
         state.companyRequestId = null;
       })
@@ -160,6 +179,7 @@ const quotationSlice = createSlice({
         if (state.companyRequestId !== action.meta.requestId) return;
 
         state.isLoadingCompanies = false;
+        state.isLoadingMoreCompanies = false;
         state.companyError = action.meta.aborted
           ? null
           : (action.payload ?? "Unable to load quotation companies.");

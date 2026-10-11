@@ -17,7 +17,10 @@ import { fromCompanyListResponse } from "@Tables/company/companyTable.frontend-p
 
 export const fetchQuotationCompanies = createAsyncThunk(
   "quotation/fetchCompanies",
-  async (_, { getState, signal, rejectWithValue }) => {
+  async (
+    { page = QUOTATION_COMPANY_PAGE } = {},
+    { getState, signal, rejectWithValue },
+  ) => {
     const state = getState();
 
     if (state.auth.role !== ROLE_PATHS.EMPLOYEE) {
@@ -27,7 +30,7 @@ export const fetchQuotationCompanies = createAsyncThunk(
     }
 
     const requestedPagination = {
-      page: QUOTATION_COMPANY_PAGE,
+      page,
       limit: QUOTATION_COMPANY_LIMIT,
     };
 

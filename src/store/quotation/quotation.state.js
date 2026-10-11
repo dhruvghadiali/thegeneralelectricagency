@@ -23,6 +23,7 @@ export const createQuotationState = () => ({
     totalPages: 0,
   },
   isLoadingCompanies: false,
+  isLoadingMoreCompanies: false,
   companyError: null,
   companyRequestId: null,
   products: [],

@@ -82,7 +82,7 @@ function QuotationCompanyInformationCard({
             onKeyDown={onCompanyNameKeyDown}
             placeholder="Enter company name"
             autoComplete="organization"
-            className="uppercase"
+            className="uppercase placeholder:normal-case"
             autoFocus
           />
         </CompanyInformationField>
