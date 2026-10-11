@@ -10,13 +10,13 @@ function useProductDuplicateDialogKeyboardShortcut({ onNo }) {
   }, []);
 
   const handleDialogKeyDown = useCallback((event) => {
-    if (event.altKey && event.key === "ArrowLeft") {
+    if (event.key === "ArrowLeft") {
       event.preventDefault();
       noButtonRef.current?.focus();
       return;
     }
 
-    if (event.altKey && event.key === "ArrowRight") {
+    if (event.key === "ArrowRight") {
       event.preventDefault();
       yesButtonRef.current?.focus();
       return;

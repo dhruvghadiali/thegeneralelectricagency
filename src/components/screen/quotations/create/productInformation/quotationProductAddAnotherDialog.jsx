@@ -36,7 +36,7 @@ function QuotationProductAddAnotherDialog({ open, onNo, onYes }) {
               ref={keyboard.noButtonRef}
               type="button"
               variant="outline"
-              aria-keyshortcuts="Alt+ArrowLeft"
+              aria-keyshortcuts="ArrowLeft"
             >
               No
             </Button>
@@ -45,7 +45,7 @@ function QuotationProductAddAnotherDialog({ open, onNo, onYes }) {
             ref={keyboard.yesButtonRef}
             type="button"
             onClick={onYes}
-            aria-keyshortcuts="Alt+ArrowRight"
+            aria-keyshortcuts="ArrowRight"
           >
             <Plus className="size-4" />
             Yes

@@ -40,7 +40,7 @@ function QuotationProductDuplicateDialog({ product, onNo, onYes }) {
               ref={keyboard.noButtonRef}
               type="button"
               variant="outline"
-              aria-keyshortcuts="Alt+ArrowLeft"
+              aria-keyshortcuts="ArrowLeft"
             >
               No
             </Button>
@@ -49,7 +49,7 @@ function QuotationProductDuplicateDialog({ product, onNo, onYes }) {
             ref={keyboard.yesButtonRef}
             type="button"
             onClick={onYes}
-            aria-keyshortcuts="Alt+ArrowRight"
+            aria-keyshortcuts="ArrowRight"
           >
             <Pencil className="size-4" />
             Yes, update

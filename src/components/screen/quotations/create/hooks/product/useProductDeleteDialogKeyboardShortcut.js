@@ -10,13 +10,13 @@ function useProductDeleteDialogKeyboardShortcut({ onCancel }) {
   }, []);
 
   const handleDialogKeyDown = useCallback((event) => {
-    if (event.altKey && event.key === "ArrowLeft") {
+    if (event.key === "ArrowLeft") {
       event.preventDefault();
       cancelButtonRef.current?.focus();
       return;
     }
 
-    if (event.altKey && event.key === "ArrowRight") {
+    if (event.key === "ArrowRight") {
       event.preventDefault();
       confirmButtonRef.current?.focus();
       return;

@@ -36,7 +36,7 @@ function QuotationExitDialog({ open, onClose, onNo, onYes }) {
             type="button"
             variant="destructive"
             onClick={onNo}
-            aria-keyshortcuts="Alt+ArrowLeft"
+            aria-keyshortcuts="ArrowLeft"
           >
             <Trash2 className="size-4" />
             No
@@ -45,7 +45,7 @@ function QuotationExitDialog({ open, onClose, onNo, onYes }) {
             ref={keyboard.yesButtonRef}
             type="button"
             onClick={onYes}
-            aria-keyshortcuts="Alt+ArrowRight"
+            aria-keyshortcuts="ArrowRight"
           >
             <Save className="size-4" />
             Yes

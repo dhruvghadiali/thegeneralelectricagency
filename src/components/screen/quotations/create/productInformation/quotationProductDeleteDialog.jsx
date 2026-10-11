@@ -43,7 +43,7 @@ function QuotationProductDeleteDialog({ product, onCancel, onConfirm }) {
               ref={keyboard.cancelButtonRef}
               type="button"
               variant="outline"
-              aria-keyshortcuts="Alt+ArrowLeft"
+              aria-keyshortcuts="ArrowLeft"
             >
               No
             </Button>
@@ -53,7 +53,7 @@ function QuotationProductDeleteDialog({ product, onCancel, onConfirm }) {
             type="button"
             variant="destructive"
             onClick={onConfirm}
-            aria-keyshortcuts="Alt+ArrowRight"
+            aria-keyshortcuts="ArrowRight"
           >
             <Trash2 className="size-4" />
             Yes, delete
