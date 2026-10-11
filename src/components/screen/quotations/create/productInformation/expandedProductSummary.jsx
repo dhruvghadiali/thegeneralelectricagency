@@ -100,7 +100,7 @@ function ExpandedProductSummary({
                     onEdit(product, index);
                   }}
                   aria-label={`Edit ${product.product}`}
-                  className="size-8"
+                  className="size-8 cursor-pointer"
                 >
                   <Pencil className="size-4" />
                 </Button>
@@ -113,7 +113,7 @@ function ExpandedProductSummary({
                     onDeleteRequest(index);
                   }}
                   aria-label={`Delete ${product.product}`}
-                  className="size-8 text-muted-foreground hover:text-destructive"
+                  className="size-8 cursor-pointer text-muted-foreground hover:text-destructive"
                 >
                   <Trash2 className="size-4" />
                 </Button>

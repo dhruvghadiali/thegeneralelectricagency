@@ -7,6 +7,7 @@ import { fetchQuotationProducts } from "@Redux/quotation/quotation.action";
 import {
   selectQuotationProductPagination,
   selectQuotationProductRequest,
+  selectQuotationProductSearch,
   selectQuotationProducts,
 } from "@Redux/quotation/quotation.selector";
 import { QUOTATION_PRODUCT_PAGE } from "@Redux/quotation/quotation.state";
@@ -19,6 +20,33 @@ import {
   CardTitle,
 } from "@shadcnComponent/card";
 
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function HighlightedProductName({ name, search }) {
+  const searchValue = search.trim();
+
+  if (!searchValue) return name;
+
+  const matchingParts = name.split(
+    new RegExp(`(${escapeRegExp(searchValue)})`, "gi"),
+  );
+
+  return matchingParts.map((part, index) =>
+    part.toLocaleLowerCase() === searchValue.toLocaleLowerCase() ? (
+      <mark
+        key={`${part}-${index}`}
+        className="rounded-sm bg-amber-200 px-0.5 text-foreground dark:bg-amber-500/35"
+      >
+        {part}
+      </mark>
+    ) : (
+      <span key={`${part}-${index}`}>{part}</span>
+    ),
+  );
+}
+
 function QuotationProductList({
   directoryRef,
   selectedProduct,
@@ -28,6 +56,7 @@ function QuotationProductList({
   const dispatch = useDispatch();
   const items = useSelector(selectQuotationProducts);
   const pagination = useSelector(selectQuotationProductPagination);
+  const productSearch = useSelector(selectQuotationProductSearch);
   const { isLoading, isLoadingMore, error } = useSelector(
     selectQuotationProductRequest,
   );
@@ -109,7 +138,10 @@ function QuotationProductList({
                   className="h-auto w-full justify-start rounded-none px-6 py-3 text-left font-medium aria-selected:bg-accent aria-selected:text-accent-foreground focus-visible:bg-accent focus-visible:text-accent-foreground"
                 >
                   <span className="min-w-0 truncate">
-                    {_.toUpper(product.name || "Unnamed product")}
+                    <HighlightedProductName
+                      name={_.toUpper(product.name || "Unnamed product")}
+                      search={productSearch}
+                    />
                   </span>
                 </Button>
               ))}

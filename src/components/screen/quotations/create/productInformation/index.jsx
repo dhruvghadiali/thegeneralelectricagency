@@ -236,6 +236,7 @@ function QuotationProductInformation({ companyInformation }) {
               onDeleteRequest={requestProductDelete}
               onDeleteCancel={cancelProductDelete}
               onDeleteConfirm={deleteProduct}
+              onOpenProductSummary={openProductSummary}
               onNavigateToCompanyInformation={openCompanyInformation}
               onNavigateToProductInformation={openProductInformation}
               onOpenQuotationSummary={openQuotationSummary}

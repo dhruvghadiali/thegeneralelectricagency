@@ -15,6 +15,7 @@ function QuotationProductSummaryCard({
   onDeleteRequest,
   onDeleteCancel,
   onDeleteConfirm,
+  onOpenProductSummary,
   onNavigateToCompanyInformation,
   onNavigateToProductInformation,
   onOpenQuotationSummary,
@@ -22,7 +23,7 @@ function QuotationProductSummaryCard({
   return (
     <Card className="w-full shrink-0 gap-0 overflow-hidden py-0">
       <CardHeader
-        onClick={onNavigateToCompanyInformation}
+        onClick={onOpenProductSummary}
         className={cn(
           "cursor-pointer py-3",
           isExpanded && "border-b",
