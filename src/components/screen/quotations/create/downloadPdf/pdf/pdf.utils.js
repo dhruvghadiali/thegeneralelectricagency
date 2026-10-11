@@ -142,13 +142,9 @@ export function createQuotationNumber(companyName, date = new Date()) {
   const financialYearStart =
     date.getMonth() >= 3 ? date.getFullYear() : date.getFullYear() - 1;
   const financialYear = `${String(financialYearStart).slice(-2)}-${String(financialYearStart + 1).slice(-2)}`;
-  const companyCode =
-    String(companyName || "COMPANY")
-      .replace(/[^a-z0-9]/gi, "")
-      .slice(0, 3)
-      .toUpperCase() || "COM";
+  const uniqueNumber =String(Date.now() % 1000000).padStart(6, "0");
 
-  return `TGES/001/${financialYear}/${companyCode}/Q1/${date.getTime()}`;
+  return `TGES/${financialYear}/R1/${uniqueNumber}`;
 }
 
 export function titleCase(value) {
