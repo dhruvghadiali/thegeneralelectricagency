@@ -17,6 +17,7 @@ function QuotationExitDialog({ open, onClose, onNo, onYes }) {
   return (
     <Dialog open={open} onOpenChange={(nextOpen) => !nextOpen && onClose()}>
       <DialogContent
+        data-quotation-exit-dialog
         className="max-w-md"
         onEscapeKeyDown={keyboard.handleEscapeKeyDown}
         onKeyDown={keyboard.handleDialogKeyDown}

@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useBlocker, useNavigate } from "react-router-dom";
 
 import { CREATE_QUOTATION_STEPS } from "@Enums";
 import {
@@ -19,25 +19,36 @@ function useCreateQuotationKeyboardShortcut() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const currentStep = useSelector(selectQuotationCurrentStep);
-  const exitDialog = useSelector(selectQuotationExitDialog);
+  const isExitDialogOpen = useSelector(selectQuotationExitDialog);
+  const shouldBlockNavigation = useCallback(
+    ({ currentLocation, nextLocation }) =>
+      currentLocation.pathname !== nextLocation.pathname ||
+      currentLocation.search !== nextLocation.search ||
+      currentLocation.hash !== nextLocation.hash,
+    [],
+  );
+  const blocker = useBlocker(shouldBlockNavigation);
+
+  useEffect(() => {
+    if (blocker.state === "blocked") {
+      dispatch(quotationExitRequested());
+    }
+  }, [blocker.state, dispatch]);
 
   const closeExitDialog = useCallback(() => {
     dispatch(quotationExitCancelled());
-  }, [dispatch]);
+    if (blocker.state === "blocked") blocker.reset();
+  }, [blocker, dispatch]);
 
   const saveAndExit = useCallback(() => {
-    const destination = exitDialog.pendingRoute ?? ROUTES.QUOTATIONS;
-
     dispatch(quotationExitCancelled());
-    navigate(destination);
-  }, [dispatch, exitDialog.pendingRoute, navigate]);
+    if (blocker.state === "blocked") blocker.proceed();
+  }, [blocker, dispatch]);
 
   const removeAndExit = useCallback(() => {
-    const destination = exitDialog.pendingRoute ?? ROUTES.QUOTATIONS;
-
     dispatch(quotationReset());
-    navigate(destination);
-  }, [dispatch, exitDialog.pendingRoute, navigate]);
+    if (blocker.state === "blocked") blocker.proceed();
+  }, [blocker, dispatch]);
 
   useEffect(() => {
     const handleCreateQuotationShortcut = (event) => {
@@ -55,17 +66,17 @@ function useCreateQuotationKeyboardShortcut() {
         return;
       }
 
-      dispatch(quotationExitRequested(ROUTES.QUOTATIONS));
+      navigate(ROUTES.QUOTATIONS);
     };
 
     window.addEventListener("keydown", handleCreateQuotationShortcut);
     return () =>
       window.removeEventListener("keydown", handleCreateQuotationShortcut);
-  }, [currentStep, dispatch]);
+  }, [currentStep, dispatch, navigate]);
 
   return {
     closeExitDialog,
-    isExitDialogOpen: exitDialog.isOpen,
+    isExitDialogOpen,
     removeAndExit,
     saveAndExit,
   };

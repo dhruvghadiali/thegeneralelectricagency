@@ -1,8 +1,9 @@
 import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
   Navigate,
+  Route,
 } from "react-router-dom";
 
 import { ROUTES } from "@routes/navigate";
@@ -36,130 +37,105 @@ import SettingsPage from "@pages/settings.page";
 import ProductsScreen from "@Tally/pages/products";
 import CompaniesScreen from "@Tally/pages/companies";
 
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <>
+      <Route element={<PublicRoute />}>
+        <Route path={ROUTES.HOME} element={<HomePage />} />
+        <Route path={ROUTES.SIGN_IN} element={<SigninPage />} />
+      </Route>
+
+      <Route element={<PrivateRoute />}>
+        <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
+        <Route
+          element={<RoleRoute allowedRoles={[ROLE_PATHS.TECH_SUPPORT]} />}
+        >
+          <Route path={ROUTES.SYNC_PRODUCTS} element={<ProductsScreen />} />
+          <Route path={ROUTES.SYNC_COMPANIES} element={<CompaniesScreen />} />
+        </Route>
+        <Route
+          element={<RoleRoute allowedRoles={[ROLE_PATHS.SUPER_ADMIN]} />}
+        >
+          <Route path={ROUTES.EMPLOYEES} element={<EmployeesPage />} />
+        </Route>
+        <Route
+          element={
+            <RoleRoute
+              allowedRoles={[ROLE_PATHS.SUPER_ADMIN, ROLE_PATHS.EMPLOYEE]}
+            />
+          }
+        >
+          <Route path={ROUTES.COMPANIES} element={<CompaniesPage />} />
+        </Route>
+        <Route
+          element={
+            <RoleRoute
+              allowedRoles={[ROLE_PATHS.SUPER_ADMIN, ROLE_PATHS.EMPLOYEE]}
+            />
+          }
+        >
+          <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
+        </Route>
+        <Route
+          element={
+            <RoleRoute
+              allowedRoles={[ROLE_PATHS.SUPER_ADMIN, ROLE_PATHS.EMPLOYEE]}
+            />
+          }
+        >
+          <Route
+            path={ROUTES.PURCHASE_CREDITS}
+            element={<PurchaseCreditPage />}
+          />
+        </Route>
+        <Route element={<RoleRoute allowedRoles={[ROLE_PATHS.EMPLOYEE]} />}>
+          <Route
+            path={ROUTES.PRODUCT_SYNC_PENDING}
+            element={<ProductSyncPendingPage />}
+          />
+          <Route path={ROUTES.QUOTATIONS} element={<QuotationsPage />} />
+          <Route
+            path={ROUTES.QUOTATION_NEW}
+            element={<CreateQuotationPage />}
+          />
+          <Route
+            path={ROUTES.PURCHASE_CREDIT_NEW}
+            element={<PurchaseCreditFormPage />}
+          />
+          <Route
+            path={ROUTES.PURCHASE_CREDIT_EDIT}
+            element={<PurchaseCreditFormPage />}
+          />
+          <Route path={ROUTES.PURCHASES} element={<PurchaseOrdersPage />} />
+          <Route path={ROUTES.SALES} element={<SalesPage />} />
+          <Route path={ROUTES.SALES_NEW} element={<SalesOrderPage />} />
+          <Route
+            path={ROUTES.PURCHASE_FINANCIAL_SUMMARY}
+            element={<PurchaseFinancialSummaryPage />}
+          />
+          <Route path={ROUTES.PURCHASE_NEW} element={<PurchaseOrderPage />} />
+          <Route path={ROUTES.COMPANY_NEW} element={<CompanyDetailsPage />} />
+          <Route path={ROUTES.COMPANY_EDIT} element={<CompanyDetailsPage />} />
+          <Route path={ROUTES.PRODUCT_NEW} element={<ProductDetailsPage />} />
+          <Route path={ROUTES.PRODUCT_EDIT} element={<ProductDetailsPage />} />
+        </Route>
+        <Route path={ROUTES.STOCKS} element={<StocksPage />} />
+        <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
+      </Route>
+
+      <Route
+        path={ROUTES.NOT_FOUND}
+        element={<Navigate to={ROUTES.HOME} replace />}
+      />
+    </>,
+  ),
+);
+
 function App() {
   return (
     <ThemeProvider defaultTheme="light">
       <LenisScrollProvider>
-        <Router>
-          <Routes>
-            <Route element={<PublicRoute />}>
-              <Route path={ROUTES.HOME} element={<HomePage />} />
-              <Route path={ROUTES.SIGN_IN} element={<SigninPage />} />
-            </Route>
-
-            <Route element={<PrivateRoute />}>
-              <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
-              <Route
-                element={<RoleRoute allowedRoles={[ROLE_PATHS.TECH_SUPPORT]} />}
-              >
-                <Route
-                  path={ROUTES.SYNC_PRODUCTS}
-                  element={<ProductsScreen />}
-                />
-                <Route
-                  path={ROUTES.SYNC_COMPANIES}
-                  element={<CompaniesScreen />}
-                />
-              </Route>
-              <Route
-                element={<RoleRoute allowedRoles={[ROLE_PATHS.SUPER_ADMIN]} />}
-              >
-                <Route path={ROUTES.EMPLOYEES} element={<EmployeesPage />} />
-              </Route>
-              <Route
-                element={
-                  <RoleRoute
-                    allowedRoles={[ROLE_PATHS.SUPER_ADMIN, ROLE_PATHS.EMPLOYEE]}
-                  />
-                }
-              >
-                <Route path={ROUTES.COMPANIES} element={<CompaniesPage />} />
-              </Route>
-              <Route
-                element={
-                  <RoleRoute
-                    allowedRoles={[ROLE_PATHS.SUPER_ADMIN, ROLE_PATHS.EMPLOYEE]}
-                  />
-                }
-              >
-                <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
-              </Route>
-              <Route
-                element={
-                  <RoleRoute
-                    allowedRoles={[ROLE_PATHS.SUPER_ADMIN, ROLE_PATHS.EMPLOYEE]}
-                  />
-                }
-              >
-                <Route
-                  path={ROUTES.PURCHASE_CREDITS}
-                  element={<PurchaseCreditPage />}
-                />
-              </Route>
-              <Route
-                element={<RoleRoute allowedRoles={[ROLE_PATHS.EMPLOYEE]} />}
-              >
-                <Route
-                  path={ROUTES.PRODUCT_SYNC_PENDING}
-                  element={<ProductSyncPendingPage />}
-                />
-                <Route
-                  path={ROUTES.QUOTATIONS}
-                  element={<QuotationsPage />}
-                />
-                <Route
-                  path={ROUTES.QUOTATION_NEW}
-                  element={<CreateQuotationPage />}
-                />
-                <Route
-                  path={ROUTES.PURCHASE_CREDIT_NEW}
-                  element={<PurchaseCreditFormPage />}
-                />
-                <Route
-                  path={ROUTES.PURCHASE_CREDIT_EDIT}
-                  element={<PurchaseCreditFormPage />}
-                />
-                <Route
-                  path={ROUTES.PURCHASES}
-                  element={<PurchaseOrdersPage />}
-                />
-                <Route path={ROUTES.SALES} element={<SalesPage />} />
-                <Route path={ROUTES.SALES_NEW} element={<SalesOrderPage />} />
-                <Route
-                  path={ROUTES.PURCHASE_FINANCIAL_SUMMARY}
-                  element={<PurchaseFinancialSummaryPage />}
-                />
-                <Route
-                  path={ROUTES.PURCHASE_NEW}
-                  element={<PurchaseOrderPage />}
-                />
-                <Route
-                  path={ROUTES.COMPANY_NEW}
-                  element={<CompanyDetailsPage />}
-                />
-                <Route
-                  path={ROUTES.COMPANY_EDIT}
-                  element={<CompanyDetailsPage />}
-                />
-                <Route
-                  path={ROUTES.PRODUCT_NEW}
-                  element={<ProductDetailsPage />}
-                />
-                <Route
-                  path={ROUTES.PRODUCT_EDIT}
-                  element={<ProductDetailsPage />}
-                />
-              </Route>
-              <Route path={ROUTES.STOCKS} element={<StocksPage />} />
-              <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
-            </Route>
-
-            <Route
-              path={ROUTES.NOT_FOUND}
-              element={<Navigate to={ROUTES.HOME} replace />}
-            />
-          </Routes>
-        </Router>
+        <RouterProvider router={router} />
       </LenisScrollProvider>
     </ThemeProvider>
   );

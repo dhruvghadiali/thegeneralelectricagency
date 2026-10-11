@@ -8,7 +8,6 @@ export const QUOTATION_PRODUCT_LIMIT = 100;
 export const createQuotationState = () => ({
   currentStep: CREATE_QUOTATION_STEPS.COMPANY_INFORMATION,
   isExitDialogOpen: false,
-  pendingExitRoute: null,
   companies: [],
   companySearch: "",
   selectedCompany: null,

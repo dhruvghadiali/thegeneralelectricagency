@@ -15,7 +15,6 @@ import {
   keyboardNavigationOpened,
   keyboardNavigationQueryChanged,
 } from "@Redux/keyboardNavigation/keyboardNavigation.slice";
-import { quotationExitRequested } from "@Redux/quotation/quotation.slice";
 
 import { GLOBAL_KEYBOARD_COMMANDS } from "./keyboardNavigation.constants";
 import {
@@ -57,16 +56,9 @@ function useGlobalKeyboardNavigation() {
       }
 
       closeNavigation();
-      if (!command.route) return;
-
-      if (location.pathname === ROUTES.QUOTATION_NEW) {
-        dispatch(quotationExitRequested(command.route));
-        return;
-      }
-
-      navigate(command.route);
+      if (command.route) navigate(command.route);
     },
-    [closeNavigation, dispatch, location.pathname, navigate, openNavigation],
+    [closeNavigation, navigate, openNavigation],
   );
 
   useEffect(() => {

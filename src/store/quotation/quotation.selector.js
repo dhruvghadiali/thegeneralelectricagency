@@ -9,10 +9,7 @@ export const selectQuotationCurrentStep = createSelector(
 
 export const selectQuotationExitDialog = createSelector(
   selectQuotationState,
-  ({ isExitDialogOpen, pendingExitRoute }) => ({
-    isOpen: isExitDialogOpen,
-    pendingRoute: pendingExitRoute,
-  }),
+  (quotation) => quotation.isExitDialogOpen,
 );
 
 export const selectQuotationCompanies = createSelector(

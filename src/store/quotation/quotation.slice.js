@@ -17,13 +17,11 @@ const quotationSlice = createSlice({
     quotationReset() {
       return createQuotationState();
     },
-    quotationExitRequested(state, action) {
+    quotationExitRequested(state) {
       state.isExitDialogOpen = true;
-      state.pendingExitRoute = action.payload;
     },
     quotationExitCancelled(state) {
       state.isExitDialogOpen = false;
-      state.pendingExitRoute = null;
     },
     quotationStepChanged(state, action) {
       state.currentStep = action.payload;
