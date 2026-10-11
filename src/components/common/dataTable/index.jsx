@@ -124,6 +124,8 @@ function DataTable({
   selectionLabel = (row) => `Select ${rowKey(row)}`,
   toolbarActions,
   searchPlaceholder = "Search...",
+  searchAutoFocus = false,
+  keyboardRowNavigation = false,
   rowNoun = "rows",
   emptyIcon,
   emptyTitle = "Nothing found",
@@ -141,6 +143,7 @@ function DataTable({
 }) {
   const [internalMobileFilterOpen, setInternalMobileFilterOpen] =
     useState(false);
+  const rowRefs = useRef([]);
   const isMobileFilterOpen =
     controlledMobileFilterOpen ?? internalMobileFilterOpen;
   const toggleMobileFilters =
@@ -169,6 +172,34 @@ function DataTable({
   // unfiltered empty list, callers can show just the centered empty state.
   const showTableHead =
     !isFirstLoad && !error && (!hideHeaderWhenEmpty || hasRows || isFiltered);
+  const focusRow = (rowIndex) => {
+    const row = rowRefs.current[rowIndex];
+
+    if (!row || row.offsetParent === null) return false;
+
+    rowRefs.current.forEach((rowElement, index) => {
+      rowElement?.setAttribute("tabindex", index === rowIndex ? "0" : "-1");
+    });
+    row.focus();
+    return document.activeElement === row;
+  };
+  const handleRowKeyDown = (event, rowIndex) => {
+    if (
+      event.target !== event.currentTarget ||
+      (event.key !== "ArrowDown" && event.key !== "ArrowUp")
+    ) {
+      return;
+    }
+
+    const direction = event.key === "ArrowDown" ? 1 : -1;
+    const nextIndex = Math.min(
+      Math.max(rowIndex + direction, 0),
+      rows.length - 1,
+    );
+
+    event.preventDefault();
+    focusRow(nextIndex);
+  };
 
   return (
     <Card
@@ -191,6 +222,10 @@ function DataTable({
         onClearFilters={onClearFilters}
         isLoading={isLoading}
         searchPlaceholder={searchPlaceholder}
+        searchAutoFocus={searchAutoFocus}
+        onSearchTab={
+          keyboardRowNavigation && hasRows ? () => focusRow(0) : undefined
+        }
         actions={toolbarActions}
       />
 
@@ -264,15 +299,37 @@ function DataTable({
                   isLoading && "pointer-events-none opacity-60",
                 )}
               >
-                {_.map(rows, (row) => {
+                {_.map(rows, (row, rowIndex) => {
                   const key = rowKey(row);
                   const isSelected = selectedKeys.has(key);
 
                   return (
                   <TableRow
+                    ref={(element) => {
+                      rowRefs.current[rowIndex] = element;
+                    }}
                     key={key}
                     data-state={isSelected ? "selected" : undefined}
+                    tabIndex={
+                      keyboardRowNavigation
+                        ? rowIndex === 0
+                          ? 0
+                          : -1
+                        : undefined
+                    }
+                    aria-keyshortcuts={
+                      keyboardRowNavigation
+                        ? "ArrowUp ArrowDown"
+                        : undefined
+                    }
+                    onKeyDown={
+                      keyboardRowNavigation
+                        ? (event) => handleRowKeyDown(event, rowIndex)
+                        : undefined
+                    }
                     className={cn(
+                      keyboardRowNavigation &&
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
                       isSelected && "bg-primary/5 hover:bg-primary/10",
                     )}
                   >

@@ -6,6 +6,8 @@ export const QUOTATION_TABLE_CONFIG = Object.freeze({
   columns: QUOTATION_TABLE_COLUMNS,
   rowKey: (quotation) => quotation.id ?? quotation.quotationNumber,
   searchPlaceholder: "Search by company or quotation number...",
+  searchAutoFocus: true,
+  keyboardRowNavigation: true,
   rowNoun: "quotations",
   emptyIcon: FileText,
   emptyTitle: "No quotations found",

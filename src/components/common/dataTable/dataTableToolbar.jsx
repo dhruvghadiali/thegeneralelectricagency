@@ -28,6 +28,8 @@ function DataTableToolbar({
   onClearFilters,
   isLoading,
   searchPlaceholder,
+  searchAutoFocus,
+  onSearchTab,
   actions,
 }) {
   const hasFilters = getFilterableColumns(columns).length > 0;
@@ -47,10 +49,24 @@ function DataTableToolbar({
         <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           ref={searchInputRef}
+          autoFocus={searchAutoFocus}
           value={search}
           onChange={(event) => onSearchChange(event.target.value)}
           onFocus={focusSearchInput}
-          onKeyDown={(event) => event.key === "Enter" && onSearchSubmit()}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              onSearchSubmit();
+              return;
+            }
+
+            if (
+              event.key === "Tab" &&
+              !event.shiftKey &&
+              onSearchTab?.()
+            ) {
+              event.preventDefault();
+            }
+          }}
           placeholder={searchPlaceholder}
           className="pl-9 pr-9"
           aria-label={searchPlaceholder}
