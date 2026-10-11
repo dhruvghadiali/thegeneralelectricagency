@@ -6,4 +6,35 @@ export const ROLE_PATHS = Object.freeze({
   SUPER_ADMIN: "super-admin",
   EMPLOYEE: "employee",
   WAREHOUSE_MANAGER: "warehouse-manager",
+  TECH_SUPPORT: "tech-support",
+});
+
+export const ROLE_OPTIONS = Object.freeze([
+  { value: ROLE_PATHS.SUPER_ADMIN, label: "Super Admin" },
+  { value: ROLE_PATHS.EMPLOYEE, label: "Employee" },
+  { value: ROLE_PATHS.WAREHOUSE_MANAGER, label: "Warehouse Manager" },
+  { value: ROLE_PATHS.TECH_SUPPORT, label: "Tech Support" },
+]);
+
+/**
+ * The backend spells the same role two ways: hyphenated in the URL segment
+ * ("warehouse-manager") and underscored in the stored `user_type`
+ * ("warehouse_manager").
+ */
+export const USER_TYPE_BY_ROLE = Object.freeze({
+  [ROLE_PATHS.SUPER_ADMIN]: "super_admin",
+  [ROLE_PATHS.EMPLOYEE]: "employee",
+  [ROLE_PATHS.WAREHOUSE_MANAGER]: "warehouse_manager",
+  [ROLE_PATHS.TECH_SUPPORT]: "tech_support",
+});
+
+/**
+ * The same pairing read the other way, for translating a `user_type` coming
+ * back from the API into the ROLE_PATHS value the UI is keyed by.
+ */
+export const ROLE_BY_USER_TYPE = Object.freeze({
+  [USER_TYPE_BY_ROLE[ROLE_PATHS.SUPER_ADMIN]]: ROLE_PATHS.SUPER_ADMIN,
+  [USER_TYPE_BY_ROLE[ROLE_PATHS.EMPLOYEE]]: ROLE_PATHS.EMPLOYEE,
+  [USER_TYPE_BY_ROLE[ROLE_PATHS.WAREHOUSE_MANAGER]]: ROLE_PATHS.WAREHOUSE_MANAGER,
+  [USER_TYPE_BY_ROLE[ROLE_PATHS.TECH_SUPPORT]]: ROLE_PATHS.TECH_SUPPORT,
 });

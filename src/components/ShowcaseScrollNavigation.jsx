@@ -3,8 +3,8 @@ import { LogIn } from "lucide-react";
 import { showcaseSections } from "@/utils/showcaseSections";
 import "./ShowcaseScrollNavigation.css";
 import logoImage from "@Assets/images/logo.png";
-import { Typography } from "@/components/ui/typography";
-import { Button } from "@/components/ui/button";
+import { Typography } from "@shadcnComponent/typography";
+import { Button } from "@shadcnComponent/button";
 
 /**
  * Purely presentational. The active section is owned by the page so the

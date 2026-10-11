@@ -1,64 +1,43 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { ThemeContext } from './theme-context'
 
-export const ThemeProvider = ({ children, defaultTheme = 'light', ...props }) => {
-  const [theme, setTheme] = useState(() => {
-    // Safely get theme from localStorage or use default
-    if (typeof window !== 'undefined') {
-      try {
-        const storedTheme = localStorage.getItem('theme')
-        if (storedTheme && ['light', 'dark', 'system'].includes(storedTheme)) {
-          return storedTheme
-        }
-      } catch (error) {
-        console.warn('Failed to read theme from localStorage:', error)
-      }
-    }
-    return defaultTheme
-  })
+/**
+ * Light-theme-only provider.
+ *
+ * Dark / system themes are intentionally disabled project-wide.
+ * The `dark` class is never applied to <html>, any persisted theme
+ * preference is cleared, and setTheme/toggleTheme are no-ops.
+ */
+const FORCED_THEME = 'light'
 
+// `defaultTheme` is accepted and ignored so existing call sites keep working.
+export const ThemeProvider = ({ children, defaultTheme: _defaultTheme, ...props }) => {
   useEffect(() => {
     const root = window.document.documentElement
 
-    root.classList.remove('light', 'dark')
+    root.classList.remove('dark')
+    root.classList.add(FORCED_THEME)
+    root.style.colorScheme = FORCED_THEME
 
-    if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light'
-
-      root.classList.add(systemTheme)
-      return
+    // Drop any stale preference saved before dark mode was removed.
+    try {
+      if (localStorage.getItem('theme')) {
+        localStorage.removeItem('theme')
+      }
+    } catch {
+      // localStorage unavailable — nothing to clean up.
     }
+  }, [])
 
-    root.classList.add(theme)
-  }, [theme])
-
-  const value = {
-    theme,
-    setTheme: (newTheme) => {
-      if (['light', 'dark', 'system'].includes(newTheme)) {
-        try {
-          localStorage.setItem('theme', newTheme)
-          setTheme(newTheme)
-        } catch (error) {
-          console.warn('Failed to save theme to localStorage:', error)
-          setTheme(newTheme) // Still set theme even if localStorage fails
-        }
-      }
-    },
-    toggleTheme: () => {
-      const newTheme = theme === 'light' ? 'dark' : theme === 'dark' ? 'system' : 'light'
-      try {
-        localStorage.setItem('theme', newTheme)
-        setTheme(newTheme)
-      } catch (error) {
-        console.warn('Failed to save theme to localStorage:', error)
-        setTheme(newTheme) // Still set theme even if localStorage fails
-      }
-    },
-  }
+  const value = useMemo(
+    () => ({
+      theme: FORCED_THEME,
+      setTheme: () => null,
+      toggleTheme: () => null,
+    }),
+    []
+  )
 
   return (
     <ThemeContext.Provider {...props} value={value}>

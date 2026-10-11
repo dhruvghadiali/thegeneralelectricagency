@@ -1,0 +1,24 @@
+import * as Yup from "yup";
+
+import { ROLE_PATHS } from "@Enums";
+import { SIGNIN_VALIDATION_MESSAGES } from "@Forms/signin/signin.validation.messages";
+import {
+  SIGNIN_PASSWORD_MAX_LENGTH,
+  SIGNIN_PASSWORD_MIN_LENGTH,
+  SIGNIN_USERNAME_MAX_LENGTH,
+  SIGNIN_USERNAME_MIN_LENGTH,
+} from "@Forms/signin/signin.validation.constants";
+
+export const signinValidationSchema = Yup.object({
+  role: Yup.string()
+    .oneOf(Object.values(ROLE_PATHS), SIGNIN_VALIDATION_MESSAGES.ROLE_REQUIRED)
+    .required(SIGNIN_VALIDATION_MESSAGES.ROLE_REQUIRED),
+  username: Yup.string()
+    .min(SIGNIN_USERNAME_MIN_LENGTH, SIGNIN_VALIDATION_MESSAGES.USERNAME_MIN)
+    .max(SIGNIN_USERNAME_MAX_LENGTH, SIGNIN_VALIDATION_MESSAGES.USERNAME_MAX)
+    .required(SIGNIN_VALIDATION_MESSAGES.USERNAME_REQUIRED),
+  password: Yup.string()
+    .min(SIGNIN_PASSWORD_MIN_LENGTH, SIGNIN_VALIDATION_MESSAGES.PASSWORD_MIN)
+    .max(SIGNIN_PASSWORD_MAX_LENGTH, SIGNIN_VALIDATION_MESSAGES.PASSWORD_MAX)
+    .required(SIGNIN_VALIDATION_MESSAGES.PASSWORD_REQUIRED),
+});

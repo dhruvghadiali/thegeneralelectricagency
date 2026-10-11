@@ -1,0 +1,121 @@
+import _ from "lodash";
+import { Trash2 } from "lucide-react";
+
+import { Button } from "@shadcnComponent/button";
+import { Input } from "@shadcnComponent/input";
+import PurchaseCreditFormField from "@Forms/purchaseCredit/components/purchaseCreditFormField";
+import PurchaseCreditRemoteSelect from "@Forms/purchaseCredit/components/purchaseCreditRemoteSelect";
+
+function PurchaseCreditProductFields({
+  products,
+  isEditing,
+  supplierSelected,
+  productOptions,
+  productState,
+  availableProductCount,
+  productQuery,
+  onProductQueryChange,
+  formik,
+  errorFor,
+  inputProps,
+  onRemove,
+}) {
+  const selectedProductValues = new Set(
+    _.compact(_.map(products, (item) => String(item.product || ""))),
+  );
+
+  return (
+    <div className="space-y-4">
+      {_.map(products, (item, index) => {
+        const prefix = `products[${index}]`;
+        const productPath = `${prefix}.product`;
+        const stockPath = `${prefix}.stock`;
+        const selected = _.find(
+          productOptions,
+          (option) => option.value === String(item.product),
+        );
+        const availableOptions = _.filter(
+          productOptions,
+          (option) =>
+            option.value === String(item.product) ||
+            !selectedProductValues.has(option.value),
+        );
+
+        return (
+          <div key={index} className="rounded-xl border bg-muted/10 p-4 sm:p-5">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <p className="font-medium">Product {index + 1}</p>
+              {!isEditing && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  disabled={products.length === 1}
+                  aria-label={`Remove product ${index + 1}`}
+                  onClick={() => onRemove(index)}
+                  className="text-muted-foreground hover:text-destructive"
+                >
+                  <Trash2 className="size-4" aria-hidden="true" />
+                </Button>
+              )}
+            </div>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <PurchaseCreditFormField
+                id={`purchase-credit-product-${index}`}
+                label="Product"
+                required
+                hint={!supplierSelected ? "Select a supplier first." : undefined}
+                error={errorFor(productPath)}
+              >
+                <PurchaseCreditRemoteSelect
+                  id={`purchase-credit-product-${index}`}
+                  label={`Product ${index + 1}`}
+                  value={String(item.product ?? "")}
+                  selectedLabel={
+                    selected?.label || (item.product ? "Selected product" : "")
+                  }
+                  placeholder="Search and select a product"
+                  searchPlaceholder="Search active products"
+                  query={productQuery}
+                  disabled={
+                    isEditing ||
+                    !supplierSelected ||
+                    availableProductCount === 0
+                  }
+                  onQueryChange={onProductQueryChange}
+                  options={availableOptions}
+                  isLoading={productState.isLoading}
+                  error={productState.error}
+                  fieldError={errorFor(productPath)}
+                  onSelect={(option) => {
+                    formik.setFieldValue(productPath, option.value, true);
+                    onProductQueryChange("");
+                  }}
+                  onBlur={() => formik.setFieldTouched(productPath, true, true)}
+                />
+              </PurchaseCreditFormField>
+              <PurchaseCreditFormField
+                id={`purchase-credit-stock-${index}`}
+                label="Stock"
+                required
+                error={errorFor(stockPath)}
+              >
+                <Input
+                  id={`purchase-credit-stock-${index}`}
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  placeholder="e.g. 12"
+                  {...inputProps(stockPath, `purchase-credit-stock-${index}`)}
+                  disabled={isEditing}
+                />
+              </PurchaseCreditFormField>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+export default PurchaseCreditProductFields;

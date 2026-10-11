@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@shadcnComponent/button";
 import { ArrowRight } from "lucide-react";
-import { Typography } from "@/components/ui/typography";
+import { Typography } from "@shadcnComponent/typography";
 
 function ServiceShowcaseCard({
   service,

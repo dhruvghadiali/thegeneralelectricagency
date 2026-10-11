@@ -1,26 +1,57 @@
-import { Boxes, Building2, Settings, Users, LucideHome } from "lucide-react";
+import {
+  Boxes,
+  Building2,
+  HandCoins,
+  FileText,
+  Settings,
+  Users,
+  LucideHome,
+  RefreshCw,
+  TrendingUp,
+} from "lucide-react";
 
-import { ROLE_PATHS } from "@Enums/role.enum";
+import { ROLE_PATHS } from "@Enums";
+import { ROUTES } from "@routes/navigate";
 
 /**
  * Sidebar nav items per role. Keyed by ROLE_PATHS so a role with no sign-in
  * flow wired up yet still has its menu ready to go the moment it does.
  */
 export const SIDEBAR_NAV_ITEMS_BY_ROLE = {
+  [ROLE_PATHS.TECH_SUPPORT]: [
+    { title: "Dashboard", url: ROUTES.DASHBOARD, icon: LucideHome },
+    { title: "Sync products", url: ROUTES.SYNC_PRODUCTS, icon: Boxes },
+    {
+      title: "Sync companies",
+      url: ROUTES.SYNC_COMPANIES,
+      icon: RefreshCw,
+    },
+  ],
   [ROLE_PATHS.SUPER_ADMIN]: [
-    { title: "Dashboard", url: "/dashboard", icon: LucideHome },
-    { title: "Employees", url: "/employees", icon: Users },
-    { title: "Settings", url: "/settings", icon: Settings },
+    { title: "Dashboard", url: ROUTES.DASHBOARD, icon: LucideHome },
+    { title: "EUOB", url: ROUTES.PURCHASE_CREDITS, icon: HandCoins },
+    { title: "Products", url: ROUTES.PRODUCTS, icon: Boxes },
+    { title: "Employees", url: ROUTES.EMPLOYEES, icon: Users },
+    { title: "Companies", url: ROUTES.COMPANIES, icon: Building2 },
+    { title: "Settings", url: ROUTES.SETTINGS, icon: Settings },
   ],
   [ROLE_PATHS.EMPLOYEE]: [
-    { title: "Dashboard", url: "/dashboard", icon: LucideHome },
-    { title: "Products", url: "/products", icon: Boxes },
-    { title: "Companies", url: "/companies", icon: Building2 },
-    { title: "Settings", url: "/settings", icon: Settings },
+    { title: "Dashboard", url: ROUTES.DASHBOARD, icon: LucideHome },
+    // { title: "Purchase orders", url: ROUTES.PURCHASES, icon: ShoppingCart },
+    // { title: "Sales", url: ROUTES.SALES, icon: Receipt },
+    // { title: "EUOB", url: ROUTES.PURCHASE_CREDITS, icon: HandCoins },
+    { title: "Products", url: ROUTES.PRODUCTS, icon: Boxes },
+    { title: "Companies", url: ROUTES.COMPANIES, icon: Building2 },
+    {
+      title: "Quotation",
+      url: ROUTES.QUOTATIONS,
+      icon: FileText,
+    },
+    { title: "Settings", url: ROUTES.SETTINGS, icon: Settings },
   ],
   [ROLE_PATHS.WAREHOUSE_MANAGER]: [
-    { title: "Dashboard", url: "/dashboard", icon: LucideHome },
-    { title: "Products", url: "/products", icon: Boxes },
-    { title: "Settings", url: "/settings", icon: Settings },
+    { title: "Dashboard", url: ROUTES.DASHBOARD, icon: LucideHome },
+    { title: "Stocks", url: ROUTES.STOCKS, icon: TrendingUp },
+    { title: "Settings", url: ROUTES.SETTINGS, icon: Settings },
   ],
 };

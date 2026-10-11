@@ -1,6 +1,6 @@
 import larsenToubroLogo from "@/assets/images/l&t.png";
 import relianceLogo from "@/assets/images/reliance.png";
-import { Typography } from "@/components/ui/typography";
+import { Typography } from "@shadcnComponent/typography";
 
 /**
  * Logos are bundled assets, never fetched at runtime.

@@ -1,0 +1,840 @@
+import { jsPDF } from "jspdf";
+
+const BRAND = Object.freeze({
+  name: "The General Electric Stores",
+  addressLine1: "7, GANESH SHOPPING CENTRE OPP. DR. BECK & CO",
+  addressLine2: "G.I.D.C ANKLESHWAR - 393002",
+  email: "generalagenc@gmail.com",
+  phone: "+91 9099017416 | +91 7874349006",
+  gst: "24AAZFT8619H1ZF",
+  bankName: "HDFC BANK",
+  accountNumber: "99919099017416",
+  ifscCode: "HDFC0000255",
+});
+
+const COLORS = Object.freeze({
+  primary: [22, 72, 99],
+  primaryDark: [15, 47, 70],
+  secondary: [155, 190, 200],
+  accent: [238, 244, 248],
+  surface: [247, 249, 251],
+  ink: [15, 33, 53],
+  muted: [71, 85, 105],
+  line: [91, 125, 140],
+  white: [255, 255, 255],
+});
+
+const WARRANTY_TEXT =
+  "WARRANTY: All materials supplied shall be Warranted for a period of 12 months from date of commissioning or 18 months from the date of supply";
+
+const moneyFormatter = new Intl.NumberFormat("en-IN", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+const numberOrZero = (value) => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+};
+
+function calculatePricing(pricing) {
+  const quantity = Math.max(Math.floor(numberOrZero(pricing.quantity)), 1);
+  const unitPrice = Math.max(numberOrZero(pricing.salePrice), 0);
+  const discountPerUnit = Math.min(
+    Math.max(numberOrZero(pricing.discountAmount), 0),
+    unitPrice,
+  );
+  const gstPercentage = Math.min(
+    Math.max(numberOrZero(pricing.gstPercentage), 0),
+    100,
+  );
+  const subtotal = unitPrice * quantity;
+  const totalDiscount = discountPerUnit * quantity;
+  const taxableAmount = subtotal - totalDiscount;
+  const gstAmount = taxableAmount * (gstPercentage / 100);
+
+  return {
+    quantity,
+    unitPrice,
+    discountPerUnit,
+    gstPercentage,
+    subtotal,
+    totalDiscount,
+    taxableAmount,
+    gstAmount,
+    grandTotal: taxableAmount + gstAmount,
+  };
+}
+
+const ONES = [
+  "",
+  "One",
+  "Two",
+  "Three",
+  "Four",
+  "Five",
+  "Six",
+  "Seven",
+  "Eight",
+  "Nine",
+  "Ten",
+  "Eleven",
+  "Twelve",
+  "Thirteen",
+  "Fourteen",
+  "Fifteen",
+  "Sixteen",
+  "Seventeen",
+  "Eighteen",
+  "Nineteen",
+];
+
+const TENS = [
+  "",
+  "",
+  "Twenty",
+  "Thirty",
+  "Forty",
+  "Fifty",
+  "Sixty",
+  "Seventy",
+  "Eighty",
+  "Ninety",
+];
+
+function underThousand(value) {
+  const number = Math.floor(value);
+  const parts = [];
+  if (number >= 100) {
+    parts.push(`${ONES[Math.floor(number / 100)]} Hundred`);
+  }
+  const remainder = number % 100;
+  if (remainder < 20) {
+    if (remainder) parts.push(ONES[remainder]);
+  } else {
+    parts.push(`${TENS[Math.floor(remainder / 10)]}${remainder % 10 ? ` ${ONES[remainder % 10]}` : ""}`);
+  }
+  return parts.join(" ");
+}
+
+function integerToIndianWords(value) {
+  let number = Math.floor(Math.abs(value));
+  if (number === 0) return "Zero";
+
+  const groups = [
+    { value: 10000000, label: "Crore" },
+    { value: 100000, label: "Lakh" },
+    { value: 1000, label: "Thousand" },
+  ];
+  const parts = [];
+  groups.forEach((group) => {
+    if (number >= group.value) {
+      const count = Math.floor(number / group.value);
+      parts.push(`${integerToIndianWords(count)} ${group.label}`);
+      number %= group.value;
+    }
+  });
+  if (number) parts.push(underThousand(number));
+  return parts.join(" ");
+}
+
+function amountInWords(value) {
+  const amount = Math.max(numberOrZero(value), 0);
+  const rupees = Math.floor(amount);
+  const paise = Math.round((amount - rupees) * 100);
+  return `Rupees ${integerToIndianWords(rupees)}${paise ? ` and ${integerToIndianWords(paise)} Paise` : ""} Only`;
+}
+
+function quoteNumber(product, productCount = 1) {
+  const date = new Date();
+  const stamp = [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0"),
+  ].join("");
+  const code =
+    productCount > 1
+      ? `MULTI${productCount}`
+      : String(product.productCode || "PRODUCT")
+          .replace(/[^a-z0-9]/gi, "")
+          .slice(0, 12)
+          .toUpperCase();
+  return `Q-${stamp}-${code}`;
+}
+
+const titleCase = (value) =>
+  String(value ?? "")
+    .split("_")
+    .filter(Boolean)
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join(" ") || "Not specified";
+
+function drawCell(doc, x, y, width, height, options = {}) {
+  const { fill, lineWidth = 0.2 } = options;
+  doc.setLineWidth(lineWidth);
+  doc.setDrawColor(...COLORS.line);
+  if (fill) {
+    doc.setFillColor(...fill);
+    doc.rect(x, y, width, height, "FD");
+  } else {
+    doc.rect(x, y, width, height, "S");
+  }
+}
+
+function drawText(doc, text, x, y, options = {}) {
+  const {
+    bold = false,
+    color = COLORS.ink,
+    size = 8.5,
+    align = "left",
+    maxWidth,
+  } = options;
+  doc.setFont("helvetica", bold ? "bold" : "normal");
+  doc.setFontSize(size);
+  doc.setTextColor(...color);
+  if (maxWidth && !Array.isArray(text)) {
+    doc.text(doc.splitTextToSize(String(text), maxWidth), x, y, { align });
+  } else {
+    doc.text(Array.isArray(text) ? text : String(text), x, y, { align });
+  }
+}
+
+function drawLabelLine(doc, label, value, x, y, valueX = x + 25) {
+  drawText(doc, label, x, y, { bold: true, size: 8 });
+  drawText(doc, value || "-", valueX, y, { size: 8 });
+}
+
+function drawTableHeader(doc, label, x, y, width, height, options = {}) {
+  const { lines = [label] } = options;
+  drawCell(doc, x, y, width, height, { fill: COLORS.secondary });
+  const lineHeight = 4.5;
+  const startY = y + height / 2 - ((lines.length - 1) * lineHeight) / 2 + 1.5;
+  lines.forEach((line, index) =>
+    drawText(doc, line, x + width / 2, startY + index * lineHeight, {
+      bold: true,
+      size: 8,
+      align: "center",
+    }),
+  );
+}
+
+function imageUrlToDataUrl(url) {
+  return fetch(url)
+    .then((response) => {
+      if (!response.ok) throw new Error("Unable to load quotation logo.");
+      return response.blob();
+    })
+    .then(
+      (blob) =>
+        new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        }),
+    );
+}
+
+function billToDetails(company) {
+  const primaryAddress = company?.addresses?.[0] ?? {};
+  const address = [
+    primaryAddress.address || company?.address1,
+    primaryAddress.state || company?.state1,
+    primaryAddress.pincode || company?.pincode1,
+  ]
+    .filter(Boolean)
+    .join(" - ");
+
+  return {
+    name: company?.name || "Valued Client",
+    address: address || "To be confirmed",
+    email: company?.email || "-",
+    phone: company?.phone || "-",
+    gst: company?.gstNumber || "-",
+  };
+}
+
+function normalizeQuotationItems(productOrItems, pricing) {
+  const source = Array.isArray(productOrItems)
+    ? productOrItems
+    : [{ product: productOrItems, pricing }];
+
+  return source
+    .map((item) => ({
+      product: item.product ?? item,
+      pricing: item.pricing ?? item,
+    }))
+    .filter((item) => item.product);
+}
+
+function aggregatePricing(items) {
+  return items.reduce(
+    (summary, item) => {
+      const totals = calculatePricing(item.pricing);
+      summary.quantity += totals.quantity;
+      summary.subtotal += totals.subtotal;
+      summary.totalDiscount += totals.totalDiscount;
+      summary.taxableAmount += totals.taxableAmount;
+      summary.gstAmount += totals.gstAmount;
+      summary.grandTotal += totals.grandTotal;
+      return summary;
+    },
+    {
+      quantity: 0,
+      subtotal: 0,
+      totalDiscount: 0,
+      taxableAmount: 0,
+      gstAmount: 0,
+      grandTotal: 0,
+    },
+  );
+}
+
+function drawQuotationTitle(doc, quotationId, generatedAt) {
+  drawCell(doc, 12, 10, 186, 14, { fill: COLORS.accent, lineWidth: 0.35 });
+  drawText(doc, "PRODUCT QUOTATION", 16, 19, {
+    bold: true,
+    color: COLORS.primary,
+    size: 16,
+  });
+  drawText(doc, quotationId, 194, 16, {
+    bold: true,
+    color: COLORS.primary,
+    size: 7.5,
+    align: "right",
+  });
+  drawText(doc, generatedAt, 194, 21, {
+    color: COLORS.muted,
+    size: 7,
+    align: "right",
+  });
+}
+
+function drawBrandHeader(doc, logoDataUrl) {
+  drawCell(doc, 12, 24, 186, 34, { lineWidth: 0.35 });
+  if (logoDataUrl) {
+    doc.addImage(logoDataUrl, "PNG", 18, 30, 22, 22, undefined, "FAST");
+  }
+  drawText(doc, BRAND.name, 46, 32, { bold: true, size: 15 });
+  drawText(doc, BRAND.addressLine1, 46, 39, {
+    color: COLORS.muted,
+    size: 7.5,
+  });
+  drawText(doc, BRAND.addressLine2, 46, 44, {
+    color: COLORS.muted,
+    size: 7.5,
+  });
+  drawText(
+    doc,
+    `${BRAND.email}  |  ${BRAND.phone}  |  GSTIN: ${BRAND.gst}`,
+    46,
+    52,
+    { color: COLORS.muted, size: 6.6 },
+  );
+}
+
+function drawClientDetails(doc, client, y = 62) {
+  drawCell(doc, 12, y, 186, 25, { lineWidth: 0.35 });
+  drawLabelLine(doc, "Company:", client.name, 16, y + 7, 33);
+  drawText(doc, "Address:", 16, y + 13, { bold: true, size: 8 });
+  drawText(doc, client.address, 33, y + 13, { size: 7.5, maxWidth: 67 });
+  drawLabelLine(doc, "Email:", client.email, 112, y + 6, 127);
+  drawLabelLine(doc, "Phone:", client.phone, 112, y + 12, 127);
+  drawLabelLine(doc, "GSTIN:", client.gst, 112, y + 18, 127);
+}
+
+function drawContinuationHeader(doc, quotationId, label) {
+  drawCell(doc, 12, 10, 186, 14, { fill: COLORS.accent, lineWidth: 0.35 });
+  drawText(doc, "PRODUCT QUOTATION", 16, 19, {
+    bold: true,
+    color: COLORS.primary,
+    size: 14,
+  });
+  drawText(doc, quotationId, 194, 19, {
+    bold: true,
+    color: COLORS.primary,
+    size: 7.5,
+    align: "right",
+  });
+  drawText(doc, BRAND.name, 16, 31, { bold: true, size: 9 });
+  drawText(doc, label, 194, 31, {
+    color: COLORS.muted,
+    size: 7.5,
+    align: "right",
+  });
+}
+
+function productRowLayout(doc, item) {
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(6.5);
+  const nameLines = doc.splitTextToSize(item.product.name || "-", 57);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(5.8);
+  const descriptionLines = doc.splitTextToSize(
+    item.product.description || titleCase(item.product.category),
+    57,
+  );
+  const contentHeight = nameLines.length * 2.8 + descriptionLines.length * 2.5;
+
+  return {
+    nameLines,
+    descriptionLines,
+    height: Math.max(9, contentHeight + 3),
+  };
+}
+
+function productTableHeight(doc, items) {
+  return 11 + items.reduce((height, item) => height + productRowLayout(doc, item).height, 0);
+}
+
+function pageItemsByHeight(doc, items, startIndex, maxTableHeight) {
+  const pageItems = [];
+  let height = 11;
+
+  for (let index = startIndex; index < items.length; index += 1) {
+    const rowHeight = productRowLayout(doc, items[index]).height;
+    if (pageItems.length > 0 && height + rowHeight > maxTableHeight) break;
+    pageItems.push(items[index]);
+    height += rowHeight;
+  }
+
+  return pageItems;
+}
+
+function drawProductTable(doc, items, startY, startIndex = 0) {
+  const columns = [12, 70, 32, 16, 30, 26];
+  const headers = [
+    ["SL.", "NO."],
+    ["DESCRIPTION"],
+    ["PRODUCT", "CODE"],
+    ["QTY"],
+    ["PRICE", "/ UNIT"],
+    ["AMOUNT"],
+  ];
+  let columnX = 12;
+  headers.forEach((lines, index) => {
+    drawTableHeader(doc, lines.join(" "), columnX, startY, columns[index], 11, {
+      lines,
+    });
+    columnX += columns[index];
+  });
+
+  const centers = [];
+  let runningX = 12;
+  columns.forEach((columnWidth) => {
+    centers.push(runningX + columnWidth / 2);
+    runningX += columnWidth;
+  });
+
+  let rowY = startY + 11;
+  items.forEach((item, rowIndex) => {
+    const layout = productRowLayout(doc, item);
+    const totals = calculatePricing(item.pricing);
+    columnX = 12;
+    columns.forEach((columnWidth, columnIndex) => {
+      drawCell(doc, columnX, rowY, columnWidth, layout.height, {
+        fill: columnIndex % 2 === 0 ? COLORS.surface : COLORS.white,
+      });
+      columnX += columnWidth;
+    });
+
+    const centerY = rowY + layout.height / 2 + 1;
+    drawText(doc, startIndex + rowIndex + 1, centers[0], centerY, {
+      align: "center",
+      size: 6.8,
+    });
+    drawText(doc, layout.nameLines, 27, rowY + 3.6, {
+      bold: true,
+      size: 6.5,
+    });
+    drawText(
+      doc,
+      layout.descriptionLines,
+      27,
+      rowY + 3.6 + layout.nameLines.length * 2.8,
+      {
+        color: COLORS.muted,
+        size: 5.8,
+      },
+    );
+    drawText(doc, item.product.productCode || "—", centers[2], centerY - 1.8, {
+      align: "center",
+      size: 6.3,
+    });
+    drawText(
+      doc,
+      `HSN: ${item.product.hsnCode || "—"}`,
+      centers[2],
+      centerY + 1.9,
+      {
+        align: "center",
+        color: COLORS.muted,
+        size: 5.5,
+      },
+    );
+    drawText(doc, totals.quantity, centers[3], centerY, {
+      align: "center",
+      size: 6.5,
+    });
+    drawText(doc, moneyFormatter.format(totals.unitPrice), centers[4], centerY, {
+      align: "center",
+      size: 6.2,
+    });
+    drawText(doc, moneyFormatter.format(totals.subtotal), centers[5], centerY, {
+      align: "center",
+      size: 6.2,
+    });
+    rowY += layout.height;
+  });
+
+  return rowY;
+}
+
+function quotationTaxRows(totals, taxTreatment, gstPercentage) {
+  const gstRate = Math.max(numberOrZero(gstPercentage), 0);
+
+  if (taxTreatment === "gujarat") {
+    return [
+      [`CGST (${gstRate / 2}%)`, totals.gstAmount / 2],
+      [`SGST (${gstRate / 2}%)`, totals.gstAmount / 2],
+    ];
+  }
+  if (taxTreatment === "out-of-gujarat") {
+    return [[`IGST (${gstRate}%)`, totals.gstAmount]];
+  }
+  if (taxTreatment === "sezlout") {
+    return [["SEZLOUT (LUT/Bond)", 0]];
+  }
+
+  return [["Total GST", totals.gstAmount]];
+}
+
+function quotationTaxTerm(taxTreatment) {
+  if (taxTreatment === "gujarat") {
+    return "2. GST is split equally between CGST and SGST.";
+  }
+  if (taxTreatment === "out-of-gujarat") {
+    return "2. GST is applied as IGST for this quotation.";
+  }
+  if (taxTreatment === "sezlout") {
+    return "2. Supply is without GST under LUT/Bond.";
+  }
+
+  return "2. The final amount includes the GST shown above.";
+}
+
+function drawQuotationSummary(
+  doc,
+  totals,
+  startY,
+  { taxTreatment, gstPercentage } = {},
+) {
+  const taxRows = quotationTaxRows(totals, taxTreatment, gstPercentage);
+  const totalRows = [
+    ["Sub Total", totals.subtotal],
+    [
+      "Total Discount",
+      totals.totalDiscount > 0 ? -totals.totalDiscount : 0,
+    ],
+    ["Taxable Amount", totals.taxableAmount],
+    ...taxRows,
+    ["FINAL AMOUNT", totals.grandTotal],
+  ];
+  const totalsHeight = totalRows.length * 7;
+
+  drawCell(doc, 12, startY, 112, totalsHeight, { lineWidth: 0.35 });
+  drawText(doc, "Amount in Words:", 16, startY + 7, {
+    bold: true,
+    size: 8.5,
+  });
+  drawText(doc, amountInWords(totals.grandTotal), 16, startY + 14, {
+    size: 7.5,
+    maxWidth: 102,
+  });
+
+  totalRows.forEach(([label, value], index) => {
+    const rowY = startY + index * 7;
+    const isFinal = index === totalRows.length - 1;
+    drawCell(doc, 124, rowY, 48, 7, {
+      fill: isFinal ? COLORS.primary : COLORS.white,
+      lineWidth: 0.35,
+    });
+    drawCell(doc, 172, rowY, 26, 7, {
+      fill: isFinal ? COLORS.accent : COLORS.surface,
+      lineWidth: 0.35,
+    });
+    drawText(doc, label, 170, rowY + 4.8, {
+      bold: true,
+      color: isFinal ? COLORS.white : COLORS.ink,
+      size: 7,
+      align: "right",
+    });
+    drawText(doc, moneyFormatter.format(value), 175, rowY + 4.8, {
+      bold: isFinal,
+      size: 6.8,
+    });
+  });
+
+  const commercialY = startY + totalsHeight + 3;
+  drawCell(doc, 12, commercialY, 186, 6, { fill: COLORS.secondary });
+  drawText(doc, "COMMERCIAL DETAILS", 16, commercialY + 4.4, {
+    bold: true,
+    size: 7.5,
+  });
+  const commercialDetails = [
+    `GST - As Actual (${numberOrZero(gstPercentage)}%)`,
+    "Delivery - EX-STOCK",
+    "PAYMENT - 30 DAYS",
+  ];
+  commercialDetails.forEach((detail, index) => {
+    const columnX = 12 + index * 62;
+    drawCell(doc, columnX, commercialY + 6, 62, 9, {
+      fill: index % 2 === 0 ? COLORS.surface : COLORS.white,
+      lineWidth: 0.35,
+    });
+    drawText(doc, detail, columnX + 31, commercialY + 11.7, {
+      bold: true,
+      size: 7,
+      align: "center",
+    });
+  });
+
+  const infoY = commercialY + 18;
+  drawCell(doc, 12, infoY, 91, 30, { lineWidth: 0.35 });
+  drawCell(doc, 12, infoY, 91, 6, { fill: COLORS.secondary });
+  drawText(doc, "BANK DETAILS", 16, infoY + 4.4, { bold: true, size: 7.5 });
+  drawLabelLine(doc, "Account Name:", BRAND.name, 16, infoY + 11.5, 38);
+  drawLabelLine(doc, "Bank Name:", BRAND.bankName, 16, infoY + 17, 38);
+  drawLabelLine(doc, "A/C. No.:", BRAND.accountNumber, 16, infoY + 22.5, 38);
+  drawLabelLine(doc, "IFSC Code:", BRAND.ifscCode, 16, infoY + 28, 38);
+
+  drawCell(doc, 106, infoY, 92, 30, { lineWidth: 0.35 });
+  drawCell(doc, 106, infoY, 92, 6, { fill: COLORS.secondary });
+  drawText(doc, "TERMS & CONDITIONS", 110, infoY + 4.4, {
+    bold: true,
+    size: 7.5,
+  });
+  const terms = [
+    "1. Fixed discounts apply to each selected unit.",
+    quotationTaxTerm(taxTreatment),
+    "3. Availability and delivery require confirmation.",
+    "4. Commercial terms remain subject to final order.",
+    "5. Make All Cheques Payable To The Company Name.",
+  ];
+  terms.forEach((term, index) =>
+    drawText(doc, term, 110, infoY + 11 + index * 3.8, { size: 6.1 }),
+  );
+
+  const declarationY = infoY + 33;
+  drawCell(doc, 12, declarationY, 186, 22, { lineWidth: 0.35 });
+  drawCell(doc, 12, declarationY, 186, 6, { fill: COLORS.secondary });
+  drawText(doc, "DECLARATION", 16, declarationY + 4.4, {
+    bold: true,
+    size: 7.5,
+  });
+  drawText(
+    doc,
+    "We declare that this quotation reflects the selected products, quantities and commercial values. It is not a tax invoice and remains subject to final order confirmation.",
+    16,
+    declarationY + 10.5,
+    { size: 6.2, maxWidth: 176 },
+  );
+  drawText(doc, WARRANTY_TEXT, 16, declarationY + 16, {
+    bold: true,
+    color: COLORS.primary,
+    size: 6.2,
+    maxWidth: 176,
+  });
+
+  const signatureY = declarationY + 25;
+  const signatureColumnWidth = 93;
+  const signatureLeftCenter = 12 + signatureColumnWidth / 2;
+  const signatureRightCenter = 105 + signatureColumnWidth / 2;
+
+  drawCell(doc, 12, signatureY, 186, 20, { lineWidth: 0.35 });
+  drawCell(doc, 12, signatureY, 186, 6, { fill: COLORS.secondary });
+  drawText(doc, "AUTHORISATION", 16, signatureY + 4.4, {
+    bold: true,
+    size: 7.5,
+  });
+
+  drawCell(doc, 12, signatureY + 6, signatureColumnWidth, 14, {
+    fill: COLORS.surface,
+    lineWidth: 0.35,
+  });
+  drawCell(doc, 105, signatureY + 6, signatureColumnWidth, 14, {
+    lineWidth: 0.35,
+  });
+
+  drawText(doc, "HARIKESH PATEL", signatureLeftCenter, signatureY + 11.5, {
+    align: "center",
+    bold: true,
+    size: 7.2,
+  });
+  drawText(doc, "Authorised Person", signatureLeftCenter, signatureY + 16.5, {
+    align: "center",
+    color: COLORS.muted,
+    size: 6.5,
+  });
+  drawText(
+    doc,
+    "THE GENERAL ELECTRIC STORES",
+    signatureRightCenter,
+    signatureY + 11.5,
+    {
+      align: "center",
+      bold: true,
+      size: 7.2,
+    },
+  );
+  drawText(
+    doc,
+    "Authorised Signature",
+    signatureRightCenter,
+    signatureY + 16.5,
+    {
+      align: "center",
+      color: COLORS.muted,
+      size: 6.5,
+    },
+  );
+
+  const closingY = signatureY + 23;
+  drawCell(doc, 12, closingY, 186, 15, {
+    fill: COLORS.accent,
+    lineWidth: 0.35,
+  });
+  drawText(doc, "Thank You For Your Business!", 105, closingY + 5.5, {
+    bold: true,
+    color: COLORS.primary,
+    size: 8,
+    align: "center",
+  });
+  drawText(
+    doc,
+    "Should You Have Any Enquiries Concerning This Quote, Please Contact Us",
+    105,
+    closingY + 11,
+    {
+      color: COLORS.muted,
+      size: 6.7,
+      align: "center",
+    },
+  );
+}
+
+function drawFooter(doc, page, pageCount) {
+  drawCell(doc, 12, 279, 186, 7, { fill: COLORS.accent, lineWidth: 0.35 });
+  drawText(doc, BRAND.email, 16, 283.5, { size: 6.5 });
+  drawText(doc, `Page ${page} of ${pageCount}`, 194, 283.5, {
+    size: 6.5,
+    align: "right",
+  });
+}
+
+export function createProductQuotationDocument(
+  productOrItems,
+  pricingOrOptions,
+  maybeOptions = {},
+) {
+  const isMultiple = Array.isArray(productOrItems);
+  const items = normalizeQuotationItems(
+    productOrItems,
+    isMultiple ? undefined : pricingOrOptions,
+  );
+  const options = isMultiple ? pricingOrOptions ?? {} : maybeOptions;
+  const { logoDataUrl, billTo, taxTreatment } = options;
+  const firstProduct = items[0]?.product ?? {};
+  const itemTotals = aggregatePricing(items);
+  const gstPercentage =
+    taxTreatment === "sezlout"
+      ? 0
+      : numberOrZero(
+          options.gstPercentage ?? items[0]?.pricing?.gstPercentage,
+        );
+  const gstAmount = itemTotals.taxableAmount * (gstPercentage / 100);
+  const totals = taxTreatment
+    ? {
+        ...itemTotals,
+        gstAmount,
+        grandTotal: itemTotals.taxableAmount + gstAmount,
+      }
+    : itemTotals;
+  const quotationId = quoteNumber(firstProduct, items.length);
+  const client = billToDetails(billTo);
+  const generatedAt = new Date().toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+  const doc = new jsPDF({ unit: "mm", format: "a4", compress: true });
+
+  doc.setProperties({
+    title: `Product quotation - ${items.length} product${items.length === 1 ? "" : "s"}`,
+    subject: `Quotation for ${items.map((item) => item.product.productCode).join(", ")}`,
+    author: BRAND.name,
+    creator: BRAND.name,
+  });
+
+  drawQuotationTitle(doc, quotationId, generatedAt);
+  drawBrandHeader(doc, logoDataUrl);
+  drawClientDetails(doc, client);
+
+  if (productTableHeight(doc, items) <= 81) {
+    const tableEnd = drawProductTable(doc, items, 90);
+    drawQuotationSummary(doc, totals, tableEnd + 3, {
+      taxTreatment,
+      gstPercentage,
+    });
+  } else {
+    let itemIndex = 0;
+    const firstPageItems = pageItemsByHeight(doc, items, itemIndex, 180);
+    drawProductTable(doc, firstPageItems, 90, itemIndex);
+    itemIndex += firstPageItems.length;
+
+    while (itemIndex < items.length) {
+      doc.addPage();
+      drawContinuationHeader(doc, quotationId, "Product list continued");
+      const pageItems = pageItemsByHeight(doc, items, itemIndex, 232);
+      drawProductTable(doc, pageItems, 38, itemIndex);
+      itemIndex += pageItems.length;
+    }
+
+    doc.addPage();
+    drawContinuationHeader(doc, quotationId, "Quotation summary");
+    drawClientDetails(doc, client, 35);
+    drawQuotationSummary(doc, totals, 63, {
+      taxTreatment,
+      gstPercentage,
+    });
+  }
+
+  const pageCount = doc.getNumberOfPages();
+  for (let page = 1; page <= pageCount; page += 1) {
+    doc.setPage(page);
+    drawFooter(doc, page, pageCount);
+  }
+
+  return { doc, quoteNumber: quotationId };
+}
+
+export async function downloadProductQuotationPdf(
+  items,
+  logoUrl,
+  billTo,
+  taxDetails = {},
+) {
+  let logoDataUrl;
+  try {
+    logoDataUrl = logoUrl ? await imageUrlToDataUrl(logoUrl) : undefined;
+  } catch {
+    logoDataUrl = undefined;
+  }
+
+  const { doc, quoteNumber: quotationId } = createProductQuotationDocument(items, {
+    logoDataUrl,
+    billTo,
+    ...taxDetails,
+  });
+  doc.save(`${quotationId}.pdf`);
+}

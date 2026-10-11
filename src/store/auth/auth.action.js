@@ -1,0 +1,40 @@
+import { createAsyncThunk } from "@reduxjs/toolkit";
+
+import { ROLE_PATHS } from "@Enums";
+import { extractErrorMessage } from "@Api/client.api";
+import {
+  employeeAuthApi,
+  superAdminAuthApi,
+  warehouseManagerAuthApi,
+  techSupportAuthApi,
+} from "@Api";
+import { toSignInPayload } from "@Forms/signin/signin-api.payload";
+import { fromSignInResponse } from "@Forms/signin/signin-frontend.payload";
+
+const authApiByRole = {
+  [ROLE_PATHS.SUPER_ADMIN]: superAdminAuthApi,
+  [ROLE_PATHS.EMPLOYEE]: employeeAuthApi,
+  [ROLE_PATHS.WAREHOUSE_MANAGER]: warehouseManagerAuthApi,
+  [ROLE_PATHS.TECH_SUPPORT]: techSupportAuthApi,
+};
+
+/**
+ * The role selects which endpoint to call and is carried through to the
+ * result: it is already implied by the endpoint, and taking it from the
+ * request keeps it a ROLE_PATHS value, which the sidebar and role label
+ * lookups rely on.
+ */
+export const signIn = createAsyncThunk(
+  "auth/signIn",
+  async (values, { rejectWithValue }) => {
+    try {
+      const { role, ...credentials } = values;
+      const response = await authApiByRole[role].signIn(
+        toSignInPayload(credentials),
+      );
+      return { ...fromSignInResponse(response), role };
+    } catch (error) {
+      return rejectWithValue(extractErrorMessage(error));
+    }
+  }
+);

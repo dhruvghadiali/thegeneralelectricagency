@@ -1,0 +1,17 @@
+export const PRODUCT_INITIAL_VALUES = Object.freeze({
+  productCode: "",
+  hsnCode: "",
+  name: "",
+  category: "",
+  agency: "",
+  agencyName: "",
+  purchasePrice: "",
+  salePrice: "",
+  gstPercentage: "",
+  discountAmountMin: "",
+  discountAmountMax: "",
+  discountPercentageMin: "",
+  discountPercentageMax: "",
+  modelNumber: "",
+  description: "",
+});

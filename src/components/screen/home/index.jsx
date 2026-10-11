@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@shadcnComponent/button";
 import { BookOpen, ShieldCheck, Sparkles } from "lucide-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { Typography } from "@/components/ui/typography";
+import { Typography } from "@shadcnComponent/typography";
 
 import HomeStorySheet from "./HomeStorySheet";
 import {

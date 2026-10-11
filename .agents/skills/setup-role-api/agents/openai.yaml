@@ -1,0 +1,4 @@
+interface:
+  display_name: "Set Up Role API"
+  short_description: "Wire endpoints into the project API layer"
+  default_prompt: "Use $setup-role-api to add this endpoint for the specified roles."

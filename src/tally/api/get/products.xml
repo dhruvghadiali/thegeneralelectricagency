@@ -1,0 +1,45 @@
+<ENVELOPE>
+    <HEADER>
+        <VERSION>1</VERSION>
+        <TALLYREQUEST>EXPORT</TALLYREQUEST>
+        <TYPE>COLLECTION</TYPE>
+        <ID>CompanyStockItems</ID>
+    </HEADER>
+
+    <BODY>
+        <DESC>
+            <STATICVARIABLES>
+                <SVCURRENTCOMPANY>THE GENERAL ELECTRIC STORES</SVCURRENTCOMPANY>
+                <SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT>
+            </STATICVARIABLES>
+
+            <TDL>
+                <TDLMESSAGE>
+                    <COLLECTION
+                        NAME="CompanyStockItems"
+                        ISMODIFY="No"
+                        ISFIXED="No"
+                        ISINITIALIZE="No"
+                        ISOPTION="No"
+                        ISINTERNAL="No"
+                    >
+                        <TYPE>Stock Item</TYPE>
+                        <NATIVEMETHOD>HSNDetails</NATIVEMETHOD>
+                        <NATIVEMETHOD>GSTDetails</NATIVEMETHOD>
+                        <NATIVEMETHOD>Name</NATIVEMETHOD>
+                        <NATIVEMETHOD>GUID</NATIVEMETHOD>
+                        <NATIVEMETHOD>MasterID</NATIVEMETHOD>
+                        <NATIVEMETHOD>AlterID</NATIVEMETHOD>
+                        <NATIVEMETHOD>Parent</NATIVEMETHOD>
+                        <NATIVEMETHOD>Description</NATIVEMETHOD>
+                        <NATIVEMETHOD>BaseUnits</NATIVEMETHOD>
+                        <NATIVEMETHOD>GSTApplicable</NATIVEMETHOD>
+                        <NATIVEMETHOD>GSTTypeOfSupply</NATIVEMETHOD>
+                        <NATIVEMETHOD>OpeningBalance</NATIVEMETHOD>
+                        <NATIVEMETHOD>ClosingBalance</NATIVEMETHOD>
+                    </COLLECTION>
+                </TDLMESSAGE>
+            </TDL>
+        </DESC>
+    </BODY>
+</ENVELOPE>

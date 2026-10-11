@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@shadcnComponent/button";
 import moment from "moment";
-import { Typography } from "@/components/ui/typography";
+import { Typography } from "@shadcnComponent/typography";
 
 // Import company logos
 import cgLogo from "@/assets/images/cg-icon.png";
