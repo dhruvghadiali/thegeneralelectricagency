@@ -225,6 +225,7 @@ function QuotationProductInformation({ companyInformation }) {
           <QuotationCompanySummaryCard
             companyName={companyInformation.companyName}
             address={companyInformation.address}
+            onClick={openCompanyInformation}
           />
           {productInformation.length > 0 && (
             <QuotationProductSummaryCard

@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 import {
   Card,
   CardDescription,
@@ -5,11 +7,14 @@ import {
   CardTitle,
 } from "@shadcnComponent/card";
 
-function QuotationCompanySummaryCard({ companyName, address }) {
+function QuotationCompanySummaryCard({ companyName, address, onClick }) {
   return (
-    <Card className="w-full shrink-0 self-start gap-0 py-4">
+    <Card
+      onClick={onClick}
+      className="w-full shrink-0 cursor-pointer self-start gap-0 py-4"
+    >
       <CardHeader className="gap-1.5 px-5">
-        <CardTitle>{companyName}</CardTitle>
+        <CardTitle>{_.toUpper(companyName)}</CardTitle>
         <CardDescription className="whitespace-pre-line leading-relaxed">
           {address}
         </CardDescription>

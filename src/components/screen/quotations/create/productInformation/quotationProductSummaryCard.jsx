@@ -21,7 +21,13 @@ function QuotationProductSummaryCard({
 }) {
   return (
     <Card className="w-full shrink-0 gap-0 overflow-hidden py-0">
-      <CardHeader className={cn("py-3", isExpanded && "border-b")}>
+      <CardHeader
+        onClick={onNavigateToCompanyInformation}
+        className={cn(
+          "cursor-pointer py-3",
+          isExpanded && "border-b",
+        )}
+      >
         <CardTitle>Product summary</CardTitle>
         <CardDescription>
           {products.length} {products.length === 1 ? "product" : "products"} added
