@@ -73,6 +73,7 @@ function ExpandedProductSummary({
             key={`${product.productId ?? product.product}-${index}`}
             role="listitem"
             tabIndex={keyboard.activeProductIndex === index ? 0 : -1}
+            aria-keyshortcuts="ArrowUp ArrowDown Alt+ArrowUp Alt+ArrowDown Enter Delete Backspace"
             aria-current={
               keyboard.focusedProductIndex === index ? "true" : undefined
             }

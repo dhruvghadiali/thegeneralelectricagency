@@ -20,7 +20,14 @@ function useProductNameKeyboardShortcut({
 
   const handleProductNameKeyDown = useCallback(
     (event) => {
-      if (event.altKey && event.key === "ArrowUp") {
+      const shouldNavigateBackward =
+        (event.altKey && event.key === "ArrowUp") ||
+        (!event.altKey &&
+          !event.ctrlKey &&
+          !event.metaKey &&
+          (event.key === "Backspace" || event.key === "Delete"));
+
+      if (shouldNavigateBackward) {
         event.preventDefault();
 
         if (hasProductSummary) {

@@ -1,11 +1,16 @@
 import { useCallback } from "react";
 
+import handlePreviousFieldKeyboardNavigation from "@screenComponent/quotations/create/hooks/handlePreviousFieldKeyboardNavigation";
+
 function useProductSaveKeyboardShortcut({
   descriptionInputRef,
   productInputRef,
 }) {
   return useCallback(
     (event) => {
+      if (handlePreviousFieldKeyboardNavigation(event, descriptionInputRef))
+        return;
+
       if (event.altKey && event.key === "ArrowUp") {
         event.preventDefault();
         descriptionInputRef.current?.focus();

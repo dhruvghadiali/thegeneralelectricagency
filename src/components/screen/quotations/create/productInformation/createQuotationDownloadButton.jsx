@@ -24,7 +24,7 @@ function CreateQuotationDownloadButton({ buttonRef, onClick, onKeyDown }) {
       onClick={onClick}
       onKeyDown={onKeyDown}
       data-quotation-summary-trigger
-      aria-keyshortcuts="Alt+D"
+      aria-keyshortcuts="Alt+D ArrowUp ArrowDown Alt+ArrowUp Alt+ArrowDown"
       title="Download PDF (Alt+D)"
       className="h-8"
     >

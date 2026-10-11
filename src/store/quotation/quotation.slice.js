@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import _ from "lodash";
 
 import { QUOTATION_TAX_TREATMENTS } from "@Enums";
 import {
@@ -52,10 +53,10 @@ const quotationSlice = createSlice({
       state.gstPercentage = action.payload;
     },
     quotationDeliveryNotesChanged(state, action) {
-      state.deliveryNotes = action.payload;
+      state.deliveryNotes = _.toUpper(action.payload);
     },
     quotationPaymentNotesChanged(state, action) {
-      state.paymentNotes = action.payload;
+      state.paymentNotes = _.toUpper(action.payload);
     },
     quotationProductSearchChanged(state, action) {
       state.productSearch = action.payload;

@@ -57,6 +57,74 @@ function useProductSummaryKeyboardShortcut({
     setFocusedProductIndex(index);
   }, []);
 
+  useEffect(() => {
+    const handleSummaryNavigation = (event) => {
+      if (event.defaultPrevented) return;
+
+      const isNavigationKey =
+        event.key === "ArrowUp" || event.key === "ArrowDown";
+      const isDeleteKey =
+        event.key === "Delete" || event.key === "Backspace";
+
+      if (!isNavigationKey && !isDeleteKey) return;
+
+      const focusedElement = document.activeElement;
+      const focusedIndex = productRefs.current.findIndex(
+        (productElement) =>
+          productElement &&
+          (productElement === focusedElement ||
+            productElement.contains(focusedElement)),
+      );
+      const isDownloadFocused =
+        downloadButtonRef.current === focusedElement ||
+        downloadButtonRef.current?.contains(focusedElement);
+
+      if (focusedIndex < 0 && !isDownloadFocused) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (isDownloadFocused) {
+        if (event.key === "ArrowUp") {
+          focusProduct(productCount - 1);
+        } else if (event.key === "ArrowDown") {
+          onNavigateToProductInformation();
+        }
+        return;
+      }
+
+      if (isDeleteKey) {
+        onDeleteProduct(focusedIndex);
+        return;
+      }
+
+      if (event.key === "ArrowUp") {
+        if (focusedIndex === 0) {
+          onNavigateToCompanyInformation();
+        } else {
+          focusProduct(focusedIndex - 1);
+        }
+        return;
+      }
+
+      if (focusedIndex === productCount - 1) {
+        downloadButtonRef.current?.focus();
+      } else {
+        focusProduct(focusedIndex + 1);
+      }
+    };
+
+    window.addEventListener("keydown", handleSummaryNavigation, true);
+    return () =>
+      window.removeEventListener("keydown", handleSummaryNavigation, true);
+  }, [
+    focusProduct,
+    onDeleteProduct,
+    onNavigateToCompanyInformation,
+    onNavigateToProductInformation,
+    productCount,
+  ]);
+
   const handleProductBlur = useCallback((event) => {
     if (
       event.relatedTarget &&
@@ -76,20 +144,11 @@ function useProductSummaryKeyboardShortcut({
         return;
       }
 
-      const isDeleteKey =
-        event.key === "Delete" || event.key === "Backspace";
-
-      if (isDeleteKey) {
-        event.preventDefault();
-        onDeleteProduct(index);
-        return;
-      }
-
       const shouldFocusDownload =
         index === productCount - 1 &&
         event.target === event.currentTarget &&
-        ((event.altKey && event.key === "ArrowDown") ||
-          (event.key === "Tab" && !event.shiftKey));
+        event.key === "Tab" &&
+        !event.shiftKey;
 
       if (shouldFocusDownload) {
         event.preventDefault();
@@ -97,52 +156,21 @@ function useProductSummaryKeyboardShortcut({
         return;
       }
 
-      if (!event.altKey) return;
-
-      if (event.key === "ArrowUp") {
-        event.preventDefault();
-
-        if (index === 0) {
-          onNavigateToCompanyInformation();
-          return;
-        }
-
-        focusProduct(index - 1);
-        return;
-      }
-
-      if (event.key === "ArrowDown") {
-        event.preventDefault();
-        focusProduct(index + 1);
-      }
     },
-    [
-      focusProduct,
-      onDeleteProduct,
-      onEditProduct,
-      onNavigateToCompanyInformation,
-      productCount,
-    ],
+    [onEditProduct, productCount],
   );
 
   const handleDownloadButtonKeyDown = useCallback(
     (event) => {
-      if (event.altKey && event.key === "ArrowUp") {
-        event.preventDefault();
-        focusProduct(productCount - 1);
-        return;
-      }
-
       const shouldOpenProductForm =
-        (event.altKey && event.key === "ArrowDown") ||
-        (event.key === "Tab" && !event.shiftKey);
+        event.key === "Tab" && !event.shiftKey;
 
       if (!shouldOpenProductForm) return;
 
       event.preventDefault();
       onNavigateToProductInformation();
     },
-    [focusProduct, onNavigateToProductInformation, productCount],
+    [onNavigateToProductInformation],
   );
 
   const handleProductDeleted = useCallback(

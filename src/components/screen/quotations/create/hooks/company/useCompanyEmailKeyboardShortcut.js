@@ -1,11 +1,15 @@
 import { useCallback } from "react";
 
+import handlePreviousFieldKeyboardNavigation from "@screenComponent/quotations/create/hooks/handlePreviousFieldKeyboardNavigation";
+
 function useCompanyEmailKeyboardShortcut({
   addressInputRef,
   phoneInputRef,
 }) {
   return useCallback(
     (event) => {
+      if (handlePreviousFieldKeyboardNavigation(event, addressInputRef)) return;
+
       if (event.altKey && event.key === "ArrowUp") {
         event.preventDefault();
         addressInputRef.current?.focus();

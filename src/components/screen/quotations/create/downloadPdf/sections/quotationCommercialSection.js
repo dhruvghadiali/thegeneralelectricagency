@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 import { QUOTATION_TAX_TREATMENTS } from "@Enums";
 import {
   PDF_BRAND,
@@ -40,8 +42,8 @@ function drawCommercialDetails(doc, startY, commercial) {
       : numberOrZero(commercial.gstPercentage);
   const details = [
     `GST - As Actual (${gstPercentage}%)`,
-    `Delivery - ${commercial.deliveryNotes?.trim() || "-"}`,
-    `Payment - ${commercial.paymentNotes?.trim() || "-"}`,
+    `Delivery - ${_.toUpper(commercial.deliveryNotes?.trim()) || "-"}`,
+    `Payment - ${_.toUpper(commercial.paymentNotes?.trim()) || "-"}`,
   ];
 
   details.forEach((detail, index) => {

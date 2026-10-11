@@ -1,11 +1,16 @@
 import { useCallback } from "react";
 
+import handlePreviousFieldKeyboardNavigation from "@screenComponent/quotations/create/hooks/handlePreviousFieldKeyboardNavigation";
+
 function useDeliveryNotesKeyboardShortcut({
   gstPercentageRef,
   paymentNotesRef,
 }) {
   return useCallback(
     (event) => {
+      if (handlePreviousFieldKeyboardNavigation(event, gstPercentageRef))
+        return;
+
       if (event.altKey && event.key === "ArrowUp") {
         event.preventDefault();
         gstPercentageRef.current?.focus();

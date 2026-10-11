@@ -1,11 +1,16 @@
 import { useCallback } from "react";
 
+import handlePreviousFieldKeyboardNavigation from "@screenComponent/quotations/create/hooks/handlePreviousFieldKeyboardNavigation";
+
 function useProductDiscountKeyboardShortcut({
   sellingPriceInputRef,
   descriptionInputRef,
 }) {
   return useCallback(
     (event) => {
+      if (handlePreviousFieldKeyboardNavigation(event, sellingPriceInputRef))
+        return;
+
       if (event.altKey && event.key === "ArrowUp") {
         event.preventDefault();
         sellingPriceInputRef.current?.focus();

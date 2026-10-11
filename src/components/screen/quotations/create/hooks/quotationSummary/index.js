@@ -27,6 +27,7 @@ function useQuotationSummaryKeyboardShortcuts() {
 
   const handleTaxTreatmentKeyDown = useTaxTreatmentKeyboardShortcut({
     gstPercentageRef,
+    submitButtonRef,
   });
   const handleGstPercentageKeyDown = useGstPercentageKeyboardShortcut({
     deliveryNotesRef,

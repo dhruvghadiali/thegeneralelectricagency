@@ -1,8 +1,15 @@
 import { useCallback } from "react";
 
-function useTaxTreatmentKeyboardShortcut({ gstPercentageRef }) {
+import handlePreviousFieldKeyboardNavigation from "@screenComponent/quotations/create/hooks/handlePreviousFieldKeyboardNavigation";
+
+function useTaxTreatmentKeyboardShortcut({
+  gstPercentageRef,
+  submitButtonRef,
+}) {
   return useCallback(
     (event) => {
+      if (handlePreviousFieldKeyboardNavigation(event, submitButtonRef)) return;
+
       const shouldFocusGst =
         (event.altKey && event.key === "ArrowDown") ||
         event.key === "Enter" ||
@@ -13,7 +20,7 @@ function useTaxTreatmentKeyboardShortcut({ gstPercentageRef }) {
       event.preventDefault();
       gstPercentageRef.current?.focus();
     },
-    [gstPercentageRef],
+    [gstPercentageRef, submitButtonRef],
   );
 }
 
