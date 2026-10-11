@@ -3,6 +3,7 @@ import _ from "lodash";
 import { Building2, Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
+import { cn } from "@/lib/utils";
 import { fetchQuotationCompanies } from "@Redux/quotation/quotation.action";
 import {
   selectQuotationCompanies,
@@ -120,7 +121,16 @@ function QuotationCompanyDirectory({
           </div>
         ) : (
           <>
-            <div className="divide-y" role="listbox" aria-label="Companies">
+            <div
+              className={cn(
+                "divide-y",
+                companySearch.trim() &&
+                  !selectedCompany &&
+                  "[&:not(:focus-within)>[data-company-option]:first-child]:bg-accent [&:not(:focus-within)>[data-company-option]:first-child]:text-accent-foreground",
+              )}
+              role="listbox"
+              aria-label="Companies"
+            >
               {companies.map((company, index) => (
                 <Button
                   key={company.id ?? `${company.name}-${index}`}

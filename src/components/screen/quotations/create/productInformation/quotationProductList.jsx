@@ -3,6 +3,7 @@ import _ from "lodash";
 import { Loader2, Package } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
+import { cn } from "@/lib/utils";
 import { fetchQuotationProducts } from "@Redux/quotation/quotation.action";
 import {
   selectQuotationProductPagination,
@@ -119,7 +120,16 @@ function QuotationProductList({
           </div>
         ) : (
           <>
-            <div className="divide-y" role="listbox" aria-label="Products">
+            <div
+              className={cn(
+                "divide-y",
+                productSearch.trim() &&
+                  !selectedProduct &&
+                  "[&:not(:focus-within)>[data-product-option]:first-child]:bg-accent [&:not(:focus-within)>[data-product-option]:first-child]:text-accent-foreground",
+              )}
+              role="listbox"
+              aria-label="Products"
+            >
               {items.map((product, index) => (
                 <Button
                   key={product.id ?? `${product.name}-${index}`}

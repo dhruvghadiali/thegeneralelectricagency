@@ -31,7 +31,12 @@ function useProductNameKeyboardShortcut({
         return;
       }
 
-      if (event.altKey && event.key === "ArrowRight") {
+      const shouldFocusProductDirectory =
+        (event.altKey && event.key === "ArrowRight") ||
+        (!event.altKey &&
+          (event.key === "ArrowDown" || event.key === "ArrowUp"));
+
+      if (shouldFocusProductDirectory) {
         event.preventDefault();
         const selectedProduct = productDirectoryRef.current?.querySelector(
           '[data-product-option][aria-selected="true"]',

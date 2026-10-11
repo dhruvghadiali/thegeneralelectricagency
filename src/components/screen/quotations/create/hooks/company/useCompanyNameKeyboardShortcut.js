@@ -17,7 +17,12 @@ function useCompanyNameKeyboardShortcut({
 
   const handleCompanyNameKeyDown = useCallback(
     (event) => {
-      if (event.altKey && event.key === "ArrowRight") {
+      const shouldFocusCompanyDirectory =
+        (event.altKey && event.key === "ArrowRight") ||
+        (!event.altKey &&
+          (event.key === "ArrowDown" || event.key === "ArrowUp"));
+
+      if (shouldFocusCompanyDirectory) {
         event.preventDefault();
         const selectedCompany = companyDirectoryRef.current?.querySelector(
           '[data-company-option][aria-selected="true"]',
