@@ -59,11 +59,12 @@ function QuotationProductForm({
           type="text"
           {...fieldProps("product", "quotation-product")}
           onChange={onProductNameChange}
-          onFocus={keyboard.handleProductNameFocus}
-          onKeyDown={keyboard.handleProductNameKeyDown}
-          placeholder="Enter product name"
-          autoComplete="off"
-          autoFocus
+                onFocus={keyboard.handleProductNameFocus}
+                onKeyDown={keyboard.handleProductNameKeyDown}
+                className="uppercase placeholder:normal-case"
+                placeholder="Enter product name"
+                autoComplete="off"
+                autoFocus
         />
       </ProductFormField>
 

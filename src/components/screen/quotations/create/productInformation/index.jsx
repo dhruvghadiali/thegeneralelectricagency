@@ -168,7 +168,7 @@ function QuotationProductInformation({ companyInformation }) {
       values: {
         product: product.product ?? "",
         sellingPrice: String(product.sellingPrice ?? ""),
-        quantity: String(product.quantity ?? "1"),
+        quantity: String(product.quantity ?? ""),
         discount: String(product.discount ?? "0"),
         description: product.description ?? "",
       },
