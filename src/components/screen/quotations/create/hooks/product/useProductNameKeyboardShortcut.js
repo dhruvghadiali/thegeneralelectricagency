@@ -1,5 +1,10 @@
 import { useCallback } from "react";
 
+import {
+  selectFieldValueForReplacement,
+  shouldNavigateBackwardFromSelectedField,
+} from "../handlePreviousFieldKeyboardNavigation";
+
 function useProductNameKeyboardShortcut({
   productDirectoryRef,
   quantityInputRef,
@@ -8,24 +13,14 @@ function useProductNameKeyboardShortcut({
   onOpenProductSummary,
 }) {
   const handleProductNameFocus = useCallback((event) => {
-    const input = event.currentTarget;
-
-    window.requestAnimationFrame(() => {
-      if (document.activeElement !== input) return;
-
-      const lastCharacterPosition = input.value.length;
-      input.setSelectionRange(lastCharacterPosition, lastCharacterPosition);
-    });
+    selectFieldValueForReplacement(event.currentTarget);
   }, []);
 
   const handleProductNameKeyDown = useCallback(
     (event) => {
       const shouldNavigateBackward =
         (event.altKey && event.key === "ArrowUp") ||
-        (!event.altKey &&
-          !event.ctrlKey &&
-          !event.metaKey &&
-          (event.key === "Backspace" || event.key === "Delete"));
+        shouldNavigateBackwardFromSelectedField(event);
 
       if (shouldNavigateBackward) {
         event.preventDefault();

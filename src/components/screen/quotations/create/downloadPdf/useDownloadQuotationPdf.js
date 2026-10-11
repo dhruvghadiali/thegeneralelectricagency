@@ -21,6 +21,7 @@ function useDownloadQuotationPdf() {
   const gstPercentage = useSelector(selectQuotationGstPercentage);
   const deliveryNotes = useSelector(selectQuotationDeliveryNotes);
   const paymentNotes = useSelector(selectQuotationPaymentNotes);
+  const loggedInUser = useSelector(({ auth }) => auth);
 
   const generatePdf = useCallback(async () => {
     if (isGenerating || !companyInformation || productInformation.length === 0) {
@@ -38,6 +39,7 @@ function useDownloadQuotationPdf() {
         gstPercentage,
         deliveryNotes,
         paymentNotes,
+        loggedInUser,
       });
     } finally {
       setIsGenerating(false);
@@ -47,6 +49,7 @@ function useDownloadQuotationPdf() {
     deliveryNotes,
     gstPercentage,
     isGenerating,
+    loggedInUser,
     paymentNotes,
     productDirectory,
     productInformation,

@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 function createCompanySection(companyInformation = {}) {
   return {
     name: companyInformation.companyName ?? "",
@@ -53,6 +55,18 @@ function createCommercialSection({
   };
 }
 
+function createEnquiryContactSection(loggedInUser = {}) {
+  const firstName = _.trim(loggedInUser.firstName);
+  const lastName = _.trim(loggedInUser.lastName);
+  const fullName = _.compact([firstName, lastName]).join(" ");
+  const enquiryName = fullName.length > 30 ? firstName : fullName;
+
+  return {
+    name: enquiryName || loggedInUser.username || "-",
+    phone: loggedInUser.phone || "-",
+  };
+}
+
 export function createQuotationPdfSections({
   companyInformation,
   productInformation,
@@ -61,6 +75,7 @@ export function createQuotationPdfSections({
   gstPercentage,
   deliveryNotes,
   paymentNotes,
+  loggedInUser,
 }) {
   return {
     company: createCompanySection(companyInformation),
@@ -75,5 +90,6 @@ export function createQuotationPdfSections({
       deliveryNotes,
       paymentNotes,
     }),
+    enquiryContact: createEnquiryContactSection(loggedInUser),
   };
 }

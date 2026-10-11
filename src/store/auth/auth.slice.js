@@ -16,9 +16,9 @@ function readStoredAuth() {
   }
 }
 
-function persistAuthSession(username, token, role) {
+function persistAuthSession(session) {
   try {
-    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ username, token, role }));
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(session));
   } catch {
     // Storage can be unavailable (private browsing) - session stays in memory.
   }
@@ -38,6 +38,9 @@ const initialState = {
   username: stored?.username ?? null,
   token: stored?.token ?? null,
   role: stored?.role ?? null,
+  firstName: stored?.firstName ?? null,
+  lastName: stored?.lastName ?? null,
+  phone: stored?.phone ?? stored?.phoneNumber ?? stored?.mobile ?? null,
   isAuthenticated: Boolean(stored?.username),
   isPasswordVisible: false,
   isSigningIn: false,
@@ -55,15 +58,28 @@ const authSlice = createSlice({
       state.username = action.payload.username;
       state.token = action.payload.token ?? null;
       state.role = action.payload.role ?? null;
+      state.firstName = action.payload.firstName ?? null;
+      state.lastName = action.payload.lastName ?? null;
+      state.phone = action.payload.phone ?? null;
       state.isAuthenticated = true;
       state.isPasswordVisible = false;
 
-      persistAuthSession(action.payload.username, action.payload.token ?? null, action.payload.role ?? null);
+      persistAuthSession({
+        username: action.payload.username,
+        token: action.payload.token ?? null,
+        role: action.payload.role ?? null,
+        firstName: action.payload.firstName ?? null,
+        lastName: action.payload.lastName ?? null,
+        phone: action.payload.phone ?? null,
+      });
     },
     loggedOut(state) {
       state.username = null;
       state.token = null;
       state.role = null;
+      state.firstName = null;
+      state.lastName = null;
+      state.phone = null;
       state.isAuthenticated = false;
       state.isPasswordVisible = false;
       state.isSigningIn = false;
@@ -83,15 +99,28 @@ const authSlice = createSlice({
           action.payload?.user?.username ?? action.payload?.username ?? null;
         const token = action.payload?.token ?? null;
         const role = action.payload?.role ?? null;
+        const firstName = action.payload?.firstName ?? null;
+        const lastName = action.payload?.lastName ?? null;
+        const phone = action.payload?.phone ?? null;
 
         state.isSigningIn = false;
         state.signInError = null;
         state.username = username;
         state.token = token;
         state.role = role;
+        state.firstName = firstName;
+        state.lastName = lastName;
+        state.phone = phone;
         state.isAuthenticated = Boolean(token);
 
-        persistAuthSession(username, token, role);
+        persistAuthSession({
+          username,
+          token,
+          role,
+          firstName,
+          lastName,
+          phone,
+        });
       })
       .addCase(signIn.rejected, (state, action) => {
         state.isSigningIn = false;

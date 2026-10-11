@@ -7,7 +7,7 @@ function clearBackwardNavigationState() {
   backwardNavigationState = null;
 }
 
-function selectFieldValue(field) {
+function selectFieldValue(field, { markPointerAsEdited = true } = {}) {
   field.focus();
 
   const markAsEdited = () => {
@@ -25,11 +25,15 @@ function selectFieldValue(field) {
   backwardNavigationState = { edited: false, field };
 
   field.addEventListener("input", markAsEdited);
-  field.addEventListener("pointerdown", markAsEdited);
+  if (markPointerAsEdited) {
+    field.addEventListener("pointerdown", markAsEdited);
+  }
   field.addEventListener("blur", clearState);
   removeFieldListeners = () => {
     field.removeEventListener("input", markAsEdited);
-    field.removeEventListener("pointerdown", markAsEdited);
+    if (markPointerAsEdited) {
+      field.removeEventListener("pointerdown", markAsEdited);
+    }
     field.removeEventListener("blur", clearState);
   };
 
@@ -39,14 +43,32 @@ function selectFieldValue(field) {
   });
 }
 
-function handlePreviousFieldKeyboardNavigation(event, previousFieldRef) {
-  const isBackwardKey =
+function isBackwardNavigationKey(event) {
+  return (
     !event.altKey &&
     !event.ctrlKey &&
     !event.metaKey &&
-    (event.key === "Backspace" || event.key === "Delete");
+    (event.key === "Backspace" || event.key === "Delete")
+  );
+}
 
-  if (!isBackwardKey) return false;
+export function selectFieldValueForReplacement(field) {
+  selectFieldValue(field, { markPointerAsEdited: false });
+}
+
+export function shouldNavigateBackwardFromSelectedField(event) {
+  if (!isBackwardNavigationKey(event)) return false;
+
+  const currentFieldState =
+    backwardNavigationState?.field === event.currentTarget
+      ? backwardNavigationState
+      : null;
+
+  return Boolean(currentFieldState && !currentFieldState.edited);
+}
+
+function handlePreviousFieldKeyboardNavigation(event, previousFieldRef) {
+  if (!isBackwardNavigationKey(event)) return false;
 
   const currentFieldState =
     backwardNavigationState?.field === event.currentTarget

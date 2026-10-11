@@ -44,7 +44,7 @@ function calculateDocumentTotals(products, commercial) {
 }
 
 export function createQuotationPdfDocument(sections, logoDataUrl) {
-  const { company, products, commercial } = sections;
+  const { company, products, commercial, enquiryContact } = sections;
   const quotationId = createQuotationNumber(company.name);
   const totals = calculateDocumentTotals(products, commercial);
   const generatedAt = new Date().toLocaleDateString("en-IN", {
@@ -62,7 +62,7 @@ export function createQuotationPdfDocument(sections, logoDataUrl) {
   });
 
   drawQuotationTitle(doc, quotationId, generatedAt);
-  drawBrandHeader(doc, logoDataUrl);
+  drawBrandHeader(doc, logoDataUrl, enquiryContact);
   drawCompanySection(doc, company);
 
   const productTableHeight = getProductTableHeight(doc, products);
@@ -70,10 +70,10 @@ export function createQuotationPdfDocument(sections, logoDataUrl) {
     commercial.taxTreatment,
   );
   const fitsOnFirstPage =
-    90 + productTableHeight + 3 + totalsSectionHeight <= PDF_PAGE.footerY;
+    82 + productTableHeight + 3 + totalsSectionHeight <= PDF_PAGE.footerY;
 
   if (fitsOnFirstPage) {
-    const productTableEnd = drawProductSection(doc, products, 90);
+    const productTableEnd = drawProductSection(doc, products, 82);
     drawQuotationTotalsSection(
       doc,
       totals,
@@ -84,7 +84,7 @@ export function createQuotationPdfDocument(sections, logoDataUrl) {
     let productIndex = 0;
     const firstPageProducts = getPageProducts(doc, products, productIndex, 180);
 
-    drawProductSection(doc, firstPageProducts, 90, productIndex);
+    drawProductSection(doc, firstPageProducts, 82, productIndex);
     productIndex += firstPageProducts.length;
 
     while (productIndex < products.length) {
