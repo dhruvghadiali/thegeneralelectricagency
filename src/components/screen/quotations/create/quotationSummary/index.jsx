@@ -5,6 +5,7 @@ import { CREATE_QUOTATION_STEPS } from "@Enums";
 import {
   selectQuotationCompanyInformation,
   selectQuotationProductInformation,
+  selectQuotationSubmission,
 } from "@Redux/quotation/quotation.selector";
 import { quotationStepChanged } from "@Redux/quotation/quotation.slice";
 import { Button } from "@shadcnComponent/button";
@@ -17,12 +18,14 @@ import QuotationGstPercentageSelect from "@screenComponent/quotations/create/quo
 import QuotationNotesFields from "@screenComponent/quotations/create/quotationSummary/quotationNotesFields";
 import QuotationProductInformation from "@screenComponent/quotations/create/quotationSummary/quotationProductInformation";
 import QuotationSummaryHeader from "@screenComponent/quotations/create/quotationSummary/quotationSummaryHeader";
+import QuotationSubmissionError from "@screenComponent/quotations/create/quotationSummary/quotationSubmissionError";
 import QuotationTaxTreatmentSelect from "@screenComponent/quotations/create/quotationSummary/quotationTaxTreatmentSelect";
 
 function QuotationSummary() {
   const dispatch = useDispatch();
   const companyInformation = useSelector(selectQuotationCompanyInformation);
   const products = useSelector(selectQuotationProductInformation);
+  const { error: submissionError } = useSelector(selectQuotationSubmission);
   const keyboard = useQuotationSummaryKeyboardShortcuts();
   const { generatePdf, isGenerating } = useDownloadQuotationPdf();
 
@@ -35,6 +38,7 @@ function QuotationSummary() {
       <Card className="w-full gap-0 overflow-hidden py-0">
         <QuotationSummaryHeader />
         <CardContent className="grid gap-5 px-6 py-5">
+          <QuotationSubmissionError error={submissionError} />
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <QuotationTaxTreatmentSelect
               triggerRef={keyboard.refs.taxTreatmentRef}

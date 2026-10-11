@@ -16,6 +16,7 @@ export const createQuotationState = () => ({
   currentStep: CREATE_QUOTATION_STEPS.COMPANY_INFORMATION,
   isExitDialogOpen: false,
   isSubmitting: false,
+  isSubmitSuccessful: false,
   submitError: null,
   createdQuotation: null,
   companies: [],

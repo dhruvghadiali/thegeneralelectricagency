@@ -187,16 +187,19 @@ const quotationSlice = createSlice({
       )
       .addCase(createQuotationDetails.pending, (state) => {
         state.isSubmitting = true;
+        state.isSubmitSuccessful = false;
         state.submitError = null;
         state.createdQuotation = null;
       })
       .addCase(createQuotationDetails.fulfilled, (state, action) => {
         state.isSubmitting = false;
+        state.isSubmitSuccessful = true;
         state.submitError = null;
         state.createdQuotation = action.payload;
       })
       .addCase(createQuotationDetails.rejected, (state, action) => {
         state.isSubmitting = false;
+        state.isSubmitSuccessful = false;
         state.submitError =
           action.payload ?? "Unable to create quotation details.";
       })

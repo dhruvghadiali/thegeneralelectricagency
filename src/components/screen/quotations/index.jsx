@@ -2,6 +2,7 @@ import DataTable from "@commonComponent/dataTable";
 import QuotationHeader from "@screenComponent/quotations/header";
 import {
   QUOTATION_TABLE_CONFIG,
+  QuotationTableActions,
   useQuotationTable,
 } from "@screenComponent/quotations/table";
 
@@ -33,6 +34,9 @@ function Quotations() {
         onRetry={table.refresh}
         isLoading={table.isLoading}
         error={table.error}
+        rowActions={(quotation) => (
+          <QuotationTableActions quotation={quotation} />
+        )}
       />
     </main>
   );

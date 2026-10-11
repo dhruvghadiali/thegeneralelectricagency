@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useBlocker, useNavigate } from "react-router-dom";
 
@@ -6,6 +6,7 @@ import { CREATE_QUOTATION_STEPS } from "@Enums";
 import {
   selectQuotationCurrentStep,
   selectQuotationExitDialog,
+  selectQuotationSubmission,
 } from "@Redux/quotation/quotation.selector";
 import {
   quotationExitCancelled,
@@ -20,14 +21,33 @@ function useCreateQuotationKeyboardShortcut() {
   const navigate = useNavigate();
   const currentStep = useSelector(selectQuotationCurrentStep);
   const isExitDialogOpen = useSelector(selectQuotationExitDialog);
+  const { isSuccessful } = useSelector(selectQuotationSubmission);
+  const completedQuotationRef = useRef(false);
   const shouldBlockNavigation = useCallback(
     ({ currentLocation, nextLocation }) =>
-      currentLocation.pathname !== nextLocation.pathname ||
-      currentLocation.search !== nextLocation.search ||
-      currentLocation.hash !== nextLocation.hash,
-    [],
+      !isSuccessful &&
+      (currentLocation.pathname !== nextLocation.pathname ||
+        currentLocation.search !== nextLocation.search ||
+        currentLocation.hash !== nextLocation.hash),
+    [isSuccessful],
   );
   const blocker = useBlocker(shouldBlockNavigation);
+
+  useEffect(() => {
+    if (!isSuccessful) return;
+
+    completedQuotationRef.current = true;
+    navigate(ROUTES.QUOTATIONS, { replace: true });
+  }, [isSuccessful, navigate]);
+
+  useEffect(
+    () => () => {
+      if (completedQuotationRef.current) {
+        dispatch(quotationReset());
+      }
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
     if (blocker.state === "blocked") {

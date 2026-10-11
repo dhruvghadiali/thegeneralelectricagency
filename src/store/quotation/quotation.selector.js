@@ -18,8 +18,9 @@ export const selectQuotationExitDialog = createSelector(
 
 export const selectQuotationSubmission = createSelector(
   selectQuotationState,
-  ({ isSubmitting, submitError, createdQuotation }) => ({
+  ({ isSubmitting, isSubmitSuccessful, submitError, createdQuotation }) => ({
     isSubmitting,
+    isSuccessful: isSubmitSuccessful,
     error: submitError,
     createdQuotation,
   }),

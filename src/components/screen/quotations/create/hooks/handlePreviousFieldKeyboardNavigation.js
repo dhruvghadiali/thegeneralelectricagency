@@ -7,6 +7,10 @@ function clearBackwardNavigationState() {
   backwardNavigationState = null;
 }
 
+export function clearPreviousFieldKeyboardNavigation() {
+  clearBackwardNavigationState();
+}
+
 function selectFieldValue(field, { markPointerAsEdited = true } = {}) {
   field.focus();
 
