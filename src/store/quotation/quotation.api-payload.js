@@ -1,7 +1,15 @@
+import _ from "lodash";
+
 function numberOrZero(value) {
   const number = Number(value);
 
   return Number.isFinite(number) ? number : 0;
+}
+
+function nullableText(value) {
+  const normalizedValue = _.trim(value ?? "");
+
+  return normalizedValue || null;
 }
 
 function toQuotationProductPayload(product = {}) {
@@ -30,12 +38,12 @@ export function toQuotationDetailsPayload({
 }) {
   return {
     quotation_ref_id: quotationRefId,
-    company: selectedCompany?.id ?? "",
+    company: nullableText(selectedCompany?.id),
     company_name: companyInformation.companyName?.trim() ?? "",
     company_address: companyInformation.address?.trim() ?? "",
-    company_email: companyInformation.email?.trim() ?? "",
-    company_phone_number: companyInformation.phoneNumber?.trim() ?? "",
-    company_gst_number: companyInformation.gstNumber?.trim() ?? "",
+    company_email: nullableText(companyInformation.email),
+    company_phone_number: nullableText(companyInformation.phoneNumber),
+    company_gst_number: nullableText(companyInformation.gstNumber),
     tax_type: taxTreatment,
     gst: String(gstPercentage ?? ""),
     products: productInformation.map(toQuotationProductPayload),

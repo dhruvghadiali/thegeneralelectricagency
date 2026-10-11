@@ -1,11 +1,24 @@
 import { useCallback } from "react";
 
-import handlePreviousFieldKeyboardNavigation from "@screenComponent/quotations/create/hooks/handlePreviousFieldKeyboardNavigation";
+import { selectFieldValueForReplacement } from "@screenComponent/quotations/create/hooks/handlePreviousFieldKeyboardNavigation";
 
 function useBillToKeyboardShortcut({ paymentNotesRef, productsRef }) {
   return useCallback(
     (event) => {
-      if (handlePreviousFieldKeyboardNavigation(event, paymentNotesRef)) return;
+      const shouldFocusPaymentNotes =
+        !event.altKey &&
+        !event.ctrlKey &&
+        !event.metaKey &&
+        (event.key === "Backspace" || event.key === "Delete");
+
+      if (shouldFocusPaymentNotes) {
+        const paymentNotes = paymentNotesRef.current;
+        if (!paymentNotes) return;
+
+        event.preventDefault();
+        selectFieldValueForReplacement(paymentNotes);
+        return;
+      }
 
       if (event.altKey && event.key === "ArrowUp") {
         event.preventDefault();

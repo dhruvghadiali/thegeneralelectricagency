@@ -1,4 +1,6 @@
 import { CREATE_QUOTATION_STEPS, INDIAN_GST_RATES } from "@Enums";
+import { createTableState } from "@Redux/factories/table.factory";
+import { QUOTATION_TABLE_DEFAULTS } from "@screenComponent/quotations/table/quotationTable.defaults";
 
 export const QUOTATION_COMPANY_PAGE = 1;
 export const QUOTATION_COMPANY_LIMIT = 100;
@@ -6,6 +8,11 @@ export const QUOTATION_PRODUCT_PAGE = 1;
 export const QUOTATION_PRODUCT_LIMIT = 100;
 
 export const createQuotationState = () => ({
+  ...createTableState({
+    limit: QUOTATION_TABLE_DEFAULTS.limit,
+    sort: QUOTATION_TABLE_DEFAULTS.sort,
+    columnFilters: QUOTATION_TABLE_DEFAULTS.filters,
+  }),
   currentStep: CREATE_QUOTATION_STEPS.COMPANY_INFORMATION,
   isExitDialogOpen: false,
   isSubmitting: false,

@@ -4,6 +4,7 @@ import _ from "lodash";
 import { QUOTATION_TAX_TREATMENTS } from "@Enums";
 import {
   createQuotationDetails,
+  fetchQuotationDetails,
   fetchQuotationCompanies,
   fetchQuotationProducts,
 } from "@Redux/quotation/quotation.action";
@@ -12,11 +13,16 @@ import {
   QUOTATION_COMPANY_PAGE,
   QUOTATION_PRODUCT_PAGE,
 } from "@Redux/quotation/quotation.state";
+import {
+  tableFetchCases,
+  TABLE_REDUCERS,
+} from "@Redux/factories/table.factory";
 
 const quotationSlice = createSlice({
   name: "quotation",
   initialState: createQuotationState(),
   reducers: {
+    ...TABLE_REDUCERS,
     quotationReset() {
       return createQuotationState();
     },
@@ -170,6 +176,15 @@ const quotationSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchQuotationDetails.pending, tableFetchCases.pending)
+      .addCase(fetchQuotationDetails.fulfilled, tableFetchCases.fulfilled)
+      .addCase(fetchQuotationDetails.rejected, (state, action) =>
+        tableFetchCases.rejected(
+          state,
+          action,
+          "Unable to load quotation details.",
+        ),
+      )
       .addCase(createQuotationDetails.pending, (state) => {
         state.isSubmitting = true;
         state.submitError = null;
@@ -299,5 +314,16 @@ export const {
   quotationReset,
   quotationStepChanged,
 } = quotationSlice.actions;
+
+export const quotationTableActions = {
+  columnFilterChanged: quotationSlice.actions.columnFilterChanged,
+  filtersApplied: quotationSlice.actions.filtersApplied,
+  filtersCleared: quotationSlice.actions.filtersCleared,
+  limitChanged: quotationSlice.actions.limitChanged,
+  pageChanged: quotationSlice.actions.pageChanged,
+  searchChanged: quotationSlice.actions.searchChanged,
+  searchCommitted: quotationSlice.actions.searchCommitted,
+  sortChanged: quotationSlice.actions.sortChanged,
+};
 
 export default quotationSlice.reducer;

@@ -1,6 +1,10 @@
 import { createSelector } from "@reduxjs/toolkit";
+import { createTableSelectors } from "@Redux/factories/table.factory";
 
 const selectQuotationState = (state) => state.quotation;
+
+export const quotationTableSelectors =
+  createTableSelectors(selectQuotationState);
 
 export const selectQuotationCurrentStep = createSelector(
   selectQuotationState,

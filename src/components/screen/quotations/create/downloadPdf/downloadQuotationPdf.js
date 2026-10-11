@@ -37,8 +37,13 @@ export async function downloadQuotationPdf(quotation, { beforeSave } = {}) {
   );
   const { doc, quotationId } = createQuotationPdfDocument(sections, pdfImages);
 
-  await beforeSave?.(quotationId);
-  doc.save(`${quotationId.replaceAll("/", "-")}.pdf`);
+  try {
+    await beforeSave?.(quotationId);
+  } finally {
+    // Persisting the quotation and downloading its document are independent.
+    // Keep the generated PDF available even when the API request fails.
+    doc.save(`${quotationId.replaceAll("/", "-")}.pdf`);
+  }
 
   return quotationId;
 }
