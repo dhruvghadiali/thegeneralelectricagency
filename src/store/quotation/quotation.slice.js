@@ -3,6 +3,7 @@ import _ from "lodash";
 
 import { QUOTATION_TAX_TREATMENTS } from "@Enums";
 import {
+  createQuotationDetails,
   fetchQuotationCompanies,
   fetchQuotationProducts,
 } from "@Redux/quotation/quotation.action";
@@ -169,6 +170,21 @@ const quotationSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(createQuotationDetails.pending, (state) => {
+        state.isSubmitting = true;
+        state.submitError = null;
+        state.createdQuotation = null;
+      })
+      .addCase(createQuotationDetails.fulfilled, (state, action) => {
+        state.isSubmitting = false;
+        state.submitError = null;
+        state.createdQuotation = action.payload;
+      })
+      .addCase(createQuotationDetails.rejected, (state, action) => {
+        state.isSubmitting = false;
+        state.submitError =
+          action.payload ?? "Unable to create quotation details.";
+      })
       .addCase(fetchQuotationCompanies.pending, (state, action) => {
         const requestedPage =
           action.meta.arg?.page ?? QUOTATION_COMPANY_PAGE;

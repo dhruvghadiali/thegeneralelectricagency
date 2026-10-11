@@ -12,6 +12,15 @@ export const selectQuotationExitDialog = createSelector(
   (quotation) => quotation.isExitDialogOpen,
 );
 
+export const selectQuotationSubmission = createSelector(
+  selectQuotationState,
+  ({ isSubmitting, submitError, createdQuotation }) => ({
+    isSubmitting,
+    error: submitError,
+    createdQuotation,
+  }),
+);
+
 export const selectQuotationCompanies = createSelector(
   selectQuotationState,
   (quotation) => quotation.companies,

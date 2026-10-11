@@ -16,6 +16,7 @@ import {
   drawCompanySection,
   drawQuotationTitle,
 } from "@screenComponent/quotations/create/downloadPdf/sections/quotationHeaderSection";
+import { drawQuotationPartnerSection } from "@screenComponent/quotations/create/downloadPdf/sections/quotationPartnerSection";
 import {
   drawProductSection,
   getPageProducts,
@@ -43,7 +44,9 @@ function calculateDocumentTotals(products, commercial) {
   };
 }
 
-export function createQuotationPdfDocument(sections, logoDataUrl) {
+const FIRST_PAGE_PRODUCT_Y = 103;
+
+export function createQuotationPdfDocument(sections, pdfImages = {}) {
   const { company, products, commercial, enquiryContact } = sections;
   const quotationId = createQuotationNumber(company.name);
   const totals = calculateDocumentTotals(products, commercial);
@@ -62,18 +65,24 @@ export function createQuotationPdfDocument(sections, logoDataUrl) {
   });
 
   drawQuotationTitle(doc, quotationId, generatedAt);
-  drawBrandHeader(doc, logoDataUrl, enquiryContact);
-  drawCompanySection(doc, company);
+  drawBrandHeader(doc, pdfImages.company, enquiryContact);
+  drawQuotationPartnerSection(doc, pdfImages);
+  drawCompanySection(doc, company, 75);
 
   const productTableHeight = getProductTableHeight(doc, products);
   const totalsSectionHeight = getQuotationTotalsSectionHeight(
     commercial.taxTreatment,
   );
   const fitsOnFirstPage =
-    82 + productTableHeight + 3 + totalsSectionHeight <= PDF_PAGE.footerY;
+    FIRST_PAGE_PRODUCT_Y + productTableHeight + 3 + totalsSectionHeight <=
+    PDF_PAGE.footerY;
 
   if (fitsOnFirstPage) {
-    const productTableEnd = drawProductSection(doc, products, 82);
+    const productTableEnd = drawProductSection(
+      doc,
+      products,
+      FIRST_PAGE_PRODUCT_Y,
+    );
     drawQuotationTotalsSection(
       doc,
       totals,
@@ -84,7 +93,12 @@ export function createQuotationPdfDocument(sections, logoDataUrl) {
     let productIndex = 0;
     const firstPageProducts = getPageProducts(doc, products, productIndex, 180);
 
-    drawProductSection(doc, firstPageProducts, 82, productIndex);
+    drawProductSection(
+      doc,
+      firstPageProducts,
+      FIRST_PAGE_PRODUCT_Y,
+      productIndex,
+    );
     productIndex += firstPageProducts.length;
 
     while (productIndex < products.length) {

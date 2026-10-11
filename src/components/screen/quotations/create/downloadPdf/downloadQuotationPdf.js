@@ -1,24 +1,44 @@
+import bonfiglioliLogoUrl from "@Assets/images/bonfiglioli-transparent.png";
+import cgLogoUrl from "@Assets/images/cg-icon.png";
 import companyLogoUrl from "@Assets/images/logo.png";
+import eleconLogoUrl from "@Assets/images/elecon-transparent.png";
+import premiumTransmissionLogoUrl from "@Assets/images/premium-transmission-icon.png";
 import { imageUrlToDataUrl } from "@screenComponent/quotations/create/downloadPdf/pdf/pdf.utils";
 import { createQuotationPdfSections } from "@screenComponent/quotations/create/downloadPdf/quotationPdfSections";
 
-export async function downloadQuotationPdf(quotation) {
-  const sections = createQuotationPdfSections(quotation);
-  let logoDataUrl;
+const PDF_IMAGE_URLS = {
+  bonfiglioli: bonfiglioliLogoUrl,
+  cg: cgLogoUrl,
+  company: companyLogoUrl,
+  elecon: eleconLogoUrl,
+  premiumTransmission: premiumTransmissionLogoUrl,
+};
 
-  try {
-    logoDataUrl = await imageUrlToDataUrl(companyLogoUrl);
-  } catch {
-    logoDataUrl = undefined;
-  }
+async function loadPdfImages() {
+  const imageEntries = await Promise.all(
+    Object.entries(PDF_IMAGE_URLS).map(async ([name, url]) => {
+      try {
+        return [name, await imageUrlToDataUrl(url)];
+      } catch {
+        return [name, undefined];
+      }
+    }),
+  );
+
+  return Object.fromEntries(imageEntries);
+}
+
+export async function downloadQuotationPdf(quotation, { beforeSave } = {}) {
+  const sections = createQuotationPdfSections(quotation);
+  const pdfImages = await loadPdfImages();
 
   const { createQuotationPdfDocument } = await import(
     "@screenComponent/quotations/create/downloadPdf/pdf/createQuotationPdfDocument"
   );
-  const { doc, quotationId } = createQuotationPdfDocument(
-    sections,
-    logoDataUrl,
-  );
+  const { doc, quotationId } = createQuotationPdfDocument(sections, pdfImages);
 
+  await beforeSave?.(quotationId);
   doc.save(`${quotationId.replaceAll("/", "-")}.pdf`);
+
+  return quotationId;
 }

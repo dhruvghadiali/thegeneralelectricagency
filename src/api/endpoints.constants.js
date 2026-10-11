@@ -41,4 +41,7 @@ export const ENDPOINTS = {
     BASE: "supplier-credits",
     PAYMENT_PLANNINGS: "payment-plannings",
   },
+  QUOTATION: {
+    DETAILS: "quotation-details",
+  },
 };

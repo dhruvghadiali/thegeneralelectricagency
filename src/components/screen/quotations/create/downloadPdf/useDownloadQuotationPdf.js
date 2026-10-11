@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
+import { createQuotationDetails } from "@Redux/quotation/quotation.action";
 import {
   selectQuotationCompanyInformation,
   selectQuotationDeliveryNotes,
@@ -13,6 +14,7 @@ import {
 import { downloadQuotationPdf } from "@screenComponent/quotations/create/downloadPdf/downloadQuotationPdf";
 
 function useDownloadQuotationPdf() {
+  const dispatch = useDispatch();
   const [isGenerating, setIsGenerating] = useState(false);
   const companyInformation = useSelector(selectQuotationCompanyInformation);
   const productInformation = useSelector(selectQuotationProductInformation);
@@ -31,22 +33,31 @@ function useDownloadQuotationPdf() {
     setIsGenerating(true);
 
     try {
-      await downloadQuotationPdf({
-        companyInformation,
-        productInformation,
-        productDirectory,
-        taxTreatment,
-        gstPercentage,
-        deliveryNotes,
-        paymentNotes,
-        loggedInUser,
-      });
+      await downloadQuotationPdf(
+        {
+          companyInformation,
+          productInformation,
+          productDirectory,
+          taxTreatment,
+          gstPercentage,
+          deliveryNotes,
+          paymentNotes,
+          loggedInUser,
+        },
+        {
+          beforeSave: (quotationRefId) =>
+            dispatch(createQuotationDetails({ quotationRefId })).unwrap(),
+        },
+      );
+    } catch {
+      // The Redux request state retains the API error for the quotation flow.
     } finally {
       setIsGenerating(false);
     }
   }, [
     companyInformation,
     deliveryNotes,
+    dispatch,
     gstPercentage,
     isGenerating,
     loggedInUser,
