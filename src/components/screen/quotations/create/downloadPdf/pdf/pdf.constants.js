@@ -2,6 +2,8 @@ export const PDF_BRAND = Object.freeze({
   name: "The General Electric Stores",
   address:
     "7, GANESH SHOPPING CENTRE OPP. DR. BECK & CO G.I.D.C ANKLESHWAR - 393002",
+  bharuchAddress:
+    "A 140, First Floor Shilpi Square, Sherpura near Dahej By Pass Road, Bharuch, Gujarat - 392015",
   email: "generalagenc@gmail.com",
   phone: "+91 9099017416 | +91 7874349006",
   gst: "24AAZFT8619H1ZF",

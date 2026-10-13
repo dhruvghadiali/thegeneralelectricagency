@@ -46,17 +46,22 @@ export function drawBrandHeader(doc, logoDataUrl, enquiryContact = {}) {
   }
 
   drawPdfText(doc, PDF_BRAND.name, 43, 32.5, { bold: true, size: 13.5 });
-  drawPdfText(doc, PDF_BRAND.address, 43, 39.2, {
+  drawPdfText(doc, PDF_BRAND.address, 43, 37.8, {
     color: PDF_COLORS.muted,
-    maxWidth: 106,
-    size: 7.2,
+    maxWidth: 117,
+    size: 5.8,
+  });
+  drawPdfText(doc, PDF_BRAND.bharuchAddress, 43, 41.8, {
+    color: PDF_COLORS.muted,
+    maxWidth: 117,
+    size: 5.8,
   });
   drawPdfText(
     doc,
     `${PDF_BRAND.email}  |  ${PDF_BRAND.phone}  |  GSTIN: ${PDF_BRAND.gst}`,
     43,
-    45.2,
-    { color: PDF_COLORS.muted, maxWidth: 106, size: 6.5 },
+    46.2,
+    { color: PDF_COLORS.muted, maxWidth: 106, size: 6.2 },
   );
 
   drawPdfText(doc, "FOR ANY ENQUIRY", 194, 39.2, {
