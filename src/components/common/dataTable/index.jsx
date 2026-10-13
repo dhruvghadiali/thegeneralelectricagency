@@ -143,7 +143,12 @@ function DataTable({
 }) {
   const [internalMobileFilterOpen, setInternalMobileFilterOpen] =
     useState(false);
+  const searchInputRef = useRef(null);
   const rowRefs = useRef([]);
+  const activeRowIndexRef = useRef(0);
+  const pageSizeTriggerRef = useRef(null);
+  const previousPageButtonRef = useRef(null);
+  const nextPageButtonRef = useRef(null);
   const isMobileFilterOpen =
     controlledMobileFilterOpen ?? internalMobileFilterOpen;
   const toggleMobileFilters =
@@ -172,6 +177,14 @@ function DataTable({
   // unfiltered empty list, callers can show just the centered empty state.
   const showTableHead =
     !isFirstLoad && !error && (!hideHeaderWhenEmpty || hasRows || isFiltered);
+  const focusElement = (elementRef) => {
+    const element = elementRef.current;
+
+    if (!element || element.offsetParent === null) return false;
+
+    element.focus();
+    return document.activeElement === element;
+  };
   const focusRow = (rowIndex) => {
     const row = rowRefs.current[rowIndex];
 
@@ -180,16 +193,28 @@ function DataTable({
     rowRefs.current.forEach((rowElement, index) => {
       rowElement?.setAttribute("tabindex", index === rowIndex ? "0" : "-1");
     });
+    activeRowIndexRef.current = rowIndex;
     row.focus();
     return document.activeElement === row;
   };
   const handleRowKeyDown = (event, rowIndex) => {
-    if (
-      event.target !== event.currentTarget ||
-      (event.key !== "ArrowDown" && event.key !== "ArrowUp")
-    ) {
+    if (event.target !== event.currentTarget) return;
+
+    if (event.key === "Tab") {
+      const didMoveFocus = event.shiftKey
+        ? focusElement(searchInputRef)
+        : focusElement(pageSizeTriggerRef);
+
+      if (didMoveFocus) event.preventDefault();
       return;
     }
+
+    if (event.key === "Backspace" || event.key === "Delete") {
+      if (focusElement(searchInputRef)) event.preventDefault();
+      return;
+    }
+
+    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
 
     const direction = event.key === "ArrowDown" ? 1 : -1;
     const nextIndex = Math.min(
@@ -199,6 +224,54 @@ function DataTable({
 
     event.preventDefault();
     focusRow(nextIndex);
+  };
+  const focusActiveRow = () =>
+    focusRow(
+      Math.min(activeRowIndexRef.current, Math.max(rows.length - 1, 0)),
+    );
+  const focusActiveRowOrSearch = () =>
+    focusActiveRow() || focusElement(searchInputRef);
+  const handlePageSizeKeyDown = (event) => {
+    if (event.key === "Tab") {
+      const didMoveFocus = event.shiftKey
+        ? focusActiveRowOrSearch()
+        : focusElement(previousPageButtonRef);
+
+      if (didMoveFocus) event.preventDefault();
+      return;
+    }
+
+    if (event.key === "Backspace" || event.key === "Delete") {
+      if (focusActiveRowOrSearch()) event.preventDefault();
+    }
+  };
+  const handlePreviousPageKeyDown = (event) => {
+    if (event.key === "Tab") {
+      const didMoveFocus = event.shiftKey
+        ? focusElement(pageSizeTriggerRef)
+        : focusElement(nextPageButtonRef);
+
+      if (didMoveFocus) event.preventDefault();
+      return;
+    }
+
+    if (event.key === "Backspace" || event.key === "Delete") {
+      if (focusElement(pageSizeTriggerRef)) event.preventDefault();
+    }
+  };
+  const handleNextPageKeyDown = (event) => {
+    if (event.key === "Tab") {
+      const didMoveFocus = event.shiftKey
+        ? focusElement(previousPageButtonRef)
+        : focusElement(searchInputRef);
+
+      if (didMoveFocus) event.preventDefault();
+      return;
+    }
+
+    if (event.key === "Backspace" || event.key === "Delete") {
+      if (focusElement(previousPageButtonRef)) event.preventDefault();
+    }
   };
 
   return (
@@ -223,8 +296,11 @@ function DataTable({
         isLoading={isLoading}
         searchPlaceholder={searchPlaceholder}
         searchAutoFocus={searchAutoFocus}
+        searchInputRef={searchInputRef}
         onSearchTab={
-          keyboardRowNavigation && hasRows ? () => focusRow(0) : undefined
+          keyboardRowNavigation
+            ? () => focusRow(0) || focusElement(pageSizeTriggerRef)
+            : undefined
         }
         actions={toolbarActions}
       />
@@ -423,6 +499,13 @@ function DataTable({
         onPageChange={onPageChange}
         onLimitChange={onLimitChange}
         rowNoun={rowNoun}
+        keyboardNavigation={keyboardRowNavigation}
+        pageSizeTriggerRef={pageSizeTriggerRef}
+        previousPageButtonRef={previousPageButtonRef}
+        nextPageButtonRef={nextPageButtonRef}
+        onPageSizeKeyDown={handlePageSizeKeyDown}
+        onPreviousPageKeyDown={handlePreviousPageKeyDown}
+        onNextPageKeyDown={handleNextPageKeyDown}
       />
     </Card>
   );

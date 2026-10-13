@@ -24,6 +24,13 @@ function DataTablePagination({
   onPageChange,
   onLimitChange,
   rowNoun = "rows",
+  keyboardNavigation = false,
+  pageSizeTriggerRef,
+  previousPageButtonRef,
+  nextPageButtonRef,
+  onPageSizeKeyDown,
+  onPreviousPageKeyDown,
+  onNextPageKeyDown,
 }) {
   const { page, limit, total, totalPages } = pagination;
   const hasRenderedRows = rowRange.to > 0;
@@ -45,7 +52,13 @@ function DataTablePagination({
             value={String(limit)}
             onValueChange={(value) => onLimitChange(Number(value))}
           >
-            <SelectTrigger className="h-8 w-[72px]">
+            <SelectTrigger
+              ref={pageSizeTriggerRef}
+              onKeyDown={
+                keyboardNavigation ? onPageSizeKeyDown : undefined
+              }
+              className="h-8 w-[72px]"
+            >
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -59,14 +72,21 @@ function DataTablePagination({
         </span>
       </div>
 
-      {totalPages > 1 && (
+      {(totalPages > 1 || keyboardNavigation) && (
         <div className="flex items-center gap-1">
           <Button
+            ref={previousPageButtonRef}
             variant="outline"
             size="icon"
-            className="size-8"
-            disabled={page <= 1 || isLoading}
-            onClick={() => onPageChange(page - 1)}
+            className="size-8 aria-disabled:pointer-events-none aria-disabled:opacity-50"
+            disabled={!keyboardNavigation && (page <= 1 || isLoading)}
+            aria-disabled={page <= 1 || isLoading}
+            onClick={() =>
+              page > 1 && !isLoading && onPageChange(page - 1)
+            }
+            onKeyDown={
+              keyboardNavigation ? onPreviousPageKeyDown : undefined
+            }
             aria-label="Previous page"
           >
             <ChevronLeft className="size-4" />
@@ -87,6 +107,7 @@ function DataTablePagination({
                 variant={item === page ? "default" : "outline"}
                 size="icon"
                 className="size-8 text-xs"
+                tabIndex={keyboardNavigation ? -1 : undefined}
                 disabled={isLoading}
                 aria-current={item === page ? "page" : undefined}
                 aria-label={`Page ${item}`}
@@ -98,11 +119,18 @@ function DataTablePagination({
           )}
 
           <Button
+            ref={nextPageButtonRef}
             variant="outline"
             size="icon"
-            className="size-8"
-            disabled={page >= totalPages || isLoading}
-            onClick={() => onPageChange(page + 1)}
+            className="size-8 aria-disabled:pointer-events-none aria-disabled:opacity-50"
+            disabled={
+              !keyboardNavigation && (page >= totalPages || isLoading)
+            }
+            aria-disabled={page >= totalPages || isLoading}
+            onClick={() =>
+              page < totalPages && !isLoading && onPageChange(page + 1)
+            }
+            onKeyDown={keyboardNavigation ? onNextPageKeyDown : undefined}
             aria-label="Next page"
           >
             <ChevronRight className="size-4" />

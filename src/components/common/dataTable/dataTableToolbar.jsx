@@ -29,11 +29,13 @@ function DataTableToolbar({
   isLoading,
   searchPlaceholder,
   searchAutoFocus,
+  searchInputRef: controlledSearchInputRef,
   onSearchTab,
   actions,
 }) {
   const hasFilters = getFilterableColumns(columns).length > 0;
-  const searchInputRef = useRef(null);
+  const internalSearchInputRef = useRef(null);
+  const searchInputRef = controlledSearchInputRef ?? internalSearchInputRef;
 
   const focusSearchInput = () => {
     const input = searchInputRef.current;
