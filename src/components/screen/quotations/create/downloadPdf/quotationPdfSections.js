@@ -26,7 +26,7 @@ function createProductSections(
       product: {
         name: savedProduct.product,
         productCode: directoryProduct.productCode ?? "",
-        hsnCode: directoryProduct.hsnCode ?? "",
+        hsnCode: savedProduct.hsnCode || directoryProduct.hsnCode || "",
         category: directoryProduct.category ?? "",
         description:
           savedProduct.description || directoryProduct.description || "",

@@ -9,6 +9,7 @@ import {
   selectQuotationProductAddAnotherDialogOpen,
   selectQuotationProductEditingIndex,
   selectQuotationProductInformation,
+  selectQuotationProducts,
   selectQuotationProductSearch,
   selectQuotationProductSummaryExpanded,
   selectQuotationSelectedProduct,
@@ -62,10 +63,24 @@ function findDuplicateProductIndex(products, candidate, editingProductIndex) {
   });
 }
 
+function findDirectoryProductByName(products, productName) {
+  const normalizedProductName = _.toLower(_.trim(productName));
+
+  if (!normalizedProductName) return null;
+
+  return (
+    products.find(
+      (product) =>
+        _.toLower(_.trim(product.name)) === normalizedProductName,
+    ) ?? null
+  );
+}
+
 function QuotationProductInformation({ companyInformation }) {
   const dispatch = useDispatch();
   const productSearch = useSelector(selectQuotationProductSearch);
   const selectedProduct = useSelector(selectQuotationSelectedProduct);
+  const directoryProducts = useSelector(selectQuotationProducts);
   const productInformation = useSelector(selectQuotationProductInformation);
   const isProductSummaryExpanded = useSelector(
     selectQuotationProductSummaryExpanded,
@@ -133,12 +148,23 @@ function QuotationProductInformation({ companyInformation }) {
         },
     validationSchema: quotationProductValidationSchema,
     onSubmit: (values) => {
+      const existingProduct =
+        editingProductIndex === null
+          ? null
+          : productInformation[editingProductIndex];
+      const matchingDirectoryProduct =
+        selectedProduct ??
+        findDirectoryProductByName(directoryProducts, values.product);
       const savedProduct = {
         ...quotationProductValidationSchema.cast(values),
         productId:
           editingProductIndex === null
-            ? (selectedProduct?.id ?? null)
-            : (productInformation[editingProductIndex]?.productId ?? null),
+            ? (matchingDirectoryProduct?.id ?? null)
+            : (existingProduct?.productId ?? null),
+        hsnCode:
+          editingProductIndex === null
+            ? (matchingDirectoryProduct?.hsnCode ?? "")
+            : (existingProduct?.hsnCode ?? selectedProduct?.hsnCode ?? ""),
       };
       const duplicateProductIndex = findDuplicateProductIndex(
         productInformation,
@@ -185,17 +211,28 @@ function QuotationProductInformation({ companyInformation }) {
       return;
     }
 
+    const matchingDirectoryProduct = findDirectoryProductByName(
+      directoryProducts,
+      event.currentTarget.value,
+    );
+
     const duplicateProductIndex = findDuplicateProductIndex(
       productInformation,
       {
         product: event.currentTarget.value,
-        productId: selectedProduct?.id ?? null,
+        productId:
+          selectedProduct?.id ?? matchingDirectoryProduct?.id ?? null,
       },
       editingProductIndex,
     );
 
     if (duplicateProductIndex !== -1) {
       dispatch(quotationProductDuplicateRequested(duplicateProductIndex));
+      return;
+    }
+
+    if (matchingDirectoryProduct) {
+      dispatch(quotationProductSelected(matchingDirectoryProduct));
     }
   };
 
