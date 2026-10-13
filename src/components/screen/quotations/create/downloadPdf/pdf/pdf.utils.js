@@ -138,11 +138,79 @@ export function amountInWords(value) {
   return `Rupees ${integerToIndianWords(rupees)}${paiseText} Only`;
 }
 
-export function createQuotationNumber(companyName, date = new Date()) {
+const QUOTATION_SEQUENCE_MIN = 1;
+const QUOTATION_SEQUENCE_MAX = 999999999;
+const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
+let lastIssuedFinancialYear = null;
+let lastIssuedSequence = 0;
+
+function calendarDayTimestamp(date) {
+  return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function millisecondsIntoDay(date) {
+  return (
+    date.getHours() * 60 * 60 * 1000 +
+    date.getMinutes() * 60 * 1000 +
+    date.getSeconds() * 1000 +
+    date.getMilliseconds()
+  );
+}
+
+function createQuotationSequenceContext(date) {
   const financialYearStart =
     date.getMonth() >= 3 ? date.getFullYear() : date.getFullYear() - 1;
+  const financialYearStartTimestamp = Date.UTC(financialYearStart, 3, 1);
+  const nextFinancialYearTimestamp = Date.UTC(financialYearStart + 1, 3, 1);
+  const financialYearDays = Math.round(
+    (nextFinancialYearTimestamp - financialYearStartTimestamp) /
+      MILLISECONDS_PER_DAY,
+  );
+  const financialYearDayIndex = Math.floor(
+    (calendarDayTimestamp(date) - financialYearStartTimestamp) /
+      MILLISECONDS_PER_DAY,
+  );
+  const dailyCapacity = Math.floor(
+    (QUOTATION_SEQUENCE_MAX + 1) / financialYearDays,
+  );
+  const timeSlot = Math.floor(
+    (millisecondsIntoDay(date) * dailyCapacity) / MILLISECONDS_PER_DAY,
+  );
+  const sequence = financialYearDayIndex * dailyCapacity + timeSlot;
+  const dailyRangeEnd =
+    (financialYearDayIndex + 1) * dailyCapacity - 1;
+
+  return {
+    dailyRangeEnd: Math.min(dailyRangeEnd, QUOTATION_SEQUENCE_MAX),
+    financialYearStart,
+    sequence: Math.min(
+      Math.max(sequence, QUOTATION_SEQUENCE_MIN),
+      QUOTATION_SEQUENCE_MAX,
+    ),
+  };
+}
+
+export function createQuotationSequence(date = new Date()) {
+  return createQuotationSequenceContext(date).sequence;
+}
+
+export function createQuotationNumber(companyName, date = new Date()) {
+  const context = createQuotationSequenceContext(date);
+  const { financialYearStart } = context;
   const financialYear = `${String(financialYearStart).slice(-2)}-${String(financialYearStart + 1).slice(-2)}`;
-  const uniqueNumber =String(Date.now() % 1000000).padStart(6, "0");
+  const nextSequence =
+    lastIssuedFinancialYear === financialYearStart
+      ? Math.max(context.sequence, lastIssuedSequence + 1)
+      : context.sequence;
+
+  if (nextSequence > context.dailyRangeEnd) {
+    throw new Error("Daily quotation number capacity has been exhausted.");
+  }
+
+  lastIssuedFinancialYear = financialYearStart;
+  lastIssuedSequence = nextSequence;
+
+  const uniqueNumber = String(nextSequence).padStart(9, "0");
 
   return `TGES/${financialYear}/R1/${uniqueNumber}`;
 }
