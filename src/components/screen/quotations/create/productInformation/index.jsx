@@ -36,7 +36,7 @@ import QuotationCompanySummaryCard from "@screenComponent/quotations/create/comp
 import { toQuotationProductFormValues } from "@screenComponent/quotations/create/form/createQuotation-frontend.payload";
 import { QUOTATION_PRODUCT_INITIAL_VALUES } from "@screenComponent/quotations/create/form/createQuotation.initialValues";
 import { quotationProductValidationSchema } from "@screenComponent/quotations/create/form/createQuotation.validation.schema";
-import useProductKeyboardShortcuts from "@screenComponent/quotations/create/hooks/product";
+import useProductKeyboardShortcuts from "@screenComponent/quotations/hooks/product";
 import QuotationProductAddAnotherDialog from "@screenComponent/quotations/create/productInformation/quotationProductAddAnotherDialog";
 import QuotationProductDuplicateDialog from "@screenComponent/quotations/create/productInformation/quotationProductDuplicateDialog";
 import QuotationProductInformationCard from "@screenComponent/quotations/create/productInformation/quotationProductInformationCard";
@@ -76,7 +76,24 @@ function findDirectoryProductByName(products, productName) {
   );
 }
 
-function QuotationProductInformation({ companyInformation }) {
+function toExistingProductFormValues(product = {}, directoryProducts = []) {
+  const directoryProduct = directoryProducts.find(
+    (item) => String(item.id) === String(product.productId),
+  );
+
+  return {
+    product: product.product || directoryProduct?.name || "",
+    sellingPrice: String(product.sellingPrice ?? ""),
+    quantity: String(product.quantity ?? ""),
+    discount: String(product.discount ?? "0"),
+    description: product.description ?? directoryProduct?.description ?? "",
+  };
+}
+
+function QuotationProductInformation({
+  companyInformation,
+  canNavigateToCompanyInformation = true,
+}) {
   const dispatch = useDispatch();
   const productSearch = useSelector(selectQuotationProductSearch);
   const selectedProduct = useSelector(selectQuotationSelectedProduct);
@@ -105,9 +122,11 @@ function QuotationProductInformation({ companyInformation }) {
   const saveButtonRef = useRef(null);
   const productDirectoryRef = useRef(null);
   const openCompanyInformation = useCallback(() => {
+    if (!canNavigateToCompanyInformation) return;
+
     dispatch(quotationProductSummaryClosed());
     dispatch(quotationStepChanged(CREATE_QUOTATION_STEPS.COMPANY_INFORMATION));
-  }, [dispatch]);
+  }, [canNavigateToCompanyInformation, dispatch]);
   const openProductSummary = useCallback(() => {
     dispatch(quotationProductSummaryOpened());
   }, [dispatch]);
@@ -155,16 +174,25 @@ function QuotationProductInformation({ companyInformation }) {
       const matchingDirectoryProduct =
         selectedProduct ??
         findDirectoryProductByName(directoryProducts, values.product);
+      const isExistingProductName =
+        existingProduct &&
+        _.toLower(_.trim(existingProduct.product)) ===
+          _.toLower(_.trim(values.product));
       const savedProduct = {
+        ...(existingProduct ?? {}),
         ...quotationProductValidationSchema.cast(values),
         productId:
-          editingProductIndex === null
-            ? (matchingDirectoryProduct?.id ?? null)
-            : (existingProduct?.productId ?? null),
+          matchingDirectoryProduct?.id ??
+          (isExistingProductName ? existingProduct?.productId : null),
+        productSource: matchingDirectoryProduct
+          ? "product"
+          : isExistingProductName
+            ? existingProduct?.productSource ?? "product"
+            : "product",
         hsnCode:
-          editingProductIndex === null
-            ? (matchingDirectoryProduct?.hsnCode ?? "")
-            : (existingProduct?.hsnCode ?? selectedProduct?.hsnCode ?? ""),
+          matchingDirectoryProduct?.hsnCode ??
+          (isExistingProductName ? existingProduct?.hsnCode : "") ??
+          "",
       };
       const duplicateProductIndex = findDuplicateProductIndex(
         productInformation,
@@ -204,10 +232,7 @@ function QuotationProductInformation({ companyInformation }) {
   const blurProductName = (event) => {
     formik.handleBlur(event);
 
-    if (
-      editingProductIndex !== null ||
-      event.relatedTarget?.closest?.("[data-product-option]")
-    ) {
+    if (event.relatedTarget?.closest?.("[data-product-option]")) {
       return;
     }
 
@@ -271,17 +296,15 @@ function QuotationProductInformation({ companyInformation }) {
     });
   };
 
-  const editProduct = (product, index) => {
-    dispatch(quotationProductEditingStarted(index));
+  const editProduct = (index) => {
+    const product = productInformation[index];
+
+    if (!product) return;
+
     formik.resetForm({
-      values: {
-        product: product.product ?? "",
-        sellingPrice: String(product.sellingPrice ?? ""),
-        quantity: String(product.quantity ?? ""),
-        discount: String(product.discount ?? "0"),
-        description: product.description ?? "",
-      },
+      values: toExistingProductFormValues(product, directoryProducts),
     });
+    dispatch(quotationProductEditingStarted(index));
 
     window.requestAnimationFrame(() => {
       productInputRef.current?.focus();
@@ -323,11 +346,9 @@ function QuotationProductInformation({ companyInformation }) {
   };
 
   const editDuplicateProduct = () => {
-    const product = productInformation[pendingDuplicateProductIndex];
+    if (!productInformation[pendingDuplicateProductIndex]) return;
 
-    if (!product) return;
-
-    editProduct(product, pendingDuplicateProductIndex);
+    editProduct(pendingDuplicateProductIndex);
   };
 
   const addAnotherProduct = () => {
@@ -351,6 +372,7 @@ function QuotationProductInformation({ companyInformation }) {
             companyName={companyInformation.companyName}
             address={companyInformation.address}
             onClick={openCompanyInformation}
+            isInteractive={canNavigateToCompanyInformation}
           />
           {productInformation.length > 0 && (
             <QuotationProductSummaryCard

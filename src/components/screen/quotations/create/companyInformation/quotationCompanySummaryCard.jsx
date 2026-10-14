@@ -7,11 +7,18 @@ import {
   CardTitle,
 } from "@shadcnComponent/card";
 
-function QuotationCompanySummaryCard({ companyName, address, onClick }) {
+function QuotationCompanySummaryCard({
+  companyName,
+  address,
+  onClick,
+  isInteractive = true,
+}) {
   return (
     <Card
-      onClick={onClick}
-      className="w-full shrink-0 cursor-pointer self-start gap-0 py-4"
+      onClick={isInteractive ? onClick : undefined}
+      className={`w-full shrink-0 self-start gap-0 py-4 ${
+        isInteractive ? "cursor-pointer" : ""
+      }`}
     >
       <CardHeader className="gap-1.5 px-5">
         <CardTitle>{_.toUpper(companyName)}</CardTitle>

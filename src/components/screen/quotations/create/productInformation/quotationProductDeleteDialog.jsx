@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@shadcnComponent/dialog";
-import useProductDeleteDialogKeyboardShortcut from "@screenComponent/quotations/create/hooks/product/useProductDeleteDialogKeyboardShortcut";
+import useProductDeleteDialogKeyboardShortcut from "@screenComponent/quotations/hooks/product/useProductDeleteDialogKeyboardShortcut";
 
 function QuotationProductDeleteDialog({ product, onCancel, onConfirm }) {
   const keyboard = useProductDeleteDialogKeyboardShortcut({ onCancel });

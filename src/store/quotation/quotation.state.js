@@ -7,18 +7,17 @@ export const QUOTATION_COMPANY_LIMIT = 100;
 export const QUOTATION_PRODUCT_PAGE = 1;
 export const QUOTATION_PRODUCT_LIMIT = 100;
 
-export const createQuotationState = () => ({
-  ...createTableState({
-    limit: QUOTATION_TABLE_DEFAULTS.limit,
-    sort: QUOTATION_TABLE_DEFAULTS.sort,
-    columnFilters: QUOTATION_TABLE_DEFAULTS.filters,
-  }),
+export const createQuotationFormState = () => ({
   currentStep: CREATE_QUOTATION_STEPS.COMPANY_INFORMATION,
   isExitDialogOpen: false,
   isSubmitting: false,
   isSubmitSuccessful: false,
   submitError: null,
   createdQuotation: null,
+  editingQuotationId: null,
+  editingQuotationReference: "",
+  editingQuotationVersion: "V1",
+  originalProductInformation: [],
   companies: [],
   companySearch: "",
   selectedCompany: null,
@@ -56,6 +55,15 @@ export const createQuotationState = () => ({
   isLoadingMoreProducts: false,
   productError: null,
   productRequestId: null,
+});
+
+export const createQuotationState = () => ({
+  ...createTableState({
+    limit: QUOTATION_TABLE_DEFAULTS.limit,
+    sort: QUOTATION_TABLE_DEFAULTS.sort,
+    columnFilters: QUOTATION_TABLE_DEFAULTS.filters,
+  }),
+  ...createQuotationFormState(),
 });
 
 export default createQuotationState;

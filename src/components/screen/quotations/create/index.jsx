@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 
 import CreateQuotationForm from "@screenComponent/quotations/create/form/createQuotationForm";
-import { clearPreviousFieldKeyboardNavigation } from "@screenComponent/quotations/create/hooks/handlePreviousFieldKeyboardNavigation";
-import useCreateQuotationKeyboardShortcut from "@screenComponent/quotations/create/hooks/useCreateQuotationKeyboardShortcut";
 import useQuotationCompanySearch from "@screenComponent/quotations/create/hooks/useQuotationCompanySearch";
-import useQuotationProductSearch from "@screenComponent/quotations/create/hooks/useQuotationProductSearch";
+import { clearPreviousFieldKeyboardNavigation } from "@screenComponent/quotations/hooks/handlePreviousFieldKeyboardNavigation";
+import useQuotationPageKeyboardShortcut from "@screenComponent/quotations/hooks/useQuotationPageKeyboardShortcut";
+import useQuotationProductSearch from "@screenComponent/quotations/hooks/useQuotationProductSearch";
 import QuotationExitDialog from "@screenComponent/quotations/create/quotationExitDialog";
 
 function CreateQuotation() {
-  const exitDialog = useCreateQuotationKeyboardShortcut();
+  const exitDialog = useQuotationPageKeyboardShortcut();
   useQuotationCompanySearch();
   useQuotationProductSearch();
 
@@ -25,8 +25,8 @@ function CreateQuotation() {
       <QuotationExitDialog
         open={exitDialog.isExitDialogOpen}
         onClose={exitDialog.closeExitDialog}
-        onNo={exitDialog.removeAndExit}
-        onYes={exitDialog.saveAndExit}
+        onNo={exitDialog.discardAndExit}
+        onYes={exitDialog.keepAndExit}
       />
     </main>
   );

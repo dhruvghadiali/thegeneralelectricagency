@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@shadcnComponent/dialog";
-import useProductDuplicateDialogKeyboardShortcut from "@screenComponent/quotations/create/hooks/product/useProductDuplicateDialogKeyboardShortcut";
+import useProductDuplicateDialogKeyboardShortcut from "@screenComponent/quotations/hooks/product/useProductDuplicateDialogKeyboardShortcut";
 
 function QuotationProductDuplicateDialog({ product, onNo, onYes }) {
   const keyboard = useProductDuplicateDialogKeyboardShortcut({ onNo });

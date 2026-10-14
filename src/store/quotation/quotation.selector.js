@@ -26,6 +26,24 @@ export const selectQuotationSubmission = createSelector(
   }),
 );
 
+export const selectQuotationEditingId = createSelector(
+  selectQuotationState,
+  (quotation) => quotation.editingQuotationId,
+);
+
+export const selectQuotationEditSource = createSelector(
+  selectQuotationState,
+  ({
+    editingQuotationReference,
+    editingQuotationVersion,
+    originalProductInformation,
+  }) => ({
+    quotationReference: editingQuotationReference,
+    quotationVersion: editingQuotationVersion,
+    originalProducts: originalProductInformation,
+  }),
+);
+
 export const selectQuotationCompanies = createSelector(
   selectQuotationState,
   (quotation) => quotation.companies,

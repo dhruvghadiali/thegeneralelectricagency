@@ -1,14 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 import _ from "lodash";
 
-import { QUOTATION_TAX_TREATMENTS } from "@Enums";
+import { CREATE_QUOTATION_STEPS, QUOTATION_TAX_TREATMENTS } from "@Enums";
 import {
   createQuotationDetails,
   fetchQuotationDetails,
   fetchQuotationCompanies,
   fetchQuotationProducts,
+  updateQuotationDetails,
 } from "@Redux/quotation/quotation.action";
 import {
+  createQuotationFormState,
   createQuotationState,
   QUOTATION_COMPANY_PAGE,
   QUOTATION_PRODUCT_PAGE,
@@ -25,6 +27,28 @@ const quotationSlice = createSlice({
     ...TABLE_REDUCERS,
     quotationReset() {
       return createQuotationState();
+    },
+    quotationEditingStarted(state, action) {
+      const quotation = action.payload;
+      const productInformation = _.cloneDeep(
+        quotation.productInformation ?? [],
+      );
+
+      Object.assign(state, createQuotationFormState(), {
+        editingQuotationId: quotation.id,
+        editingQuotationReference: quotation.quotationNumber,
+        editingQuotationVersion: quotation.quotationVersion,
+        currentStep: CREATE_QUOTATION_STEPS.PRODUCT_INFORMATION,
+        selectedCompany: _.cloneDeep(quotation.selectedCompany),
+        companyInformation: _.cloneDeep(quotation.companyInformation),
+        taxTreatment: quotation.taxTreatment,
+        gstPercentage: quotation.gstPercentage,
+        deliveryNotes: quotation.deliveryNotes,
+        paymentNotes: quotation.paymentNotes,
+        productInformation,
+        originalProductInformation: _.cloneDeep(productInformation),
+        isProductSummaryExpanded: productInformation.length > 0,
+      });
     },
     quotationExitRequested(state) {
       state.isExitDialogOpen = true;
@@ -203,6 +227,23 @@ const quotationSlice = createSlice({
         state.submitError =
           action.payload ?? "Unable to create quotation details.";
       })
+      .addCase(updateQuotationDetails.pending, (state) => {
+        state.isSubmitting = true;
+        state.isSubmitSuccessful = false;
+        state.submitError = null;
+      })
+      .addCase(updateQuotationDetails.fulfilled, (state, action) => {
+        state.isSubmitting = false;
+        state.isSubmitSuccessful = true;
+        state.submitError = null;
+        state.createdQuotation = action.payload;
+      })
+      .addCase(updateQuotationDetails.rejected, (state, action) => {
+        state.isSubmitting = false;
+        state.isSubmitSuccessful = false;
+        state.submitError =
+          action.payload ?? "Unable to update quotation details.";
+      })
       .addCase(fetchQuotationCompanies.pending, (state, action) => {
         const requestedPage =
           action.meta.arg?.page ?? QUOTATION_COMPANY_PAGE;
@@ -297,6 +338,7 @@ export const {
   quotationDeliveryNotesChanged,
   quotationExitCancelled,
   quotationExitRequested,
+  quotationEditingStarted,
   quotationGstPercentageChanged,
   quotationPaymentNotesChanged,
   quotationTaxTreatmentChanged,

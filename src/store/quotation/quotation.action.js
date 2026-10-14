@@ -18,7 +18,10 @@ import {
   QUOTATION_PRODUCT_LIMIT,
   QUOTATION_PRODUCT_PAGE,
 } from "@Redux/quotation/quotation.state";
-import { toQuotationDetailsPayload } from "@Redux/quotation/quotation.api-payload";
+import {
+  toQuotationDetailsPayload,
+  toQuotationDetailsUpdatePayload,
+} from "@Redux/quotation/quotation.api-payload";
 import { toCompanyListParams } from "@Tables/company/companyTable.api-payload";
 import { COMPANY_TABLE_DEFAULTS } from "@Tables/company/companyTable.defaults";
 import { fromCompanyListResponse } from "@Tables/company/companyTable.frontend-payload";
@@ -167,6 +170,39 @@ export const createQuotationDetails = createAsyncThunk(
 
     try {
       return await employeeQuotationApi.createQuotationDetails(payload);
+    } catch (error) {
+      return rejectWithValue(extractErrorMessage(error));
+    }
+  },
+);
+
+export const updateQuotationDetails = createAsyncThunk(
+  "quotation/updateDetails",
+  async (
+    { id, quotationRefId, quotationVersion },
+    { getState, rejectWithValue },
+  ) => {
+    const state = getState();
+
+    if (state.auth.role !== ROLE_PATHS.EMPLOYEE) {
+      return rejectWithValue(
+        "You do not have permission to update quotation details.",
+      );
+    }
+
+    const quotation = state.quotation;
+    const payload = toQuotationDetailsUpdatePayload({
+      quotationRefId,
+      quotationVersion,
+      selectedCompany: quotation.selectedCompany,
+      companyInformation: quotation.companyInformation,
+      taxTreatment: quotation.taxTreatment,
+      gstPercentage: quotation.gstPercentage,
+      productInformation: quotation.productInformation,
+    });
+
+    try {
+      return await employeeQuotationApi.updateQuotationDetails(id, payload);
     } catch (error) {
       return rejectWithValue(extractErrorMessage(error));
     }

@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@shadcnComponent/dialog";
-import useProductAddAnotherDialogKeyboardShortcut from "@screenComponent/quotations/create/hooks/product/useProductAddAnotherDialogKeyboardShortcut";
+import useProductAddAnotherDialogKeyboardShortcut from "@screenComponent/quotations/hooks/product/useProductAddAnotherDialogKeyboardShortcut";
 
 function QuotationProductAddAnotherDialog({ open, onNo, onYes }) {
   const keyboard = useProductAddAnotherDialogKeyboardShortcut({ onNo });

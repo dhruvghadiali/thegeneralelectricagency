@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-import handlePreviousFieldKeyboardNavigation from "@screenComponent/quotations/create/hooks/handlePreviousFieldKeyboardNavigation";
+import handlePreviousFieldKeyboardNavigation from "@screenComponent/quotations/hooks/handlePreviousFieldKeyboardNavigation";
 
 function useCompanyAddressKeyboardShortcut({
   companyInputRef,

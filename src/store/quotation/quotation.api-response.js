@@ -21,19 +21,31 @@ const fromPersonResponse = (person = {}) => {
 };
 
 const fromCompanyResponse = (quotation = {}) => {
-  const company =
-    quotation.company ??
-    quotation.tally_company ??
-    quotation.tallyCompany ??
-    {};
+  const companyReferences = [
+    quotation.company,
+    quotation.company_id,
+    quotation.companyId,
+    quotation.tally_company,
+    quotation.tallyCompany,
+    quotation.tally_company_id,
+    quotation.tallyCompanyId,
+  ];
+  const company = companyReferences.find(_.isObject) ?? {};
+  const companyId = companyReferences.reduce(
+    (resolvedId, reference) =>
+      resolvedId ??
+      (_.isObject(reference)
+        ? reference._id ??
+          reference.id ??
+          reference.company_id ??
+          reference.companyId ??
+          null
+        : reference ?? null),
+    null,
+  );
 
   return {
-    id:
-      company._id ??
-      company.id ??
-      company.company_id ??
-      company.companyId ??
-      null,
+    id: companyId,
     name:
       company.company_name ??
       company.companyName ??
@@ -45,17 +57,47 @@ const fromCompanyResponse = (quotation = {}) => {
 };
 
 const fromQuotationProductResponse = (item = {}) => {
-  const product = item.product ?? item.tally_product ?? item.tallyProduct ?? {};
+  const productReferences = [item.product, item.product_id, item.productId];
+  const tallyProductReferences = [
+    item.tally_product,
+    item.tallyProduct,
+    item.tally_product_id,
+    item.tallyProductId,
+  ];
+  const isTallyProduct = tallyProductReferences.some((value) => !_.isNil(value));
+  const references = isTallyProduct
+    ? tallyProductReferences
+    : productReferences;
+  const product = references.find(_.isObject) ?? {};
+  const productId = references.reduce(
+    (resolvedId, reference) =>
+      resolvedId ??
+      (_.isObject(reference)
+        ? reference._id ??
+          reference.id ??
+          reference.product_id ??
+          reference.productId ??
+          reference.tally_product_id ??
+          reference.tallyProductId ??
+          null
+        : reference ?? null),
+    null,
+  );
 
   return {
     lineId: item._id ?? item.id ?? null,
-    productId:
-      product._id ??
-      product.id ??
-      product.product_id ??
-      product.productId ??
-      null,
-    product: product.name ?? product.product_name ?? product.productName ?? "",
+    quotationVersion:
+      item.quotation_version ?? item.quotationVersion ?? null,
+    productId,
+    productSource: isTallyProduct ? "tallyProduct" : "product",
+    product:
+      product.name ??
+      product.product_name ??
+      product.productName ??
+      item.product_name ??
+      item.productName ??
+      item.name ??
+      "",
     quantity: String(item.qty ?? item.quantity ?? ""),
     sellingPrice: String(
       item.unit_price ??
@@ -83,10 +125,35 @@ const fromQuotationResponse = (quotation = {}) => {
     quotationProducts,
     fromQuotationProductResponse,
   );
+  const quotationNumber =
+    quotation.quotation_ref_id ??
+    quotation.quotationRefId ??
+    quotation.quotation_number ??
+    quotation.quotationNumber ??
+    "";
+  const referenceVersion = String(quotationNumber).match(/\/R(\d+)\//i)?.[1];
+  const productVersion = productInformation
+    .map((product) => product.quotationVersion)
+    .find(Boolean);
+  const quotationVersion =
+    quotation.quotation_version ??
+    quotation.quotationVersion ??
+    productVersion ??
+    (referenceVersion ? `V${referenceVersion}` : "V1");
   const isUpdateAvailable = quotationProducts.every(
-    (item) =>
-      !_.isNil(item.product) ||
-      !_.isNil(item.tally_product ?? item.tallyProduct),
+    (item) => {
+      const references = [
+        item.product,
+        item.product_id,
+        item.productId,
+        item.tally_product,
+        item.tallyProduct,
+        item.tally_product_id,
+        item.tallyProductId,
+      ];
+
+      return references.some((value) => !_.isNil(value));
+    },
   );
 
   return {
@@ -103,12 +170,8 @@ const fromQuotationResponse = (quotation = {}) => {
       gstNumber:
         quotation.company_gst_number ?? quotation.companyGstNumber ?? "",
     },
-    quotationNumber:
-      quotation.quotation_ref_id ??
-      quotation.quotationRefId ??
-      quotation.quotation_number ??
-      quotation.quotationNumber ??
-      "",
+    quotationNumber,
+    quotationVersion,
     taxTreatment: quotation.tax_type ?? quotation.taxType ?? null,
     gstPercentage: String(
       quotation.gst ??

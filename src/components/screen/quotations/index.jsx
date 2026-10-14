@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 import DataTable from "@commonComponent/dataTable";
 import QuotationHeader from "@screenComponent/quotations/header";
 import {
@@ -5,9 +7,14 @@ import {
   QuotationTableActions,
   useQuotationTable,
 } from "@screenComponent/quotations/table";
+import { ROUTE_BUILDERS } from "@routes/navigate";
 
 function Quotations() {
+  const navigate = useNavigate();
   const table = useQuotationTable();
+  const editQuotation = (quotation) => {
+    navigate(ROUTE_BUILDERS.quotationEdit(quotation.id));
+  };
 
   return (
     <main className="flex w-full flex-col gap-6 pb-2 roomy:h-full roomy:min-h-0">
@@ -35,7 +42,10 @@ function Quotations() {
         isLoading={table.isLoading}
         error={table.error}
         rowActions={(quotation) => (
-          <QuotationTableActions quotation={quotation} />
+          <QuotationTableActions
+            quotation={quotation}
+            onEdit={editQuotation}
+          />
         )}
       />
     </main>

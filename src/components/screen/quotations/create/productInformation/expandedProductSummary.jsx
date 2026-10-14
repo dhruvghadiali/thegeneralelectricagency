@@ -4,7 +4,7 @@ import _ from "lodash";
 import { cn } from "@/lib/utils";
 import { Button } from "@shadcnComponent/button";
 import { CardContent, CardFooter } from "@shadcnComponent/card";
-import useProductSummaryKeyboardShortcut from "@screenComponent/quotations/create/hooks/product/useProductSummaryKeyboardShortcut";
+import useProductSummaryKeyboardShortcut from "@screenComponent/quotations/hooks/product/useProductSummaryKeyboardShortcut";
 import CreateQuotationDownloadButton from "@screenComponent/quotations/create/productInformation/createQuotationDownloadButton";
 import QuotationProductDeleteDialog from "@screenComponent/quotations/create/productInformation/quotationProductDeleteDialog";
 
@@ -32,7 +32,7 @@ function ExpandedProductSummary({
   const keyboard = useProductSummaryKeyboardShortcut({
     productCount: products.length,
     onDeleteProduct: onDeleteRequest,
-    onEditProduct: (index) => onEdit(products[index], index),
+    onEditProduct: onEdit,
     onNavigateToCompanyInformation,
     onNavigateToProductInformation,
     onOpenQuotationSummary,
@@ -98,7 +98,7 @@ function ExpandedProductSummary({
                   size="icon"
                   onClick={(event) => {
                     event.stopPropagation();
-                    onEdit(product, index);
+                    onEdit(index);
                   }}
                   aria-label={`Edit ${product.product}`}
                   className="size-8 cursor-pointer"

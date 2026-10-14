@@ -28,14 +28,19 @@ function QuotationProductForm({
   onProductNameChange,
   onProductNameBlur,
 }) {
-  const fieldProps = (field, id) => ({
-    name: field,
-    value: formik.values[field],
-    onChange: formik.handleChange,
-    onBlur: formik.handleBlur,
-    "aria-invalid": Boolean(fieldError(field)),
-    "aria-describedby": fieldError(field) ? `${id}-error` : undefined,
-  });
+  const productError = fieldError("product");
+  const fieldProps = (field, id) => {
+    const error = field === "product" ? productError : fieldError(field);
+
+    return {
+      name: field,
+      value: formik.values[field],
+      onChange: formik.handleChange,
+      onBlur: formik.handleBlur,
+      "aria-invalid": Boolean(error),
+      "aria-describedby": error ? `${id}-error` : undefined,
+    };
+  };
   const handleNumericChange = (field, pattern) => (event) => {
     if (pattern.test(event.target.value)) {
       formik.setFieldValue(field, event.target.value, true);
@@ -52,7 +57,7 @@ function QuotationProductForm({
       <ProductFormField
         id="quotation-product"
         label="Product"
-        error={fieldError("product")}
+        error={productError}
       >
         <Input
           ref={fieldRefs.productInputRef}

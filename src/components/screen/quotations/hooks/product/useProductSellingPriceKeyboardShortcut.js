@@ -1,0 +1,33 @@
+import { useCallback } from "react";
+
+import handlePreviousFieldKeyboardNavigation from "@screenComponent/quotations/hooks/handlePreviousFieldKeyboardNavigation";
+
+function useProductSellingPriceKeyboardShortcut({
+  quantityInputRef,
+  discountInputRef,
+}) {
+  return useCallback(
+    (event) => {
+      if (handlePreviousFieldKeyboardNavigation(event, quantityInputRef)) return;
+
+      if (event.altKey && event.key === "ArrowUp") {
+        event.preventDefault();
+        quantityInputRef.current?.focus();
+        return;
+      }
+
+      const shouldFocusDiscount =
+        (event.altKey && event.key === "ArrowDown") ||
+        event.key === "Enter" ||
+        (event.key === "Tab" && !event.shiftKey);
+
+      if (!shouldFocusDiscount) return;
+
+      event.preventDefault();
+      discountInputRef.current?.focus();
+    },
+    [discountInputRef, quantityInputRef],
+  );
+}
+
+export default useProductSellingPriceKeyboardShortcut;

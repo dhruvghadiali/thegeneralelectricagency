@@ -1,6 +1,6 @@
 import { Save, Trash2 } from "lucide-react";
 
-import useQuotationExitDialogKeyboardShortcut from "@screenComponent/quotations/create/hooks/useQuotationExitDialogKeyboardShortcut";
+import useQuotationExitDialogKeyboardShortcut from "@screenComponent/quotations/hooks/useQuotationExitDialogKeyboardShortcut";
 import { Button } from "@shadcnComponent/button";
 import {
   Dialog,

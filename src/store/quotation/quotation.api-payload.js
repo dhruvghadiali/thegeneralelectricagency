@@ -12,17 +12,30 @@ function nullableText(value) {
   return normalizedValue || null;
 }
 
-function toQuotationProductPayload(product = {}) {
+export function toQuotationProductPayload(
+  product = {},
+  quotationVersion = "V1",
+  productReferenceField,
+) {
   const unitPrice = Math.max(numberOrZero(product.sellingPrice), 0);
   const discount = Math.min(
     Math.max(numberOrZero(product.discount), 0),
     unitPrice,
   );
+  const referenceField =
+    productReferenceField ??
+    (product.productSource === "tallyProduct"
+      ? "tally_product"
+      : "product");
+  const productReference =
+    referenceField === "tally_product"
+      ? { tally_product: product.productId ?? "" }
+      : { product: product.productId ?? "" };
 
   return {
-    product: product.productId ?? "",
-    quotation_version: "V1",
-    description: _.trim(product.description ?? ""),
+    ...productReference,
+    quotation_version: quotationVersion,
+    description: nullableText(product.description),
     qty: Math.max(numberOrZero(product.quantity), 0),
     unit_price: unitPrice,
     discount,
@@ -48,6 +61,33 @@ export function toQuotationDetailsPayload({
     company_gst_number: nullableText(companyInformation.gstNumber),
     tax_type: taxTreatment,
     gst: String(gstPercentage ?? ""),
-    products: productInformation.map(toQuotationProductPayload),
+    products: productInformation.map((product) =>
+      toQuotationProductPayload(product, "V1"),
+    ),
+  };
+}
+
+export function toQuotationDetailsUpdatePayload({
+  quotationRefId,
+  quotationVersion,
+  selectedCompany,
+  companyInformation = {},
+  taxTreatment,
+  gstPercentage,
+  productInformation = [],
+}) {
+  return {
+    quotation_ref_id: quotationRefId,
+    company: nullableText(selectedCompany?.id),
+    company_name: companyInformation.companyName?.trim() ?? "",
+    company_address: companyInformation.address?.trim() ?? "",
+    company_email: nullableText(companyInformation.email),
+    company_phone_number: nullableText(companyInformation.phoneNumber),
+    company_gst_number: nullableText(companyInformation.gstNumber),
+    tax_type: taxTreatment,
+    gst: String(gstPercentage ?? ""),
+    products: productInformation.map((product) =>
+      toQuotationProductPayload(product, quotationVersion, "product"),
+    ),
   };
 }

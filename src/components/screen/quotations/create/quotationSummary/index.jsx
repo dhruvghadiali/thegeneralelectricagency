@@ -10,8 +10,8 @@ import {
 import { quotationStepChanged } from "@Redux/quotation/quotation.slice";
 import { Button } from "@shadcnComponent/button";
 import { Card, CardContent, CardFooter } from "@shadcnComponent/card";
-import useDownloadQuotationPdf from "@screenComponent/quotations/create/downloadPdf";
-import useQuotationSummaryKeyboardShortcuts from "@screenComponent/quotations/create/hooks/quotationSummary";
+import useDownloadQuotationPdf from "@screenComponent/quotations/downloadPdf";
+import useQuotationSummaryKeyboardShortcuts from "@screenComponent/quotations/hooks/quotationSummary";
 import QuotationCompanyInformation from "@screenComponent/quotations/create/quotationSummary/quotationCompanyInformation";
 import QuotationFinalBillDetails from "@screenComponent/quotations/create/quotationSummary/quotationFinalBillDetails";
 import QuotationGstPercentageSelect from "@screenComponent/quotations/create/quotationSummary/quotationGstPercentageSelect";
