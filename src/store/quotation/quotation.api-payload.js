@@ -21,6 +21,8 @@ function toQuotationProductPayload(product = {}) {
 
   return {
     product: product.productId ?? "",
+    quotation_version: "V1",
+    description: _.trim(product.description ?? ""),
     qty: Math.max(numberOrZero(product.quantity), 0),
     unit_price: unitPrice,
     discount,

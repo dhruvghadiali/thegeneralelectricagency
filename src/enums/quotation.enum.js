@@ -6,6 +6,6 @@ export const CREATE_QUOTATION_STEPS = Object.freeze({
 
 export const QUOTATION_TAX_TREATMENTS = Object.freeze({
   GUJARAT: "gujarat",
-  OUT_OF_GUJARAT: "out-of-gujarat",
-  SEZ_LUT: "sez-lut",
+  OUT_OF_GUJARAT: "out of gujarat",
+  SEZ_LUT: "SEZLOUT",
 });
