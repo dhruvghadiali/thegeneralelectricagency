@@ -77,5 +77,6 @@ export {
 
 export {
   CREATE_QUOTATION_STEPS,
+  QUOTATION_TAX_TREATMENT_OPTIONS,
   QUOTATION_TAX_TREATMENTS,
 } from "./quotation.enum";

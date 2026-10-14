@@ -20,6 +20,26 @@ import {
   TABLE_REDUCERS,
 } from "@Redux/factories/table.factory";
 
+function findDuplicateProductIndex(products, candidate, editingProductIndex) {
+  const candidateName = _.toLower(_.trim(candidate.product));
+
+  return products.findIndex((product, index) => {
+    if (index === editingProductIndex) return false;
+
+    const hasMatchingId =
+      candidate.productId !== null &&
+      candidate.productId !== undefined &&
+      product.productId !== null &&
+      product.productId !== undefined &&
+      String(candidate.productId) === String(product.productId);
+    const hasMatchingName =
+      candidateName.length > 0 &&
+      candidateName === _.toLower(_.trim(product.product));
+
+    return hasMatchingId || hasMatchingName;
+  });
+}
+
 const quotationSlice = createSlice({
   name: "quotation",
   initialState: createQuotationState(),
@@ -359,6 +379,50 @@ export const {
   quotationReset,
   quotationStepChanged,
 } = quotationSlice.actions;
+
+export const checkQuotationProductDuplicate =
+  (candidate) => (dispatch, getState) => {
+    const { editingProductIndex, productInformation } = getState().quotation;
+    const duplicateProductIndex = findDuplicateProductIndex(
+      productInformation,
+      candidate,
+      editingProductIndex,
+    );
+
+    if (duplicateProductIndex !== -1) {
+      dispatch(quotationProductDuplicateRequested(duplicateProductIndex));
+    }
+
+    return duplicateProductIndex;
+  };
+
+export const saveQuotationProductInformation =
+  (product) => (dispatch, getState) => {
+    const { editingProductIndex, productInformation } = getState().quotation;
+    const duplicateProductIndex = findDuplicateProductIndex(
+      productInformation,
+      product,
+      editingProductIndex,
+    );
+
+    if (duplicateProductIndex !== -1) {
+      dispatch(quotationProductDuplicateRequested(duplicateProductIndex));
+      return { duplicateProductIndex, saved: false };
+    }
+
+    if (editingProductIndex === null) {
+      dispatch(quotationProductInformationSaved(product));
+    } else {
+      dispatch(
+        quotationProductInformationUpdated({
+          index: editingProductIndex,
+          product,
+        }),
+      );
+    }
+
+    return { duplicateProductIndex: -1, saved: true };
+  };
 
 export const quotationTableActions = {
   columnFilterChanged: quotationSlice.actions.columnFilterChanged,

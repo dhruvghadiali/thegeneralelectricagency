@@ -9,7 +9,8 @@ import {
 import { ROLE_PATHS } from "@Enums";
 import { toProductListParams } from "@Redux/product/product.api-payload";
 import { PRODUCT_LIST_DEFAULTS } from "@Redux/product/product.defaults";
-import { fromProductListResponse } from "@Redux/product/product.api-response";
+import { fromQuotationCompanyDirectoryResponse } from "@Redux/quotation/quotation-company-directory.api-response";
+import { fromQuotationProductDirectoryResponse } from "@Redux/quotation/quotation-product-directory.api-response";
 import { fromQuotationListResponse } from "@Redux/quotation/quotation.api-response";
 import { toQuotationListParams } from "@screenComponent/quotations/table/quotationTable.api-payload";
 import {
@@ -24,7 +25,6 @@ import {
 } from "@Redux/quotation/quotation.api-payload";
 import { toCompanyListParams } from "@Tables/company/companyTable.api-payload";
 import { COMPANY_TABLE_DEFAULTS } from "@Tables/company/companyTable.defaults";
-import { fromCompanyListResponse } from "@Tables/company/companyTable.frontend-payload";
 
 export const fetchQuotationDetails = createAsyncThunk(
   "quotation/fetchDetails",
@@ -88,7 +88,10 @@ export const fetchQuotationCompanies = createAsyncThunk(
         { signal },
       );
 
-      return fromCompanyListResponse(response, requestedPagination);
+      return fromQuotationCompanyDirectoryResponse(
+        response,
+        requestedPagination,
+      );
     } catch (error) {
       if (signal.aborted) {
         const abortError = new Error(
@@ -132,7 +135,10 @@ export const fetchQuotationProducts = createAsyncThunk(
         { signal },
       );
 
-      return fromProductListResponse(response, requestedPagination);
+      return fromQuotationProductDirectoryResponse(
+        response,
+        requestedPagination,
+      );
     } catch (error) {
       if (signal.aborted) {
         const abortError = new Error(

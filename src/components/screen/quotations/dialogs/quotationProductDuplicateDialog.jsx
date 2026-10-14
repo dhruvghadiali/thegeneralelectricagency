@@ -1,6 +1,6 @@
-import { Pencil } from "lucide-react";
 import _ from "lodash";
 
+import { Pencil } from "lucide-react";
 import { Button } from "@shadcnComponent/button";
 import {
   Dialog,
@@ -11,7 +11,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@shadcnComponent/dialog";
-import useQuotationDialogKeyboardShortcut from "@screenComponent/quotations/dialogs/useQuotationDialogKeyboardShortcut";
+
+import useQuotationDialogKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/dialogs/useQuotationDialogKeyboardShortcut";
 
 function QuotationProductDuplicateDialog({ product, onNo, onYes }) {
   const keyboard = useQuotationDialogKeyboardShortcut({ onClose: onNo });

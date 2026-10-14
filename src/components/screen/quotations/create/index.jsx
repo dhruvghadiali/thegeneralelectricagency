@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 
-import CreateQuotationForm from "@screenComponent/quotations/create/form/createQuotationForm";
-import useQuotationCompanySearch from "@screenComponent/quotations/create/hooks/useQuotationCompanySearch";
+import CreateQuotationForm from "@screenComponent/quotations/form/createQuotationForm";
+import useQuotationCompanySearch from "@screenComponent/quotations/form/companyInformation/hooks/useQuotationCompanySearch";
 import QuotationExitDialog from "@screenComponent/quotations/dialogs/quotationExitDialog";
-import { clearPreviousFieldKeyboardNavigation } from "@screenComponent/quotations/hooks/handlePreviousFieldKeyboardNavigation";
-import useQuotationPageKeyboardShortcut from "@screenComponent/quotations/hooks/useQuotationPageKeyboardShortcut";
-import useQuotationProductSearch from "@screenComponent/quotations/hooks/useQuotationProductSearch";
+import { clearPreviousFieldKeyboardNavigation } from "@screenComponent/quotations/keyboardShortcuts/shared/handlePreviousFieldKeyboardNavigation";
+import useQuotationPageKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/page/useQuotationPageKeyboardShortcut";
+import useQuotationProductSearch from "@screenComponent/quotations/form/productInformation/hooks/useQuotationProductSearch";
 
 function CreateQuotation() {
   const exitDialog = useQuotationPageKeyboardShortcut();

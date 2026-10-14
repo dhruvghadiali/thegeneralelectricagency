@@ -1,5 +1,4 @@
 import { Save, Trash2 } from "lucide-react";
-
 import { Button } from "@shadcnComponent/button";
 import {
   Dialog,
@@ -9,7 +8,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@shadcnComponent/dialog";
-import useQuotationDialogKeyboardShortcut from "@screenComponent/quotations/dialogs/useQuotationDialogKeyboardShortcut";
+
+import useQuotationDialogKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/dialogs/useQuotationDialogKeyboardShortcut";
 
 const EXIT_DIALOG_CONTENT = {
   create: {
