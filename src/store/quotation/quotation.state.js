@@ -17,6 +17,7 @@ export const createQuotationFormState = () => ({
   editingQuotationId: null,
   editingQuotationReference: "",
   editingQuotationVersion: "V1",
+  originalGstPercentage: String(INDIAN_GST_RATES.EIGHTEEN),
   originalProductInformation: [],
   companies: [],
   companySearch: "",

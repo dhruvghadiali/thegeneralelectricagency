@@ -37,6 +37,7 @@ function useUpdateQuotationPdf() {
     try {
       const revision = resolveEditQuotationRevision({
         ...editSource,
+        currentGstPercentage: gstPercentage,
         currentProducts: productInformation,
       });
 

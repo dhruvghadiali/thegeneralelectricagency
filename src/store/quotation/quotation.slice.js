@@ -70,6 +70,7 @@ const quotationSlice = createSlice({
         editingQuotationId: quotation.id,
         editingQuotationReference: quotation.quotationNumber,
         editingQuotationVersion: quotation.quotationVersion,
+        originalGstPercentage: quotation.gstPercentage,
         currentStep: CREATE_QUOTATION_STEPS.PRODUCT_INFORMATION,
         selectedCompany: _.cloneDeep(quotation.selectedCompany),
         companyInformation: _.cloneDeep(quotation.companyInformation),

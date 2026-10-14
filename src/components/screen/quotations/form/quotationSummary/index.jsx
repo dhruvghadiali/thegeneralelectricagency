@@ -16,13 +16,17 @@ function QuotationSummary({
   submitLabel,
   submittingLabel,
   title,
+  quotationNumber,
 }) {
   const summary = useQuotationSummary();
 
   return (
     <div className="w-full pb-6">
       <Card className="w-full gap-0 overflow-hidden py-0">
-        <QuotationSummaryHeader title={title} />
+        <QuotationSummaryHeader
+          title={title}
+          quotationNumber={quotationNumber}
+        />
         <CardContent className="grid gap-5 px-6 py-5">
           <QuotationSubmissionError error={summary.submissionError} />
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

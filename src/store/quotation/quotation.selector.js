@@ -56,10 +56,12 @@ export const selectQuotationEditSource = createSelector(
   ({
     editingQuotationReference,
     editingQuotationVersion,
+    originalGstPercentage,
     originalProductInformation,
   }) => ({
     quotationReference: editingQuotationReference,
     quotationVersion: editingQuotationVersion,
+    originalGstPercentage,
     originalProducts: originalProductInformation,
   }),
 );

@@ -13,10 +13,27 @@ function revisionProduct(product = {}) {
   };
 }
 
+function normalizedGstPercentage(value) {
+  const numericValue = Number(value);
+
+  return Number.isFinite(numericValue)
+    ? numericValue
+    : String(value ?? "").trim();
+}
+
 export function hasQuotationRevisionChanges(
   originalProducts = [],
   currentProducts = [],
+  originalGstPercentage,
+  currentGstPercentage,
 ) {
+  if (
+    normalizedGstPercentage(originalGstPercentage) !==
+    normalizedGstPercentage(currentGstPercentage)
+  ) {
+    return true;
+  }
+
   if (originalProducts.length !== currentProducts.length) return true;
 
   return originalProducts.some((originalProduct, index) => {
@@ -49,12 +66,16 @@ function nextQuotationReference(quotationReference) {
 export function resolveEditQuotationRevision({
   quotationReference,
   quotationVersion,
+  originalGstPercentage,
+  currentGstPercentage,
   originalProducts = [],
   currentProducts = [],
 }) {
   const hasRevisionChanges = hasQuotationRevisionChanges(
     originalProducts,
     currentProducts,
+    originalGstPercentage,
+    currentGstPercentage,
   );
 
   if (!hasRevisionChanges) {
