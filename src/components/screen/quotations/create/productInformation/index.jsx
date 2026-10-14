@@ -37,8 +37,8 @@ import { toQuotationProductFormValues } from "@screenComponent/quotations/create
 import { QUOTATION_PRODUCT_INITIAL_VALUES } from "@screenComponent/quotations/create/form/createQuotation.initialValues";
 import { quotationProductValidationSchema } from "@screenComponent/quotations/create/form/createQuotation.validation.schema";
 import useProductKeyboardShortcuts from "@screenComponent/quotations/hooks/product";
-import QuotationProductAddAnotherDialog from "@screenComponent/quotations/create/productInformation/quotationProductAddAnotherDialog";
-import QuotationProductDuplicateDialog from "@screenComponent/quotations/create/productInformation/quotationProductDuplicateDialog";
+import QuotationProductAddAnotherDialog from "@screenComponent/quotations/dialogs/quotationProductAddAnotherDialog";
+import QuotationProductDuplicateDialog from "@screenComponent/quotations/dialogs/quotationProductDuplicateDialog";
 import QuotationProductInformationCard from "@screenComponent/quotations/create/productInformation/quotationProductInformationCard";
 import QuotationProductList from "@screenComponent/quotations/create/productInformation/quotationProductList";
 import QuotationProductSummaryCard from "@screenComponent/quotations/create/productInformation/quotationProductSummaryCard";

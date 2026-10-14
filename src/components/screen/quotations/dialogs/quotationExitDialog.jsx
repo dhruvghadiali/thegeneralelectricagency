@@ -1,6 +1,5 @@
 import { Save, Trash2 } from "lucide-react";
 
-import useQuotationExitDialogKeyboardShortcut from "@screenComponent/quotations/hooks/useQuotationExitDialogKeyboardShortcut";
 import { Button } from "@shadcnComponent/button";
 import {
   Dialog,
@@ -10,9 +9,30 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@shadcnComponent/dialog";
+import useQuotationDialogKeyboardShortcut from "@screenComponent/quotations/dialogs/useQuotationDialogKeyboardShortcut";
 
-function EditQuotationExitDialog({ open, onClose, onDiscard, onKeep }) {
-  const keyboard = useQuotationExitDialogKeyboardShortcut({ onClose });
+const EXIT_DIALOG_CONTENT = {
+  create: {
+    title: "Save quotation information?",
+    description:
+      "Select Yes to keep this quotation information before leaving. Select No to remove it and start with an empty quotation next time.",
+  },
+  edit: {
+    title: "Keep quotation changes?",
+    description:
+      "Select Yes to keep these unsaved changes in this session before leaving. Select No to discard them.",
+  },
+};
+
+function QuotationExitDialog({
+  mode = "create",
+  open,
+  onClose,
+  onDiscard,
+  onKeep,
+}) {
+  const content = EXIT_DIALOG_CONTENT[mode] ?? EXIT_DIALOG_CONTENT.create;
+  const keyboard = useQuotationDialogKeyboardShortcut({ onClose });
 
   return (
     <Dialog open={open} onOpenChange={(nextOpen) => !nextOpen && onClose()}>
@@ -24,15 +44,12 @@ function EditQuotationExitDialog({ open, onClose, onDiscard, onKeep }) {
         onOpenAutoFocus={keyboard.handleOpenAutoFocus}
       >
         <DialogHeader>
-          <DialogTitle>Keep quotation changes?</DialogTitle>
-          <DialogDescription>
-            Select Yes to keep these unsaved changes in this session before
-            leaving. Select No to discard them.
-          </DialogDescription>
+          <DialogTitle>{content.title}</DialogTitle>
+          <DialogDescription>{content.description}</DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button
-            ref={keyboard.noButtonRef}
+            ref={keyboard.leftButtonRef}
             type="button"
             variant="destructive"
             onClick={onDiscard}
@@ -42,7 +59,7 @@ function EditQuotationExitDialog({ open, onClose, onDiscard, onKeep }) {
             No
           </Button>
           <Button
-            ref={keyboard.yesButtonRef}
+            ref={keyboard.rightButtonRef}
             type="button"
             onClick={onKeep}
             aria-keyshortcuts="ArrowRight"
@@ -56,4 +73,4 @@ function EditQuotationExitDialog({ open, onClose, onDiscard, onKeep }) {
   );
 }
 
-export default EditQuotationExitDialog;
+export default QuotationExitDialog;

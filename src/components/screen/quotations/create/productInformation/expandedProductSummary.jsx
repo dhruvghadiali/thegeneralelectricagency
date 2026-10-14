@@ -6,7 +6,7 @@ import { Button } from "@shadcnComponent/button";
 import { CardContent, CardFooter } from "@shadcnComponent/card";
 import useProductSummaryKeyboardShortcut from "@screenComponent/quotations/hooks/product/useProductSummaryKeyboardShortcut";
 import CreateQuotationDownloadButton from "@screenComponent/quotations/create/productInformation/createQuotationDownloadButton";
-import QuotationProductDeleteDialog from "@screenComponent/quotations/create/productInformation/quotationProductDeleteDialog";
+import QuotationProductDeleteDialog from "@screenComponent/quotations/dialogs/quotationProductDeleteDialog";
 
 const currencyFormatter = new Intl.NumberFormat("en-IN", {
   style: "currency",

@@ -4,10 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { selectQuotationEditingId } from "@Redux/quotation/quotation.selector";
 import { quotationEditingStarted } from "@Redux/quotation/quotation.slice";
+import QuotationExitDialog from "@screenComponent/quotations/dialogs/quotationExitDialog";
 import { clearPreviousFieldKeyboardNavigation } from "@screenComponent/quotations/hooks/handlePreviousFieldKeyboardNavigation";
 import useQuotationPageKeyboardShortcut from "@screenComponent/quotations/hooks/useQuotationPageKeyboardShortcut";
 import useQuotationProductSearch from "@screenComponent/quotations/hooks/useQuotationProductSearch";
-import EditQuotationExitDialog from "@screenComponent/quotations/edit/editQuotationExitDialog";
 import EditQuotationForm from "@screenComponent/quotations/edit/editQuotationForm";
 
 function EditQuotation({ quotation }) {
@@ -55,7 +55,8 @@ function EditQuotation({ quotation }) {
   return (
     <main className="h-full min-h-0 w-full">
       <EditQuotationForm />
-      <EditQuotationExitDialog
+      <QuotationExitDialog
+        mode="edit"
         open={exitDialog.isExitDialogOpen}
         onClose={exitDialog.closeExitDialog}
         onDiscard={exitDialog.discardAndExit}

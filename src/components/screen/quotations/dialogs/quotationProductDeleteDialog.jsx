@@ -11,10 +11,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@shadcnComponent/dialog";
-import useProductDeleteDialogKeyboardShortcut from "@screenComponent/quotations/hooks/product/useProductDeleteDialogKeyboardShortcut";
+import useQuotationDialogKeyboardShortcut from "@screenComponent/quotations/dialogs/useQuotationDialogKeyboardShortcut";
 
 function QuotationProductDeleteDialog({ product, onCancel, onConfirm }) {
-  const keyboard = useProductDeleteDialogKeyboardShortcut({ onCancel });
+  const keyboard = useQuotationDialogKeyboardShortcut({ onClose: onCancel });
 
   return (
     <Dialog
@@ -40,7 +40,7 @@ function QuotationProductDeleteDialog({ product, onCancel, onConfirm }) {
         <DialogFooter>
           <DialogClose asChild>
             <Button
-              ref={keyboard.cancelButtonRef}
+              ref={keyboard.leftButtonRef}
               type="button"
               variant="outline"
               aria-keyshortcuts="ArrowLeft"
@@ -49,7 +49,7 @@ function QuotationProductDeleteDialog({ product, onCancel, onConfirm }) {
             </Button>
           </DialogClose>
           <Button
-            ref={keyboard.confirmButtonRef}
+            ref={keyboard.rightButtonRef}
             type="button"
             variant="destructive"
             onClick={onConfirm}

@@ -1,37 +1,37 @@
 import { useCallback, useRef } from "react";
 
-function useProductDeleteDialogKeyboardShortcut({ onCancel }) {
-  const cancelButtonRef = useRef(null);
-  const confirmButtonRef = useRef(null);
+function useQuotationDialogKeyboardShortcut({ onClose }) {
+  const leftButtonRef = useRef(null);
+  const rightButtonRef = useRef(null);
 
   const handleOpenAutoFocus = useCallback((event) => {
     event.preventDefault();
-    cancelButtonRef.current?.focus();
+    leftButtonRef.current?.focus();
   }, []);
 
   const handleDialogKeyDown = useCallback((event) => {
     if (event.key === "ArrowLeft") {
       event.preventDefault();
-      cancelButtonRef.current?.focus();
+      leftButtonRef.current?.focus();
       return;
     }
 
     if (event.key === "ArrowRight") {
       event.preventDefault();
-      confirmButtonRef.current?.focus();
+      rightButtonRef.current?.focus();
       return;
     }
 
     if (event.key !== "Tab") return;
 
     event.preventDefault();
-    const isConfirmFocused =
-      document.activeElement === confirmButtonRef.current;
+    const isRightButtonFocused =
+      document.activeElement === rightButtonRef.current;
 
-    if (isConfirmFocused) {
-      cancelButtonRef.current?.focus();
+    if (isRightButtonFocused) {
+      leftButtonRef.current?.focus();
     } else {
-      confirmButtonRef.current?.focus();
+      rightButtonRef.current?.focus();
     }
   }, []);
 
@@ -39,18 +39,18 @@ function useProductDeleteDialogKeyboardShortcut({ onCancel }) {
     (event) => {
       event.preventDefault();
       event.stopPropagation();
-      onCancel();
+      onClose();
     },
-    [onCancel],
+    [onClose],
   );
 
   return {
-    cancelButtonRef,
-    confirmButtonRef,
     handleDialogKeyDown,
     handleEscapeKeyDown,
     handleOpenAutoFocus,
+    leftButtonRef,
+    rightButtonRef,
   };
 }
 
-export default useProductDeleteDialogKeyboardShortcut;
+export default useQuotationDialogKeyboardShortcut;

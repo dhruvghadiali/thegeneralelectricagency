@@ -10,10 +10,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@shadcnComponent/dialog";
-import useProductAddAnotherDialogKeyboardShortcut from "@screenComponent/quotations/hooks/product/useProductAddAnotherDialogKeyboardShortcut";
+import useQuotationDialogKeyboardShortcut from "@screenComponent/quotations/dialogs/useQuotationDialogKeyboardShortcut";
 
 function QuotationProductAddAnotherDialog({ open, onNo, onYes }) {
-  const keyboard = useProductAddAnotherDialogKeyboardShortcut({ onNo });
+  const keyboard = useQuotationDialogKeyboardShortcut({ onClose: onNo });
 
   return (
     <Dialog open={open} onOpenChange={(nextOpen) => !nextOpen && onNo()}>
@@ -33,7 +33,7 @@ function QuotationProductAddAnotherDialog({ open, onNo, onYes }) {
         <DialogFooter>
           <DialogClose asChild>
             <Button
-              ref={keyboard.noButtonRef}
+              ref={keyboard.leftButtonRef}
               type="button"
               variant="outline"
               aria-keyshortcuts="ArrowLeft"
@@ -42,7 +42,7 @@ function QuotationProductAddAnotherDialog({ open, onNo, onYes }) {
             </Button>
           </DialogClose>
           <Button
-            ref={keyboard.yesButtonRef}
+            ref={keyboard.rightButtonRef}
             type="button"
             onClick={onYes}
             aria-keyshortcuts="ArrowRight"
