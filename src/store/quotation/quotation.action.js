@@ -10,8 +10,8 @@ import { ROLE_PATHS } from "@Enums";
 import { toProductListParams } from "@Redux/product/product.api-payload";
 import { PRODUCT_LIST_DEFAULTS } from "@Redux/product/product.defaults";
 import { fromProductListResponse } from "@Redux/product/product.api-response";
+import { fromQuotationListResponse } from "@Redux/quotation/quotation.api-response";
 import { toQuotationListParams } from "@screenComponent/quotations/table/quotationTable.api-payload";
-import { fromQuotationListResponse } from "@screenComponent/quotations/table/quotationTable.frontend-payload";
 import {
   QUOTATION_COMPANY_LIMIT,
   QUOTATION_COMPANY_PAGE,
