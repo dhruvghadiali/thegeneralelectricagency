@@ -171,13 +171,15 @@ function QuotationProductInformation({
         editingProductIndex === null
           ? null
           : productInformation[editingProductIndex];
-      const matchingDirectoryProduct =
-        selectedProduct ??
-        findDirectoryProductByName(directoryProducts, values.product);
       const isExistingProductName =
         existingProduct &&
         _.toLower(_.trim(existingProduct.product)) ===
           _.toLower(_.trim(values.product));
+      const matchingDirectoryProduct =
+        selectedProduct ??
+        (isExistingProductName
+          ? null
+          : findDirectoryProductByName(directoryProducts, values.product));
       const savedProduct = {
         ...(existingProduct ?? {}),
         ...quotationProductValidationSchema.cast(values),
