@@ -4,6 +4,11 @@ export const CREATE_QUOTATION_STEPS = Object.freeze({
   QUOTATION_SUMMARY: "quotation-summary",
 });
 
+export const QUOTATION_FORM_MODES = Object.freeze({
+  CREATE: "create",
+  EDIT: "edit",
+});
+
 export const QUOTATION_TAX_TREATMENTS = Object.freeze({
   GUJARAT: "gujarat",
   OUT_OF_GUJARAT: "out of gujarat",

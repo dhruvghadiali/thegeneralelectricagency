@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 
+import { QUOTATION_FORM_MODES } from "@Enums";
 import CreateQuotationForm from "@screenComponent/quotations/form/createQuotationForm";
 import useQuotationCompanySearch from "@screenComponent/quotations/form/companyInformation/hooks/useQuotationCompanySearch";
 import QuotationExitDialog from "@screenComponent/quotations/dialogs/quotationExitDialog";
@@ -23,7 +24,7 @@ function CreateQuotation() {
     <main className="h-full min-h-0 w-full">
       <CreateQuotationForm />
       <QuotationExitDialog
-        mode="create"
+        mode={QUOTATION_FORM_MODES.CREATE}
         open={exitDialog.isExitDialogOpen}
         onClose={exitDialog.closeExitDialog}
         onDiscard={exitDialog.discardAndExit}

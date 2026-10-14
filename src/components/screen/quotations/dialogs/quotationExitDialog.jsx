@@ -1,4 +1,6 @@
 import { Save, Trash2 } from "lucide-react";
+
+import { QUOTATION_FORM_MODES } from "@Enums";
 import { Button } from "@shadcnComponent/button";
 import {
   Dialog,
@@ -12,26 +14,29 @@ import {
 import useQuotationDialogKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/dialogs/useQuotationDialogKeyboardShortcut";
 
 const EXIT_DIALOG_CONTENT = {
-  create: {
+  [QUOTATION_FORM_MODES.CREATE]: {
     title: "Save quotation information?",
     description:
       "Select Yes to keep this quotation information before leaving. Select No to remove it and start with an empty quotation next time.",
   },
-  edit: {
-    title: "Keep quotation changes?",
+  [QUOTATION_FORM_MODES.EDIT]: {
+    title: "Leave edit quotation?",
     description:
-      "Select Yes to keep these unsaved changes in this session before leaving. Select No to discard them.",
+      "Your changes will not be saved. Leaving this page will discard all unsaved edit quotation information.",
   },
 };
 
 function QuotationExitDialog({
-  mode = "create",
+  mode = QUOTATION_FORM_MODES.CREATE,
   open,
   onClose,
   onDiscard,
   onKeep,
 }) {
-  const content = EXIT_DIALOG_CONTENT[mode] ?? EXIT_DIALOG_CONTENT.create;
+  const content =
+    EXIT_DIALOG_CONTENT[mode] ??
+    EXIT_DIALOG_CONTENT[QUOTATION_FORM_MODES.CREATE];
+  const isEditMode = mode === QUOTATION_FORM_MODES.EDIT;
   const keyboard = useQuotationDialogKeyboardShortcut({ onClose });
 
   return (
@@ -48,25 +53,51 @@ function QuotationExitDialog({
           <DialogDescription>{content.description}</DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button
-            ref={keyboard.leftButtonRef}
-            type="button"
-            variant="destructive"
-            onClick={onDiscard}
-            aria-keyshortcuts="ArrowLeft"
-          >
-            <Trash2 className="size-4" />
-            No
-          </Button>
-          <Button
-            ref={keyboard.rightButtonRef}
-            type="button"
-            onClick={onKeep}
-            aria-keyshortcuts="ArrowRight"
-          >
-            <Save className="size-4" />
-            Yes
-          </Button>
+          {isEditMode ? (
+            <>
+              <Button
+                ref={keyboard.leftButtonRef}
+                type="button"
+                variant="outline"
+                onClick={onClose}
+                aria-keyshortcuts="ArrowLeft"
+              >
+                Cancel
+              </Button>
+              <Button
+                ref={keyboard.rightButtonRef}
+                type="button"
+                variant="destructive"
+                onClick={onDiscard}
+                aria-keyshortcuts="ArrowRight"
+              >
+                <Trash2 className="size-4" />
+                Leave without saving
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                ref={keyboard.leftButtonRef}
+                type="button"
+                variant="destructive"
+                onClick={onDiscard}
+                aria-keyshortcuts="ArrowLeft"
+              >
+                <Trash2 className="size-4" />
+                No
+              </Button>
+              <Button
+                ref={keyboard.rightButtonRef}
+                type="button"
+                onClick={onKeep}
+                aria-keyshortcuts="ArrowRight"
+              >
+                <Save className="size-4" />
+                Yes
+              </Button>
+            </>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -1,3 +1,4 @@
+import { QUOTATION_FORM_MODES } from "@Enums";
 import QuotationExitDialog from "@screenComponent/quotations/dialogs/quotationExitDialog";
 import EditQuotationLoading from "@screenComponent/quotations/edit/editQuotationLoading";
 import useEditQuotation from "@screenComponent/quotations/edit/hooks/useEditQuotation";
@@ -12,11 +13,10 @@ function EditQuotation({ quotation }) {
     <main className="h-full min-h-0 w-full">
       <EditQuotationForm />
       <QuotationExitDialog
-        mode="edit"
+        mode={QUOTATION_FORM_MODES.EDIT}
         open={exitDialog.isExitDialogOpen}
         onClose={exitDialog.closeExitDialog}
         onDiscard={exitDialog.discardAndExit}
-        onKeep={exitDialog.keepAndExit}
       />
     </main>
   );
