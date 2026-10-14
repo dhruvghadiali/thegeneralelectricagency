@@ -49,6 +49,8 @@ export function toQuotationDetailsPayload({
   companyInformation = {},
   taxTreatment,
   gstPercentage,
+  deliveryNotes,
+  paymentNotes,
   productInformation = [],
 }) {
   return {
@@ -61,6 +63,8 @@ export function toQuotationDetailsPayload({
     company_gst_number: nullableText(companyInformation.gstNumber),
     tax_type: taxTreatment,
     gst: String(gstPercentage ?? ""),
+    delivery_notes: nullableText(deliveryNotes),
+    payment_notes: nullableText(paymentNotes),
     products: productInformation.map((product) =>
       toQuotationProductPayload(product, "V1"),
     ),
@@ -74,6 +78,8 @@ export function toQuotationDetailsUpdatePayload({
   companyInformation = {},
   taxTreatment,
   gstPercentage,
+  deliveryNotes,
+  paymentNotes,
   productInformation = [],
 }) {
   return {
@@ -86,6 +92,8 @@ export function toQuotationDetailsUpdatePayload({
     company_gst_number: nullableText(companyInformation.gstNumber),
     tax_type: taxTreatment,
     gst: String(gstPercentage ?? ""),
+    delivery_notes: nullableText(deliveryNotes),
+    payment_notes: nullableText(paymentNotes),
     products: productInformation.map((product) =>
       toQuotationProductPayload(product, quotationVersion, "product"),
     ),
