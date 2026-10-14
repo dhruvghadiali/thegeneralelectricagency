@@ -48,6 +48,18 @@ const quotationSlice = createSlice({
     quotationReset() {
       return createQuotationState();
     },
+    quotationRowActionRequested(state, action) {
+      state.rowActionQuotationKey = action.payload;
+    },
+    quotationRowActionClosed(state) {
+      state.rowActionQuotationKey = null;
+    },
+    quotationUpdateUnavailableDialogOpened(state) {
+      state.isUpdateUnavailableDialogOpen = true;
+    },
+    quotationUpdateUnavailableDialogClosed(state) {
+      state.isUpdateUnavailableDialogOpen = false;
+    },
     quotationEditingStarted(state, action) {
       const quotation = action.payload;
       const productInformation = _.cloneDeep(
@@ -376,8 +388,12 @@ export const {
   quotationProductSelected,
   quotationProductSummaryClosed,
   quotationProductSummaryOpened,
+  quotationRowActionClosed,
+  quotationRowActionRequested,
   quotationReset,
   quotationStepChanged,
+  quotationUpdateUnavailableDialogClosed,
+  quotationUpdateUnavailableDialogOpened,
 } = quotationSlice.actions;
 
 export const checkQuotationProductDuplicate =

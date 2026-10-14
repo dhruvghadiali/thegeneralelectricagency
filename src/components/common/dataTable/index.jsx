@@ -116,6 +116,7 @@ function DataTable({
   error,
   // Presentation
   rowActions,
+  onRowEnter,
   selectedRowKeys = [],
   onRowSelectionChange,
   selectionRows = rows,
@@ -199,6 +200,12 @@ function DataTable({
   };
   const handleRowKeyDown = (event, rowIndex) => {
     if (event.target !== event.currentTarget) return;
+
+    if (event.key === "Enter" && onRowEnter) {
+      event.preventDefault();
+      onRowEnter(rows[rowIndex]);
+      return;
+    }
 
     if (event.key === "Tab") {
       const didMoveFocus = event.shiftKey
@@ -395,7 +402,7 @@ function DataTable({
                     }
                     aria-keyshortcuts={
                       keyboardRowNavigation
-                        ? "ArrowUp ArrowDown"
+                        ? `ArrowUp ArrowDown${onRowEnter ? " Enter" : ""}`
                         : undefined
                     }
                     onKeyDown={

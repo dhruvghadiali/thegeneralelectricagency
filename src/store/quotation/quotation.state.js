@@ -63,6 +63,8 @@ export const createQuotationState = () => ({
     sort: QUOTATION_TABLE_DEFAULTS.sort,
     columnFilters: QUOTATION_TABLE_DEFAULTS.filters,
   }),
+  rowActionQuotationKey: null,
+  isUpdateUnavailableDialogOpen: false,
   ...createQuotationFormState(),
 });
 

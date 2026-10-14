@@ -10,11 +10,24 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@shadcnComponent/dialog";
+import useQuotationDialogKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/dialogs/useQuotationDialogKeyboardShortcut";
 
-function QuotationUpdateUnavailableDialog({ open, onOpenChange }) {
+function QuotationUpdateUnavailableDialog({
+  open,
+  onOpenChange,
+}) {
+  const keyboard = useQuotationDialogKeyboardShortcut({
+    onClose: () => onOpenChange(false),
+  });
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent
+        className="max-w-md"
+        onEscapeKeyDown={keyboard.handleEscapeKeyDown}
+        onOpenAutoFocus={keyboard.handleOpenAutoFocus}
+        onKeyDown={keyboard.handleDialogKeyDown}
+      >
         <DialogHeader>
           <div className="mb-2 flex size-10 items-center justify-center rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400">
             <CircleAlert className="size-5" aria-hidden="true" />
@@ -29,7 +42,13 @@ function QuotationUpdateUnavailableDialog({ open, onOpenChange }) {
         </DialogHeader>
         <DialogFooter>
           <DialogClose asChild>
-            <Button type="button">Got it</Button>
+            <Button
+              ref={keyboard.leftButtonRef}
+              type="button"
+              aria-keyshortcuts="ArrowLeft ArrowRight"
+            >
+              Got it
+            </Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>

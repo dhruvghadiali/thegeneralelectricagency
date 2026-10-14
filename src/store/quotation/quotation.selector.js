@@ -6,6 +6,26 @@ const selectQuotationState = (state) => state.quotation;
 export const quotationTableSelectors =
   createTableSelectors(selectQuotationState);
 
+export const selectQuotationRowActionQuotation = createSelector(
+  selectQuotationState,
+  ({ items, rowActionQuotationKey }) => {
+    if (rowActionQuotationKey === null) return null;
+
+    const quotation = items.find(
+      (quotation) =>
+        String(quotation.id ?? quotation.quotationNumber) ===
+        String(rowActionQuotationKey),
+    );
+
+    return quotation ?? null;
+  },
+);
+
+export const selectQuotationUpdateUnavailableDialogOpen = createSelector(
+  selectQuotationState,
+  (quotation) => quotation.isUpdateUnavailableDialogOpen,
+);
+
 export const selectQuotationCurrentStep = createSelector(
   selectQuotationState,
   (quotation) => quotation.currentStep,
