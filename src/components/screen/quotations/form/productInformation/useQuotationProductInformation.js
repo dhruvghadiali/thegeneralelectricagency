@@ -1,13 +1,17 @@
 import { useFormik } from "formik";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { CREATE_QUOTATION_STEPS } from "@Enums";
+import {
+  CREATE_QUOTATION_STEPS,
+  PRODUCT_FORM_DISCARD_DESTINATIONS,
+} from "@Enums";
 import { toQuotationProductFormValues } from "@Redux/quotation/quotation-product-directory.api-response";
 import { QUOTATION_PRODUCT_INITIAL_VALUES } from "@screenComponent/quotations/form/quotationForm.initialValues";
 import { quotationProductValidationSchema } from "@screenComponent/quotations/form/quotationForm.validation.schema";
 import {
   findDirectoryProductByName,
+  hasQuotationProductFormData,
   haveSameProductName,
   toExistingProductFormValues,
 } from "@screenComponent/quotations/form/productInformation/quotationProductInformation.utils";
@@ -30,6 +34,7 @@ import {
   quotationProductDeleteRequested,
   quotationProductDuplicateCancelled,
   quotationProductEditingStarted,
+  quotationProductFormReset,
   quotationProductInformationDeleted,
   quotationProductSearchChanged,
   quotationProductSelected,
@@ -68,29 +73,8 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
   const descriptionInputRef = useRef(null);
   const saveButtonRef = useRef(null);
   const productDirectoryRef = useRef(null);
-  const openCompanyInformation = useCallback(() => {
-    if (!canNavigateToCompanyInformation) return;
-
-    dispatch(quotationProductSummaryClosed());
-    dispatch(quotationStepChanged(CREATE_QUOTATION_STEPS.COMPANY_INFORMATION));
-  }, [canNavigateToCompanyInformation, dispatch]);
-  const openProductSummary = useCallback(() => {
-    dispatch(quotationProductSummaryOpened());
-  }, [dispatch]);
-  const openProductInformation = useCallback(() => {
-    dispatch(quotationProductSummaryClosed());
-
-    window.requestAnimationFrame(() => {
-      productInputRef.current?.focus();
-    });
-  }, [dispatch]);
-  const openQuotationSummary = useCallback(() => {
-    dispatch(quotationStepChanged(CREATE_QUOTATION_STEPS.QUOTATION_SUMMARY));
-  }, [dispatch]);
-  useOpenQuotationSummaryKeyboardShortcut({
-    enabled: productInformation.length > 0,
-    onOpen: openQuotationSummary,
-  });
+  const [pendingDiscardDestination, setPendingDiscardDestination] =
+    useState(null);
   const productFieldRefs = {
     productInputRef,
     quantityInputRef,
@@ -100,12 +84,6 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
     saveButtonRef,
     productDirectoryRef,
   };
-  const keyboard = useProductKeyboardShortcuts({
-    ...productFieldRefs,
-    hasProductSummary: productInformation.length > 0,
-    onNavigateToCompanyInformation: openCompanyInformation,
-    onOpenProductSummary: openProductSummary,
-  });
   const formik = useFormik({
     initialValues: selectedProduct
       ? {
@@ -158,6 +136,110 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
   });
   const fieldError = (field) =>
     formik.touched[field] && formik.errors[field] ? formik.errors[field] : null;
+
+  const navigateToCompanyInformation = useCallback(() => {
+    if (!canNavigateToCompanyInformation) return;
+
+    dispatch(quotationProductSummaryClosed());
+    dispatch(quotationStepChanged(CREATE_QUOTATION_STEPS.COMPANY_INFORMATION));
+  }, [canNavigateToCompanyInformation, dispatch]);
+  const navigateToProductSummary = useCallback(() => {
+    dispatch(quotationProductSummaryOpened());
+  }, [dispatch]);
+  const navigateToQuotationSummary = useCallback(() => {
+    dispatch(quotationStepChanged(CREATE_QUOTATION_STEPS.QUOTATION_SUMMARY));
+  }, [dispatch]);
+  const requestProductFormDiscard = useCallback(
+    (destination, navigate) => {
+      if (!hasQuotationProductFormData(formik.values)) {
+        navigate();
+        return;
+      }
+
+      setPendingDiscardDestination(destination);
+    },
+    [formik.values],
+  );
+  const openCompanyInformation = useCallback(() => {
+    if (!canNavigateToCompanyInformation) return;
+
+    requestProductFormDiscard(
+      PRODUCT_FORM_DISCARD_DESTINATIONS.COMPANY_INFORMATION,
+      navigateToCompanyInformation,
+    );
+  }, [
+    canNavigateToCompanyInformation,
+    navigateToCompanyInformation,
+    requestProductFormDiscard,
+  ]);
+  const openProductSummary = useCallback(() => {
+    requestProductFormDiscard(
+      PRODUCT_FORM_DISCARD_DESTINATIONS.PRODUCT_SUMMARY,
+      navigateToProductSummary,
+    );
+  }, [navigateToProductSummary, requestProductFormDiscard]);
+  const openProductInformation = useCallback(() => {
+    dispatch(quotationProductSummaryClosed());
+
+    window.requestAnimationFrame(() => {
+      productInputRef.current?.focus();
+    });
+  }, [dispatch]);
+  const openQuotationSummary = useCallback(() => {
+    requestProductFormDiscard(
+      PRODUCT_FORM_DISCARD_DESTINATIONS.QUOTATION_SUMMARY,
+      navigateToQuotationSummary,
+    );
+  }, [navigateToQuotationSummary, requestProductFormDiscard]);
+  const cancelProductFormDiscard = useCallback(() => {
+    setPendingDiscardDestination(null);
+
+    window.requestAnimationFrame(() => {
+      productInputRef.current?.focus();
+    });
+  }, []);
+  const confirmProductFormDiscard = useCallback(() => {
+    const destination = pendingDiscardDestination;
+
+    formik.resetForm({
+      values: { ...QUOTATION_PRODUCT_INITIAL_VALUES },
+    });
+    dispatch(quotationProductFormReset());
+    setPendingDiscardDestination(null);
+
+    if (
+      destination === PRODUCT_FORM_DISCARD_DESTINATIONS.COMPANY_INFORMATION
+    ) {
+      navigateToCompanyInformation();
+      return;
+    }
+
+    if (destination === PRODUCT_FORM_DISCARD_DESTINATIONS.PRODUCT_SUMMARY) {
+      navigateToProductSummary();
+      return;
+    }
+
+    if (destination === PRODUCT_FORM_DISCARD_DESTINATIONS.QUOTATION_SUMMARY) {
+      navigateToQuotationSummary();
+    }
+  }, [
+    dispatch,
+    formik,
+    navigateToCompanyInformation,
+    navigateToProductSummary,
+    navigateToQuotationSummary,
+    pendingDiscardDestination,
+  ]);
+  useOpenQuotationSummaryKeyboardShortcut({
+    enabled: productInformation.length > 0,
+    onOpen: openQuotationSummary,
+  });
+  const keyboard = useProductKeyboardShortcuts({
+    ...productFieldRefs,
+    hasProductSummary: productInformation.length > 0,
+    onNavigateToCompanyInformation: openCompanyInformation,
+    onOpenProductSummary: openProductSummary,
+  });
 
   const changeProductName = (event) => {
     formik.handleChange(event);
@@ -288,6 +370,7 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
   return {
     addAnotherProduct,
     blurProductName,
+    cancelProductFormDiscard,
     cancelDuplicateProduct,
     cancelProductDelete,
     changeProductName,
@@ -298,6 +381,7 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
     finishAddingProducts,
     formik,
     isAddAnotherDialogOpen,
+    isProductFormDiscardDialogOpen: pendingDiscardDestination !== null,
     isProductSummaryExpanded,
     keyboard,
     openCompanyInformation,
@@ -308,6 +392,7 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
     pendingDuplicateProductIndex,
     productFieldRefs,
     productInformation,
+    confirmProductFormDiscard,
     requestProductDelete,
     selectProduct,
   };

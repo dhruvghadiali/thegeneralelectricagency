@@ -1,17 +1,26 @@
 import { useCallback, useRef } from "react";
 
-function useQuotationDialogKeyboardShortcut({ onClose }) {
+function useQuotationDialogKeyboardShortcut({
+  onClose,
+  initialFocus = "left",
+}) {
   const leftButtonRef = useRef(null);
   const rightButtonRef = useRef(null);
   const previouslyFocusedElementRef = useRef(null);
   const shouldRestoreFocusRef = useRef(true);
 
-  const handleOpenAutoFocus = useCallback((event) => {
-    event.preventDefault();
-    previouslyFocusedElementRef.current = document.activeElement;
-    shouldRestoreFocusRef.current = true;
-    leftButtonRef.current?.focus();
-  }, []);
+  const handleOpenAutoFocus = useCallback(
+    (event) => {
+      event.preventDefault();
+      previouslyFocusedElementRef.current = document.activeElement;
+      shouldRestoreFocusRef.current = true;
+
+      const initialButtonRef =
+        initialFocus === "right" ? rightButtonRef : leftButtonRef;
+      initialButtonRef.current?.focus();
+    },
+    [initialFocus],
+  );
 
   const handleCloseAutoFocus = useCallback((event) => {
     if (!shouldRestoreFocusRef.current) return;

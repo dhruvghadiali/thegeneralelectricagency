@@ -18,6 +18,18 @@ export function haveSameProductName(firstProductName, secondProductName) {
   );
 }
 
+export function hasQuotationProductFormData(values = {}) {
+  const hasDiscount = !["", "0"].includes(_.trim(String(values.discount ?? "")));
+
+  return Boolean(
+    _.trim(values.product) ||
+      _.trim(String(values.sellingPrice ?? "")) ||
+      _.trim(String(values.quantity ?? "")) ||
+      hasDiscount ||
+      _.trim(values.description),
+  );
+}
+
 export function toExistingProductFormValues(
   product = {},
   directoryProducts = [],

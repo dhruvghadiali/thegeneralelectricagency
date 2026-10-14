@@ -130,6 +130,12 @@ const quotationSlice = createSlice({
       state.selectedProduct = action.payload;
       state.productSearch = action.payload?.name ?? "";
     },
+    quotationProductFormReset(state) {
+      state.productSearch = "";
+      state.selectedProduct = null;
+      state.editingProductIndex = null;
+      state.pendingDuplicateProductIndex = null;
+    },
     quotationProductInformationSaved(state, action) {
       state.productInformation.push(action.payload);
       state.productSearch = "";
@@ -381,6 +387,7 @@ export const {
   quotationProductDuplicateRequested,
   quotationProductAddAnotherPromptClosed,
   quotationProductAddAnotherPromptOpened,
+  quotationProductFormReset,
   quotationProductEditingStarted,
   quotationProductInformationDeleted,
   quotationProductInformationSaved,

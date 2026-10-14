@@ -1,6 +1,7 @@
 import QuotationProductDirectory from "@screenComponent/quotations/form/productInformation/productDirectory";
 import QuotationProductDuplicateDialog from "@screenComponent/quotations/dialogs/quotationProductDuplicateDialog";
 import QuotationProductAddAnotherDialog from "@screenComponent/quotations/dialogs/quotationProductAddAnotherDialog";
+import QuotationProductFormDiscardDialog from "@screenComponent/quotations/dialogs/quotationProductFormDiscardDialog";
 import QuotationCompanySummaryCard from "@screenComponent/quotations/form/companyInformation/quotationCompanySummaryCard";
 import useQuotationProductInformation from "@screenComponent/quotations/form/productInformation/useQuotationProductInformation";
 import QuotationProductInformationCard from "@screenComponent/quotations/form/productInformation/quotationProductInformationCard";
@@ -69,6 +70,11 @@ function QuotationProductInformation({
         }
         onNo={product.cancelDuplicateProduct}
         onYes={product.editDuplicateProduct}
+      />
+      <QuotationProductFormDiscardDialog
+        open={product.isProductFormDiscardDialogOpen}
+        onCancel={product.cancelProductFormDiscard}
+        onConfirm={product.confirmProductFormDiscard}
       />
     </>
   );
