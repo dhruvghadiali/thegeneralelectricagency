@@ -11,7 +11,10 @@ const fromPersonResponse = (person = {}) => {
     id: person?._id ?? person?.id ?? null,
     name:
       person?.name ??
-      [person?.first_name ?? person?.firstName, person?.last_name ?? person?.lastName]
+      [
+        person?.first_name ?? person?.firstName,
+        person?.last_name ?? person?.lastName,
+      ]
         .filter(Boolean)
         .join(" "),
   };
@@ -42,8 +45,7 @@ const fromCompanyResponse = (quotation = {}) => {
 };
 
 const fromQuotationProductResponse = (item = {}) => {
-  const product =
-    item.product ?? item.tally_product ?? item.tallyProduct ?? {};
+  const product = item.product ?? item.tally_product ?? item.tallyProduct ?? {};
 
   return {
     lineId: item._id ?? item.id ?? null,
@@ -53,11 +55,7 @@ const fromQuotationProductResponse = (item = {}) => {
       product.product_id ??
       product.productId ??
       null,
-    product:
-      product.name ??
-      product.product_name ??
-      product.productName ??
-      "",
+    product: product.name ?? product.product_name ?? product.productName ?? "",
     quantity: String(item.qty ?? item.quantity ?? ""),
     sellingPrice: String(
       item.unit_price ??
@@ -79,9 +77,16 @@ const fromQuotationProductResponse = (item = {}) => {
 
 const fromQuotationResponse = (quotation = {}) => {
   const company = fromCompanyResponse(quotation);
+  const quotationProducts =
+    quotation.products ?? quotation.productInformation ?? [];
   const productInformation = _.map(
-    quotation.products ?? quotation.productInformation ?? [],
+    quotationProducts,
     fromQuotationProductResponse,
+  );
+  const isUpdateAvailable = quotationProducts.every(
+    (item) =>
+      !_.isNil(item.product) ||
+      !_.isNil(item.tally_product ?? item.tallyProduct),
   );
 
   return {
@@ -91,13 +96,10 @@ const fromQuotationResponse = (quotation = {}) => {
     companyName: company.name,
     companyInformation: {
       companyName: company.name,
-      address:
-        quotation.company_address ?? quotation.companyAddress ?? "",
+      address: quotation.company_address ?? quotation.companyAddress ?? "",
       email: quotation.company_email ?? quotation.companyEmail ?? "",
       phoneNumber:
-        quotation.company_phone_number ??
-        quotation.companyPhoneNumber ??
-        "",
+        quotation.company_phone_number ?? quotation.companyPhoneNumber ?? "",
       gstNumber:
         quotation.company_gst_number ?? quotation.companyGstNumber ?? "",
     },
@@ -114,15 +116,14 @@ const fromQuotationResponse = (quotation = {}) => {
         quotation.gstPercentage ??
         "",
     ),
-    deliveryNotes:
-      quotation.delivery_notes ?? quotation.deliveryNotes ?? "",
-    paymentNotes:
-      quotation.payment_notes ?? quotation.paymentNotes ?? "",
+    deliveryNotes: quotation.delivery_notes ?? quotation.deliveryNotes ?? "",
+    paymentNotes: quotation.payment_notes ?? quotation.paymentNotes ?? "",
     products: productInformation.map(({ productId, product }) => ({
       id: productId,
       name: product,
     })),
     productInformation,
+    isUpdateAvailable,
     quotationHistory:
       quotation.quotation_history ?? quotation.quotationHistory ?? [],
     createdBy: fromPersonResponse(quotation.created_by ?? quotation.createdBy),
@@ -148,9 +149,7 @@ export function fromQuotationListResponse(response = {}, requested = {}) {
   const pagination = _.isArray(response) ? {} : (response.pagination ?? {});
   const page = Number(pagination.page) || requested.page || TABLE_DEFAULTS.PAGE;
   const limit =
-    Number(pagination.limit) ||
-    requested.limit ||
-    TABLE_DEFAULTS.LIMIT;
+    Number(pagination.limit) || requested.limit || TABLE_DEFAULTS.LIMIT;
   const records = getQuotationRecords(response);
   const total =
     Number(pagination.total) ||
