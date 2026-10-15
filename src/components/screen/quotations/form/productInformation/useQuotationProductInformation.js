@@ -7,6 +7,10 @@ import {
   PRODUCT_FORM_DISCARD_DESTINATIONS,
 } from "@Enums";
 import { toQuotationProductFormValues } from "@Redux/quotation/quotation-product-directory.api-response";
+import {
+  checkQuotationProductDuplicate,
+  saveQuotationProductInformation,
+} from "@Redux/quotation/product/quotationProduct.thunks";
 import { QUOTATION_PRODUCT_INITIAL_VALUES } from "@screenComponent/quotations/form/quotationForm.initialValues";
 import { quotationProductValidationSchema } from "@screenComponent/quotations/form/quotationForm.validation.schema";
 import {
@@ -27,7 +31,6 @@ import {
   selectQuotationSelectedProduct,
 } from "@Redux/quotation/quotation.selector";
 import {
-  checkQuotationProductDuplicate,
   quotationProductAddAnotherPromptClosed,
   quotationProductAddAnotherPromptOpened,
   quotationProductDeleteCancelled,
@@ -41,7 +44,6 @@ import {
   quotationProductSummaryClosed,
   quotationProductSummaryOpened,
   quotationStepChanged,
-  saveQuotationProductInformation,
 } from "@Redux/quotation/quotation.slice";
 
 import useProductKeyboardShortcuts from "@screenComponent/quotations/keyboardShortcuts/productForm";
