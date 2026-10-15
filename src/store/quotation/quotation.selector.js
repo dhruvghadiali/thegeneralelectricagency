@@ -26,6 +26,11 @@ export const selectQuotationUpdateUnavailableDialogOpen = createSelector(
   (quotation) => quotation.isUpdateUnavailableDialogOpen,
 );
 
+export const selectQuotationViewOpenSection = createSelector(
+  selectQuotationState,
+  (quotation) => quotation.viewOpenSection,
+);
+
 export const selectQuotationCurrentStep = createSelector(
   selectQuotationState,
   (quotation) => quotation.currentStep,

@@ -24,6 +24,7 @@ export {
 } from "./employee.enum";
 
 export {
+  COMPANY_FIELDS,
   COMPANY_STATUS_OPTIONS,
   COMPANY_TYPE_OPTIONS,
   COMPANY_TYPES,

@@ -108,16 +108,23 @@ const fromQuotationProductResponse = (item = {}) => {
     ),
     discount: String(item.discount ?? "0"),
     description: item.description ?? "",
+    finalPrice: String(item.final_price ?? item.finalPrice ?? ""),
     hsnCode:
       product.hsn_code ??
       product.hsnCode ??
       item.hsn_code ??
       item.hsnCode ??
       "",
+    productCode:
+      product.product_code ?? product.productCode ?? item.product_code ?? "",
+    category: product.category ?? item.category ?? "",
+    agency: product.agency ?? item.agency ?? "",
+    modelNumber:
+      product.model_number ?? product.modelNumber ?? item.model_number ?? "",
   };
 };
 
-const fromQuotationResponse = (quotation = {}) => {
+export const fromQuotationResponse = (quotation = {}) => {
   const company = fromCompanyResponse(quotation);
   const quotationProducts =
     quotation.products ?? quotation.productInformation ?? [];
@@ -181,6 +188,7 @@ const fromQuotationResponse = (quotation = {}) => {
     ),
     deliveryNotes: quotation.delivery_notes ?? quotation.deliveryNotes ?? "",
     paymentNotes: quotation.payment_notes ?? quotation.paymentNotes ?? "",
+    notes: quotation.notes ?? "",
     products: productInformation.map(({ productId, product }) => ({
       id: productId,
       name: product,

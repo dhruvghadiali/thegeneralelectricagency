@@ -66,6 +66,7 @@ export const createQuotationState = () => ({
   }),
   rowActionQuotationKey: null,
   isUpdateUnavailableDialogOpen: false,
+  viewOpenSection: null,
   ...createQuotationFormState(),
 });
 

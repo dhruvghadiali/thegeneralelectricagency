@@ -27,6 +27,7 @@ import ProductsPage from "@pages/products.page";
 import QuotationsPage from "@pages/quotations.page";
 import CreateQuotationPage from "@pages/create-quotation.page";
 import EditQuotationPage from "@pages/edit-quotation.page";
+import ViewQuotationPage from "@pages/view-quotation.page";
 import ProductSyncPendingPage from "@pages/product-sync-pending.page";
 import ProductDetailsPage from "@pages/product-details.page";
 import CompanyDetailsPage from "@pages/company-details.page";
@@ -102,6 +103,10 @@ const router = createBrowserRouter(
           <Route
             path={ROUTES.QUOTATION_EDIT}
             element={<EditQuotationPage />}
+          />
+          <Route
+            path={ROUTES.QUOTATION_VIEW}
+            element={<ViewQuotationPage />}
           />
           <Route
             path={ROUTES.PURCHASE_CREDIT_NEW}

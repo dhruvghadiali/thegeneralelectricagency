@@ -1,3 +1,11 @@
+import { Mail, Phone, ReceiptText } from "lucide-react";
+
+export const COMPANY_FIELDS = Object.freeze([
+  Object.freeze({ key: "email", label: "Email", icon: Mail }),
+  Object.freeze({ key: "phoneNumber", label: "Phone", icon: Phone }),
+  Object.freeze({ key: "gstNumber", label: "GST number", icon: ReceiptText }),
+]);
+
 export const COMPANY_TYPES = Object.freeze({
   SUPPLIER: "supplier",
   CUSTOMER: "customer",

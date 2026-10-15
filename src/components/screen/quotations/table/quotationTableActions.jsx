@@ -11,7 +11,10 @@ function QuotationTableActions({ quotation, onView, onEdit }) {
         type="button"
         variant="ghost"
         size="icon"
-        onClick={() => onView?.(quotation)}
+        onClick={(event) => {
+          event.stopPropagation();
+          onView?.(quotation);
+        }}
         aria-label={`View quotation ${quotationLabel}`.trim()}
         title="View quotation"
         className="size-9 text-muted-foreground"

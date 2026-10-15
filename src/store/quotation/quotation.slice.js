@@ -60,6 +60,13 @@ const quotationSlice = createSlice({
     quotationUpdateUnavailableDialogClosed(state) {
       state.isUpdateUnavailableDialogOpen = false;
     },
+    quotationViewSectionToggled(state, action) {
+      state.viewOpenSection =
+        state.viewOpenSection === action.payload ? null : action.payload;
+    },
+    quotationViewSectionClosed(state) {
+      state.viewOpenSection = null;
+    },
     quotationEditingStarted(state, action) {
       const quotation = action.payload;
       const productInformation = _.cloneDeep(
@@ -402,6 +409,8 @@ export const {
   quotationStepChanged,
   quotationUpdateUnavailableDialogClosed,
   quotationUpdateUnavailableDialogOpened,
+  quotationViewSectionClosed,
+  quotationViewSectionToggled,
 } = quotationSlice.actions;
 
 export const checkQuotationProductDuplicate =

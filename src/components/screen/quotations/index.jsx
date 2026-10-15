@@ -1,10 +1,11 @@
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import DataTable from "@commonComponent/dataTable";
 import QuotationHeader from "@screenComponent/quotations/header";
 import QuotationRowActionDialog from "@screenComponent/quotations/dialogs/quotationRowActionDialog";
 import QuotationUpdateUnavailableDialog from "@screenComponent/quotations/dialogs/quotationUpdateUnavailableDialog";
+
 import {
   QUOTATION_TABLE_CONFIG,
   QuotationTableActions,
@@ -26,22 +27,27 @@ function Quotations() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const table = useQuotationTable();
-  const rowActionQuotation = useSelector(
-    selectQuotationRowActionQuotation,
-  );
+  const rowActionQuotation = useSelector(selectQuotationRowActionQuotation);
+
   const isUpdateUnavailableDialogOpen = useSelector(
     selectQuotationUpdateUnavailableDialogOpen,
   );
+
   const openRowActionDialog = (quotation) => {
     dispatch(
-      quotationRowActionRequested(
-        quotation.id ?? quotation.quotationNumber,
-      ),
+      quotationRowActionRequested(quotation.id ?? quotation.quotationNumber),
     );
   };
-  const viewQuotation = () => {
+
+  const viewQuotation = (quotation) => {
     dispatch(quotationRowActionClosed());
+    const quotationKey = quotation.id ?? quotation.quotationNumber;
+
+    navigate(ROUTE_BUILDERS.quotationView(quotationKey), {
+      state: { quotation },
+    });
   };
+
   const editQuotation = (quotation) => {
     dispatch(quotationRowActionClosed());
 
@@ -90,9 +96,7 @@ function Quotations() {
 
       <QuotationRowActionDialog
         quotation={rowActionQuotation}
-        onOpenChange={(open) =>
-          !open && dispatch(quotationRowActionClosed())
-        }
+        onOpenChange={(open) => !open && dispatch(quotationRowActionClosed())}
         onView={viewQuotation}
         onEdit={editQuotation}
       />

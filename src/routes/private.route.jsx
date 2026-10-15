@@ -68,6 +68,13 @@ function buildBreadcrumbItems(pathname, navItems) {
     ];
   }
 
+  if (matchPath(ROUTES.QUOTATION_VIEW, pathname)) {
+    return [
+      { label: "Quotation", href: ROUTES.QUOTATIONS },
+      { label: "View quotation" },
+    ];
+  }
+
   if (pathname === ROUTES.PURCHASE_CREDIT_NEW) {
     return [
       { label: "Purchase credit", href: ROUTES.PURCHASE_CREDITS },
