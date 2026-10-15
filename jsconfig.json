@@ -21,6 +21,9 @@
             "@Redux/*": [
                 "./src/store/*"
             ],
+            "@utils/*": [
+                "./src/utils/*"
+            ],
             "@keyboard/*": [
                 "./src/keyboard/*"
             ],

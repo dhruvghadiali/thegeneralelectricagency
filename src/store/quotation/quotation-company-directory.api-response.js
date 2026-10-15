@@ -1,4 +1,8 @@
-import { fromCompanyListResponse } from "@Tables/company/companyTable.frontend-payload";
+import {
+  QUOTATION_COMPANY_LIMIT,
+  QUOTATION_COMPANY_PAGE,
+} from "@Redux/quotation/quotation.state";
+import { fromCompanyListApiResponse } from "@utils/apiResponse/company/companyList.api-response";
 
 function hasValue(value) {
   return value !== null && value !== undefined && String(value).trim() !== "";
@@ -27,7 +31,10 @@ export function fromQuotationCompanyDirectoryResponse(
   response = {},
   requested = {},
 ) {
-  return fromCompanyListResponse(response, requested);
+  return fromCompanyListApiResponse(response, requested, {
+    page: QUOTATION_COMPANY_PAGE,
+    limit: QUOTATION_COMPANY_LIMIT,
+  });
 }
 
 export function toQuotationCompanyFormValues(company = {}) {

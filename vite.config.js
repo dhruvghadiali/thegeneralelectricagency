@@ -15,6 +15,7 @@ export default defineConfig(() => {
         "@screenComponent": path.resolve(__dirname, "./src/components/screen"),
         "@Assets": path.resolve(__dirname, "./src/assets"),
         "@Redux": path.resolve(__dirname, "./src/store"),
+        "@utils": path.resolve(__dirname, "./src/utils"),
         "@keyboard": path.resolve(__dirname, "./src/keyboard"),
         "@Enums": path.resolve(__dirname, "./src/enums"),
         "@Forms": path.resolve(__dirname, "./src/forms"),
