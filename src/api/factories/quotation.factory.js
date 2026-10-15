@@ -48,5 +48,14 @@ export function createQuotationDetailsMutationApi(rolePath) {
 
       return unwrapPayload(data);
     },
+
+    updateQuotationDetails: async (quotationId, payload) => {
+      const { data } = await apiClient.patch(
+        `${quotationDetailsPath(rolePath)}/${quotationId}`,
+        payload,
+      );
+
+      return unwrapPayload(data);
+    },
   };
 }

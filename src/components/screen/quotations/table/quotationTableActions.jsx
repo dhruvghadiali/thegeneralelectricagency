@@ -1,26 +1,37 @@
 import { Eye, Pencil } from "lucide-react";
 
-function QuotationTableActions({ quotation }) {
+import { Button } from "@shadcnComponent/button";
+
+function QuotationTableActions({ quotation, onView, onEdit }) {
   const quotationLabel = quotation.quotationNumber || quotation.id || "";
 
   return (
     <div className="flex items-center gap-1 text-muted-foreground">
-      <span
-        role="img"
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        onClick={(event) => {
+          event.stopPropagation();
+          onView?.(quotation);
+        }}
         aria-label={`View quotation ${quotationLabel}`.trim()}
         title="View quotation"
-        className="flex size-9 items-center justify-center"
+        className="size-9 text-muted-foreground"
       >
         <Eye className="size-4" aria-hidden="true" />
-      </span>
-      <span
-        role="img"
+      </Button>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        onClick={() => onEdit?.(quotation)}
         aria-label={`Edit quotation ${quotationLabel}`.trim()}
         title="Edit quotation"
-        className="flex size-9 items-center justify-center"
+        className="size-9 text-muted-foreground"
       >
         <Pencil className="size-4" aria-hidden="true" />
-      </span>
+      </Button>
     </div>
   );
 }

@@ -1,27 +1,31 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import {
-  employeeCompanyApi,
-  employeeProductApi,
-  employeeQuotationApi,
-  extractErrorMessage,
-} from "@Api";
 import { ROLE_PATHS } from "@Enums";
-import { toProductListParams } from "@Redux/product/product.api-payload";
 import { PRODUCT_LIST_DEFAULTS } from "@Redux/product/product.defaults";
-import { fromProductListResponse } from "@Redux/product/product.api-response";
-import { toQuotationListParams } from "@screenComponent/quotations/table/quotationTable.api-payload";
-import { fromQuotationListResponse } from "@screenComponent/quotations/table/quotationTable.frontend-payload";
+import { COMPANY_TABLE_DEFAULTS } from "@Tables/company/companyTable.defaults";
 import {
   QUOTATION_COMPANY_LIMIT,
   QUOTATION_COMPANY_PAGE,
   QUOTATION_PRODUCT_LIMIT,
   QUOTATION_PRODUCT_PAGE,
 } from "@Redux/quotation/quotation.state";
-import { toQuotationDetailsPayload } from "@Redux/quotation/quotation.api-payload";
+
+import { toProductListParams } from "@Redux/product/product.api-payload";
 import { toCompanyListParams } from "@Tables/company/companyTable.api-payload";
-import { COMPANY_TABLE_DEFAULTS } from "@Tables/company/companyTable.defaults";
-import { fromCompanyListResponse } from "@Tables/company/companyTable.frontend-payload";
+import { fromQuotationListResponse } from "@Redux/quotation/quotation.api-response";
+import { toQuotationListParams } from "@screenComponent/quotations/table/quotationTable.api-payload";
+import { fromQuotationCompanyDirectoryResponse } from "@Redux/quotation/quotation-company-directory.api-response";
+import { fromQuotationProductDirectoryResponse } from "@Redux/quotation/quotation-product-directory.api-response";
+import {
+  employeeCompanyApi,
+  employeeProductApi,
+  employeeQuotationApi,
+  extractErrorMessage,
+} from "@Api";
+import {
+  toQuotationDetailsCreatePayload,
+  toQuotationDetailsUpdatePayload,
+} from "@Redux/quotation/quotation.api-payload";
 
 export const fetchQuotationDetails = createAsyncThunk(
   "quotation/fetchDetails",
@@ -85,7 +89,10 @@ export const fetchQuotationCompanies = createAsyncThunk(
         { signal },
       );
 
-      return fromCompanyListResponse(response, requestedPagination);
+      return fromQuotationCompanyDirectoryResponse(
+        response,
+        requestedPagination,
+      );
     } catch (error) {
       if (signal.aborted) {
         const abortError = new Error(
@@ -129,7 +136,10 @@ export const fetchQuotationProducts = createAsyncThunk(
         { signal },
       );
 
-      return fromProductListResponse(response, requestedPagination);
+      return fromQuotationProductDirectoryResponse(
+        response,
+        requestedPagination,
+      );
     } catch (error) {
       if (signal.aborted) {
         const abortError = new Error(
@@ -156,17 +166,54 @@ export const createQuotationDetails = createAsyncThunk(
     }
 
     const quotation = state.quotation;
-    const payload = toQuotationDetailsPayload({
+    const payload = toQuotationDetailsCreatePayload({
       quotationRefId,
       selectedCompany: quotation.selectedCompany,
       companyInformation: quotation.companyInformation,
       taxTreatment: quotation.taxTreatment,
       gstPercentage: quotation.gstPercentage,
+      deliveryNotes: quotation.deliveryNotes,
+      paymentNotes: quotation.paymentNotes,
       productInformation: quotation.productInformation,
     });
 
     try {
       return await employeeQuotationApi.createQuotationDetails(payload);
+    } catch (error) {
+      return rejectWithValue(extractErrorMessage(error));
+    }
+  },
+);
+
+export const updateQuotationDetails = createAsyncThunk(
+  "quotation/updateDetails",
+  async (
+    { id, quotationRefId, quotationVersion },
+    { getState, rejectWithValue },
+  ) => {
+    const state = getState();
+
+    if (state.auth.role !== ROLE_PATHS.EMPLOYEE) {
+      return rejectWithValue(
+        "You do not have permission to update quotation details.",
+      );
+    }
+
+    const quotation = state.quotation;
+    const payload = toQuotationDetailsUpdatePayload({
+      quotationRefId,
+      quotationVersion,
+      selectedCompany: quotation.selectedCompany,
+      companyInformation: quotation.companyInformation,
+      taxTreatment: quotation.taxTreatment,
+      gstPercentage: quotation.gstPercentage,
+      deliveryNotes: quotation.deliveryNotes,
+      paymentNotes: quotation.paymentNotes,
+      productInformation: quotation.productInformation,
+    });
+
+    try {
+      return await employeeQuotationApi.updateQuotationDetails(id, payload);
     } catch (error) {
       return rejectWithValue(extractErrorMessage(error));
     }

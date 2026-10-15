@@ -1,14 +1,15 @@
 import { useEffect } from "react";
 
-import CreateQuotationForm from "@screenComponent/quotations/create/form/createQuotationForm";
-import { clearPreviousFieldKeyboardNavigation } from "@screenComponent/quotations/create/hooks/handlePreviousFieldKeyboardNavigation";
-import useCreateQuotationKeyboardShortcut from "@screenComponent/quotations/create/hooks/useCreateQuotationKeyboardShortcut";
-import useQuotationCompanySearch from "@screenComponent/quotations/create/hooks/useQuotationCompanySearch";
-import useQuotationProductSearch from "@screenComponent/quotations/create/hooks/useQuotationProductSearch";
-import QuotationExitDialog from "@screenComponent/quotations/create/quotationExitDialog";
+import { QUOTATION_FORM_MODES } from "@Enums";
+import CreateQuotationForm from "@screenComponent/quotations/form/createQuotationForm";
+import useQuotationCompanySearch from "@screenComponent/quotations/form/companyInformation/hooks/useQuotationCompanySearch";
+import QuotationExitDialog from "@screenComponent/quotations/dialogs/quotationExitDialog";
+import { clearPreviousFieldKeyboardNavigation } from "@screenComponent/quotations/keyboardShortcuts/shared/handlePreviousFieldKeyboardNavigation";
+import useQuotationPageKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/page/useQuotationPageKeyboardShortcut";
+import useQuotationProductSearch from "@screenComponent/quotations/form/productInformation/hooks/useQuotationProductSearch";
 
 function CreateQuotation() {
-  const exitDialog = useCreateQuotationKeyboardShortcut();
+  const exitDialog = useQuotationPageKeyboardShortcut();
   useQuotationCompanySearch();
   useQuotationProductSearch();
 
@@ -23,10 +24,11 @@ function CreateQuotation() {
     <main className="h-full min-h-0 w-full">
       <CreateQuotationForm />
       <QuotationExitDialog
+        mode={QUOTATION_FORM_MODES.CREATE}
         open={exitDialog.isExitDialogOpen}
         onClose={exitDialog.closeExitDialog}
-        onNo={exitDialog.removeAndExit}
-        onYes={exitDialog.saveAndExit}
+        onDiscard={exitDialog.discardAndExit}
+        onKeep={exitDialog.keepAndExit}
       />
     </main>
   );

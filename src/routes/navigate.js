@@ -15,6 +15,8 @@ export const ROUTES = Object.freeze({
   PRODUCTS: "/products",
   QUOTATIONS: "/quotations",
   QUOTATION_NEW: "/quotations/new",
+  QUOTATION_VIEW: "/quotations/:quotationId/view",
+  QUOTATION_EDIT: "/quotations/:quotationId/edit",
   PRODUCT_SYNC_PENDING: "/products/sync-pending",
   PRODUCT_NEW: "/products/new",
   PRODUCT_EDIT: "/products/:productId/edit",
@@ -40,6 +42,10 @@ export const ROUTES = Object.freeze({
 export const ROUTE_BUILDERS = Object.freeze({
   companyEdit: (companyId) => `${ROUTES.COMPANIES}/${companyId}/edit`,
   productEdit: (productId) => `${ROUTES.PRODUCTS}/${productId}/edit`,
+  quotationEdit: (quotationId) =>
+    `${ROUTES.QUOTATIONS}/${quotationId}/edit`,
+  quotationView: (quotationId) =>
+    `${ROUTES.QUOTATIONS}/${encodeURIComponent(quotationId)}/view`,
   purchaseCreditEdit: (purchaseCreditId) =>
     `${ROUTES.PURCHASE_CREDITS}/${purchaseCreditId}/edit`,
 });

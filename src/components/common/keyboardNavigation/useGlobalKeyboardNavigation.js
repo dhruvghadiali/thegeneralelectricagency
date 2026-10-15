@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { matchPath, useLocation, useNavigate } from "react-router-dom";
 
 import { isAltShortcut } from "@keyboard/keyboard.utils";
 import { ROUTES } from "@routes/navigate";
@@ -65,8 +65,11 @@ function useGlobalKeyboardNavigation() {
     const handleGlobalShortcut = (event) => {
       if (event.defaultPrevented) return;
 
+      const isQuotationFormRoute =
+        location.pathname === ROUTES.QUOTATION_NEW ||
+        Boolean(matchPath(ROUTES.QUOTATION_EDIT, location.pathname));
       const isQuotationSummaryShortcut =
-        location.pathname === ROUTES.QUOTATION_NEW &&
+        isQuotationFormRoute &&
         isAltShortcut(event, "d") &&
         document.querySelector("[data-quotation-summary-trigger]");
 

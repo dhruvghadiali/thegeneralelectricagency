@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 import { ROUTES } from "@routes/navigate";
 import { Button } from "@shadcnComponent/button";
-import useQuotationKeyboardShortcut from "@screenComponent/quotations/hooks/useQuotationKeyboardShortcut";
+
+import useQuotationKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/quotationList/useQuotationKeyboardShortcut";
 
 function QuotationHeader() {
   const navigate = useNavigate();
