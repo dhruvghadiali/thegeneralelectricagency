@@ -88,7 +88,7 @@ function QuotationCompanyInformationCard({
           />
         </CompanyInformationField>
 
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid items-start gap-5 sm:grid-cols-2">
           <CompanyInformationField
             id="quotation-email"
             label="Email address"
