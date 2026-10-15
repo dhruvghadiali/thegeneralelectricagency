@@ -1,4 +1,6 @@
-import useProductDescriptionKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/productForm/useProductDescriptionKeyboardShortcut";
+import useProductDescriptionKeyboardShortcut, {
+  useProductDescriptionUndoKeyboardShortcut,
+} from "@screenComponent/quotations/keyboardShortcuts/productForm/useProductDescriptionKeyboardShortcut";
 import useProductDirectoryKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/productForm/useProductDirectoryKeyboardShortcut";
 import useProductDiscountKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/productForm/useProductDiscountKeyboardShortcut";
 import useProductNameKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/productForm/useProductNameKeyboardShortcut";
@@ -17,6 +19,9 @@ function useProductKeyboardShortcuts({
   hasProductSummary,
   onNavigateToCompanyInformation,
   onOpenProductSummary,
+  isProductFormOpen,
+  canUndoProductDescription,
+  onUndoProductDescription,
 }) {
   const productNameKeyboard = useProductNameKeyboardShortcut({
     productDirectoryRef,
@@ -49,6 +54,11 @@ function useProductKeyboardShortcuts({
     productInputRef,
     productDirectoryRef,
   });
+  const descriptionUndoKeyboard = useProductDescriptionUndoKeyboardShortcut({
+    enabled: isProductFormOpen,
+    canUndoProductDescription,
+    onUndoProductDescription,
+  });
 
   return {
     ...productNameKeyboard,
@@ -58,6 +68,7 @@ function useProductKeyboardShortcuts({
     handleDescriptionKeyDown,
     handleSaveKeyDown,
     handleProductOptionKeyDown,
+    ...descriptionUndoKeyboard,
   };
 }
 

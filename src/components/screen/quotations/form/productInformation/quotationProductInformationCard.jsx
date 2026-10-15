@@ -14,6 +14,8 @@ function QuotationProductInformationCard({
   fieldError,
   fieldRefs,
   keyboard,
+  canUndoProductDescription,
+  onUndoProductDescription,
   onProductNameChange,
   onProductNameBlur,
 }) {
@@ -28,6 +30,8 @@ function QuotationProductInformationCard({
           fieldError={fieldError}
           fieldRefs={fieldRefs}
           keyboard={keyboard}
+          canUndoProductDescription={canUndoProductDescription}
+          onUndoProductDescription={onUndoProductDescription}
           onProductNameChange={onProductNameChange}
           onProductNameBlur={onProductNameBlur}
         />

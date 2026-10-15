@@ -46,6 +46,11 @@ export const QUOTATION_KEYBOARD_SHORTCUTS = Object.freeze({
   ],
   productForm: [
     {
+      keys: "Alt+Z",
+      context: "Modified product description",
+      action: "Restore the selected product's original description",
+    },
+    {
       keys: "ArrowUp / ArrowDown",
       context: "Product name",
       action: "Focus the selected or first product directory option",

@@ -1,3 +1,6 @@
+import { Undo2 } from "lucide-react";
+
+import { Button } from "@shadcnComponent/button";
 import { Input } from "@shadcnComponent/input";
 import { Textarea } from "@shadcnComponent/textarea";
 
@@ -13,6 +16,8 @@ function QuotationProductForm({
   fieldError,
   fieldRefs,
   keyboard,
+  canUndoProductDescription,
+  onUndoProductDescription,
   onProductNameChange,
   onProductNameBlur,
 }) {
@@ -129,11 +134,30 @@ function QuotationProductForm({
         id="quotation-description"
         label="Description"
         error={fieldError("description")}
+        action={
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            disabled={!canUndoProductDescription}
+            onClick={onUndoProductDescription}
+            aria-label="Restore original product description"
+            aria-keyshortcuts="Alt+Z"
+            title="Restore original product description (Alt+Z)"
+            className="h-7 px-2"
+          >
+            <Undo2 className="size-3.5" aria-hidden="true" />
+            <kbd className="rounded border bg-muted px-1.5 py-0.5 font-mono text-[10px] leading-none text-muted-foreground">
+              Alt+Z
+            </kbd>
+          </Button>
+        }
       >
         <Textarea
           ref={fieldRefs.descriptionInputRef}
           id="quotation-description"
           {...fieldProps("description", "quotation-description")}
+          onBeforeInput={keyboard.handleDescriptionBeforeInput}
           onKeyDown={keyboard.handleDescriptionKeyDown}
           placeholder="Enter product description"
           rows={4}

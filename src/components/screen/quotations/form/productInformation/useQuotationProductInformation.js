@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -232,6 +232,75 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
     navigateToQuotationSummary,
     pendingDiscardDestination,
   ]);
+  const originalDescriptionProduct = useMemo(() => {
+    if (
+      selectedProduct &&
+      haveSameProductName(selectedProduct.name, formik.values.product)
+    ) {
+      return selectedProduct;
+    }
+
+    const matchingDirectoryProduct = findDirectoryProductByName(
+      directoryProducts,
+      formik.values.product,
+    );
+
+    if (matchingDirectoryProduct) return matchingDirectoryProduct;
+
+    const editingProduct = productInformation[editingProductIndex];
+    if (
+      !editingProduct ||
+      !haveSameProductName(editingProduct.product, formik.values.product)
+    ) {
+      return null;
+    }
+
+    return (
+      directoryProducts.find(
+        (product) =>
+          String(product.id) === String(editingProduct.productId),
+      ) ?? null
+    );
+  }, [
+    directoryProducts,
+    editingProductIndex,
+    formik.values.product,
+    productInformation,
+    selectedProduct,
+  ]);
+  const originalProductDescription = String(
+    originalDescriptionProduct?.description ?? "",
+  );
+  const canUndoProductDescription = Boolean(
+    originalDescriptionProduct &&
+      formik.values.description !== originalProductDescription,
+  );
+  const undoProductDescription = useCallback(
+    ({ focusDescription = true } = {}) => {
+      if (!canUndoProductDescription) return;
+
+      formik.setFieldValue("description", originalProductDescription, true);
+      formik.setFieldTouched("description", true, false);
+
+      if (!focusDescription) return;
+
+      window.requestAnimationFrame(() => {
+        const descriptionInput = descriptionInputRef.current;
+
+        descriptionInput?.focus();
+        descriptionInput?.setSelectionRange(
+          originalProductDescription.length,
+          originalProductDescription.length,
+        );
+      });
+    },
+    [canUndoProductDescription, formik, originalProductDescription],
+  );
+  const isProductFormOpen =
+    !isProductSummaryExpanded &&
+    !isAddAnotherDialogOpen &&
+    pendingDiscardDestination === null &&
+    pendingDuplicateProductIndex === null;
   useOpenQuotationSummaryKeyboardShortcut({
     enabled: productInformation.length > 0,
     onOpen: openQuotationSummary,
@@ -241,6 +310,9 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
     hasProductSummary: productInformation.length > 0,
     onNavigateToCompanyInformation: openCompanyInformation,
     onOpenProductSummary: openProductSummary,
+    isProductFormOpen,
+    canUndoProductDescription,
+    onUndoProductDescription: undoProductDescription,
   });
 
   const changeProductName = (event) => {
@@ -375,6 +447,7 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
     cancelProductFormDiscard,
     cancelDuplicateProduct,
     cancelProductDelete,
+    canUndoProductDescription,
     changeProductName,
     deleteProduct,
     editDuplicateProduct,
@@ -397,6 +470,7 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
     confirmProductFormDiscard,
     requestProductDelete,
     selectProduct,
+    undoProductDescription,
   };
 }
 
