@@ -8,6 +8,7 @@ import useQuotationHistoryKeyboardShortcut from "@screenComponent/quotations/key
 
 function QuotationHistory({
   history = [],
+  quotation,
   triggerRefs,
   onMoveBeforeHistory,
   onMoveAfterHistory,
@@ -48,6 +49,7 @@ function QuotationHistory({
           <QuotationHistoryEntry
             key={entry.id}
             entry={entry}
+            quotation={quotation}
             index={index}
             isOpen={isOpen}
             triggerRefs={triggerRefs}

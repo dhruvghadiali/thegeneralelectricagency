@@ -18,6 +18,7 @@ import QuotationInformationAccordion from "@screenComponent/quotations/viewQuota
 import CurrentQuotationDetails from "@screenComponent/quotations/viewQuotationInformation/currentVersion/currentQuotationDetails";
 import QuotationLoadingState from "@/components/screen/quotations/viewQuotationInformation/quotationDetails/quotationLoadingState";
 import QuotationUnavailableState from "@/components/screen/quotations/viewQuotationInformation/quotationDetails/quotationUnavailableState";
+import QuotationPdfDownloadButton from "@screenComponent/quotations/viewQuotationInformation/quotationDetails/quotationPdfDownloadButton";
 import useViewQuotationInformationKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/viewQuotationInformation/useViewQuotationInformationKeyboardShortcut";
 
 function ViewQuotationInformation({ quotation, isLoading, error }) {
@@ -115,6 +116,7 @@ function ViewQuotationInformation({ quotation, isLoading, error }) {
         onToggle={() => toggleSection("current")}
         triggerRef={currentRef}
         sectionIndex="1"
+        action={<QuotationPdfDownloadButton quotation={quotation} />}
       >
         <CurrentQuotationDetails quotation={quotation} />
       </QuotationInformationAccordion>
@@ -131,6 +133,7 @@ function ViewQuotationInformation({ quotation, isLoading, error }) {
       >
         <QuotationHistory
           history={quotation.quotationHistory}
+          quotation={quotation}
           triggerRefs={historyEntryRefs}
           onMoveBeforeHistory={moveBeforeHistory}
           onMoveAfterHistory={moveAfterHistory}

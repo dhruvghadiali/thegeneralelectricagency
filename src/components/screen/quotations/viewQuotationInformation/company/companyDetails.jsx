@@ -29,7 +29,10 @@ function CompanyDetails({ companyInformation, sectionRef }) {
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Company details
             </p>
-            <CardTitle id="quotation-company-title" className="mt-1 text-lg">
+            <CardTitle
+              id="quotation-company-title"
+              className="mt-1 text-lg capitalize"
+            >
               {displayValue(companyInformation?.companyName)}
             </CardTitle>
             <p className="mt-1 flex items-start gap-1.5 whitespace-pre-line text-sm text-muted-foreground">

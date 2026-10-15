@@ -9,13 +9,14 @@ import {
   titleCase,
 } from "@screenComponent/quotations/downloadPdf/pdf/pdf.utils";
 
-const PRODUCT_COLUMNS = [12, 70, 32, 16, 30, 26];
+const PRODUCT_COLUMNS = [12, 58, 24, 14, 26, 26, 26];
 const PRODUCT_HEADERS = [
   ["SL.", "NO."],
   ["DESCRIPTION"],
   ["HSN"],
   ["QTY"],
   ["PRICE", "/ UNIT"],
+  ["DISCOUNT", "/ UNIT"],
   ["AMOUNT"],
 ];
 
@@ -38,13 +39,13 @@ function productRowLayout(doc, item) {
   doc.setFontSize(6.5);
   const nameLines = doc.splitTextToSize(
     _.toUpper(item.product.name) || "-",
-    57,
+    PRODUCT_COLUMNS[1] - 6,
   );
   doc.setFont("helvetica", "normal");
   doc.setFontSize(5.8);
   const descriptionLines = doc.splitTextToSize(
     item.product.description || titleCase(item.product.category),
-    57,
+    PRODUCT_COLUMNS[1] - 6,
   );
   const contentHeight = nameLines.length * 2.8 + descriptionLines.length * 2.5;
 
@@ -146,8 +147,15 @@ export function drawProductSection(doc, items, startY, startIndex = 0) {
     );
     drawPdfText(
       doc,
-      pdfMoneyFormatter.format(pricing.subtotal),
+      pdfMoneyFormatter.format(pricing.discountPerUnit),
       centers[5],
+      centerY,
+      { align: "center", size: 6.2 },
+    );
+    drawPdfText(
+      doc,
+      pdfMoneyFormatter.format(pricing.subtotal),
+      centers[6],
       centerY,
       { align: "center", size: 6.2 },
     );

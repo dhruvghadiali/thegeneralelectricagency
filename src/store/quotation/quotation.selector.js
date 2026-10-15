@@ -40,4 +40,7 @@ export {
   selectQuotationUpdateUnavailableDialogOpen,
 } from "@Redux/quotation/table/quotationTable.selectors";
 
-export { selectQuotationViewOpenSection } from "@Redux/quotation/view/quotationView.selectors";
+export {
+  selectQuotationViewOpenSection,
+  selectQuotationViewPdfDownloadStatus,
+} from "@Redux/quotation/view/quotationView.selectors";

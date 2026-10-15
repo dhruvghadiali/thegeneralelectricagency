@@ -70,6 +70,9 @@ export const {
   quotationStepChanged,
   quotationUpdateUnavailableDialogClosed,
   quotationUpdateUnavailableDialogOpened,
+  quotationViewPdfDownloadCompleted,
+  quotationViewPdfDownloadFailed,
+  quotationViewPdfDownloadStarted,
   quotationViewSectionClosed,
   quotationViewSectionToggled,
 } = quotationSlice.actions;

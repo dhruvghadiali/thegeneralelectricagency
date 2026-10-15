@@ -10,7 +10,10 @@ function RemovedQuotationProducts({ products = [] }) {
       </p>
       <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-red-900">
         {products.map((product, index) => (
-          <li key={product.lineId ?? `${product.product}-${index}`}>
+          <li
+            key={product.lineId ?? `${product.product}-${index}`}
+            className="capitalize"
+          >
             {displayValue(product.product)}
           </li>
         ))}
