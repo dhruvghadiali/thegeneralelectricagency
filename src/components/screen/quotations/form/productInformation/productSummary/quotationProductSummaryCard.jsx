@@ -1,4 +1,7 @@
+import { Plus } from "lucide-react";
+
 import { cn } from "@/lib/utils";
+import { Button } from "@shadcnComponent/button";
 import {
   Card,
   CardDescription,
@@ -26,11 +29,29 @@ function QuotationProductSummaryCard({
       <CardHeader
         onClick={onOpenProductSummary}
         className={cn(
-          "cursor-pointer py-3",
+          "cursor-pointer grid-cols-[minmax(0,1fr)_auto] py-3",
           isExpanded && "border-b",
         )}
       >
         <CardTitle>Product summary</CardTitle>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          aria-label="Add product"
+          aria-keyshortcuts="Alt+N"
+          title="Add product (Alt+N)"
+          onClick={(event) => {
+            event.stopPropagation();
+            onNavigateToProductInformation();
+          }}
+          className="col-start-2 row-span-2 row-start-1 h-8 self-center px-2"
+        >
+          <Plus className="size-4" aria-hidden="true" />
+          <kbd className="rounded border bg-muted px-1.5 py-0.5 font-mono text-[10px] leading-none text-muted-foreground">
+            Alt+N
+          </kbd>
+        </Button>
         <CardDescription>
           {products.length} {products.length === 1 ? "product" : "products"} added
         </CardDescription>

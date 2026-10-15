@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { isAltShortcut } from "@keyboard/keyboard.utils";
 import { addQuotationKeyboardListener } from "@screenComponent/quotations/keyboardShortcuts/shared/quotationKeyboardListener";
 
 function useProductSummaryKeyboardShortcut({
@@ -42,6 +43,15 @@ function useProductSummaryKeyboardShortcut({
   useEffect(() => {
     const handleSummaryNavigation = (event) => {
       if (event.defaultPrevented) return;
+
+      if (isAltShortcut(event, "n")) {
+        if (event.target?.closest?.('[role="dialog"]')) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        onNavigateToProductInformation();
+        return;
+      }
 
       const isNavigationKey =
         event.key === "ArrowUp" || event.key === "ArrowDown";
