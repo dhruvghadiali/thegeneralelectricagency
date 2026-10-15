@@ -43,7 +43,7 @@ export function toQuotationProductPayload(
   };
 }
 
-export function toQuotationDetailsPayload({
+export function toQuotationDetailsCreatePayload({
   quotationRefId,
   selectedCompany,
   companyInformation = {},

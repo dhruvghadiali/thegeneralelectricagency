@@ -20,7 +20,7 @@ import {
   QUOTATION_PRODUCT_PAGE,
 } from "@Redux/quotation/quotation.state";
 import {
-  toQuotationDetailsPayload,
+  toQuotationDetailsCreatePayload,
   toQuotationDetailsUpdatePayload,
 } from "@Redux/quotation/quotation.api-payload";
 import { toCompanyListParams } from "@Tables/company/companyTable.api-payload";
@@ -165,7 +165,7 @@ export const createQuotationDetails = createAsyncThunk(
     }
 
     const quotation = state.quotation;
-    const payload = toQuotationDetailsPayload({
+    const payload = toQuotationDetailsCreatePayload({
       quotationRefId,
       selectedCompany: quotation.selectedCompany,
       companyInformation: quotation.companyInformation,
