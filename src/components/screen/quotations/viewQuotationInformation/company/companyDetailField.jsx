@@ -11,7 +11,7 @@ function CompanyDetailField({ icon, label, value }) {
       })}
       <div className="min-w-0">
         <dt className="text-xs text-muted-foreground">{label}</dt>
-        <dd className="mt-1 break-words text-sm font-medium whitespace-pre-line [overflow-wrap:anywhere]">
+        <dd className="mt-1 break-words text-sm font-medium whitespace-pre-line">
           {displayValue(value)}
         </dd>
       </div>

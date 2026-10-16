@@ -19,11 +19,15 @@ export function calculatePdfPricing(pricing = {}) {
     salePrice,
   );
   const unitPrice = salePrice - discountPerUnit;
+  const discountPercentage = salePrice
+    ? (discountPerUnit / salePrice) * 100
+    : 0;
   const amount = unitPrice * quantity;
 
   return {
     quantity,
     unitPrice,
+    discountPercentage,
     amount,
   };
 }

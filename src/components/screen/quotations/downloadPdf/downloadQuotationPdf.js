@@ -28,14 +28,21 @@ async function loadPdfImages() {
   return Object.fromEntries(imageEntries);
 }
 
-export async function downloadQuotationPdf(quotation, { beforeSave } = {}) {
+export async function downloadQuotationPdf(
+  quotation,
+  { beforeSave, showDiscountPercentage = false } = {},
+) {
   const sections = createQuotationPdfSections(quotation);
   const pdfImages = await loadPdfImages();
 
   const { createQuotationPdfDocument } = await import(
     "@screenComponent/quotations/downloadPdf/pdf/createQuotationPdfDocument"
   );
-  const { doc, quotationId } = createQuotationPdfDocument(sections, pdfImages);
+  const { doc, quotationId } = createQuotationPdfDocument(
+    sections,
+    pdfImages,
+    { showDiscountPercentage },
+  );
 
   try {
     await beforeSave?.(quotationId);

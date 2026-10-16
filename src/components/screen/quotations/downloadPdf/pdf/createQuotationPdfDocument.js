@@ -47,7 +47,11 @@ function calculateDocumentTotals(products, commercial) {
 
 const FIRST_PAGE_PRODUCT_Y = 82;
 
-export function createQuotationPdfDocument(sections, pdfImages = {}) {
+export function createQuotationPdfDocument(
+  sections,
+  pdfImages = {},
+  { showDiscountPercentage = false } = {},
+) {
   const {
     quotationRefId,
     quotationDate,
@@ -83,12 +87,19 @@ export function createQuotationPdfDocument(sections, pdfImages = {}) {
   const totalsSectionHeight = getQuotationTotalsSectionHeight(
     commercial.taxTreatment,
   );
+  const productTableOptions = { showDiscountPercentage };
   let productIndex = 0;
   let productY = FIRST_PAGE_PRODUCT_Y;
   let productTableEnd;
 
   if (products.length === 0) {
-    productTableEnd = drawProductSection(doc, [], productY);
+    productTableEnd = drawProductSection(
+      doc,
+      [],
+      productY,
+      0,
+      productTableOptions,
+    );
   }
 
   while (productIndex < products.length) {
@@ -97,6 +108,7 @@ export function createQuotationPdfDocument(sections, pdfImages = {}) {
       products,
       productIndex,
       PDF_PAGE.contentBottom - productY,
+      productTableOptions,
     );
 
     productTableEnd = drawProductSection(
@@ -104,6 +116,7 @@ export function createQuotationPdfDocument(sections, pdfImages = {}) {
       pageProducts,
       productY,
       productIndex,
+      productTableOptions,
     );
     productIndex += pageProducts.length;
 
