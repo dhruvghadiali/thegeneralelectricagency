@@ -17,6 +17,14 @@ const fromPersonResponse = (person = {}) => {
       ]
         .filter(Boolean)
         .join(" "),
+    phone:
+      person?.phone ??
+      person?.phone_number ??
+      person?.phoneNumber ??
+      person?.mobile ??
+      person?.mobile_number ??
+      person?.mobileNumber ??
+      null,
   };
 };
 

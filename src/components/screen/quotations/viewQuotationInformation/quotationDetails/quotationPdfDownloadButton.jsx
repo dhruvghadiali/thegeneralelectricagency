@@ -26,6 +26,7 @@ function QuotationPdfDownloadButton({ quotation, baseQuotation }) {
   const status = useSelector((state) =>
     selectQuotationViewPdfDownloadStatus(state, downloadKey),
   );
+  const loggedInUser = useSelector(({ auth }) => auth);
   const isDownloading = status === "downloading";
 
   const handleDownload = async (showDiscountPercentage) => {
@@ -35,7 +36,11 @@ function QuotationPdfDownloadButton({ quotation, baseQuotation }) {
 
     try {
       await downloadQuotationPdf(
-        createViewQuotationPdfInput(quotation, baseQuotation ?? quotation),
+        createViewQuotationPdfInput(
+          quotation,
+          baseQuotation ?? quotation,
+          loggedInUser,
+        ),
         { showDiscountPercentage },
       );
       dispatch(quotationViewPdfDownloadCompleted(downloadKey));

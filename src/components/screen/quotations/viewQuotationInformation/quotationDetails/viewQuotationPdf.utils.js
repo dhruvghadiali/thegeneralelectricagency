@@ -25,7 +25,7 @@ function getQuotationReference(quotation, baseQuotation) {
   );
 }
 
-function getEnquiryContact(quotation, baseQuotation) {
+function getEnquiryContact(quotation, baseQuotation, loggedInUser) {
   const person =
     quotation?.updatedBy?.name
       ? quotation.updatedBy
@@ -37,11 +37,22 @@ function getEnquiryContact(quotation, baseQuotation) {
 
   return {
     name: person?.name ?? "",
-    phone: person?.phone ?? "",
+    phone:
+      person?.phone ??
+      person?.phoneNumber ??
+      person?.mobile ??
+      loggedInUser?.phone ??
+      loggedInUser?.phoneNumber ??
+      loggedInUser?.mobile ??
+      "",
   };
 }
 
-export function createViewQuotationPdfInput(quotation, baseQuotation) {
+export function createViewQuotationPdfInput(
+  quotation,
+  baseQuotation,
+  loggedInUser,
+) {
   const productInformation = quotation?.productInformation ?? [];
 
   return {
@@ -71,7 +82,11 @@ export function createViewQuotationPdfInput(quotation, baseQuotation) {
     gstPercentage: quotation?.gstPercentage,
     deliveryNotes: quotation?.deliveryNotes,
     paymentNotes: quotation?.paymentNotes,
-    loggedInUser: getEnquiryContact(quotation, baseQuotation),
+    loggedInUser: getEnquiryContact(
+      quotation,
+      baseQuotation,
+      loggedInUser,
+    ),
   };
 }
 
