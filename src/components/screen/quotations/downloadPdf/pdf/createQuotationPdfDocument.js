@@ -16,7 +16,6 @@ import {
   drawCompanySection,
   drawQuotationTitle,
 } from "@screenComponent/quotations/downloadPdf/sections/quotationHeaderSection";
-import { drawQuotationPartnerSection } from "@screenComponent/quotations/downloadPdf/sections/quotationPartnerSection";
 import {
   drawProductSection,
   getPageProducts,
@@ -44,7 +43,7 @@ function calculateDocumentTotals(products, commercial) {
   };
 }
 
-const FIRST_PAGE_PRODUCT_Y = 103;
+const FIRST_PAGE_PRODUCT_Y = 82;
 
 export function createQuotationPdfDocument(sections, pdfImages = {}) {
   const {
@@ -77,8 +76,7 @@ export function createQuotationPdfDocument(sections, pdfImages = {}) {
 
   drawQuotationTitle(doc, quotationId, generatedAt);
   drawBrandHeader(doc, pdfImages.company, enquiryContact);
-  drawQuotationPartnerSection(doc, pdfImages);
-  drawCompanySection(doc, company, 75);
+  drawCompanySection(doc, company);
 
   const productTableHeight = getProductTableHeight(doc, products);
   const totalsSectionHeight = getQuotationTotalsSectionHeight(
@@ -99,6 +97,7 @@ export function createQuotationPdfDocument(sections, pdfImages = {}) {
       totals,
       productTableEnd + 3,
       commercial,
+      pdfImages,
     );
   } else {
     let productIndex = 0;
@@ -121,7 +120,7 @@ export function createQuotationPdfDocument(sections, pdfImages = {}) {
     }
 
     doc.addPage();
-    drawQuotationTotalsSection(doc, totals, 12, commercial);
+    drawQuotationTotalsSection(doc, totals, 12, commercial, pdfImages);
   }
 
   const pageCount = doc.getNumberOfPages();

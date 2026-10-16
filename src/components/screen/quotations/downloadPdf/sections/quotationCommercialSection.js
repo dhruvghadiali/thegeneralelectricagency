@@ -12,6 +12,7 @@ import {
   drawPdfText,
   numberOrZero,
 } from "@screenComponent/quotations/downloadPdf/pdf/pdf.utils";
+import { drawQuotationPartnerSection } from "@screenComponent/quotations/downloadPdf/sections/quotationPartnerSection";
 
 function taxTerm(taxTreatment) {
   if (taxTreatment === QUOTATION_TAX_TREATMENTS.GUJARAT) {
@@ -180,7 +181,12 @@ function drawClosingMessage(doc, startY) {
   );
 }
 
-export function drawQuotationCommercialSection(doc, startY, commercial) {
+export function drawQuotationCommercialSection(
+  doc,
+  startY,
+  commercial,
+  pdfImages = {},
+) {
   drawCommercialDetails(doc, startY, commercial);
 
   const informationY = startY + 16;
@@ -191,5 +197,8 @@ export function drawQuotationCommercialSection(doc, startY, commercial) {
 
   const authorizationY = declarationY + 22;
   drawAuthorization(doc, authorizationY);
-  drawClosingMessage(doc, authorizationY + 20);
+
+  const partnerY = authorizationY + 20;
+  drawQuotationPartnerSection(doc, pdfImages, partnerY);
+  drawClosingMessage(doc, partnerY + 20);
 }

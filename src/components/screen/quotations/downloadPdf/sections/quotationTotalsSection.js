@@ -31,7 +31,7 @@ export function getQuotationTotalsSectionHeight(taxTreatment) {
     taxTreatment === QUOTATION_TAX_TREATMENTS.GUJARAT ? 2 : 1;
   const totalRowCount = 4 + taxRowCount;
 
-  return totalRowCount * 7 + 103;
+  return totalRowCount * 7 + 123;
 }
 
 export function drawQuotationTotalsSection(
@@ -39,6 +39,7 @@ export function drawQuotationTotalsSection(
   totals,
   startY,
   commercial,
+  pdfImages = {},
 ) {
   const rows = [
     ["Sub Total", totals.subtotal],
@@ -87,5 +88,6 @@ export function drawQuotationTotalsSection(
     doc,
     startY + totalsHeight + 2,
     commercial,
+    pdfImages,
   );
 }
