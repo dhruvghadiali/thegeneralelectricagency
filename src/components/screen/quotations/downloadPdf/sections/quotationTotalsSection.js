@@ -1,3 +1,4 @@
+import { QUOTATION_TAX_TREATMENTS } from "@Enums";
 import { PDF_COLORS } from "@screenComponent/quotations/downloadPdf/pdf/pdf.constants";
 import {
   amountInWords,
@@ -7,30 +8,49 @@ import {
   pdfMoneyFormatter,
 } from "@screenComponent/quotations/downloadPdf/pdf/pdf.utils";
 
-function gstLabel(gstPercentage) {
-  const gstRate = Math.max(numberOrZero(gstPercentage), 0);
+function taxRows(totals) {
+  const gstRate = Math.max(numberOrZero(totals.gstPercentage), 0);
 
-  return `GST (${gstRate}%)`;
+  if (totals.taxTreatment === QUOTATION_TAX_TREATMENTS.GUJARAT) {
+    return [
+      [`CGST (${gstRate / 2}%)`, totals.totalTax / 2],
+      [`SGST (${gstRate / 2}%)`, totals.totalTax / 2],
+    ];
+  }
+
+  if (totals.taxTreatment === QUOTATION_TAX_TREATMENTS.OUT_OF_GUJARAT) {
+    return [[`IGST (${gstRate}%)`, totals.totalTax]];
+  }
+
+  return [];
 }
 
-export function getQuotationTotalsSectionHeight() {
-  return 3 * 7;
+export function getQuotationTotalsSectionHeight(taxTreatment) {
+  const taxRowCount =
+    taxTreatment === QUOTATION_TAX_TREATMENTS.GUJARAT
+      ? 2
+      : taxTreatment === QUOTATION_TAX_TREATMENTS.OUT_OF_GUJARAT
+        ? 1
+        : 0;
+
+  return (2 + taxRowCount) * 7;
 }
 
 export function drawQuotationTotalsSection(doc, totals, startY) {
   const rows = [
     ["TOTAL AMOUNT", totals.amount],
-    [gstLabel(totals.gstPercentage), totals.totalTax],
+    ...taxRows(totals),
     ["FINAL AMOUNT", totals.finalAmount],
   ];
   const totalsHeight = rows.length * 7;
+  const amountWordsY = startY + Math.min(14, totalsHeight - 2);
 
   drawPdfCell(doc, 12, startY, 112, totalsHeight, { lineWidth: 0.35 });
   drawPdfText(doc, "Amount in Words:", 16, startY + 7, {
     bold: true,
     size: 8.5,
   });
-  drawPdfText(doc, amountInWords(totals.finalAmount), 16, startY + 14, {
+  drawPdfText(doc, amountInWords(totals.finalAmount), 16, amountWordsY, {
     size: 7.5,
     maxWidth: 102,
   });

@@ -81,14 +81,6 @@ function QuotationFinalBillDetails({ products, sectionRef, onKeyDown }) {
           )}
 
           <BillAmountRow
-            label={
-              taxTreatment === QUOTATION_TAX_TREATMENTS.SEZ_LUT
-                ? "Total tax (No GST)"
-                : "Total tax"
-            }
-            value={totals.totalTax}
-          />
-          <BillAmountRow
             label="Final bill amount"
             value={totals.finalAmount}
             emphasized

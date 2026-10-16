@@ -1,6 +1,7 @@
 import Detail from "@screenComponent/quotations/viewQuotationInformation/quotationDetails/detail";
 import UpdatedMark from "@screenComponent/quotations/viewQuotationInformation/quotationDetails/updatedMark";
 import QuotationProducts from "@screenComponent/quotations/viewQuotationInformation/quotationDetails/quotationProducts";
+import QuotationTaxBreakdown from "@screenComponent/quotations/viewQuotationInformation/quotationDetails/quotationTaxBreakdown";
 
 import {
   displayValue,
@@ -70,10 +71,10 @@ function QuotationDetails({ quotation, changes }) {
             <dt className="text-muted-foreground">Discount</dt>
             <dd>{formatMoney(totals.discount)}</dd>
           </div>
-          <div className="flex justify-between gap-4">
-            <dt className="text-muted-foreground">Tax</dt>
-            <dd>{formatMoney(totals.totalTax)}</dd>
-          </div>
+          <QuotationTaxBreakdown
+            taxTreatment={quotation.taxTreatment}
+            totals={totals}
+          />
           <div className="flex justify-between gap-4 border-t pt-2 font-semibold">
             <dt>Final amount</dt>
             <dd>{formatMoney(totals.finalAmount)}</dd>

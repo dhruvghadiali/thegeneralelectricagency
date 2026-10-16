@@ -39,6 +39,7 @@ function calculateDocumentTotals(products, commercial) {
   return {
     ...productTotals,
     gstPercentage,
+    taxTreatment: commercial.taxTreatment,
     totalTax,
     finalAmount: productTotals.amount + totalTax,
   };
@@ -79,7 +80,9 @@ export function createQuotationPdfDocument(sections, pdfImages = {}) {
   drawBrandHeader(doc, pdfImages.company, enquiryContact);
   drawCompanySection(doc, company);
 
-  const totalsSectionHeight = getQuotationTotalsSectionHeight();
+  const totalsSectionHeight = getQuotationTotalsSectionHeight(
+    commercial.taxTreatment,
+  );
   let productIndex = 0;
   let productY = FIRST_PAGE_PRODUCT_Y;
   let productTableEnd;
