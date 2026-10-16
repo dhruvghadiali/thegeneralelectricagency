@@ -8,6 +8,7 @@ import useQuotationHistoryKeyboardShortcut from "@screenComponent/quotations/key
 
 function QuotationHistory({
   history = [],
+  quotation,
   triggerRefs,
   onMoveBeforeHistory,
   onMoveAfterHistory,
@@ -26,7 +27,7 @@ function QuotationHistory({
   }
 
   return (
-    <ol className="grid gap-3">
+    <ol className="grid gap-2.5 sm:gap-3">
       {entries.map((entry, index) => {
         const isOpen = openId === entry.id;
         const toggleEntry = () => {
@@ -48,6 +49,7 @@ function QuotationHistory({
           <QuotationHistoryEntry
             key={entry.id}
             entry={entry}
+            quotation={quotation}
             index={index}
             isOpen={isOpen}
             triggerRefs={triggerRefs}

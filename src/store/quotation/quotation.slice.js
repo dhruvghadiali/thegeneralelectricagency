@@ -40,6 +40,7 @@ const quotationSlice = createSlice({
 
 export const {
   quotationCompanyInformationSaved,
+  quotationCompanyDirectorySearchChanged,
   quotationCompanySearchChanged,
   quotationCompanySelected,
   quotationDeliveryNotesChanged,
@@ -60,6 +61,7 @@ export const {
   quotationProductInformationDeleted,
   quotationProductInformationSaved,
   quotationProductInformationUpdated,
+  quotationProductDirectorySearchChanged,
   quotationProductSearchChanged,
   quotationProductSelected,
   quotationProductSummaryClosed,
@@ -70,6 +72,9 @@ export const {
   quotationStepChanged,
   quotationUpdateUnavailableDialogClosed,
   quotationUpdateUnavailableDialogOpened,
+  quotationViewPdfDownloadCompleted,
+  quotationViewPdfDownloadFailed,
+  quotationViewPdfDownloadStarted,
   quotationViewSectionClosed,
   quotationViewSectionToggled,
 } = quotationSlice.actions;

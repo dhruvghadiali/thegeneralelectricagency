@@ -21,7 +21,9 @@ function QuotationProductRows({ products, changes }) {
       >
         <td className="px-4 py-3">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="font-medium">{displayValue(product.product)}</p>
+            <p className="font-medium capitalize">
+              {displayValue(product.product)}
+            </p>
             {productChange && (
               <Badge variant="warning">{productChange.type}</Badge>
             )}

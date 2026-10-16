@@ -11,6 +11,7 @@ import {
 } from "@shadcnComponent/card";
 
 import CompanyInformationField from "@screenComponent/quotations/form/companyInformation/companyInformationField";
+import QuotationCompanySelect from "@screenComponent/quotations/form/companyInformation/quotationCompanySelect";
 
 function QuotationCompanyInformationCard({
   companyInputRef,
@@ -22,6 +23,8 @@ function QuotationCompanyInformationCard({
   formik,
   fieldError,
   onCompanyNameChange,
+  onCompanySelect,
+  onCompanyClear,
   onCompanyNameFocus,
   onCompanyNameKeyDown,
   onAddressKeyDown,
@@ -56,18 +59,25 @@ function QuotationCompanyInformationCard({
           label="Company name"
           error={fieldError("companyName")}
         >
-          <Input
-            ref={companyInputRef}
-            id="quotation-companyName"
-            type="text"
-            {...fieldProps("companyName")}
-            onChange={onCompanyNameChange}
-            onFocus={onCompanyNameFocus}
-            onKeyDown={onCompanyNameKeyDown}
-            placeholder="Enter company name"
-            autoComplete="organization"
-            className="uppercase placeholder:normal-case"
-            autoFocus
+          <div className="hidden lg:block">
+            <Input
+              ref={companyInputRef}
+              id="quotation-companyName"
+              type="text"
+              {...fieldProps("companyName")}
+              onChange={onCompanyNameChange}
+              onFocus={onCompanyNameFocus}
+              onKeyDown={onCompanyNameKeyDown}
+              placeholder="Enter company name"
+              autoComplete="organization"
+              className="uppercase placeholder:normal-case"
+              autoFocus
+            />
+          </div>
+          <QuotationCompanySelect
+            value={formik.values.companyName}
+            onCompanySelect={onCompanySelect}
+            onCompanyClear={onCompanyClear}
           />
         </CompanyInformationField>
 

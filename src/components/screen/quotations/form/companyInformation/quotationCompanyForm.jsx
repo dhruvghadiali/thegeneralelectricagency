@@ -69,7 +69,7 @@ function QuotationCompanyForm() {
     dispatch(quotationCompanySearchChanged(event.target.value));
   };
 
-  const selectCompany = (company) => {
+  const selectCompany = (company, { focusInput = true } = {}) => {
     const companyValues = toQuotationCompanyFormValues(company);
 
     dispatch(quotationCompanySelected(company));
@@ -82,13 +82,19 @@ function QuotationCompanyForm() {
     );
     formik.setFieldTouched("companyName", true, false);
 
-    window.requestAnimationFrame(() => {
-      companyInputRef.current?.focus();
-      companyInputRef.current?.setSelectionRange(
-        companyValues.companyName.length,
-        companyValues.companyName.length,
-      );
-    });
+    if (focusInput) {
+      window.requestAnimationFrame(() => {
+        companyInputRef.current?.focus();
+        companyInputRef.current?.setSelectionRange(
+          companyValues.companyName.length,
+          companyValues.companyName.length,
+        );
+      });
+    }
+  };
+  const clearCompany = () => {
+    dispatch(quotationCompanySelected(null));
+    formik.resetForm({ values: { ...CREATE_QUOTATION_INITIAL_VALUES } });
   };
 
   return (
@@ -99,6 +105,7 @@ function QuotationCompanyForm() {
       keyboard={keyboard}
       onCompanyNameChange={changeCompanyName}
       onCompanySelect={selectCompany}
+      onCompanyClear={clearCompany}
     />
   );
 }

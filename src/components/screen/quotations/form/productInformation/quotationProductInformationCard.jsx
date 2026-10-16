@@ -14,8 +14,12 @@ function QuotationProductInformationCard({
   fieldError,
   fieldRefs,
   keyboard,
+  canUndoProductDescription,
+  onUndoProductDescription,
   onProductNameChange,
   onProductNameBlur,
+  onProductSelect,
+  onProductClear,
 }) {
   return (
     <Card className="min-h-64 w-full shrink-0">
@@ -28,8 +32,12 @@ function QuotationProductInformationCard({
           fieldError={fieldError}
           fieldRefs={fieldRefs}
           keyboard={keyboard}
+          canUndoProductDescription={canUndoProductDescription}
+          onUndoProductDescription={onUndoProductDescription}
           onProductNameChange={onProductNameChange}
           onProductNameBlur={onProductNameBlur}
+          onProductSelect={onProductSelect}
+          onProductClear={onProductClear}
         />
       </CardContent>
       <CardFooter className="justify-end border-t">

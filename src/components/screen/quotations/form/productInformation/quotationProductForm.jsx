@@ -1,3 +1,6 @@
+import { Undo2 } from "lucide-react";
+
+import { Button } from "@shadcnComponent/button";
 import { Input } from "@shadcnComponent/input";
 import { Textarea } from "@shadcnComponent/textarea";
 
@@ -7,14 +10,19 @@ import {
 } from "@screenComponent/quotations/form/quotationForm.validation.constants";
 
 import ProductInformationField from "@screenComponent/quotations/form/productInformation/productInformationField";
+import QuotationProductSelect from "@screenComponent/quotations/form/productInformation/quotationProductSelect";
 
 function QuotationProductForm({
   formik,
   fieldError,
   fieldRefs,
   keyboard,
+  canUndoProductDescription,
+  onUndoProductDescription,
   onProductNameChange,
   onProductNameBlur,
+  onProductSelect,
+  onProductClear,
 }) {
   const productError = fieldError("product");
   const fieldProps = (field, id) => {
@@ -47,19 +55,26 @@ function QuotationProductForm({
         label="Product"
         error={productError}
       >
-        <Input
-          ref={fieldRefs.productInputRef}
-          id="quotation-product"
-          type="text"
-          {...fieldProps("product", "quotation-product")}
-          onChange={onProductNameChange}
-          onBlur={onProductNameBlur}
-          onFocus={keyboard.handleProductNameFocus}
-          onKeyDown={keyboard.handleProductNameKeyDown}
-          className="uppercase placeholder:normal-case"
-          placeholder="Enter product name"
-          autoComplete="off"
-          autoFocus
+        <div className="hidden lg:block">
+          <Input
+            ref={fieldRefs.productInputRef}
+            id="quotation-product"
+            type="text"
+            {...fieldProps("product", "quotation-product")}
+            onChange={onProductNameChange}
+            onBlur={onProductNameBlur}
+            onFocus={keyboard.handleProductNameFocus}
+            onKeyDown={keyboard.handleProductNameKeyDown}
+            className="uppercase placeholder:normal-case"
+            placeholder="Enter product name"
+            autoComplete="off"
+            autoFocus
+          />
+        </div>
+        <QuotationProductSelect
+          value={formik.values.product}
+          onProductSelect={onProductSelect}
+          onProductClear={onProductClear}
         />
       </ProductInformationField>
 
@@ -129,11 +144,30 @@ function QuotationProductForm({
         id="quotation-description"
         label="Description"
         error={fieldError("description")}
+        action={
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            disabled={!canUndoProductDescription}
+            onClick={onUndoProductDescription}
+            aria-label="Restore original product description"
+            aria-keyshortcuts="Alt+Z"
+            title="Restore original product description (Alt+Z)"
+            className="h-7 px-2"
+          >
+            <Undo2 className="size-3.5" aria-hidden="true" />
+            <kbd className="rounded border bg-muted px-1.5 py-0.5 font-mono text-[10px] leading-none text-muted-foreground">
+              Alt+Z
+            </kbd>
+          </Button>
+        }
       >
         <Textarea
           ref={fieldRefs.descriptionInputRef}
           id="quotation-description"
           {...fieldProps("description", "quotation-description")}
+          onBeforeInput={keyboard.handleDescriptionBeforeInput}
           onKeyDown={keyboard.handleDescriptionKeyDown}
           placeholder="Enter product description"
           rows={4}

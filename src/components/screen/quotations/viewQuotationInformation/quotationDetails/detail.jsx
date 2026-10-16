@@ -11,7 +11,9 @@ function Detail({ label, children, changed = false }) {
         {label}
         {changed && <UpdatedMark />}
       </dt>
-      <dd className="mt-1 text-sm font-medium">{children}</dd>
+      <dd className="mt-1 break-words text-sm font-medium [overflow-wrap:anywhere]">
+        {children}
+      </dd>
     </div>
   );
 }

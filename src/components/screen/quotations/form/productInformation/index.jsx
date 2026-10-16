@@ -47,8 +47,14 @@ function QuotationProductInformation({
                 fieldError={product.fieldError}
                 fieldRefs={product.productFieldRefs}
                 keyboard={product.keyboard}
+                canUndoProductDescription={
+                  product.canUndoProductDescription
+                }
+                onUndoProductDescription={product.undoProductDescription}
                 onProductNameChange={product.changeProductName}
                 onProductNameBlur={product.blurProductName}
+                onProductSelect={product.selectProduct}
+                onProductClear={product.clearProduct}
               />
             )}
         </div>

@@ -11,7 +11,7 @@ function QuotationOverview({ quotation, showUpdatedMetadata = true }) {
   return (
     <section>
       <h3 className="mb-3 text-sm font-semibold">Quotation overview</h3>
-      <dl className="grid gap-4 sm:grid-cols-2">
+      <dl className="grid gap-3 sm:grid-cols-2 sm:gap-4">
         <Detail label="Last updated by">
           {displayValue(quotation.updatedBy?.name)}
         </Detail>

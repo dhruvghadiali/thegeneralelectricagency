@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { Building2, CalendarClock, FileText, UserRound } from "lucide-react";
 
 import { COLUMN_TYPES, MOBILE_SLOTS } from "@Enums";
@@ -8,6 +9,7 @@ export const QUOTATION_TABLE_COLUMNS = [
     header: "Company",
     field: "companyName",
     type: COLUMN_TYPES.TEXT,
+    render: (quotation) => _.toUpper(quotation.companyName ?? ""),
     className: "font-medium",
     mobile: MOBILE_SLOTS.PRIMARY,
     mobileIcon: Building2,

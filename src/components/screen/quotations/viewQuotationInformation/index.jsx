@@ -18,6 +18,7 @@ import QuotationInformationAccordion from "@screenComponent/quotations/viewQuota
 import CurrentQuotationDetails from "@screenComponent/quotations/viewQuotationInformation/currentVersion/currentQuotationDetails";
 import QuotationLoadingState from "@/components/screen/quotations/viewQuotationInformation/quotationDetails/quotationLoadingState";
 import QuotationUnavailableState from "@/components/screen/quotations/viewQuotationInformation/quotationDetails/quotationUnavailableState";
+import QuotationPdfDownloadButton from "@screenComponent/quotations/viewQuotationInformation/quotationDetails/quotationPdfDownloadButton";
 import useViewQuotationInformationKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/viewQuotationInformation/useViewQuotationInformationKeyboardShortcut";
 
 function ViewQuotationInformation({ quotation, isLoading, error }) {
@@ -71,18 +72,18 @@ function ViewQuotationInformation({ quotation, isLoading, error }) {
 
   return (
     <main
-      className="mx-auto flex w-full max-w-7xl flex-col gap-5 pb-3"
+      className="mx-auto flex w-full max-w-7xl flex-col gap-4 pb-4 sm:gap-5"
       onKeyDown={handleSectionNavigation}
     >
-      <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <p className="text-sm font-medium text-primary">
+      <header className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center sm:gap-4">
+        <div className="min-w-0">
+          <p className="text-xs font-medium uppercase tracking-wide text-primary sm:text-sm sm:normal-case sm:tracking-normal">
             Quotation information
           </p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight">
+          <h1 className="mt-1 break-words text-xl font-semibold tracking-tight sm:text-2xl">
             {quotation.quotationNumber || "Quotation details"}
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-1 text-xs leading-relaxed text-muted-foreground sm:text-sm">
             Company, current commercial details, and revision history.
           </p>
         </div>
@@ -92,10 +93,11 @@ function ViewQuotationInformation({ quotation, isLoading, error }) {
           onClick={goBack}
           tabIndex={-1}
           aria-keyshortcuts="Escape"
+          className="w-full justify-center sm:w-auto"
         >
           <ArrowLeft className="size-4" aria-hidden="true" />
           Back
-          <kbd className="ml-1 rounded border bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+          <kbd className="ml-1 hidden rounded border bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground sm:inline">
             Esc
           </kbd>
         </Button>
@@ -115,6 +117,7 @@ function ViewQuotationInformation({ quotation, isLoading, error }) {
         onToggle={() => toggleSection("current")}
         triggerRef={currentRef}
         sectionIndex="1"
+        action={<QuotationPdfDownloadButton quotation={quotation} />}
       >
         <CurrentQuotationDetails quotation={quotation} />
       </QuotationInformationAccordion>
@@ -131,13 +134,14 @@ function ViewQuotationInformation({ quotation, isLoading, error }) {
       >
         <QuotationHistory
           history={quotation.quotationHistory}
+          quotation={quotation}
           triggerRefs={historyEntryRefs}
           onMoveBeforeHistory={moveBeforeHistory}
           onMoveAfterHistory={moveAfterHistory}
         />
       </QuotationInformationAccordion>
 
-      <p className="text-center text-xs text-muted-foreground">
+      <p className="hidden text-center text-xs text-muted-foreground sm:block">
         Tab moves forward · Backspace or Delete moves back · Enter opens an
         accordion · Escape returns to quotations
       </p>

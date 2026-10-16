@@ -1,3 +1,4 @@
+import { withDesktopKeyboardShortcut } from "@keyboard/keyboard.utils";
 import useCompanyAddressKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/companyForm/useCompanyAddressKeyboardShortcut";
 import useCompanyDirectoryKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/companyForm/useCompanyDirectoryKeyboardShortcut";
 import useCompanyEmailKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/companyForm/useCompanyEmailKeyboardShortcut";
@@ -45,13 +46,18 @@ function useCompanyKeyboardShortcuts({
   });
 
   return {
-    ...companyNameKeyboard,
-    handleAddressKeyDown,
-    handleCompanyOptionKeyDown,
-    handleEmailKeyDown,
-    handlePhoneKeyDown,
-    handleGstKeyDown,
-    handleSaveKeyDown,
+    handleCompanyNameFocus: companyNameKeyboard.handleCompanyNameFocus,
+    handleCompanyNameKeyDown: withDesktopKeyboardShortcut(
+      companyNameKeyboard.handleCompanyNameKeyDown,
+    ),
+    handleAddressKeyDown: withDesktopKeyboardShortcut(handleAddressKeyDown),
+    handleCompanyOptionKeyDown: withDesktopKeyboardShortcut(
+      handleCompanyOptionKeyDown,
+    ),
+    handleEmailKeyDown: withDesktopKeyboardShortcut(handleEmailKeyDown),
+    handlePhoneKeyDown: withDesktopKeyboardShortcut(handlePhoneKeyDown),
+    handleGstKeyDown: withDesktopKeyboardShortcut(handleGstKeyDown),
+    handleSaveKeyDown: withDesktopKeyboardShortcut(handleSaveKeyDown),
   };
 }
 

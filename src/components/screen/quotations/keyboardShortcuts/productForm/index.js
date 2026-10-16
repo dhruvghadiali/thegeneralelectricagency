@@ -1,4 +1,7 @@
-import useProductDescriptionKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/productForm/useProductDescriptionKeyboardShortcut";
+import { withDesktopKeyboardShortcut } from "@keyboard/keyboard.utils";
+import useProductDescriptionKeyboardShortcut, {
+  useProductDescriptionUndoKeyboardShortcut,
+} from "@screenComponent/quotations/keyboardShortcuts/productForm/useProductDescriptionKeyboardShortcut";
 import useProductDirectoryKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/productForm/useProductDirectoryKeyboardShortcut";
 import useProductDiscountKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/productForm/useProductDiscountKeyboardShortcut";
 import useProductNameKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/productForm/useProductNameKeyboardShortcut";
@@ -17,6 +20,9 @@ function useProductKeyboardShortcuts({
   hasProductSummary,
   onNavigateToCompanyInformation,
   onOpenProductSummary,
+  isProductFormOpen,
+  canUndoProductDescription,
+  onUndoProductDescription,
 }) {
   const productNameKeyboard = useProductNameKeyboardShortcut({
     productDirectoryRef,
@@ -49,15 +55,32 @@ function useProductKeyboardShortcuts({
     productInputRef,
     productDirectoryRef,
   });
+  const descriptionUndoKeyboard = useProductDescriptionUndoKeyboardShortcut({
+    enabled: isProductFormOpen,
+    canUndoProductDescription,
+    onUndoProductDescription,
+  });
 
   return {
-    ...productNameKeyboard,
-    handleQuantityKeyDown,
-    handleSellingPriceKeyDown,
-    handleDiscountKeyDown,
-    handleDescriptionKeyDown,
-    handleSaveKeyDown,
-    handleProductOptionKeyDown,
+    handleProductNameFocus: productNameKeyboard.handleProductNameFocus,
+    handleProductNameKeyDown: withDesktopKeyboardShortcut(
+      productNameKeyboard.handleProductNameKeyDown,
+    ),
+    handleQuantityKeyDown: withDesktopKeyboardShortcut(handleQuantityKeyDown),
+    handleSellingPriceKeyDown: withDesktopKeyboardShortcut(
+      handleSellingPriceKeyDown,
+    ),
+    handleDiscountKeyDown: withDesktopKeyboardShortcut(handleDiscountKeyDown),
+    handleDescriptionKeyDown: withDesktopKeyboardShortcut(
+      handleDescriptionKeyDown,
+    ),
+    handleSaveKeyDown: withDesktopKeyboardShortcut(handleSaveKeyDown),
+    handleProductOptionKeyDown: withDesktopKeyboardShortcut(
+      handleProductOptionKeyDown,
+    ),
+    handleDescriptionBeforeInput: withDesktopKeyboardShortcut(
+      descriptionUndoKeyboard.handleDescriptionBeforeInput,
+    ),
   };
 }
 

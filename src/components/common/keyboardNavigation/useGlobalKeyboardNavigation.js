@@ -2,7 +2,11 @@ import { useCallback, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { matchPath, useLocation, useNavigate } from "react-router-dom";
 
-import { isAltShortcut } from "@keyboard/keyboard.utils";
+import {
+  addDesktopKeyboardListener,
+  isAltShortcut,
+  isDesktopKeyboardEnabled,
+} from "@keyboard/keyboard.utils";
 import { ROUTES } from "@routes/navigate";
 import {
   selectKeyboardNavigationActiveIndex,
@@ -85,9 +89,9 @@ function useGlobalKeyboardNavigation() {
       }
     };
 
-    window.addEventListener("keydown", handleGlobalShortcut, true);
-    return () =>
-      window.removeEventListener("keydown", handleGlobalShortcut, true);
+    return addDesktopKeyboardListener(handleGlobalShortcut, {
+      capture: true,
+    });
   }, [availableCommands, location.pathname, runCommand]);
 
   const changeQuery = useCallback(
@@ -114,6 +118,8 @@ function useGlobalKeyboardNavigation() {
 
   const handleInputKeyDown = useCallback(
     (event) => {
+      if (!isDesktopKeyboardEnabled()) return;
+
       if (event.key === "ArrowDown") {
         event.preventDefault();
         if (filteredCommands.length) {

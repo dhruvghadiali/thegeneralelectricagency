@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import {
+  isAltShortcut,
+  isDesktopKeyboardEnabled,
+} from "@keyboard/keyboard.utils";
 import { addQuotationKeyboardListener } from "@screenComponent/quotations/keyboardShortcuts/shared/quotationKeyboardListener";
 
 function useProductSummaryKeyboardShortcut({
@@ -15,6 +19,8 @@ function useProductSummaryKeyboardShortcut({
   const downloadButtonRef = useRef(null);
 
   useEffect(() => {
+    if (!isDesktopKeyboardEnabled()) return;
+
     productRefs.current[0]?.focus();
   }, []);
 
@@ -42,6 +48,15 @@ function useProductSummaryKeyboardShortcut({
   useEffect(() => {
     const handleSummaryNavigation = (event) => {
       if (event.defaultPrevented) return;
+
+      if (isAltShortcut(event, "n")) {
+        if (event.target?.closest?.('[role="dialog"]')) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        onNavigateToProductInformation();
+        return;
+      }
 
       const isNavigationKey =
         event.key === "ArrowUp" || event.key === "ArrowDown";
@@ -120,6 +135,8 @@ function useProductSummaryKeyboardShortcut({
 
   const handleProductKeyDown = useCallback(
     (event, index) => {
+      if (!isDesktopKeyboardEnabled()) return;
+
       if (event.key === "Enter" && event.target === event.currentTarget) {
         event.preventDefault();
         onEditProduct(index);
@@ -144,6 +161,8 @@ function useProductSummaryKeyboardShortcut({
 
   const handleDownloadButtonKeyDown = useCallback(
     (event) => {
+      if (!isDesktopKeyboardEnabled()) return;
+
       const shouldOpenProductForm =
         event.key === "Tab" && !event.shiftKey;
 

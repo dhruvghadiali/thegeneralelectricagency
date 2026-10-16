@@ -49,6 +49,7 @@ const FIRST_PAGE_PRODUCT_Y = 103;
 export function createQuotationPdfDocument(sections, pdfImages = {}) {
   const {
     quotationRefId,
+    quotationDate,
     company,
     products,
     commercial,
@@ -56,7 +57,11 @@ export function createQuotationPdfDocument(sections, pdfImages = {}) {
   } = sections;
   const quotationId = quotationRefId || createQuotationNumber(company.name);
   const totals = calculateDocumentTotals(products, commercial);
-  const generatedAt = new Date().toLocaleDateString("en-IN", {
+  const requestedDate = quotationDate ? new Date(quotationDate) : new Date();
+  const generatedDate = Number.isNaN(requestedDate.getTime())
+    ? new Date()
+    : requestedDate;
+  const generatedAt = generatedDate.toLocaleDateString("en-IN", {
     day: "2-digit",
     month: "short",
     year: "numeric",

@@ -27,9 +27,10 @@ function createProductSections(
     return {
       product: {
         name: savedProduct.product,
-        productCode: directoryProduct.productCode ?? "",
+        productCode:
+          savedProduct.productCode ?? directoryProduct.productCode ?? "",
         hsnCode: savedProduct.hsnCode || directoryProduct.hsnCode || "",
-        category: directoryProduct.category ?? "",
+        category: savedProduct.category ?? directoryProduct.category ?? "",
         description:
           savedProduct.description ?? directoryProduct.description ?? "",
       },
@@ -61,7 +62,11 @@ function createEnquiryContactSection(loggedInUser = {}) {
   const firstName = _.trim(loggedInUser.firstName);
   const lastName = _.trim(loggedInUser.lastName);
   const fullName = _.compact([firstName, lastName]).join(" ");
-  const enquiryName = fullName.length > 30 ? firstName : fullName;
+  const savedName = _.trim(loggedInUser.name);
+  const enquiryName =
+    (savedName || fullName).length > 30
+      ? firstName || savedName
+      : savedName || fullName;
 
   return {
     name: enquiryName || loggedInUser.username || "-",
@@ -71,6 +76,7 @@ function createEnquiryContactSection(loggedInUser = {}) {
 
 export function createQuotationPdfSections({
   quotationRefId,
+  quotationDate,
   companyInformation,
   productInformation,
   productDirectory,
@@ -82,6 +88,7 @@ export function createQuotationPdfSections({
 }) {
   return {
     quotationRefId,
+    quotationDate,
     company: createCompanySection(companyInformation),
     products: createProductSections(
       productInformation,

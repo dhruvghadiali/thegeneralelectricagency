@@ -8,6 +8,7 @@ function QuotationCompanyInformation({
   keyboard,
   onCompanyNameChange,
   onCompanySelect,
+  onCompanyClear,
 }) {
   return (
     <form
@@ -25,6 +26,8 @@ function QuotationCompanyInformation({
         formik={formik}
         fieldError={fieldError}
         onCompanyNameChange={onCompanyNameChange}
+        onCompanySelect={onCompanySelect}
+        onCompanyClear={onCompanyClear}
         onCompanyNameFocus={keyboard.handleCompanyNameFocus}
         onCompanyNameKeyDown={keyboard.handleCompanyNameKeyDown}
         onAddressKeyDown={keyboard.handleAddressKeyDown}

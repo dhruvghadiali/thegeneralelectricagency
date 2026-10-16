@@ -21,7 +21,7 @@ function QuotationProductDirectory({
   return (
     <Card
       ref={directoryRef}
-      className="min-h-[32rem] w-full gap-0 overflow-hidden pb-0 lg:h-full lg:min-h-0"
+      className="hidden min-h-[32rem] w-full gap-0 overflow-hidden pb-0 lg:flex lg:h-full lg:min-h-0"
     >
       <CardHeader className="shrink-0 border-b">
         <CardTitle>Product directory</CardTitle>

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
 
+import { isDesktopKeyboardEnabled } from "@keyboard/keyboard.utils";
 import { addQuotationKeyboardListener } from "@screenComponent/quotations/keyboardShortcuts/shared/quotationKeyboardListener";
 
 function useViewQuotationInformationKeyboardShortcut({
@@ -18,7 +19,7 @@ function useViewQuotationInformationKeyboardShortcut({
   );
 
   useEffect(() => {
-    if (!quotation) return;
+    if (!quotation || !isDesktopKeyboardEnabled()) return;
 
     companyRef.current?.focus({ preventScroll: true });
   }, [quotation]);
@@ -44,6 +45,8 @@ function useViewQuotationInformationKeyboardShortcut({
 
   const handleSectionNavigation = useCallback(
     (event) => {
+      if (!isDesktopKeyboardEnabled()) return;
+
       const isTab = event.key === "Tab";
       const isPreviousKey =
         event.key === "Backspace" || event.key === "Delete";
@@ -88,10 +91,14 @@ function useViewQuotationInformationKeyboardShortcut({
   );
 
   const moveBeforeHistory = useCallback(() => {
+    if (!isDesktopKeyboardEnabled()) return;
+
     currentRef.current?.focus();
   }, []);
 
   const moveAfterHistory = useCallback(() => {
+    if (!isDesktopKeyboardEnabled()) return;
+
     onCloseSection();
     window.requestAnimationFrame(() => companyRef.current?.focus());
   }, [onCloseSection]);
