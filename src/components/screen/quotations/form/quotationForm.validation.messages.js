@@ -6,6 +6,7 @@ import {
   CREATE_QUOTATION_EMAIL_MAX_LENGTH,
   CREATE_QUOTATION_EMAIL_MIN_LENGTH,
   QUOTATION_PRODUCT_DESCRIPTION_MAX_LENGTH,
+  QUOTATION_PRODUCT_DISCOUNT_PERCENTAGE_MAX,
   QUOTATION_PRODUCT_NAME_MAX_LENGTH,
   QUOTATION_PRODUCT_QUANTITY_MAX,
   QUOTATION_PRODUCT_QUANTITY_MIN,
@@ -40,5 +41,8 @@ export const QUOTATION_PRODUCT_VALIDATION_MESSAGES = Object.freeze({
   DISCOUNT_NUMBER: "Discount must be a valid number",
   DISCOUNT_MIN: "Discount cannot be negative",
   DISCOUNT_MAX: "Discount cannot exceed the selling price",
+  DISCOUNT_PERCENTAGE_NUMBER: "Discount percentage must be a valid number",
+  DISCOUNT_PERCENTAGE_MIN: "Discount percentage cannot be negative",
+  DISCOUNT_PERCENTAGE_MAX: `Discount percentage cannot exceed ${QUOTATION_PRODUCT_DISCOUNT_PERCENTAGE_MAX}%`,
   DESCRIPTION_MAX: `Description must be ${QUOTATION_PRODUCT_DESCRIPTION_MAX_LENGTH.toLocaleString("en-IN")} characters or fewer`,
 });

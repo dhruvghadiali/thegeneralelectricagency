@@ -2,6 +2,7 @@ import { Badge } from "@shadcnComponent/badge";
 import {
   displayValue,
   formatMoney,
+  formatPercentage,
   getProductChangeKey,
 } from "@screenComponent/quotations/viewQuotationInformation/viewQuotationInformation.utils";
 import ProductValue from "@screenComponent/quotations/viewQuotationInformation/quotationDetails/productValue";
@@ -60,8 +61,13 @@ function QuotationProductCards({ products, changes }) {
                 {displayValue(product.quantity)}
               </ProductValue>
               <ProductValue label="Unit price">{formatMoney(price)}</ProductValue>
-              <ProductValue label="Discount">
-                {formatMoney(discount)}
+              <ProductValue label="Discount (Rupees / %)">
+                <span className="flex flex-wrap gap-x-1.5">
+                  <span>{formatMoney(discount)}</span>
+                  <span className="text-muted-foreground">
+                    ({formatPercentage(product.discountPercentage)})
+                  </span>
+                </span>
               </ProductValue>
               <ProductValue label="Line total" emphasized>
                 {formatMoney(

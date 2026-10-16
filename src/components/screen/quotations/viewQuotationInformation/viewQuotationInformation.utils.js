@@ -40,6 +40,14 @@ export function formatMoney(value) {
   return quotationCurrencyFormatter.format(Number(value) || 0);
 }
 
+export function formatPercentage(value) {
+  const percentage = Number(value);
+
+  return `${Number.isFinite(percentage) ? percentage.toLocaleString("en-IN", {
+    maximumFractionDigits: 2,
+  }) : 0}%`;
+}
+
 function isHistoryProductRow(entry = {}) {
   return (
     !Array.isArray(entry.products) &&

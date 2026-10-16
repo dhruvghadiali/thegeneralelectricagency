@@ -3,31 +3,31 @@ import { useCallback } from "react";
 import handlePreviousFieldKeyboardNavigation from "@screenComponent/quotations/keyboardShortcuts/shared/handlePreviousFieldKeyboardNavigation";
 
 function useProductDiscountKeyboardShortcut({
-  sellingPriceInputRef,
-  descriptionInputRef,
+  previousInputRef,
+  nextInputRef,
 }) {
   return useCallback(
     (event) => {
-      if (handlePreviousFieldKeyboardNavigation(event, sellingPriceInputRef))
+      if (handlePreviousFieldKeyboardNavigation(event, previousInputRef))
         return;
 
       if (event.altKey && event.key === "ArrowUp") {
         event.preventDefault();
-        sellingPriceInputRef.current?.focus();
+        previousInputRef.current?.focus();
         return;
       }
 
-      const shouldFocusDescription =
+      const shouldFocusNext =
         (event.altKey && event.key === "ArrowDown") ||
         event.key === "Enter" ||
         (event.key === "Tab" && !event.shiftKey);
 
-      if (!shouldFocusDescription) return;
+      if (!shouldFocusNext) return;
 
       event.preventDefault();
-      descriptionInputRef.current?.focus();
+      nextInputRef.current?.focus();
     },
-    [descriptionInputRef, sellingPriceInputRef],
+    [nextInputRef, previousInputRef],
   );
 }
 

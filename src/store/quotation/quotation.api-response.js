@@ -56,6 +56,22 @@ const fromCompanyResponse = (quotation = {}) => {
   };
 };
 
+const discountPercentageFromAmount = (discount, sellingPrice) => {
+  const numericDiscount = Number(discount);
+  const numericSellingPrice = Number(sellingPrice);
+
+  if (
+    !Number.isFinite(numericDiscount) ||
+    !Number.isFinite(numericSellingPrice) ||
+    numericSellingPrice <= 0
+  ) {
+    return "0";
+  }
+
+  return Number(((numericDiscount / numericSellingPrice) * 100).toFixed(2))
+    .toString();
+};
+
 const fromQuotationProductResponse = (item = {}) => {
   const productReferences = [item.product, item.product_id, item.productId];
   const tallyProductReferences = [
@@ -83,6 +99,13 @@ const fromQuotationProductResponse = (item = {}) => {
         : reference ?? null),
     null,
   );
+  const sellingPrice =
+    item.unit_price ??
+    item.unitPrice ??
+    item.selling_price ??
+    item.sellingPrice ??
+    "";
+  const discount = item.discount ?? "0";
 
   return {
     lineId: item._id ?? item.id ?? null,
@@ -99,14 +122,9 @@ const fromQuotationProductResponse = (item = {}) => {
       item.name ??
       "",
     quantity: String(item.qty ?? item.quantity ?? ""),
-    sellingPrice: String(
-      item.unit_price ??
-        item.unitPrice ??
-        item.selling_price ??
-        item.sellingPrice ??
-        "",
-    ),
-    discount: String(item.discount ?? "0"),
+    sellingPrice: String(sellingPrice),
+    discount: String(discount),
+    discountPercentage: discountPercentageFromAmount(discount, sellingPrice),
     description: item.description ?? "",
     finalPrice: String(item.final_price ?? item.finalPrice ?? ""),
     hsnCode:
