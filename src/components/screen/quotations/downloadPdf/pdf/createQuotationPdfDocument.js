@@ -16,10 +16,10 @@ import {
   drawCompanySection,
   drawQuotationTitle,
 } from "@screenComponent/quotations/downloadPdf/sections/quotationHeaderSection";
+import { drawQuotationCommercialSections } from "@screenComponent/quotations/downloadPdf/sections/quotationCommercialSection";
 import {
   drawProductSection,
   getPageProducts,
-  getProductTableHeight,
 } from "@screenComponent/quotations/downloadPdf/sections/quotationProductSection";
 import {
   drawQuotationTotalsSection,
@@ -78,50 +78,53 @@ export function createQuotationPdfDocument(sections, pdfImages = {}) {
   drawBrandHeader(doc, pdfImages.company, enquiryContact);
   drawCompanySection(doc, company);
 
-  const productTableHeight = getProductTableHeight(doc, products);
   const totalsSectionHeight = getQuotationTotalsSectionHeight(
     commercial.taxTreatment,
   );
-  const fitsOnFirstPage =
-    FIRST_PAGE_PRODUCT_Y + productTableHeight + 3 + totalsSectionHeight <=
-    PDF_PAGE.footerY;
+  let productIndex = 0;
+  let productY = FIRST_PAGE_PRODUCT_Y;
+  let productTableEnd;
 
-  if (fitsOnFirstPage) {
-    const productTableEnd = drawProductSection(
+  if (products.length === 0) {
+    productTableEnd = drawProductSection(doc, [], productY);
+  }
+
+  while (productIndex < products.length) {
+    const pageProducts = getPageProducts(
       doc,
       products,
-      FIRST_PAGE_PRODUCT_Y,
+      productIndex,
+      PDF_PAGE.contentBottom - productY,
     );
-    drawQuotationTotalsSection(
-      doc,
-      totals,
-      productTableEnd + 3,
-      commercial,
-      pdfImages,
-    );
-  } else {
-    let productIndex = 0;
-    const firstPageProducts = getPageProducts(doc, products, productIndex, 180);
 
-    drawProductSection(
+    productTableEnd = drawProductSection(
       doc,
-      firstPageProducts,
-      FIRST_PAGE_PRODUCT_Y,
+      pageProducts,
+      productY,
       productIndex,
     );
-    productIndex += firstPageProducts.length;
+    productIndex += pageProducts.length;
 
-    while (productIndex < products.length) {
+    if (productIndex < products.length) {
       doc.addPage();
-
-      const pageProducts = getPageProducts(doc, products, productIndex, 264);
-      drawProductSection(doc, pageProducts, 12, productIndex);
-      productIndex += pageProducts.length;
+      productY = PDF_PAGE.top;
     }
-
-    doc.addPage();
-    drawQuotationTotalsSection(doc, totals, 12, commercial, pdfImages);
   }
+
+  let totalsY = productTableEnd + 3;
+
+  if (totalsY + totalsSectionHeight > PDF_PAGE.contentBottom) {
+    doc.addPage();
+    totalsY = PDF_PAGE.top;
+  }
+
+  const totalsEnd = drawQuotationTotalsSection(
+    doc,
+    totals,
+    totalsY,
+    commercial,
+  );
+  drawQuotationCommercialSections(doc, totalsEnd, commercial, pdfImages);
 
   const pageCount = doc.getNumberOfPages();
 

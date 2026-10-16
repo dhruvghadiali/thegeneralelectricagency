@@ -4,6 +4,7 @@ import { QUOTATION_TAX_TREATMENTS } from "@Enums";
 import {
   PDF_BRAND,
   PDF_COLORS,
+  PDF_PAGE,
   PDF_WARRANTY_TEXT,
 } from "@screenComponent/quotations/downloadPdf/pdf/pdf.constants";
 import {
@@ -181,24 +182,46 @@ function drawClosingMessage(doc, startY) {
   );
 }
 
-export function drawQuotationCommercialSection(
+export function drawQuotationCommercialSections(
   doc,
   startY,
   commercial,
   pdfImages = {},
 ) {
-  drawCommercialDetails(doc, startY, commercial);
+  const sections = [
+    {
+      height: 14,
+      draw: (sectionY) => drawCommercialDetails(doc, sectionY, commercial),
+    },
+    {
+      height: 27,
+      draw: (sectionY) =>
+        drawBankAndTerms(doc, sectionY, commercial.taxTreatment),
+    },
+    { height: 20, draw: (sectionY) => drawDeclaration(doc, sectionY) },
+    {
+      height: 54,
+      draw: (sectionY) => {
+        drawAuthorization(doc, sectionY);
+        drawQuotationPartnerSection(doc, pdfImages, sectionY + 20);
+        drawClosingMessage(doc, sectionY + 40);
+      },
+    },
+  ];
 
-  const informationY = startY + 16;
-  drawBankAndTerms(doc, informationY, commercial.taxTreatment);
+  let currentY = startY;
 
-  const declarationY = informationY + 29;
-  drawDeclaration(doc, declarationY);
+  sections.forEach(({ height, draw }) => {
+    let sectionY = currentY + 2;
 
-  const authorizationY = declarationY + 22;
-  drawAuthorization(doc, authorizationY);
+    if (sectionY + height > PDF_PAGE.contentBottom) {
+      doc.addPage();
+      sectionY = PDF_PAGE.top;
+    }
 
-  const partnerY = authorizationY + 20;
-  drawQuotationPartnerSection(doc, pdfImages, partnerY);
-  drawClosingMessage(doc, partnerY + 20);
+    draw(sectionY);
+    currentY = sectionY + height;
+  });
+
+  return currentY;
 }

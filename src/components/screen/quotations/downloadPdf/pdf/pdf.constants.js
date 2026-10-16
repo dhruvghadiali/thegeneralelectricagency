@@ -28,8 +28,10 @@ export const PDF_WARRANTY_TEXT =
   "WARRANTY: All materials supplied shall be Warranted for a period of 12 months from date of commissioning or 18 months from the date of supply";
 
 export const PDF_PAGE = Object.freeze({
+  top: 12,
   left: 12,
   right: 198,
   contentWidth: 186,
+  contentBottom: 284,
   footerY: 287,
 });
