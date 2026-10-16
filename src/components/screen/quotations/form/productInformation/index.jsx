@@ -53,6 +53,8 @@ function QuotationProductInformation({
                 onUndoProductDescription={product.undoProductDescription}
                 onProductNameChange={product.changeProductName}
                 onProductNameBlur={product.blurProductName}
+                onProductSelect={product.selectProduct}
+                onProductClear={product.clearProduct}
               />
             )}
         </div>

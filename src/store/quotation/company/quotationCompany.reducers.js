@@ -7,6 +7,9 @@ export const quotationCompanyReducers = {
     state.companySearch = action.payload;
     state.selectedCompany = null;
   },
+  quotationCompanyDirectorySearchChanged(state, action) {
+    state.companySearch = action.payload;
+  },
   quotationCompanySelected(state, action) {
     state.selectedCompany = action.payload;
     state.companySearch = action.payload?.name ?? "";

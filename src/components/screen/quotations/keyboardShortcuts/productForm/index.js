@@ -1,3 +1,4 @@
+import { withDesktopKeyboardShortcut } from "@keyboard/keyboard.utils";
 import useProductDescriptionKeyboardShortcut, {
   useProductDescriptionUndoKeyboardShortcut,
 } from "@screenComponent/quotations/keyboardShortcuts/productForm/useProductDescriptionKeyboardShortcut";
@@ -61,14 +62,25 @@ function useProductKeyboardShortcuts({
   });
 
   return {
-    ...productNameKeyboard,
-    handleQuantityKeyDown,
-    handleSellingPriceKeyDown,
-    handleDiscountKeyDown,
-    handleDescriptionKeyDown,
-    handleSaveKeyDown,
-    handleProductOptionKeyDown,
-    ...descriptionUndoKeyboard,
+    handleProductNameFocus: productNameKeyboard.handleProductNameFocus,
+    handleProductNameKeyDown: withDesktopKeyboardShortcut(
+      productNameKeyboard.handleProductNameKeyDown,
+    ),
+    handleQuantityKeyDown: withDesktopKeyboardShortcut(handleQuantityKeyDown),
+    handleSellingPriceKeyDown: withDesktopKeyboardShortcut(
+      handleSellingPriceKeyDown,
+    ),
+    handleDiscountKeyDown: withDesktopKeyboardShortcut(handleDiscountKeyDown),
+    handleDescriptionKeyDown: withDesktopKeyboardShortcut(
+      handleDescriptionKeyDown,
+    ),
+    handleSaveKeyDown: withDesktopKeyboardShortcut(handleSaveKeyDown),
+    handleProductOptionKeyDown: withDesktopKeyboardShortcut(
+      handleProductOptionKeyDown,
+    ),
+    handleDescriptionBeforeInput: withDesktopKeyboardShortcut(
+      descriptionUndoKeyboard.handleDescriptionBeforeInput,
+    ),
   };
 }
 

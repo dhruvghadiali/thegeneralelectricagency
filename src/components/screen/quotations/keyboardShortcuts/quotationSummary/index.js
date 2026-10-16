@@ -1,5 +1,9 @@
 import { useEffect, useRef } from "react";
 
+import {
+  isDesktopKeyboardEnabled,
+  withDesktopKeyboardShortcut,
+} from "@keyboard/keyboard.utils";
 import useBackButtonKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/quotationSummary/useBackButtonKeyboardShortcut";
 import useBillToKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/quotationSummary/useBillToKeyboardShortcut";
 import useDeliveryNotesKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/quotationSummary/useDeliveryNotesKeyboardShortcut";
@@ -22,6 +26,8 @@ function useQuotationSummaryKeyboardShortcuts() {
   const submitButtonRef = useRef(null);
 
   useEffect(() => {
+    if (!isDesktopKeyboardEnabled()) return;
+
     taxTreatmentRef.current?.focus();
   }, []);
 
@@ -75,15 +81,29 @@ function useQuotationSummaryKeyboardShortcuts() {
       backButtonRef,
       submitButtonRef,
     },
-    handleTaxTreatmentKeyDown,
-    handleGstPercentageKeyDown,
-    handleDeliveryNotesKeyDown,
-    handlePaymentNotesKeyDown,
-    handleBillToKeyDown,
-    handleProductsKeyDown,
-    handleFinalBillDetailsKeyDown,
-    handleBackButtonKeyDown,
-    handleSubmitButtonKeyDown,
+    handleTaxTreatmentKeyDown: withDesktopKeyboardShortcut(
+      handleTaxTreatmentKeyDown,
+    ),
+    handleGstPercentageKeyDown: withDesktopKeyboardShortcut(
+      handleGstPercentageKeyDown,
+    ),
+    handleDeliveryNotesKeyDown: withDesktopKeyboardShortcut(
+      handleDeliveryNotesKeyDown,
+    ),
+    handlePaymentNotesKeyDown: withDesktopKeyboardShortcut(
+      handlePaymentNotesKeyDown,
+    ),
+    handleBillToKeyDown: withDesktopKeyboardShortcut(handleBillToKeyDown),
+    handleProductsKeyDown: withDesktopKeyboardShortcut(handleProductsKeyDown),
+    handleFinalBillDetailsKeyDown: withDesktopKeyboardShortcut(
+      handleFinalBillDetailsKeyDown,
+    ),
+    handleBackButtonKeyDown: withDesktopKeyboardShortcut(
+      handleBackButtonKeyDown,
+    ),
+    handleSubmitButtonKeyDown: withDesktopKeyboardShortcut(
+      handleSubmitButtonKeyDown,
+    ),
   };
 }
 

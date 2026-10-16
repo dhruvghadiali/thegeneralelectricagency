@@ -1,5 +1,7 @@
 import { useCallback, useRef } from "react";
 
+import { isDesktopKeyboardEnabled } from "@keyboard/keyboard.utils";
+
 function useQuotationDialogKeyboardShortcut({
   onClose,
   initialFocus = "left",
@@ -40,6 +42,8 @@ function useQuotationDialogKeyboardShortcut({
   }, []);
 
   const handleDialogKeyDown = useCallback((event) => {
+    if (!isDesktopKeyboardEnabled()) return;
+
     const leftButton = leftButtonRef.current ?? rightButtonRef.current;
     const rightButton = rightButtonRef.current ?? leftButtonRef.current;
 

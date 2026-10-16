@@ -10,6 +10,7 @@ import {
 } from "@screenComponent/quotations/form/quotationForm.validation.constants";
 
 import ProductInformationField from "@screenComponent/quotations/form/productInformation/productInformationField";
+import QuotationProductSelect from "@screenComponent/quotations/form/productInformation/quotationProductSelect";
 
 function QuotationProductForm({
   formik,
@@ -20,6 +21,8 @@ function QuotationProductForm({
   onUndoProductDescription,
   onProductNameChange,
   onProductNameBlur,
+  onProductSelect,
+  onProductClear,
 }) {
   const productError = fieldError("product");
   const fieldProps = (field, id) => {
@@ -52,19 +55,26 @@ function QuotationProductForm({
         label="Product"
         error={productError}
       >
-        <Input
-          ref={fieldRefs.productInputRef}
-          id="quotation-product"
-          type="text"
-          {...fieldProps("product", "quotation-product")}
-          onChange={onProductNameChange}
-          onBlur={onProductNameBlur}
-          onFocus={keyboard.handleProductNameFocus}
-          onKeyDown={keyboard.handleProductNameKeyDown}
-          className="uppercase placeholder:normal-case"
-          placeholder="Enter product name"
-          autoComplete="off"
-          autoFocus
+        <div className="hidden lg:block">
+          <Input
+            ref={fieldRefs.productInputRef}
+            id="quotation-product"
+            type="text"
+            {...fieldProps("product", "quotation-product")}
+            onChange={onProductNameChange}
+            onBlur={onProductNameBlur}
+            onFocus={keyboard.handleProductNameFocus}
+            onKeyDown={keyboard.handleProductNameKeyDown}
+            className="uppercase placeholder:normal-case"
+            placeholder="Enter product name"
+            autoComplete="off"
+            autoFocus
+          />
+        </div>
+        <QuotationProductSelect
+          value={formik.values.product}
+          onProductSelect={onProductSelect}
+          onProductClear={onProductClear}
         />
       </ProductInformationField>
 

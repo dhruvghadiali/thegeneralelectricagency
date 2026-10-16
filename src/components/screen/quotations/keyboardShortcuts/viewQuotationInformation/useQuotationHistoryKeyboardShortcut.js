@@ -1,5 +1,7 @@
 import { useCallback } from "react";
 
+import { isDesktopKeyboardEnabled } from "@keyboard/keyboard.utils";
+
 function useQuotationHistoryKeyboardShortcut({
   historyEntryCount,
   triggerRefs,
@@ -8,6 +10,8 @@ function useQuotationHistoryKeyboardShortcut({
 }) {
   return useCallback(
     (event, index) => {
+      if (!isDesktopKeyboardEnabled()) return;
+
       const isPreviousKey =
         event.key === "Backspace" || event.key === "Delete";
 

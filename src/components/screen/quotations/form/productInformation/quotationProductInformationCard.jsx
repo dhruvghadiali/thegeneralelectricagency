@@ -18,6 +18,8 @@ function QuotationProductInformationCard({
   onUndoProductDescription,
   onProductNameChange,
   onProductNameBlur,
+  onProductSelect,
+  onProductClear,
 }) {
   return (
     <Card className="min-h-64 w-full shrink-0">
@@ -34,6 +36,8 @@ function QuotationProductInformationCard({
           onUndoProductDescription={onUndoProductDescription}
           onProductNameChange={onProductNameChange}
           onProductNameBlur={onProductNameBlur}
+          onProductSelect={onProductSelect}
+          onProductClear={onProductClear}
         />
       </CardContent>
       <CardFooter className="justify-end border-t">

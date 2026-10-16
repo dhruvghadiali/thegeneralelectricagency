@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 
+import { isDesktopKeyboardEnabled } from "@keyboard/keyboard.utils";
 import useQuotationDialogKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/dialogs/useQuotationDialogKeyboardShortcut";
 
 function useQuotationProductFormDiscardDialogKeyboardShortcut({
@@ -12,6 +13,8 @@ function useQuotationProductFormDiscardDialogKeyboardShortcut({
   });
   const handleDialogKeyDown = useCallback(
     (event) => {
+      if (!isDesktopKeyboardEnabled()) return;
+
       if (event.key === "Enter") {
         event.preventDefault();
         event.stopPropagation();

@@ -343,7 +343,7 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
     }
   };
 
-  const selectProduct = (product) => {
+  const selectProduct = (product, { focusInput = true } = {}) => {
     const productValues = toQuotationProductFormValues(product);
     const duplicateProductIndex = dispatch(
       checkQuotationProductDuplicate({
@@ -364,13 +364,28 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
     );
     formik.setFieldTouched("product", true, false);
 
-    window.requestAnimationFrame(() => {
-      productInputRef.current?.focus();
-      productInputRef.current?.setSelectionRange(
-        productValues.product.length,
-        productValues.product.length,
-      );
-    });
+    if (focusInput) {
+      window.requestAnimationFrame(() => {
+        productInputRef.current?.focus();
+        productInputRef.current?.setSelectionRange(
+          productValues.product.length,
+          productValues.product.length,
+        );
+      });
+    }
+  };
+  const clearProduct = () => {
+    dispatch(quotationProductSelected(null));
+    formik.setValues(
+      {
+        ...formik.values,
+        product: "",
+        sellingPrice: "",
+        description: "",
+      },
+      true,
+    );
+    formik.setFieldTouched("product", false, false);
   };
 
   const editProduct = (index) => {
@@ -449,6 +464,7 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
     cancelProductDelete,
     canUndoProductDescription,
     changeProductName,
+    clearProduct,
     deleteProduct,
     editDuplicateProduct,
     editProduct,

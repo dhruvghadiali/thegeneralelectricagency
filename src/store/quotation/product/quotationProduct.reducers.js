@@ -6,6 +6,9 @@ export const quotationProductReducers = {
     state.productSearch = action.payload;
     state.selectedProduct = null;
   },
+  quotationProductDirectorySearchChanged(state, action) {
+    state.productSearch = action.payload;
+  },
   quotationProductSelected(state, action) {
     state.selectedProduct = action.payload;
     state.productSearch = action.payload?.name ?? "";
