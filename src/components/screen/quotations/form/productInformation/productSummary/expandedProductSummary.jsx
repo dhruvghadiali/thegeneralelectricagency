@@ -135,7 +135,7 @@ function ExpandedProductSummary({
               <div>
                 <dt className="text-xs text-muted-foreground">Discount</dt>
                 <dd className="font-medium">
-                  {currencyFormatter.format(product.discount)}
+                  {currencyFormatter.format(Number(product.discount) || 0)}
                 </dd>
               </div>
               <div>

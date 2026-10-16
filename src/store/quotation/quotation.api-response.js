@@ -57,6 +57,10 @@ const fromCompanyResponse = (quotation = {}) => {
 };
 
 const discountPercentageFromAmount = (discount, sellingPrice) => {
+  if (discount === null || discount === undefined || discount === "") {
+    return "";
+  }
+
   const numericDiscount = Number(discount);
   const numericSellingPrice = Number(sellingPrice);
 
@@ -105,7 +109,7 @@ const fromQuotationProductResponse = (item = {}) => {
     item.selling_price ??
     item.sellingPrice ??
     "";
-  const discount = item.discount ?? "0";
+  const discount = item.discount ?? "";
 
   return {
     lineId: item._id ?? item.id ?? null,

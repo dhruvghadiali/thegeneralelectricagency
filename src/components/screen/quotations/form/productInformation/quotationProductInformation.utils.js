@@ -72,20 +72,26 @@ export function toExistingProductFormValues(
   const directoryProduct = directoryProducts.find(
     (item) => String(item.id) === String(product.productId),
   );
+  const hasDiscount =
+    product.discount !== null &&
+    product.discount !== undefined &&
+    product.discount !== "" &&
+    Number(product.discount) !== 0;
 
   return {
     product: product.product || directoryProduct?.name || "",
     sellingPrice: String(product.sellingPrice ?? ""),
     quantity: String(product.quantity ?? ""),
-    discount: String(product.discount ?? "0"),
-    discountPercentage:
-      product.discountPercentage === undefined ||
-      product.discountPercentage === null
+    discount: hasDiscount ? String(product.discount) : "",
+    discountPercentage: hasDiscount
+      ? product.discountPercentage === undefined ||
+        product.discountPercentage === null
         ? quotationDiscountPercentageFor(
-            product.discount ?? "0",
+            product.discount,
             product.sellingPrice,
-          ) || "0"
-        : String(product.discountPercentage),
+          )
+        : String(product.discountPercentage)
+      : "",
     description: product.description ?? directoryProduct?.description ?? "",
   };
 }
