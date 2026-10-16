@@ -27,7 +27,7 @@ function QuotationHistory({
   }
 
   return (
-    <ol className="grid gap-3">
+    <ol className="grid gap-2.5 sm:gap-3">
       {entries.map((entry, index) => {
         const isOpen = openId === entry.id;
         const toggleEntry = () => {

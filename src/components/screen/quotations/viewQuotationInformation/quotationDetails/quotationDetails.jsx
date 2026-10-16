@@ -15,11 +15,11 @@ function QuotationDetails({ quotation, changes }) {
   const changedFields = changes?.fields ?? new Set();
 
   return (
-    <div className="grid gap-6">
+    <div className="grid gap-4 sm:gap-6">
       <QuotationProducts products={products} changes={changes} />
 
-      <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
-        <dl className="grid gap-4 rounded-lg bg-muted/30 p-4 sm:grid-cols-2">
+      <div className="grid gap-3 sm:gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
+        <dl className="grid gap-3 rounded-lg bg-muted/30 p-3 sm:grid-cols-2 sm:gap-4 sm:p-4">
           <Detail
             label="Tax treatment"
             changed={changedFields.has("taxTreatment")}

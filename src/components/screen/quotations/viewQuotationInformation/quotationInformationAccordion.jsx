@@ -1,7 +1,5 @@
-import { createElement, useRef, useState } from "react";
+import { createElement, useRef } from "react";
 import { ChevronDown } from "lucide-react";
-
-import { cn } from "@/lib/utils";
 
 function QuotationInformationAccordion({
   id,
@@ -17,7 +15,6 @@ function QuotationInformationAccordion({
 }) {
   const contentId = `${id}-content`;
   const sectionRef = useRef(null);
-  const [isTriggerFocused, setIsTriggerFocused] = useState(false);
   const handleToggle = () => {
     const willOpen = !isOpen;
     onToggle();
@@ -36,10 +33,7 @@ function QuotationInformationAccordion({
   return (
     <section
       ref={sectionRef}
-      className={cn(
-        "scroll-mt-4 overflow-hidden rounded-xl border bg-card shadow-sm outline-none transition-[border-color,box-shadow]",
-        isTriggerFocused && "border-ring ring-2 ring-ring",
-      )}
+      className="scroll-mt-4 overflow-hidden rounded-lg border bg-card shadow-sm outline-none transition-[border-color,box-shadow] focus-within:border-ring focus-within:ring-2 focus-within:ring-ring sm:rounded-xl"
     >
       <h2>
         <span
@@ -53,21 +47,21 @@ function QuotationInformationAccordion({
             aria-expanded={isOpen}
             aria-controls={contentId}
             aria-keyshortcuts="Enter"
-            onFocus={() => setIsTriggerFocused(true)}
-            onBlur={() => setIsTriggerFocused(false)}
             onClick={handleToggle}
             style={{ cursor: "pointer" }}
-            className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 px-4 py-4 text-left outline-none focus-visible:outline-none sm:px-6"
+            className="flex min-w-0 flex-1 cursor-pointer items-center gap-2.5 px-3 py-3 text-left outline-none focus-visible:outline-none sm:gap-3 sm:px-6 sm:py-4"
           >
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary sm:size-10">
               {createElement(icon, {
-                className: "size-5",
+                className: "size-4 sm:size-5",
                 "aria-hidden": true,
               })}
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block font-semibold">{title}</span>
-              <span className="mt-0.5 block text-sm font-normal text-muted-foreground">
+              <span className="block text-sm font-semibold sm:text-base">
+                {title}
+              </span>
+              <span className="mt-0.5 block text-xs font-normal leading-relaxed text-muted-foreground sm:text-sm">
                 {description}
               </span>
             </span>
@@ -85,13 +79,10 @@ function QuotationInformationAccordion({
             aria-controls={contentId}
             onClick={handleToggle}
             style={{ cursor: "pointer" }}
-            className="flex size-12 shrink-0 cursor-pointer items-center justify-center text-muted-foreground outline-none transition-colors hover:text-foreground sm:mr-2"
+            className="flex size-10 shrink-0 cursor-pointer items-center justify-center text-muted-foreground outline-none transition-colors hover:text-foreground sm:mr-2 sm:size-12"
           >
             <ChevronDown
-              className={cn(
-                "size-5 transition-transform",
-                isOpen && "rotate-180",
-              )}
+              className={`size-5 transition-transform ${isOpen ? "rotate-180" : ""}`}
               aria-hidden="true"
             />
           </button>
@@ -102,7 +93,7 @@ function QuotationInformationAccordion({
           id={contentId}
           role="region"
           aria-label={title}
-          className="border-t px-4 py-5 sm:px-6"
+          className="border-t px-3 py-4 sm:px-6 sm:py-5"
         >
           {children}
         </div>

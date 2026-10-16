@@ -6,7 +6,7 @@ function QuotationHistoryDetails({ contentId, entry }) {
       id={contentId}
       role="region"
       aria-label={`${entry.quotationVersion} details`}
-      className="border-t p-4 sm:p-5"
+      className="border-t p-3 sm:p-5"
     >
       <QuotationDetails quotation={entry} changes={entry.changes} />
     </div>

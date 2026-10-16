@@ -4,7 +4,7 @@ function RemovedQuotationProducts({ products = [] }) {
   if (!products.length) return null;
 
   return (
-    <div className="mt-3 rounded-lg border border-red-200 bg-red-50 p-3">
+    <div className="mt-3 rounded-lg border border-red-200 bg-red-50 p-3 sm:p-4">
       <p className="text-xs font-semibold text-red-800">
         Removed in this version
       </p>

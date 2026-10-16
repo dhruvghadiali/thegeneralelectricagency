@@ -7,7 +7,7 @@ function CurrentQuotationDetails({
   showUpdatedMetadata = true,
 }) {
   return (
-    <div className="grid gap-6">
+    <div className="grid gap-4 sm:gap-6">
       <QuotationOverview
         quotation={quotation}
         showUpdatedMetadata={showUpdatedMetadata}

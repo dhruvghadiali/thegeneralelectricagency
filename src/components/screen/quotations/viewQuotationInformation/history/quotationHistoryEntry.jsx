@@ -22,7 +22,7 @@ function QuotationHistoryEntry({
   return (
     <li
       className={cn(
-        "scroll-mt-4 overflow-hidden rounded-xl border bg-background shadow-sm outline-none transition-[border-color,box-shadow] focus-within:border-ring focus-within:ring-2 focus-within:ring-ring",
+        "scroll-mt-4 overflow-hidden rounded-lg border bg-background shadow-sm outline-none transition-[border-color,box-shadow] focus-within:border-ring focus-within:ring-2 focus-within:ring-ring sm:rounded-xl",
         isOpen && "border-primary/40 shadow-md",
       )}
     >
@@ -41,7 +41,7 @@ function QuotationHistoryEntry({
           onKeyDown={(event) => onKeyDown(event, index)}
           onClick={onToggle}
           style={{ cursor: "pointer" }}
-          className="flex min-w-0 flex-1 cursor-pointer items-start gap-3 px-4 py-4 text-left outline-none focus-visible:outline-none"
+          className="flex min-w-0 flex-1 cursor-pointer items-start gap-2.5 px-3 py-3 text-left outline-none focus-visible:outline-none sm:gap-3 sm:px-4 sm:py-4"
         >
           <span
             className="mt-1 size-2.5 shrink-0 rounded-full bg-primary ring-4 ring-primary/10"
@@ -49,12 +49,12 @@ function QuotationHistoryEntry({
           />
           <span className="min-w-0 flex-1">
             <span className="flex flex-wrap items-center gap-2">
-              <span className="font-semibold capitalize">
+              <span className="break-words text-sm font-semibold capitalize sm:text-base">
                 {entry.quotationNumber}
               </span>
               <Badge variant="outline">{entry.quotationVersion}</Badge>
             </span>
-            <span className="mt-1 block text-sm text-muted-foreground">
+            <span className="mt-1 block text-xs leading-relaxed text-muted-foreground sm:text-sm">
               Recorded by {entry.changedBy} ·{" "}
               {formatQuotationDate(entry.changedAt)}
             </span>
@@ -75,7 +75,7 @@ function QuotationHistoryEntry({
           aria-controls={contentId}
           onClick={onToggle}
           style={{ cursor: "pointer" }}
-          className="flex size-12 shrink-0 cursor-pointer items-center justify-center text-muted-foreground outline-none transition-colors hover:text-foreground"
+          className="flex size-10 shrink-0 cursor-pointer items-center justify-center text-muted-foreground outline-none transition-colors hover:text-foreground sm:size-12"
         >
           <ChevronDown
             className={cn(
