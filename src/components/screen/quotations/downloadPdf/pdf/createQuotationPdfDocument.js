@@ -34,12 +34,13 @@ function calculateDocumentTotals(products, commercial) {
   const gstPercentage = hasGst
     ? Math.max(numberOrZero(commercial.gstPercentage), 0)
     : 0;
-  const totalTax = productTotals.taxableAmount * (gstPercentage / 100);
+  const totalTax = productTotals.amount * (gstPercentage / 100);
 
   return {
     ...productTotals,
+    gstPercentage,
     totalTax,
-    finalAmount: productTotals.taxableAmount + totalTax,
+    finalAmount: productTotals.amount + totalTax,
   };
 }
 
@@ -78,9 +79,7 @@ export function createQuotationPdfDocument(sections, pdfImages = {}) {
   drawBrandHeader(doc, pdfImages.company, enquiryContact);
   drawCompanySection(doc, company);
 
-  const totalsSectionHeight = getQuotationTotalsSectionHeight(
-    commercial.taxTreatment,
-  );
+  const totalsSectionHeight = getQuotationTotalsSectionHeight();
   let productIndex = 0;
   let productY = FIRST_PAGE_PRODUCT_Y;
   let productTableEnd;
@@ -118,12 +117,7 @@ export function createQuotationPdfDocument(sections, pdfImages = {}) {
     totalsY = PDF_PAGE.top;
   }
 
-  const totalsEnd = drawQuotationTotalsSection(
-    doc,
-    totals,
-    totalsY,
-    commercial,
-  );
+  const totalsEnd = drawQuotationTotalsSection(doc, totals, totalsY);
   drawQuotationCommercialSections(doc, totalsEnd, commercial, pdfImages);
 
   const pageCount = doc.getNumberOfPages();

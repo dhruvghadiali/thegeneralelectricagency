@@ -211,9 +211,10 @@ export const fromQuotationResponse = (quotation = {}) => {
     deliveryNotes: quotation.delivery_notes ?? quotation.deliveryNotes ?? "",
     paymentNotes: quotation.payment_notes ?? quotation.paymentNotes ?? "",
     notes: quotation.notes ?? "",
-    products: productInformation.map(({ productId, product }) => ({
+    products: productInformation.map(({ productId, product, hsnCode }) => ({
       id: productId,
       name: product,
+      hsnCode,
     })),
     productInformation,
     isUpdateAvailable,
