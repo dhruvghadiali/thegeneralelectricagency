@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 
 import { updateQuotationDetails } from "@Redux/quotation/quotation.action";
 import { downloadQuotationPdf } from "@screenComponent/quotations/downloadPdf/downloadQuotationPdf";
+import useQuotationPdfDiscountDialog from "@screenComponent/quotations/downloadPdf/useQuotationPdfDiscountDialog";
 import { resolveEditQuotationRevision } from "@screenComponent/quotations/edit/editQuotationRevision.utils";
 import useEditQuotationUpdateData from "@screenComponent/quotations/edit/hooks/useEditQuotationUpdateData";
 
@@ -22,7 +23,7 @@ function useUpdateQuotationPdf() {
     taxTreatment,
   } = useEditQuotationUpdateData();
 
-  const updateAndDownloadPdf = useCallback(async () => {
+  const performUpdateAndDownload = useCallback(async (showDiscountPercentage) => {
     if (
       isUpdating ||
       !quotationId ||
@@ -54,6 +55,7 @@ function useUpdateQuotationPdf() {
           loggedInUser,
         },
         {
+          showDiscountPercentage,
           beforeSave: () =>
             dispatch(
               updateQuotationDetails({
@@ -83,8 +85,38 @@ function useUpdateQuotationPdf() {
     quotationId,
     taxTreatment,
   ]);
+  const discountDialog = useQuotationPdfDiscountDialog(
+    performUpdateAndDownload,
+  );
+  const updateAndDownloadPdf = useCallback(() => {
+    if (
+      isUpdating ||
+      !quotationId ||
+      !companyInformation ||
+      productInformation.length === 0
+    ) {
+      return;
+    }
 
-  return { isUpdating, updateAndDownloadPdf };
+    discountDialog.requestDownload();
+  }, [
+    companyInformation,
+    discountDialog,
+    isUpdating,
+    productInformation,
+    quotationId,
+  ]);
+
+  return {
+    discountDialog: {
+      open: discountDialog.isOpen,
+      onCancel: discountDialog.cancelDownload,
+      onNo: discountDialog.downloadWithoutDiscount,
+      onYes: discountDialog.downloadWithDiscount,
+    },
+    isUpdating,
+    updateAndDownloadPdf,
+  };
 }
 
 export default useUpdateQuotationPdf;

@@ -2,6 +2,7 @@ import { Badge } from "@shadcnComponent/badge";
 import {
   displayValue,
   formatMoney,
+  formatPercentage,
   getProductChangeKey,
 } from "@screenComponent/quotations/viewQuotationInformation/viewQuotationInformation.utils";
 
@@ -50,7 +51,12 @@ function QuotationProductRows({ products, changes }) {
           {displayValue(product.quantity)}
         </td>
         <td className="px-4 py-3 text-right">{formatMoney(price)}</td>
-        <td className="px-4 py-3 text-right">{formatMoney(discount)}</td>
+        <td className="px-4 py-3 text-right">
+          <div>{formatMoney(discount)}</div>
+          <div className="text-xs text-muted-foreground">
+            {formatPercentage(product.discountPercentage)}
+          </div>
+        </td>
         <td className="px-4 py-3 text-right font-semibold">
           {formatMoney(
             product.finalPrice || Math.max(price - discount, 0) * quantity,

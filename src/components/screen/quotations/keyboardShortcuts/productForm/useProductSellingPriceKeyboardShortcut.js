@@ -4,7 +4,7 @@ import handlePreviousFieldKeyboardNavigation from "@screenComponent/quotations/k
 
 function useProductSellingPriceKeyboardShortcut({
   quantityInputRef,
-  discountInputRef,
+  discountPercentageInputRef,
 }) {
   return useCallback(
     (event) => {
@@ -24,9 +24,9 @@ function useProductSellingPriceKeyboardShortcut({
       if (!shouldFocusDiscount) return;
 
       event.preventDefault();
-      discountInputRef.current?.focus();
+      discountPercentageInputRef.current?.focus();
     },
-    [discountInputRef, quantityInputRef],
+    [discountPercentageInputRef, quantityInputRef],
   );
 }
 

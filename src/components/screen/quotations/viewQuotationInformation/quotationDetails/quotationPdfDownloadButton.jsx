@@ -8,7 +8,9 @@ import {
   quotationViewPdfDownloadStarted,
 } from "@Redux/quotation/quotation.slice";
 import { Button } from "@shadcnComponent/button";
+import QuotationPdfDiscountDialog from "@screenComponent/quotations/dialogs/quotationPdfDiscountDialog";
 import { downloadQuotationPdf } from "@screenComponent/quotations/downloadPdf/downloadQuotationPdf";
+import useQuotationPdfDiscountDialog from "@screenComponent/quotations/downloadPdf/useQuotationPdfDiscountDialog";
 import { createViewQuotationPdfInput } from "@screenComponent/quotations/viewQuotationInformation/quotationDetails/viewQuotationPdf.utils";
 
 function QuotationPdfDownloadButton({ quotation, baseQuotation }) {
@@ -24,43 +26,58 @@ function QuotationPdfDownloadButton({ quotation, baseQuotation }) {
   const status = useSelector((state) =>
     selectQuotationViewPdfDownloadStatus(state, downloadKey),
   );
+  const loggedInUser = useSelector(({ auth }) => auth);
   const isDownloading = status === "downloading";
 
-  const handleDownload = async () => {
+  const handleDownload = async (showDiscountPercentage) => {
     if (isDownloading) return;
 
     dispatch(quotationViewPdfDownloadStarted(downloadKey));
 
     try {
       await downloadQuotationPdf(
-        createViewQuotationPdfInput(quotation, baseQuotation ?? quotation),
+        createViewQuotationPdfInput(
+          quotation,
+          baseQuotation ?? quotation,
+          loggedInUser,
+        ),
+        { showDiscountPercentage },
       );
       dispatch(quotationViewPdfDownloadCompleted(downloadKey));
     } catch {
       dispatch(quotationViewPdfDownloadFailed(downloadKey));
     }
   };
+  const discountDialog = useQuotationPdfDiscountDialog(handleDownload);
 
   return (
-    <Button
-      type="button"
-      variant="outline"
-      size="icon"
-      tabIndex={-1}
-      disabled={isDownloading}
-      aria-label={`Download ${version} quotation PDF`}
-      aria-busy={isDownloading}
-      title={status === "error" ? "Retry PDF download" : "Download PDF"}
-      onClick={handleDownload}
-      style={{ cursor: "pointer" }}
-      className="size-8 shrink-0 cursor-pointer bg-transparent shadow-none hover:bg-transparent"
-    >
-      {isDownloading ? (
-        <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
-      ) : (
-        <Download className="size-4" aria-hidden="true" />
-      )}
-    </Button>
+    <>
+      <Button
+        type="button"
+        variant="outline"
+        size="icon"
+        tabIndex={-1}
+        disabled={isDownloading}
+        aria-label={`Download ${version} quotation PDF`}
+        aria-busy={isDownloading}
+        title={status === "error" ? "Retry PDF download" : "Download PDF"}
+        onClick={discountDialog.requestDownload}
+        style={{ cursor: "pointer" }}
+        className="size-8 shrink-0 cursor-pointer bg-transparent shadow-none hover:bg-transparent"
+      >
+        {isDownloading ? (
+          <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
+        ) : (
+          <Download className="size-4" aria-hidden="true" />
+        )}
+      </Button>
+      <QuotationPdfDiscountDialog
+        open={discountDialog.isOpen}
+        onCancel={discountDialog.cancelDownload}
+        onNo={discountDialog.downloadWithoutDiscount}
+        onYes={discountDialog.downloadWithDiscount}
+      />
+    </>
   );
 }
 

@@ -13,6 +13,7 @@ function useProductKeyboardShortcuts({
   productInputRef,
   quantityInputRef,
   sellingPriceInputRef,
+  discountPercentageInputRef,
   discountInputRef,
   descriptionInputRef,
   saveButtonRef,
@@ -37,11 +38,15 @@ function useProductKeyboardShortcuts({
   });
   const handleSellingPriceKeyDown = useProductSellingPriceKeyboardShortcut({
     quantityInputRef,
-    discountInputRef,
+    discountPercentageInputRef,
+  });
+  const handleDiscountPercentageKeyDown = useProductDiscountKeyboardShortcut({
+    previousInputRef: sellingPriceInputRef,
+    nextInputRef: discountInputRef,
   });
   const handleDiscountKeyDown = useProductDiscountKeyboardShortcut({
-    sellingPriceInputRef,
-    descriptionInputRef,
+    previousInputRef: discountPercentageInputRef,
+    nextInputRef: descriptionInputRef,
   });
   const handleDescriptionKeyDown = useProductDescriptionKeyboardShortcut({
     discountInputRef,
@@ -71,6 +76,9 @@ function useProductKeyboardShortcuts({
       handleSellingPriceKeyDown,
     ),
     handleDiscountKeyDown: withDesktopKeyboardShortcut(handleDiscountKeyDown),
+    handleDiscountPercentageKeyDown: withDesktopKeyboardShortcut(
+      handleDiscountPercentageKeyDown,
+    ),
     handleDescriptionKeyDown: withDesktopKeyboardShortcut(
       handleDescriptionKeyDown,
     ),

@@ -16,11 +16,10 @@ import {
   drawCompanySection,
   drawQuotationTitle,
 } from "@screenComponent/quotations/downloadPdf/sections/quotationHeaderSection";
-import { drawQuotationPartnerSection } from "@screenComponent/quotations/downloadPdf/sections/quotationPartnerSection";
+import { drawQuotationCommercialSections } from "@screenComponent/quotations/downloadPdf/sections/quotationCommercialSection";
 import {
   drawProductSection,
   getPageProducts,
-  getProductTableHeight,
 } from "@screenComponent/quotations/downloadPdf/sections/quotationProductSection";
 import {
   drawQuotationTotalsSection,
@@ -35,18 +34,24 @@ function calculateDocumentTotals(products, commercial) {
   const gstPercentage = hasGst
     ? Math.max(numberOrZero(commercial.gstPercentage), 0)
     : 0;
-  const totalTax = productTotals.taxableAmount * (gstPercentage / 100);
+  const totalTax = productTotals.amount * (gstPercentage / 100);
 
   return {
     ...productTotals,
+    gstPercentage,
+    taxTreatment: commercial.taxTreatment,
     totalTax,
-    finalAmount: productTotals.taxableAmount + totalTax,
+    finalAmount: productTotals.amount + totalTax,
   };
 }
 
-const FIRST_PAGE_PRODUCT_Y = 103;
+const FIRST_PAGE_PRODUCT_Y = 82;
 
-export function createQuotationPdfDocument(sections, pdfImages = {}) {
+export function createQuotationPdfDocument(
+  sections,
+  pdfImages = {},
+  { showDiscountPercentage = false } = {},
+) {
   const {
     quotationRefId,
     quotationDate,
@@ -77,52 +82,59 @@ export function createQuotationPdfDocument(sections, pdfImages = {}) {
 
   drawQuotationTitle(doc, quotationId, generatedAt);
   drawBrandHeader(doc, pdfImages.company, enquiryContact);
-  drawQuotationPartnerSection(doc, pdfImages);
-  drawCompanySection(doc, company, 75);
+  drawCompanySection(doc, company);
 
-  const productTableHeight = getProductTableHeight(doc, products);
   const totalsSectionHeight = getQuotationTotalsSectionHeight(
     commercial.taxTreatment,
   );
-  const fitsOnFirstPage =
-    FIRST_PAGE_PRODUCT_Y + productTableHeight + 3 + totalsSectionHeight <=
-    PDF_PAGE.footerY;
+  const productTableOptions = { showDiscountPercentage };
+  let productIndex = 0;
+  let productY = FIRST_PAGE_PRODUCT_Y;
+  let productTableEnd;
 
-  if (fitsOnFirstPage) {
-    const productTableEnd = drawProductSection(
+  if (products.length === 0) {
+    productTableEnd = drawProductSection(
+      doc,
+      [],
+      productY,
+      0,
+      productTableOptions,
+    );
+  }
+
+  while (productIndex < products.length) {
+    const pageProducts = getPageProducts(
       doc,
       products,
-      FIRST_PAGE_PRODUCT_Y,
-    );
-    drawQuotationTotalsSection(
-      doc,
-      totals,
-      productTableEnd + 3,
-      commercial,
-    );
-  } else {
-    let productIndex = 0;
-    const firstPageProducts = getPageProducts(doc, products, productIndex, 180);
-
-    drawProductSection(
-      doc,
-      firstPageProducts,
-      FIRST_PAGE_PRODUCT_Y,
       productIndex,
+      PDF_PAGE.contentBottom - productY,
+      productTableOptions,
     );
-    productIndex += firstPageProducts.length;
 
-    while (productIndex < products.length) {
+    productTableEnd = drawProductSection(
+      doc,
+      pageProducts,
+      productY,
+      productIndex,
+      productTableOptions,
+    );
+    productIndex += pageProducts.length;
+
+    if (productIndex < products.length) {
       doc.addPage();
-
-      const pageProducts = getPageProducts(doc, products, productIndex, 264);
-      drawProductSection(doc, pageProducts, 12, productIndex);
-      productIndex += pageProducts.length;
+      productY = PDF_PAGE.top;
     }
-
-    doc.addPage();
-    drawQuotationTotalsSection(doc, totals, 12, commercial);
   }
+
+  let totalsY = productTableEnd + 3;
+
+  if (totalsY + totalsSectionHeight > PDF_PAGE.contentBottom) {
+    doc.addPage();
+    totalsY = PDF_PAGE.top;
+  }
+
+  const totalsEnd = drawQuotationTotalsSection(doc, totals, totalsY);
+  drawQuotationCommercialSections(doc, totalsEnd, commercial, pdfImages);
 
   const pageCount = doc.getNumberOfPages();
 

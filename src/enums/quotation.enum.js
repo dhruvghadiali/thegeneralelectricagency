@@ -18,7 +18,7 @@ export const PRODUCT_FORM_DISCARD_DESTINATIONS = Object.freeze({
 export const QUOTATION_TAX_TREATMENTS = Object.freeze({
   GUJARAT: "gujarat",
   OUT_OF_GUJARAT: "out of gujarat",
-  SEZ_LUT: "SEZLOUT",
+  SEZ_LUT: "SEZ LUT",
 });
 
 export const QUOTATION_TAX_TREATMENT_OPTIONS = Object.freeze([

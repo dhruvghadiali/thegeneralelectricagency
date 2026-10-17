@@ -46,7 +46,9 @@ function QuotationProductInformation({ products, sectionRef, onKeyDown }) {
                   Discount
                 </dt>
                 <dd className="text-xs font-medium">
-                  {quotationCurrencyFormatter.format(product.discount)}
+                  {quotationCurrencyFormatter.format(
+                    Number(product.discount) || 0,
+                  )}
                 </dd>
               </div>
               <div>

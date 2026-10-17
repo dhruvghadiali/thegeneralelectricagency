@@ -18,6 +18,9 @@ function QuotationProductInformationCard({
   onUndoProductDescription,
   onProductNameChange,
   onProductNameBlur,
+  onSellingPriceChange,
+  onDiscountPercentageChange,
+  onDiscountChange,
   onProductSelect,
   onProductClear,
 }) {
@@ -36,6 +39,9 @@ function QuotationProductInformationCard({
           onUndoProductDescription={onUndoProductDescription}
           onProductNameChange={onProductNameChange}
           onProductNameBlur={onProductNameBlur}
+          onSellingPriceChange={onSellingPriceChange}
+          onDiscountPercentageChange={onDiscountPercentageChange}
+          onDiscountChange={onDiscountChange}
           onProductSelect={onProductSelect}
           onProductClear={onProductClear}
         />

@@ -58,6 +58,13 @@ function createCommercialSection({
   };
 }
 
+function capitalizeName(name) {
+  return _.toLower(_.trim(name)).replace(
+    /(^|[\s'-])([a-z])/g,
+    (_match, separator, letter) => `${separator}${_.toUpper(letter)}`,
+  );
+}
+
 function createEnquiryContactSection(loggedInUser = {}) {
   const firstName = _.trim(loggedInUser.firstName);
   const lastName = _.trim(loggedInUser.lastName);
@@ -69,7 +76,7 @@ function createEnquiryContactSection(loggedInUser = {}) {
       : savedName || fullName;
 
   return {
-    name: enquiryName || loggedInUser.username || "-",
+    name: capitalizeName(enquiryName || loggedInUser.username) || "-",
     phone: loggedInUser.phone || "-",
   };
 }

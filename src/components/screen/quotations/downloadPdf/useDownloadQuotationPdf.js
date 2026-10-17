@@ -12,6 +12,7 @@ import {
   selectQuotationTaxTreatment,
 } from "@Redux/quotation/quotation.selector";
 import { downloadQuotationPdf } from "@screenComponent/quotations/downloadPdf/downloadQuotationPdf";
+import useQuotationPdfDiscountDialog from "@screenComponent/quotations/downloadPdf/useQuotationPdfDiscountDialog";
 
 function useDownloadQuotationPdf() {
   const dispatch = useDispatch();
@@ -25,7 +26,7 @@ function useDownloadQuotationPdf() {
   const paymentNotes = useSelector(selectQuotationPaymentNotes);
   const loggedInUser = useSelector(({ auth }) => auth);
 
-  const generatePdf = useCallback(async () => {
+  const performPdfDownload = useCallback(async (showDiscountPercentage) => {
     if (isGenerating || !companyInformation || productInformation.length === 0) {
       return;
     }
@@ -45,6 +46,7 @@ function useDownloadQuotationPdf() {
           loggedInUser,
         },
         {
+          showDiscountPercentage,
           beforeSave: (quotationRefId) =>
             dispatch(createQuotationDetails({ quotationRefId })).unwrap(),
         },
@@ -66,8 +68,25 @@ function useDownloadQuotationPdf() {
     productInformation,
     taxTreatment,
   ]);
+  const discountDialog = useQuotationPdfDiscountDialog(performPdfDownload);
+  const generatePdf = useCallback(() => {
+    if (isGenerating || !companyInformation || productInformation.length === 0) {
+      return;
+    }
 
-  return { generatePdf, isGenerating };
+    discountDialog.requestDownload();
+  }, [companyInformation, discountDialog, isGenerating, productInformation]);
+
+  return {
+    discountDialog: {
+      open: discountDialog.isOpen,
+      onCancel: discountDialog.cancelDownload,
+      onNo: discountDialog.downloadWithoutDiscount,
+      onYes: discountDialog.downloadWithDiscount,
+    },
+    generatePdf,
+    isGenerating,
+  };
 }
 
 export default useDownloadQuotationPdf;

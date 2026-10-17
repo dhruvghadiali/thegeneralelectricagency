@@ -4,6 +4,7 @@ import { QUOTATION_TAX_TREATMENTS } from "@Enums";
 import {
   PDF_BRAND,
   PDF_COLORS,
+  PDF_PAGE,
   PDF_WARRANTY_TEXT,
 } from "@screenComponent/quotations/downloadPdf/pdf/pdf.constants";
 import {
@@ -12,6 +13,7 @@ import {
   drawPdfText,
   numberOrZero,
 } from "@screenComponent/quotations/downloadPdf/pdf/pdf.utils";
+import { drawQuotationPartnerSection } from "@screenComponent/quotations/downloadPdf/sections/quotationPartnerSection";
 
 function taxTerm(taxTreatment) {
   if (taxTreatment === QUOTATION_TAX_TREATMENTS.GUJARAT) {
@@ -180,16 +182,46 @@ function drawClosingMessage(doc, startY) {
   );
 }
 
-export function drawQuotationCommercialSection(doc, startY, commercial) {
-  drawCommercialDetails(doc, startY, commercial);
+export function drawQuotationCommercialSections(
+  doc,
+  startY,
+  commercial,
+  pdfImages = {},
+) {
+  const sections = [
+    {
+      height: 14,
+      draw: (sectionY) => drawCommercialDetails(doc, sectionY, commercial),
+    },
+    {
+      height: 27,
+      draw: (sectionY) =>
+        drawBankAndTerms(doc, sectionY, commercial.taxTreatment),
+    },
+    { height: 20, draw: (sectionY) => drawDeclaration(doc, sectionY) },
+    {
+      height: 54,
+      draw: (sectionY) => {
+        drawAuthorization(doc, sectionY);
+        drawQuotationPartnerSection(doc, pdfImages, sectionY + 20);
+        drawClosingMessage(doc, sectionY + 40);
+      },
+    },
+  ];
 
-  const informationY = startY + 16;
-  drawBankAndTerms(doc, informationY, commercial.taxTreatment);
+  let currentY = startY;
 
-  const declarationY = informationY + 29;
-  drawDeclaration(doc, declarationY);
+  sections.forEach(({ height, draw }) => {
+    let sectionY = currentY + 2;
 
-  const authorizationY = declarationY + 22;
-  drawAuthorization(doc, authorizationY);
-  drawClosingMessage(doc, authorizationY + 20);
+    if (sectionY + height > PDF_PAGE.contentBottom) {
+      doc.addPage();
+      sectionY = PDF_PAGE.top;
+    }
+
+    draw(sectionY);
+    currentY = sectionY + height;
+  });
+
+  return currentY;
 }

@@ -17,6 +17,8 @@ import {
   findDirectoryProductByName,
   hasQuotationProductFormData,
   haveSameProductName,
+  quotationDiscountAmountFor,
+  quotationDiscountPercentageFor,
   toExistingProductFormValues,
 } from "@screenComponent/quotations/form/productInformation/quotationProductInformation.utils";
 import {
@@ -71,6 +73,7 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
   const productInputRef = useRef(null);
   const quantityInputRef = useRef(null);
   const sellingPriceInputRef = useRef(null);
+  const discountPercentageInputRef = useRef(null);
   const discountInputRef = useRef(null);
   const descriptionInputRef = useRef(null);
   const saveButtonRef = useRef(null);
@@ -81,6 +84,7 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
     productInputRef,
     quantityInputRef,
     sellingPriceInputRef,
+    discountPercentageInputRef,
     discountInputRef,
     descriptionInputRef,
     saveButtonRef,
@@ -320,6 +324,48 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
     dispatch(quotationProductSearchChanged(event.target.value));
   };
 
+  const changeSellingPrice = (sellingPrice) => {
+    formik.setValues(
+      {
+        ...formik.values,
+        sellingPrice,
+        discount: quotationDiscountAmountFor(
+          formik.values.discountPercentage,
+          sellingPrice,
+        ),
+      },
+      true,
+    );
+  };
+
+  const changeDiscountPercentage = (discountPercentage) => {
+    formik.setValues(
+      {
+        ...formik.values,
+        discountPercentage,
+        discount: quotationDiscountAmountFor(
+          discountPercentage,
+          formik.values.sellingPrice,
+        ),
+      },
+      true,
+    );
+  };
+
+  const changeDiscount = (discount) => {
+    formik.setValues(
+      {
+        ...formik.values,
+        discount,
+        discountPercentage: quotationDiscountPercentageFor(
+          discount,
+          formik.values.sellingPrice,
+        ),
+      },
+      true,
+    );
+  };
+
   const blurProductName = (event) => {
     formik.handleBlur(event);
 
@@ -355,10 +401,18 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
     if (duplicateProductIndex !== -1) return;
 
     dispatch(quotationProductSelected(product));
+    const values = {
+      ...formik.values,
+      ...productValues,
+    };
+
     formik.setValues(
       {
-        ...formik.values,
-        ...productValues,
+        ...values,
+        discount: quotationDiscountAmountFor(
+          values.discountPercentage,
+          values.sellingPrice,
+        ),
       },
       true,
     );
@@ -381,6 +435,8 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
         ...formik.values,
         product: "",
         sellingPrice: "",
+        discountPercentage: "",
+        discount: "",
         description: "",
       },
       true,
@@ -463,7 +519,10 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
     cancelDuplicateProduct,
     cancelProductDelete,
     canUndoProductDescription,
+    changeDiscount,
+    changeDiscountPercentage,
     changeProductName,
+    changeSellingPrice,
     clearProduct,
     deleteProduct,
     editDuplicateProduct,

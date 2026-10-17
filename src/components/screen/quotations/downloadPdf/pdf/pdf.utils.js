@@ -13,22 +13,22 @@ export function numberOrZero(value) {
 
 export function calculatePdfPricing(pricing = {}) {
   const quantity = Math.max(Math.floor(numberOrZero(pricing.quantity)), 1);
-  const unitPrice = Math.max(numberOrZero(pricing.salePrice), 0);
+  const salePrice = Math.max(numberOrZero(pricing.salePrice), 0);
   const discountPerUnit = Math.min(
     Math.max(numberOrZero(pricing.discountAmount), 0),
-    unitPrice,
+    salePrice,
   );
-  const subtotal = unitPrice * quantity;
-  const totalDiscount = discountPerUnit * quantity;
-  const taxableAmount = subtotal - totalDiscount;
+  const unitPrice = salePrice - discountPerUnit;
+  const discountPercentage = salePrice
+    ? (discountPerUnit / salePrice) * 100
+    : 0;
+  const amount = unitPrice * quantity;
 
   return {
     quantity,
     unitPrice,
-    discountPerUnit,
-    subtotal,
-    totalDiscount,
-    taxableAmount,
+    discountPercentage,
+    amount,
   };
 }
 
@@ -39,12 +39,10 @@ export function aggregatePdfPricing(items) {
 
       return {
         quantity: summary.quantity + pricing.quantity,
-        subtotal: summary.subtotal + pricing.subtotal,
-        totalDiscount: summary.totalDiscount + pricing.totalDiscount,
-        taxableAmount: summary.taxableAmount + pricing.taxableAmount,
+        amount: summary.amount + pricing.amount,
       };
     },
-    { quantity: 0, subtotal: 0, totalDiscount: 0, taxableAmount: 0 },
+    { quantity: 0, amount: 0 },
   );
 }
 

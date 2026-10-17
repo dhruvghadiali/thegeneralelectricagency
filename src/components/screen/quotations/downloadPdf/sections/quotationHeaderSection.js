@@ -15,7 +15,7 @@ export function drawQuotationTitle(doc, quotationId, generatedAt) {
     fill: PDF_COLORS.accent,
     lineWidth: 0.35,
   });
-  drawPdfText(doc, "PRODUCT QUOTATION", 16, 19, {
+  drawPdfText(doc, "QUOTATION", 16, 19, {
     bold: true,
     color: PDF_COLORS.primary,
     size: 16,

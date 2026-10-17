@@ -7,54 +7,50 @@ import {
   numberOrZero,
   pdfMoneyFormatter,
 } from "@screenComponent/quotations/downloadPdf/pdf/pdf.utils";
-import { drawQuotationCommercialSection } from "@screenComponent/quotations/downloadPdf/sections/quotationCommercialSection";
 
-function taxRows(totals, taxTreatment, gstPercentage) {
-  const gstRate = Math.max(numberOrZero(gstPercentage), 0);
+function taxRows(totals) {
+  const gstRate = Math.max(numberOrZero(totals.gstPercentage), 0);
 
-  if (taxTreatment === QUOTATION_TAX_TREATMENTS.GUJARAT) {
+  if (totals.taxTreatment === QUOTATION_TAX_TREATMENTS.GUJARAT) {
     return [
       [`CGST (${gstRate / 2}%)`, totals.totalTax / 2],
       [`SGST (${gstRate / 2}%)`, totals.totalTax / 2],
     ];
   }
 
-  if (taxTreatment === QUOTATION_TAX_TREATMENTS.OUT_OF_GUJARAT) {
+  if (totals.taxTreatment === QUOTATION_TAX_TREATMENTS.OUT_OF_GUJARAT) {
     return [[`IGST (${gstRate}%)`, totals.totalTax]];
   }
 
-  return [["SEZ LUT (No GST)", 0]];
+  return [];
 }
 
 export function getQuotationTotalsSectionHeight(taxTreatment) {
   const taxRowCount =
-    taxTreatment === QUOTATION_TAX_TREATMENTS.GUJARAT ? 2 : 1;
-  const totalRowCount = 4 + taxRowCount;
+    taxTreatment === QUOTATION_TAX_TREATMENTS.GUJARAT
+      ? 2
+      : taxTreatment === QUOTATION_TAX_TREATMENTS.OUT_OF_GUJARAT
+        ? 1
+        : 0;
 
-  return totalRowCount * 7 + 103;
+  return (2 + taxRowCount) * 7;
 }
 
-export function drawQuotationTotalsSection(
-  doc,
-  totals,
-  startY,
-  commercial,
-) {
+export function drawQuotationTotalsSection(doc, totals, startY) {
   const rows = [
-    ["Sub Total", totals.subtotal],
-    ["Total Discount", totals.totalDiscount > 0 ? -totals.totalDiscount : 0],
-    ["Taxable Amount", totals.taxableAmount],
-    ...taxRows(totals, commercial.taxTreatment, commercial.gstPercentage),
+    ["TOTAL AMOUNT", totals.amount],
+    ...taxRows(totals),
     ["FINAL AMOUNT", totals.finalAmount],
   ];
   const totalsHeight = rows.length * 7;
+  const amountWordsY = startY + Math.min(14, totalsHeight - 2);
 
   drawPdfCell(doc, 12, startY, 112, totalsHeight, { lineWidth: 0.35 });
   drawPdfText(doc, "Amount in Words:", 16, startY + 7, {
     bold: true,
     size: 8.5,
   });
-  drawPdfText(doc, amountInWords(totals.finalAmount), 16, startY + 14, {
+  drawPdfText(doc, amountInWords(totals.finalAmount), 16, amountWordsY, {
     size: 7.5,
     maxWidth: 102,
   });
@@ -83,9 +79,5 @@ export function drawQuotationTotalsSection(
     });
   });
 
-  drawQuotationCommercialSection(
-    doc,
-    startY + totalsHeight + 2,
-    commercial,
-  );
+  return startY + totalsHeight;
 }

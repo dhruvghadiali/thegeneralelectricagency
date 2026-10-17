@@ -18,7 +18,7 @@ export function toQuotationProductPayload(
   productReferenceField,
 ) {
   const unitPrice = Math.max(numberOrZero(product.sellingPrice), 0);
-  const discount = Math.min(
+  const discountAmount = Math.min(
     Math.max(numberOrZero(product.discount), 0),
     unitPrice,
   );
@@ -38,8 +38,8 @@ export function toQuotationProductPayload(
     description: nullableText(product.description),
     qty: Math.max(numberOrZero(product.quantity), 0),
     unit_price: unitPrice,
-    discount,
-    final_price: unitPrice - discount,
+    discount: discountAmount,
+    final_price: unitPrice - discountAmount,
   };
 }
 

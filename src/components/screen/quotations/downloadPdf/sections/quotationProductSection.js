@@ -9,16 +9,37 @@ import {
   titleCase,
 } from "@screenComponent/quotations/downloadPdf/pdf/pdf.utils";
 
-const PRODUCT_COLUMNS = [12, 58, 24, 14, 26, 26, 26];
-const PRODUCT_HEADERS = [
-  ["SL.", "NO."],
-  ["DESCRIPTION"],
-  ["HSN"],
-  ["QTY"],
-  ["PRICE", "/ UNIT"],
-  ["DISCOUNT", "/ UNIT"],
-  ["AMOUNT"],
-];
+const PRODUCT_TABLE_LAYOUTS = Object.freeze({
+  standard: Object.freeze({
+    columns: Object.freeze([12, 70, 24, 14, 33, 33]),
+    headers: Object.freeze([
+      ["SL.", "NO."],
+      ["DESCRIPTION"],
+      ["HSN"],
+      ["QTY"],
+      ["PRICE", "/ UNIT"],
+      ["AMOUNT"],
+    ]),
+  }),
+  withDiscount: Object.freeze({
+    columns: Object.freeze([12, 58, 22, 14, 24, 28, 28]),
+    headers: Object.freeze([
+      ["SL.", "NO."],
+      ["DESCRIPTION"],
+      ["HSN"],
+      ["QTY"],
+      ["DISCOUNT"],
+      ["PRICE", "/ UNIT"],
+      ["AMOUNT"],
+    ]),
+  }),
+});
+
+function getProductTableLayout(showDiscountPercentage) {
+  return showDiscountPercentage
+    ? PRODUCT_TABLE_LAYOUTS.withDiscount
+    : PRODUCT_TABLE_LAYOUTS.standard;
+}
 
 function drawTableHeader(doc, lines, x, y, width) {
   drawPdfCell(doc, x, y, width, 11, { fill: PDF_COLORS.secondary });
@@ -34,18 +55,18 @@ function drawTableHeader(doc, lines, x, y, width) {
   );
 }
 
-function productRowLayout(doc, item) {
+function productRowLayout(doc, item, columns) {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(6.5);
   const nameLines = doc.splitTextToSize(
     _.toUpper(item.product.name) || "-",
-    PRODUCT_COLUMNS[1] - 6,
+    columns[1] - 6,
   );
   doc.setFont("helvetica", "normal");
   doc.setFontSize(5.8);
   const descriptionLines = doc.splitTextToSize(
     item.product.description || titleCase(item.product.category),
-    PRODUCT_COLUMNS[1] - 6,
+    columns[1] - 6,
   );
   const contentHeight = nameLines.length * 2.8 + descriptionLines.length * 2.5;
 
@@ -56,22 +77,35 @@ function productRowLayout(doc, item) {
   };
 }
 
-export function getProductTableHeight(doc, items) {
+export function getProductTableHeight(
+  doc,
+  items,
+  { showDiscountPercentage = false } = {},
+) {
+  const { columns } = getProductTableLayout(showDiscountPercentage);
+
   return (
     11 +
     items.reduce(
-      (height, item) => height + productRowLayout(doc, item).height,
+      (height, item) => height + productRowLayout(doc, item, columns).height,
       0,
     )
   );
 }
 
-export function getPageProducts(doc, items, startIndex, maxTableHeight) {
+export function getPageProducts(
+  doc,
+  items,
+  startIndex,
+  maxTableHeight,
+  { showDiscountPercentage = false } = {},
+) {
+  const { columns } = getProductTableLayout(showDiscountPercentage);
   const pageProducts = [];
   let height = 11;
 
   for (let index = startIndex; index < items.length; index += 1) {
-    const rowHeight = productRowLayout(doc, items[index]).height;
+    const rowHeight = productRowLayout(doc, items[index], columns).height;
     if (pageProducts.length > 0 && height + rowHeight > maxTableHeight) break;
 
     pageProducts.push(items[index]);
@@ -81,18 +115,25 @@ export function getPageProducts(doc, items, startIndex, maxTableHeight) {
   return pageProducts;
 }
 
-export function drawProductSection(doc, items, startY, startIndex = 0) {
+export function drawProductSection(
+  doc,
+  items,
+  startY,
+  startIndex = 0,
+  { showDiscountPercentage = false } = {},
+) {
+  const { columns, headers } = getProductTableLayout(showDiscountPercentage);
   let columnX = 12;
 
-  PRODUCT_HEADERS.forEach((lines, index) => {
-    drawTableHeader(doc, lines, columnX, startY, PRODUCT_COLUMNS[index]);
-    columnX += PRODUCT_COLUMNS[index];
+  headers.forEach((lines, index) => {
+    drawTableHeader(doc, lines, columnX, startY, columns[index]);
+    columnX += columns[index];
   });
 
   const centers = [];
   let runningX = 12;
 
-  PRODUCT_COLUMNS.forEach((columnWidth) => {
+  columns.forEach((columnWidth) => {
     centers.push(runningX + columnWidth / 2);
     runningX += columnWidth;
   });
@@ -100,11 +141,11 @@ export function drawProductSection(doc, items, startY, startIndex = 0) {
   let rowY = startY + 11;
 
   items.forEach((item, rowIndex) => {
-    const layout = productRowLayout(doc, item);
+    const layout = productRowLayout(doc, item, columns);
     const pricing = calculatePdfPricing(item.pricing);
     columnX = 12;
 
-    PRODUCT_COLUMNS.forEach((columnWidth, columnIndex) => {
+    columns.forEach((columnWidth, columnIndex) => {
       drawPdfCell(doc, columnX, rowY, columnWidth, layout.height, {
         fill: columnIndex % 2 === 0 ? PDF_COLORS.surface : PDF_COLORS.white,
       });
@@ -138,24 +179,30 @@ export function drawProductSection(doc, items, startY, startIndex = 0) {
       align: "center",
       size: 6.5,
     });
+    let pricingColumnIndex = 4;
+
+    if (showDiscountPercentage) {
+      drawPdfText(
+        doc,
+        `${pdfMoneyFormatter.format(pricing.discountPercentage)}%`,
+        centers[pricingColumnIndex],
+        centerY,
+        { align: "center", size: 6.2 },
+      );
+      pricingColumnIndex += 1;
+    }
+
     drawPdfText(
       doc,
       pdfMoneyFormatter.format(pricing.unitPrice),
-      centers[4],
+      centers[pricingColumnIndex],
       centerY,
       { align: "center", size: 6.2 },
     );
     drawPdfText(
       doc,
-      pdfMoneyFormatter.format(pricing.discountPerUnit),
-      centers[5],
-      centerY,
-      { align: "center", size: 6.2 },
-    );
-    drawPdfText(
-      doc,
-      pdfMoneyFormatter.format(pricing.subtotal),
-      centers[6],
+      pdfMoneyFormatter.format(pricing.amount),
+      centers[pricingColumnIndex + 1],
       centerY,
       { align: "center", size: 6.2 },
     );

@@ -21,6 +21,9 @@ function QuotationProductForm({
   onUndoProductDescription,
   onProductNameChange,
   onProductNameBlur,
+  onSellingPriceChange,
+  onDiscountPercentageChange,
+  onDiscountChange,
   onProductSelect,
   onProductClear,
 }) {
@@ -37,8 +40,13 @@ function QuotationProductForm({
       "aria-describedby": error ? `${id}-error` : undefined,
     };
   };
-  const handleNumericChange = (field, pattern) => (event) => {
+  const handleNumericChange = (field, pattern, onChange) => (event) => {
     if (pattern.test(event.target.value)) {
+      if (onChange) {
+        onChange(event.target.value);
+        return;
+      }
+
       formik.setFieldValue(field, event.target.value, true);
     }
   };
@@ -78,7 +86,7 @@ function QuotationProductForm({
         />
       </ProductInformationField>
 
-      <div className="grid items-start gap-5 sm:grid-cols-3">
+      <div className="grid items-start gap-5 sm:grid-cols-2">
         <ProductInformationField
           id="quotation-quantity"
           label="Quantity"
@@ -112,8 +120,35 @@ function QuotationProductForm({
             onChange={handleNumericChange(
               "sellingPrice",
               QUOTATION_PRODUCT_DECIMAL_INPUT_PATTERN,
+              onSellingPriceChange,
             )}
             onKeyDown={keyboard.handleSellingPriceKeyDown}
+            placeholder="0.00"
+            inputMode="decimal"
+          />
+        </ProductInformationField>
+      </div>
+
+      <div className="grid items-start gap-5 sm:grid-cols-2">
+        <ProductInformationField
+          id="quotation-discountPercentage"
+          label="Discount (%)"
+          error={fieldError("discountPercentage")}
+        >
+          <Input
+            ref={fieldRefs.discountPercentageInputRef}
+            id="quotation-discountPercentage"
+            type="text"
+            {...fieldProps(
+              "discountPercentage",
+              "quotation-discountPercentage",
+            )}
+            onChange={handleNumericChange(
+              "discountPercentage",
+              QUOTATION_PRODUCT_DECIMAL_INPUT_PATTERN,
+              onDiscountPercentageChange,
+            )}
+            onKeyDown={keyboard.handleDiscountPercentageKeyDown}
             placeholder="0.00"
             inputMode="decimal"
           />
@@ -121,7 +156,7 @@ function QuotationProductForm({
 
         <ProductInformationField
           id="quotation-discount"
-          label="Discount"
+          label="Discount (Rupees)"
           error={fieldError("discount")}
         >
           <Input
@@ -132,6 +167,7 @@ function QuotationProductForm({
             onChange={handleNumericChange(
               "discount",
               QUOTATION_PRODUCT_DECIMAL_INPUT_PATTERN,
+              onDiscountChange,
             )}
             onKeyDown={keyboard.handleDiscountKeyDown}
             placeholder="0.00"

@@ -17,7 +17,9 @@ function QuotationProductsTable({ products, changes }) {
               <th className="px-4 py-3 font-medium">Product</th>
               <th className="px-4 py-3 text-right font-medium">Quantity</th>
               <th className="px-4 py-3 text-right font-medium">Unit price</th>
-              <th className="px-4 py-3 text-right font-medium">Discount</th>
+              <th className="px-4 py-3 text-right font-medium">
+                Discount (Rupees / %)
+              </th>
               <th className="px-4 py-3 text-right font-medium">Line total</th>
             </tr>
           </thead>

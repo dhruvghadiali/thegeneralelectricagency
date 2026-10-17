@@ -10,6 +10,7 @@ export const QUOTATION_PRODUCT_INITIAL_VALUES = Object.freeze({
   product: "",
   sellingPrice: "",
   quantity: "",
-  discount: "0",
+  discountPercentage: "",
+  discount: "",
   description: "",
 });
