@@ -20,6 +20,7 @@ import SyncTallyProductsButton from "@Tally/component/products/syncTallyProducts
 import SystemProducts from "@Tally/pages/products/tabs/systemProducts";
 import TallyProducts from "@Tally/pages/products/tabs/tallyProducts";
 import SyncProducts from "@Tally/pages/products/tabs/syncProducts";
+import UnmappedProducts from "@Tally/pages/products/tabs/unmappedProducts";
 
 function ProductsTabs() {
   const [activeTab, setActiveTab] = useState(PRODUCT_TAB_NAMES.SYSTEM_PRODUCTS);
@@ -51,6 +52,9 @@ function ProductsTabs() {
             <TabsTrigger value={PRODUCT_TAB_NAMES.SYNC_PRODUCTS}>
               {PRODUCT_TAB_NAMES.SYNC_PRODUCTS}
             </TabsTrigger>
+            <TabsTrigger value={PRODUCT_TAB_NAMES.UNMAPPED_PRODUCTS}>
+              {PRODUCT_TAB_NAMES.UNMAPPED_PRODUCTS}
+            </TabsTrigger>
           </TabsList>
         </div>
         <SyncTallyProductsButton
@@ -79,6 +83,12 @@ function ProductsTabs() {
         className="mt-0 min-w-0 roomy:min-h-0 roomy:flex-1 data-[state=active]:flex data-[state=active]:flex-col"
       >
         <SyncProducts />
+      </TabsContent>
+      <TabsContent
+        value={PRODUCT_TAB_NAMES.UNMAPPED_PRODUCTS}
+        className="mt-0 min-w-0 roomy:min-h-0 roomy:flex-1 data-[state=active]:flex data-[state=active]:flex-col"
+      >
+        <UnmappedProducts />
       </TabsContent>
     </Tabs>
   );
