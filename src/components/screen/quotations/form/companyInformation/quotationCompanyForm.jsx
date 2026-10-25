@@ -7,6 +7,7 @@ import { toQuotationCompanyFormValues } from "@Redux/quotation/quotation-company
 import { CREATE_QUOTATION_INITIAL_VALUES } from "@screenComponent/quotations/form/quotationForm.initialValues";
 import { createQuotationValidationSchema } from "@screenComponent/quotations/form/quotationForm.validation.schema";
 import {
+  selectQuotationCompanyInformation,
   selectQuotationCompanySearch,
   selectQuotationPendingUnsavedCompanyInformation,
   selectQuotationSelectedCompany,
@@ -26,6 +27,9 @@ import QuotationUnsavedCompanyDialog from "@screenComponent/quotations/dialogs/q
 
 function QuotationCompanyForm() {
   const dispatch = useDispatch();
+  const savedCompanyInformation = useSelector(
+    selectQuotationCompanyInformation,
+  );
   const companySearch = useSelector(selectQuotationCompanySearch);
   const selectedCompany = useSelector(selectQuotationSelectedCompany);
   const pendingCompanyInformation = useSelector(
@@ -53,14 +57,19 @@ function QuotationCompanyForm() {
     dispatch(quotationCompanyInformationSaved(companyInformation));
     dispatch(quotationStepChanged(CREATE_QUOTATION_STEPS.PRODUCT_INFORMATION));
   };
-  
+
   const formik = useFormik({
-    initialValues: selectedCompany
-      ? toQuotationCompanyFormValues(selectedCompany)
-      : {
+    initialValues: savedCompanyInformation
+      ? {
           ...CREATE_QUOTATION_INITIAL_VALUES,
-          companyName: companySearch,
-        },
+          ...savedCompanyInformation,
+        }
+      : selectedCompany
+        ? toQuotationCompanyFormValues(selectedCompany)
+        : {
+            ...CREATE_QUOTATION_INITIAL_VALUES,
+            companyName: companySearch,
+          },
     validationSchema: createQuotationValidationSchema,
     onSubmit: (values) => {
       const companyInformation = createQuotationValidationSchema.cast(values);
