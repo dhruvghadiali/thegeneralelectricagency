@@ -31,6 +31,7 @@ export const CREATE_QUOTATION_VALIDATION_MESSAGES = Object.freeze({
 
 export const QUOTATION_PRODUCT_VALIDATION_MESSAGES = Object.freeze({
   PRODUCT_REQUIRED: "Product is required",
+  PRODUCT_DIRECTORY_REQUIRED: "Select a product from the product directory",
   PRODUCT_MAX: `Product must be ${QUOTATION_PRODUCT_NAME_MAX_LENGTH} characters or fewer`,
   SELLING_PRICE_REQUIRED: "Selling price is required",
   SELLING_PRICE_NUMBER: "Selling price must be a valid number",

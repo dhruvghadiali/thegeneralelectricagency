@@ -105,6 +105,11 @@ export const quotationProductValidationSchema = Yup.object({
       QUOTATION_PRODUCT_VALIDATION_MESSAGES.PRODUCT_MAX,
     )
     .required(QUOTATION_PRODUCT_VALIDATION_MESSAGES.PRODUCT_REQUIRED),
+  productId: Yup.string()
+    .trim()
+    .required(
+      QUOTATION_PRODUCT_VALIDATION_MESSAGES.PRODUCT_DIRECTORY_REQUIRED,
+    ),
   sellingPrice: formNumber(
     QUOTATION_PRODUCT_VALIDATION_MESSAGES.SELLING_PRICE_NUMBER,
   )

@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -142,6 +142,29 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
   });
   const fieldError = (field) =>
     formik.touched[field] && formik.errors[field] ? formik.errors[field] : null;
+  const formProductName = formik.values.product;
+  const formProductId = formik.values.productId;
+  const setProductFieldValue = formik.setFieldValue;
+
+  useEffect(() => {
+    if (formProductId || !formProductName.trim()) return;
+
+    const matchingDirectoryProduct = findDirectoryProductByName(
+      directoryProducts,
+      formProductName,
+    );
+
+    if (!matchingDirectoryProduct) return;
+
+    setProductFieldValue("productId", matchingDirectoryProduct.id, true);
+    dispatch(quotationProductSelected(matchingDirectoryProduct));
+  }, [
+    directoryProducts,
+    dispatch,
+    formProductId,
+    formProductName,
+    setProductFieldValue,
+  ]);
 
   const navigateToCompanyInformation = useCallback(() => {
     if (!canNavigateToCompanyInformation) return;
@@ -320,8 +343,25 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
   });
 
   const changeProductName = (event) => {
-    formik.handleChange(event);
-    dispatch(quotationProductSearchChanged(event.target.value));
+    const productName = event.target.value;
+    const matchingDirectoryProduct = findDirectoryProductByName(
+      directoryProducts,
+      productName,
+    );
+
+    formik.setValues(
+      {
+        ...formik.values,
+        product: productName,
+        productId: matchingDirectoryProduct?.id ?? "",
+      },
+      true,
+    );
+    dispatch(quotationProductSearchChanged(productName));
+
+    if (matchingDirectoryProduct) {
+      dispatch(quotationProductSelected(matchingDirectoryProduct));
+    }
   };
 
   const changeSellingPrice = (sellingPrice) => {
@@ -386,7 +426,12 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
 
     if (matchingDirectoryProduct) {
       dispatch(quotationProductSelected(matchingDirectoryProduct));
+      formik.setFieldValue("productId", matchingDirectoryProduct.id, true);
+    } else {
+      formik.setFieldValue("productId", "", true);
     }
+
+    formik.setFieldTouched("productId", true, false);
   };
 
   const selectProduct = (product, { focusInput = true } = {}) => {
@@ -434,6 +479,7 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
       {
         ...formik.values,
         product: "",
+        productId: "",
         sellingPrice: "",
         discountPercentage: "",
         discount: "",
