@@ -2,7 +2,7 @@ import { useCallback } from "react";
 
 import handlePreviousFieldKeyboardNavigation from "@screenComponent/quotations/keyboardShortcuts/shared/handlePreviousFieldKeyboardNavigation";
 
-function usePaymentNotesKeyboardShortcut({ billToRef, deliveryNotesRef }) {
+function usePaymentNotesKeyboardShortcut({ deliveryNotesRef, roundOffRef }) {
   return useCallback(
     (event) => {
       if (handlePreviousFieldKeyboardNavigation(event, deliveryNotesRef))
@@ -14,17 +14,17 @@ function usePaymentNotesKeyboardShortcut({ billToRef, deliveryNotesRef }) {
         return;
       }
 
-      const shouldFocusBillTo =
+      const shouldFocusRoundOff =
         (event.altKey && event.key === "ArrowDown") ||
         event.key === "Enter" ||
         (event.key === "Tab" && !event.shiftKey);
 
-      if (!shouldFocusBillTo) return;
+      if (!shouldFocusRoundOff) return;
 
       event.preventDefault();
-      billToRef.current?.focus();
+      roundOffRef.current?.focus();
     },
-    [billToRef, deliveryNotesRef],
+    [deliveryNotesRef, roundOffRef],
   );
 }
 

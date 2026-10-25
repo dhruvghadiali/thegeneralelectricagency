@@ -102,6 +102,11 @@ export const QUOTATION_KEYBOARD_SHORTCUTS = Object.freeze({
   ],
   quotationSummary: [
     {
+      keys: "Space",
+      context: "Round off total",
+      action: "Enable or disable rounding the final amount",
+    },
+    {
       keys: "Alt+ArrowUp / Alt+ArrowDown / Enter / Tab",
       action: "Move through quotation summary sections and actions",
     },

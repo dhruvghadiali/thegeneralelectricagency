@@ -35,13 +35,21 @@ function calculateDocumentTotals(products, commercial) {
     ? Math.max(numberOrZero(commercial.gstPercentage), 0)
     : 0;
   const totalTax = productTotals.amount * (gstPercentage / 100);
+  const unroundedFinalAmount = productTotals.amount + totalTax;
+  const finalAmount = commercial.roundOff
+    ? Math.round(unroundedFinalAmount)
+    : unroundedFinalAmount;
 
   return {
     ...productTotals,
     gstPercentage,
     taxTreatment: commercial.taxTreatment,
     totalTax,
-    finalAmount: productTotals.amount + totalTax,
+    roundOff: Boolean(commercial.roundOff),
+    roundOffAmount: Number(
+      (finalAmount - unroundedFinalAmount).toFixed(2),
+    ),
+    finalAmount,
   };
 }
 

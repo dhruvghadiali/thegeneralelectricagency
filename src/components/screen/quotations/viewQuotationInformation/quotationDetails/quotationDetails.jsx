@@ -42,6 +42,9 @@ function QuotationDetails({ quotation, changes }) {
           >
             {displayValue(quotation.paymentNotes)}
           </Detail>
+          <Detail label="Round off total" changed={changedFields.has("roundOff")}>
+            {quotation.roundOff ? "Yes" : "No"}
+          </Detail>
           <Detail label="Notes" changed={changedFields.has("notes")}>
             {displayValue(quotation.notes)}
           </Detail>
@@ -50,7 +53,8 @@ function QuotationDetails({ quotation, changes }) {
           className={
             changedFields.has("products") ||
             changedFields.has("gstPercentage") ||
-            changedFields.has("taxTreatment")
+            changedFields.has("taxTreatment") ||
+            changedFields.has("roundOff")
               ? "grid gap-2 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm"
               : "grid gap-2 rounded-lg border p-4 text-sm"
           }
@@ -60,7 +64,8 @@ function QuotationDetails({ quotation, changes }) {
             <dd>
               {(changedFields.has("products") ||
                 changedFields.has("gstPercentage") ||
-                changedFields.has("taxTreatment")) && <UpdatedMark />}
+                changedFields.has("taxTreatment") ||
+                changedFields.has("roundOff")) && <UpdatedMark />}
             </dd>
           </div>
           <div className="flex justify-between gap-4">

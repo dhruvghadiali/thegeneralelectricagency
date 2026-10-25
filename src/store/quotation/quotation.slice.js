@@ -74,6 +74,7 @@ export const {
   quotationProductSummaryOpened,
   quotationRowActionClosed,
   quotationRowActionRequested,
+  quotationRoundOffChanged,
   quotationReset,
   quotationSubmissionErrorCleared,
   quotationStepChanged,

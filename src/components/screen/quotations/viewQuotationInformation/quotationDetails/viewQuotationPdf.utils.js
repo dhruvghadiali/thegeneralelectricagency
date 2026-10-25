@@ -82,6 +82,7 @@ export function createViewQuotationPdfInput(
     gstPercentage: quotation?.gstPercentage,
     deliveryNotes: quotation?.deliveryNotes,
     paymentNotes: quotation?.paymentNotes,
+    roundOff: quotation?.roundOff,
     loggedInUser: getEnquiryContact(
       quotation,
       baseQuotation,

@@ -16,6 +16,7 @@ export {
   selectQuotationExitDialog,
   selectQuotationGstPercentage,
   selectQuotationPaymentNotes,
+  selectQuotationRoundOff,
   selectQuotationTaxTreatment,
 } from "@Redux/quotation/editor/quotationEditor.selectors";
 

@@ -9,6 +9,7 @@ import {
   selectQuotationPaymentNotes,
   selectQuotationProductInformation,
   selectQuotationProducts,
+  selectQuotationRoundOff,
   selectQuotationTaxTreatment,
 } from "@Redux/quotation/quotation.selector";
 import { downloadQuotationPdf } from "@screenComponent/quotations/downloadPdf/downloadQuotationPdf";
@@ -24,6 +25,7 @@ function useDownloadQuotationPdf() {
   const gstPercentage = useSelector(selectQuotationGstPercentage);
   const deliveryNotes = useSelector(selectQuotationDeliveryNotes);
   const paymentNotes = useSelector(selectQuotationPaymentNotes);
+  const roundOff = useSelector(selectQuotationRoundOff);
   const loggedInUser = useSelector(({ auth }) => auth);
 
   const performPdfDownload = useCallback(async (showDiscountPercentage) => {
@@ -43,6 +45,7 @@ function useDownloadQuotationPdf() {
           gstPercentage,
           deliveryNotes,
           paymentNotes,
+          roundOff,
           loggedInUser,
         },
         {
@@ -66,6 +69,7 @@ function useDownloadQuotationPdf() {
     paymentNotes,
     productDirectory,
     productInformation,
+    roundOff,
     taxTreatment,
   ]);
   const discountDialog = useQuotationPdfDiscountDialog(performPdfDownload);

@@ -9,6 +9,7 @@ import {
   selectQuotationPaymentNotes,
   selectQuotationProductInformation,
   selectQuotationProducts,
+  selectQuotationRoundOff,
   selectQuotationTaxTreatment,
 } from "@Redux/quotation/quotation.selector";
 
@@ -22,6 +23,7 @@ function useEditQuotationUpdateData() {
     gstPercentage: useSelector(selectQuotationGstPercentage),
     deliveryNotes: useSelector(selectQuotationDeliveryNotes),
     paymentNotes: useSelector(selectQuotationPaymentNotes),
+    roundOff: useSelector(selectQuotationRoundOff),
     editSource: useSelector(selectQuotationEditSource),
     loggedInUser: useSelector(({ auth }) => auth),
   };
