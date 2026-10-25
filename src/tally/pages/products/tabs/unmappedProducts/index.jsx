@@ -1,7 +1,7 @@
-import { PRODUCT_TAB_NAMES } from "@Tally/enum/productsTabs.enum";
+import UnmappedProducts from "@Tally/component/products/unmappedProducts";
 
 function UnmappedProductsTab() {
-  return <div>{PRODUCT_TAB_NAMES.UNMAPPED_PRODUCTS}</div>;
+  return <UnmappedProducts />;
 }
 
 export default UnmappedProductsTab;

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Badge } from "@shadcnComponent/badge";
 import {
   Tabs,
@@ -9,11 +9,17 @@ import {
 } from "@shadcnComponent/tabs";
 import { PRODUCT_TAB_NAMES } from "@Tally/enum/productsTabs.enum";
 import { TALLY_PRODUCTS_STATUS } from "@Tally/enum/tallyProductsStatus.enum";
+import { UNMAPPED_PRODUCTS_STATUS } from "@Tally/enum/unmappedProductsStatus.enum";
 import { selectSystemProductCount } from "@Tally/redux/systemProducts/systemProducts.selector";
 import {
   selectTallyProductCount,
   selectTallyProducts,
 } from "@Tally/redux/tallyProducts/tallyProducts.selector";
+import { fetchUnmappedProducts } from "@Tally/redux/unmappedProducts/unmappedProducts.action";
+import {
+  selectUnmappedProductCount,
+  selectUnmappedProducts,
+} from "@Tally/redux/unmappedProducts/unmappedProducts.selector";
 import ProductsErrorMessage from "@Tally/component/products/errorMessage";
 import SyncTallyProductsButton from "@Tally/component/products/syncTallyProductsButton";
 
@@ -23,10 +29,19 @@ import SyncProducts from "@Tally/pages/products/tabs/syncProducts";
 import UnmappedProducts from "@Tally/pages/products/tabs/unmappedProducts";
 
 function ProductsTabs() {
+  const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState(PRODUCT_TAB_NAMES.SYSTEM_PRODUCTS);
   const { status, error, errorTab, alertVisible } = useSelector(selectTallyProducts);
+  const { status: unmappedProductsStatus } = useSelector(selectUnmappedProducts);
   const systemProductCount = useSelector(selectSystemProductCount);
   const tallyProductCount = useSelector(selectTallyProductCount);
+  const unmappedProductCount = useSelector(selectUnmappedProductCount);
+
+  useEffect(() => {
+    if (unmappedProductsStatus === UNMAPPED_PRODUCTS_STATUS.IDLE) {
+      dispatch(fetchUnmappedProducts());
+    }
+  }, [dispatch, unmappedProductsStatus]);
 
   return (
     <Tabs
@@ -54,6 +69,9 @@ function ProductsTabs() {
             </TabsTrigger>
             <TabsTrigger value={PRODUCT_TAB_NAMES.UNMAPPED_PRODUCTS}>
               {PRODUCT_TAB_NAMES.UNMAPPED_PRODUCTS}
+              <Badge variant="secondary" className="ml-2 tabular-nums">
+                {unmappedProductCount}
+              </Badge>
             </TabsTrigger>
           </TabsList>
         </div>
