@@ -10,7 +10,10 @@ import {
   quotationProductReducers,
 } from "@Redux/quotation/product/quotationProduct.reducers";
 import { createQuotationState } from "@Redux/quotation/quotation.state";
-import { addQuotationSubmissionExtraReducers } from "@Redux/quotation/submission/quotationSubmission.reducers";
+import {
+  addQuotationSubmissionExtraReducers,
+  quotationSubmissionReducers,
+} from "@Redux/quotation/submission/quotationSubmission.reducers";
 import {
   addQuotationTableExtraReducers,
   quotationTableReducers,
@@ -25,6 +28,7 @@ const quotationSlice = createSlice({
     ...quotationCompanyReducers,
     ...quotationEditorReducers,
     ...quotationProductReducers,
+    ...quotationSubmissionReducers,
     ...quotationViewReducers,
     quotationReset() {
       return createQuotationState();
@@ -43,6 +47,8 @@ export const {
   quotationCompanyDirectorySearchChanged,
   quotationCompanySearchChanged,
   quotationCompanySelected,
+  quotationUnsavedCompanyConfirmationClosed,
+  quotationUnsavedCompanyConfirmationRequested,
   quotationDeliveryNotesChanged,
   quotationExitCancelled,
   quotationExitRequested,
@@ -68,7 +74,9 @@ export const {
   quotationProductSummaryOpened,
   quotationRowActionClosed,
   quotationRowActionRequested,
+  quotationRoundOffChanged,
   quotationReset,
+  quotationSubmissionErrorCleared,
   quotationStepChanged,
   quotationUpdateUnavailableDialogClosed,
   quotationUpdateUnavailableDialogOpened,

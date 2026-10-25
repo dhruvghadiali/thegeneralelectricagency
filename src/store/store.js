@@ -21,6 +21,7 @@ import tallyCompanyReducer from "@Tally/redux/tallyCompanies/tallyCompanies.slic
 import tallyCompanySyncLogReducer from "@Tally/redux/companySyncLog/companySyncLog.slice";
 import tallyProductSyncLogReducer from "@Tally/redux/productSyncLog/productSyncLog.slice";
 import syncCompaniesReducer from "@Tally/redux/syncCompanies/syncCompanies.slice";
+import unmappedProductsReducer from "@Tally/redux/unmappedProducts/unmappedProducts.slice";
 import { syncErrorListener } from "@Tally/redux/syncError.listener";
 
 const appReducer = combineReducers({
@@ -43,6 +44,7 @@ const appReducer = combineReducers({
     systemCompanies: systemCompaniesReducer,
     syncProducts: syncProductsReducer,
     syncCompanies: syncCompaniesReducer,
+    unmappedProducts: unmappedProductsReducer,
     tallyCompanySyncLogs: tallyCompanySyncLogReducer,
     tallyProductSyncLogs: tallyProductSyncLogReducer,
 });

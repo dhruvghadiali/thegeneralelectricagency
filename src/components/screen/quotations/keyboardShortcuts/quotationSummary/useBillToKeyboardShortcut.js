@@ -1,28 +1,23 @@
 import { useCallback } from "react";
 
-import { selectFieldValueForReplacement } from "@screenComponent/quotations/keyboardShortcuts/shared/handlePreviousFieldKeyboardNavigation";
-
-function useBillToKeyboardShortcut({ paymentNotesRef, productsRef }) {
+function useBillToKeyboardShortcut({ productsRef, roundOffRef }) {
   return useCallback(
     (event) => {
-      const shouldFocusPaymentNotes =
+      const shouldFocusRoundOff =
         !event.altKey &&
         !event.ctrlKey &&
         !event.metaKey &&
         (event.key === "Backspace" || event.key === "Delete");
 
-      if (shouldFocusPaymentNotes) {
-        const paymentNotes = paymentNotesRef.current;
-        if (!paymentNotes) return;
-
+      if (shouldFocusRoundOff) {
         event.preventDefault();
-        selectFieldValueForReplacement(paymentNotes);
+        roundOffRef.current?.focus();
         return;
       }
 
       if (event.altKey && event.key === "ArrowUp") {
         event.preventDefault();
-        paymentNotesRef.current?.focus();
+        roundOffRef.current?.focus();
         return;
       }
 
@@ -36,7 +31,7 @@ function useBillToKeyboardShortcut({ paymentNotesRef, productsRef }) {
       event.preventDefault();
       productsRef.current?.focus();
     },
-    [paymentNotesRef, productsRef],
+    [productsRef, roundOffRef],
   );
 }
 

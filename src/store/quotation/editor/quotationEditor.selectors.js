@@ -23,6 +23,9 @@ export const selectQuotationDeliveryNotes = (state) =>
 export const selectQuotationPaymentNotes = (state) =>
   selectQuotationState(state).paymentNotes;
 
+export const selectQuotationRoundOff = (state) =>
+  selectQuotationState(state).roundOff;
+
 export const selectQuotationEditSource = createSelector(
   selectQuotationState,
   ({

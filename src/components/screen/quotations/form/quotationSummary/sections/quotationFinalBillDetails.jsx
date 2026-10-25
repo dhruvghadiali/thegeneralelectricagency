@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { QUOTATION_TAX_TREATMENTS } from "@Enums";
 import {
   selectQuotationGstPercentage,
+  selectQuotationRoundOff,
   selectQuotationTaxTreatment,
 } from "@Redux/quotation/quotation.selector";
 import { Label } from "@shadcnComponent/label";
@@ -35,10 +36,12 @@ function BillAmountRow({ label, value, emphasized = false }) {
 function QuotationFinalBillDetails({ products, sectionRef, onKeyDown }) {
   const taxTreatment = useSelector(selectQuotationTaxTreatment);
   const gstPercentage = useSelector(selectQuotationGstPercentage);
+  const roundOff = useSelector(selectQuotationRoundOff);
   const totals = calculateQuotationBillTotals(
     products,
     taxTreatment,
     gstPercentage,
+    roundOff,
   );
   const isGujarat = taxTreatment === QUOTATION_TAX_TREATMENTS.GUJARAT;
   const isOutOfGujarat =

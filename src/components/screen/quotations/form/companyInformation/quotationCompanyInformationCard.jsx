@@ -11,6 +11,9 @@ import {
 } from "@shadcnComponent/card";
 
 import CompanyInformationField from "@screenComponent/quotations/form/companyInformation/companyInformationField";
+import QuotationCompanyAddressFormatGuide, {
+  QUOTATION_COMPANY_ADDRESS_GUIDE_ID,
+} from "@screenComponent/quotations/form/companyInformation/quotationCompanyAddressFormatGuide";
 import QuotationCompanySelect from "@screenComponent/quotations/form/companyInformation/quotationCompanySelect";
 
 function QuotationCompanyInformationCard({
@@ -22,6 +25,7 @@ function QuotationCompanyInformationCard({
   saveButtonRef,
   formik,
   fieldError,
+  showAddressFormatGuide,
   onCompanyNameChange,
   onCompanySelect,
   onCompanyClear,
@@ -86,10 +90,21 @@ function QuotationCompanyInformationCard({
           label="Address"
           error={fieldError("address")}
         >
+          {showAddressFormatGuide && <QuotationCompanyAddressFormatGuide />}
           <Textarea
             ref={addressInputRef}
             id="quotation-address"
             {...fieldProps("address")}
+            aria-describedby={
+              [
+                showAddressFormatGuide
+                  ? QUOTATION_COMPANY_ADDRESS_GUIDE_ID
+                  : null,
+                fieldError("address") ? "quotation-address-error" : null,
+              ]
+                .filter(Boolean)
+                .join(" ") || undefined
+            }
             onKeyDown={onAddressKeyDown}
             placeholder="Enter the complete company address"
             autoComplete="street-address"

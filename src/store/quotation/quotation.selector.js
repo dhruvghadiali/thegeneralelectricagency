@@ -2,6 +2,7 @@ export {
   selectQuotationCompanies,
   selectQuotationCompanyInformation,
   selectQuotationCompanyPagination,
+  selectQuotationPendingUnsavedCompanyInformation,
   selectQuotationCompanyRequest,
   selectQuotationCompanySearch,
   selectQuotationSelectedCompany,
@@ -15,6 +16,7 @@ export {
   selectQuotationExitDialog,
   selectQuotationGstPercentage,
   selectQuotationPaymentNotes,
+  selectQuotationRoundOff,
   selectQuotationTaxTreatment,
 } from "@Redux/quotation/editor/quotationEditor.selectors";
 

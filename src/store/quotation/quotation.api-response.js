@@ -84,6 +84,9 @@ const discountPercentageFromAmount = (discount, sellingPrice) => {
     .toString();
 };
 
+const booleanFromResponse = (value) =>
+  value === true || value === 1 || String(value).toLowerCase() === "true";
+
 const fromQuotationProductResponse = (item = {}) => {
   const productReferences = [item.product, item.product_id, item.productId];
   const tallyProductReferences = [
@@ -218,6 +221,9 @@ export const fromQuotationResponse = (quotation = {}) => {
     ),
     deliveryNotes: quotation.delivery_notes ?? quotation.deliveryNotes ?? "",
     paymentNotes: quotation.payment_notes ?? quotation.paymentNotes ?? "",
+    roundOff: booleanFromResponse(
+      quotation.round_off ?? quotation.roundOff ?? false,
+    ),
     notes: quotation.notes ?? "",
     products: productInformation.map(({ productId, product, hsnCode }) => ({
       id: productId,

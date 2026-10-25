@@ -20,6 +20,7 @@ function useUpdateQuotationPdf() {
     productDirectory,
     productInformation,
     quotationId,
+    roundOff,
     taxTreatment,
   } = useEditQuotationUpdateData();
 
@@ -52,6 +53,7 @@ function useUpdateQuotationPdf() {
           gstPercentage,
           deliveryNotes,
           paymentNotes,
+          roundOff,
           loggedInUser,
         },
         {
@@ -83,6 +85,7 @@ function useUpdateQuotationPdf() {
     productDirectory,
     productInformation,
     quotationId,
+    roundOff,
     taxTreatment,
   ]);
   const discountDialog = useQuotationPdfDiscountDialog(

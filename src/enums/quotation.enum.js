@@ -9,6 +9,8 @@ export const QUOTATION_FORM_MODES = Object.freeze({
   EDIT: "edit",
 });
 
+export const SUBMISSION_ERROR_DISPLAY_DURATION_MS = 20_000;
+
 export const PRODUCT_FORM_DISCARD_DESTINATIONS = Object.freeze({
   COMPANY_INFORMATION: "company-information",
   PRODUCT_SUMMARY: "product-summary",

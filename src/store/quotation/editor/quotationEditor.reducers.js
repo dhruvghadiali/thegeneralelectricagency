@@ -22,6 +22,7 @@ export const quotationEditorReducers = {
       gstPercentage: quotation.gstPercentage,
       deliveryNotes: quotation.deliveryNotes,
       paymentNotes: quotation.paymentNotes,
+      roundOff: Boolean(quotation.roundOff),
       productInformation,
       originalProductInformation: _.cloneDeep(productInformation),
       isProductSummaryExpanded: productInformation.length > 0,
@@ -49,5 +50,8 @@ export const quotationEditorReducers = {
   },
   quotationPaymentNotesChanged(state, action) {
     state.paymentNotes = _.toUpper(action.payload);
+  },
+  quotationRoundOffChanged(state, action) {
+    state.roundOff = Boolean(action.payload);
   },
 };

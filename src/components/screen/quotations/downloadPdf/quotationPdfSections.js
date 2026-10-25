@@ -49,12 +49,14 @@ function createCommercialSection({
   gstPercentage,
   deliveryNotes,
   paymentNotes,
+  roundOff,
 }) {
   return {
     taxTreatment,
     gstPercentage,
     deliveryNotes,
     paymentNotes,
+    roundOff,
   };
 }
 
@@ -91,6 +93,7 @@ export function createQuotationPdfSections({
   gstPercentage,
   deliveryNotes,
   paymentNotes,
+  roundOff,
   loggedInUser,
 }) {
   return {
@@ -107,6 +110,7 @@ export function createQuotationPdfSections({
       gstPercentage,
       deliveryNotes,
       paymentNotes,
+      roundOff,
     }),
     enquiryContact: createEnquiryContactSection(loggedInUser),
   };

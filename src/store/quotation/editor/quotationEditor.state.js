@@ -11,6 +11,7 @@ export const createQuotationEditorState = () => ({
   gstPercentage: String(INDIAN_GST_RATES.EIGHTEEN),
   deliveryNotes: "",
   paymentNotes: "",
+  roundOff: false,
 });
 
 export default createQuotationEditorState;

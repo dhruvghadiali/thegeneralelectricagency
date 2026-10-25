@@ -4,4 +4,5 @@ export const TALLY_ENDPOINTS = Object.freeze({
   PRODUCT_SYNC_LOGS: "tally-product-syncs",
   COMPANIES: "tally-companies",
   PRODUCTS: "tally-products",
+  UNMAPPED_PRODUCTS: "tally-products/unmapped",
 });

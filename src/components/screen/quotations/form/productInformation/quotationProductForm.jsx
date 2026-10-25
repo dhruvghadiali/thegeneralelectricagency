@@ -27,7 +27,7 @@ function QuotationProductForm({
   onProductSelect,
   onProductClear,
 }) {
-  const productError = fieldError("product");
+  const productError = fieldError("product") || fieldError("productId");
   const fieldProps = (field, id) => {
     const error = field === "product" ? productError : fieldError(field);
 

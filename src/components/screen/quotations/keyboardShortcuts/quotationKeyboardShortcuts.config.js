@@ -102,6 +102,11 @@ export const QUOTATION_KEYBOARD_SHORTCUTS = Object.freeze({
   ],
   quotationSummary: [
     {
+      keys: "Space",
+      context: "Round off total",
+      action: "Enable or disable rounding the final amount",
+    },
+    {
       keys: "Alt+ArrowUp / Alt+ArrowDown / Enter / Tab",
       action: "Move through quotation summary sections and actions",
     },
@@ -120,6 +125,11 @@ export const QUOTATION_KEYBOARD_SHORTCUTS = Object.freeze({
       keys: "Y / N",
       context: "PDF discount dialog",
       action: "Include or hide the discount-percentage column",
+    },
+    {
+      keys: "Y / N",
+      context: "Unsaved company dialog",
+      action: "Proceed with or return from the unsaved company",
     },
   ],
   viewQuotationInformation: [

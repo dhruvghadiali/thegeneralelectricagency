@@ -11,6 +11,7 @@ import useFinalBillDetailsKeyboardShortcut from "@screenComponent/quotations/key
 import useGstPercentageKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/quotationSummary/useGstPercentageKeyboardShortcut";
 import usePaymentNotesKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/quotationSummary/usePaymentNotesKeyboardShortcut";
 import useProductsKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/quotationSummary/useProductsKeyboardShortcut";
+import useRoundOffKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/quotationSummary/useRoundOffKeyboardShortcut";
 import useSubmitButtonKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/quotationSummary/useSubmitButtonKeyboardShortcut";
 import useTaxTreatmentKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/quotationSummary/useTaxTreatmentKeyboardShortcut";
 
@@ -19,6 +20,7 @@ function useQuotationSummaryKeyboardShortcuts() {
   const gstPercentageRef = useRef(null);
   const deliveryNotesRef = useRef(null);
   const paymentNotesRef = useRef(null);
+  const roundOffRef = useRef(null);
   const billToRef = useRef(null);
   const productsRef = useRef(null);
   const finalBillDetailsRef = useRef(null);
@@ -44,12 +46,16 @@ function useQuotationSummaryKeyboardShortcuts() {
     paymentNotesRef,
   });
   const handlePaymentNotesKeyDown = usePaymentNotesKeyboardShortcut({
-    billToRef,
     deliveryNotesRef,
+    roundOffRef,
+  });
+  const handleRoundOffKeyDown = useRoundOffKeyboardShortcut({
+    billToRef,
+    paymentNotesRef,
   });
   const handleBillToKeyDown = useBillToKeyboardShortcut({
-    paymentNotesRef,
     productsRef,
+    roundOffRef,
   });
   const handleProductsKeyDown = useProductsKeyboardShortcut({
     billToRef,
@@ -75,6 +81,7 @@ function useQuotationSummaryKeyboardShortcuts() {
       gstPercentageRef,
       deliveryNotesRef,
       paymentNotesRef,
+      roundOffRef,
       billToRef,
       productsRef,
       finalBillDetailsRef,
@@ -92,6 +99,9 @@ function useQuotationSummaryKeyboardShortcuts() {
     ),
     handlePaymentNotesKeyDown: withDesktopKeyboardShortcut(
       handlePaymentNotesKeyDown,
+    ),
+    handleRoundOffKeyDown: withDesktopKeyboardShortcut(
+      handleRoundOffKeyDown,
     ),
     handleBillToKeyDown: withDesktopKeyboardShortcut(handleBillToKeyDown),
     handleProductsKeyDown: withDesktopKeyboardShortcut(handleProductsKeyDown),

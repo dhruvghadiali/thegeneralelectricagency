@@ -25,6 +25,7 @@ export function calculateQuotationBillTotals(
   products,
   taxTreatment,
   gstPercentage,
+  roundOff = false,
 ) {
   const productTotals = products.reduce(
     (totals, product) => {
@@ -50,12 +51,21 @@ export function calculateQuotationBillTotals(
     ? Math.max(numberOrZero(gstPercentage), 0)
     : 0;
   const totalTax = taxableAmount * (gstRate / 100);
+  const unroundedFinalAmount = taxableAmount + totalTax;
+  const finalAmount = roundOff
+    ? Math.round(unroundedFinalAmount)
+    : unroundedFinalAmount;
+  const roundOffAmount = Number(
+    (finalAmount - unroundedFinalAmount).toFixed(2),
+  );
 
   return {
     ...productTotals,
     taxableAmount,
     gstRate,
     totalTax,
-    finalAmount: taxableAmount + totalTax,
+    unroundedFinalAmount,
+    roundOffAmount,
+    finalAmount,
   };
 }

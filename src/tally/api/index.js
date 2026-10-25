@@ -14,4 +14,5 @@ export { tallyProductSyncLogApi } from "@Tally/api/productSyncLog/productSyncLog
 export { TALLY_ENDPOINTS } from "@Tally/api/endpoints.constants";
 export { tallyProductApi } from "@Tally/api/product/product.api";
 export { systemProductsApi } from "@Tally/api/systemProducts/systemProducts.api";
+export { unmappedProductsApi } from "@Tally/api/unmappedProducts/unmappedProducts.api";
 export { convertTallyResponse } from "@Tally/api/response.converter";

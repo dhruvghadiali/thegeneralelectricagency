@@ -51,6 +51,7 @@ export function toQuotationDetailsCreatePayload({
   gstPercentage,
   deliveryNotes,
   paymentNotes,
+  roundOff = false,
   productInformation = [],
 }) {
   return {
@@ -65,6 +66,7 @@ export function toQuotationDetailsCreatePayload({
     gst: String(gstPercentage ?? ""),
     delivery_notes: nullableText(deliveryNotes),
     payment_notes: nullableText(paymentNotes),
+    round_off: Boolean(roundOff),
     products: productInformation.map((product) =>
       toQuotationProductPayload(product, "V1"),
     ),
@@ -80,6 +82,7 @@ export function toQuotationDetailsUpdatePayload({
   gstPercentage,
   deliveryNotes,
   paymentNotes,
+  roundOff = false,
   productInformation = [],
 }) {
   return {
@@ -94,6 +97,7 @@ export function toQuotationDetailsUpdatePayload({
     gst: String(gstPercentage ?? ""),
     delivery_notes: nullableText(deliveryNotes),
     payment_notes: nullableText(paymentNotes),
+    round_off: Boolean(roundOff),
     products: productInformation.map((product) =>
       toQuotationProductPayload(product, quotationVersion, "product"),
     ),

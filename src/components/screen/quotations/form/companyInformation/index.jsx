@@ -6,6 +6,7 @@ function QuotationCompanyInformation({
   fieldError,
   fieldRefs,
   keyboard,
+  showAddressFormatGuide,
   onCompanyNameChange,
   onCompanySelect,
   onCompanyClear,
@@ -25,6 +26,7 @@ function QuotationCompanyInformation({
         saveButtonRef={fieldRefs.saveButtonRef}
         formik={formik}
         fieldError={fieldError}
+        showAddressFormatGuide={showAddressFormatGuide}
         onCompanyNameChange={onCompanyNameChange}
         onCompanySelect={onCompanySelect}
         onCompanyClear={onCompanyClear}

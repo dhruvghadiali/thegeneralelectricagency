@@ -17,6 +17,7 @@ export function fromQuotationProductDirectoryResponse(
 export function toQuotationProductFormValues(product = {}) {
   return {
     product: product.name ?? "",
+    productId: product.id ?? "",
     sellingPrice:
       product.salePrice === null || product.salePrice === undefined
         ? ""

@@ -21,7 +21,6 @@ function SyncProducts() {
   const {
     error: saveError,
     alertVisible: saveAlertVisible,
-    savedCount,
   } = useSelector(selectSyncProductsSaveState);
 
   return (

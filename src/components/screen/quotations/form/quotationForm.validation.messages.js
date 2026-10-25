@@ -20,6 +20,8 @@ export const CREATE_QUOTATION_VALIDATION_MESSAGES = Object.freeze({
   ADDRESS_REQUIRED: "Address is required",
   ADDRESS_MIN: `Address must be at least ${CREATE_QUOTATION_ADDRESS_MIN_LENGTH} characters`,
   ADDRESS_MAX: `Address must be ${CREATE_QUOTATION_ADDRESS_MAX_LENGTH} characters or fewer`,
+  ADDRESS_FORMAT:
+    "Use one of the supported address formats with city, state, and a 6-digit PIN code",
   EMAIL_INVALID: "Enter a valid email address",
   EMAIL_MIN: `Email address must be at least ${CREATE_QUOTATION_EMAIL_MIN_LENGTH} characters`,
   EMAIL_MAX: `Email address must be ${CREATE_QUOTATION_EMAIL_MAX_LENGTH} characters or fewer`,
@@ -29,6 +31,7 @@ export const CREATE_QUOTATION_VALIDATION_MESSAGES = Object.freeze({
 
 export const QUOTATION_PRODUCT_VALIDATION_MESSAGES = Object.freeze({
   PRODUCT_REQUIRED: "Product is required",
+  PRODUCT_DIRECTORY_REQUIRED: "Select a product from the product directory",
   PRODUCT_MAX: `Product must be ${QUOTATION_PRODUCT_NAME_MAX_LENGTH} characters or fewer`,
   SELLING_PRICE_REQUIRED: "Selling price is required",
   SELLING_PRICE_NUMBER: "Selling price must be a valid number",

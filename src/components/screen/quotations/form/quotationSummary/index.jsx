@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@shadcnComponent/card";
 import QuotationGstPercentageSelect from "@screenComponent/quotations/form/quotationSummary/controls/quotationGstPercentageSelect";
 import QuotationNotesFields from "@screenComponent/quotations/form/quotationSummary/controls/quotationNotesFields";
+import QuotationRoundOffSwitch from "@screenComponent/quotations/form/quotationSummary/controls/quotationRoundOffSwitch";
 import QuotationTaxTreatmentSelect from "@screenComponent/quotations/form/quotationSummary/controls/quotationTaxTreatmentSelect";
 import QuotationSubmissionError from "@screenComponent/quotations/form/quotationSummary/layout/quotationSubmissionError";
 import QuotationSummaryActions from "@screenComponent/quotations/form/quotationSummary/layout/quotationSummaryActions";
@@ -29,7 +30,7 @@ function QuotationSummary({
         />
         <CardContent className="grid gap-5 px-6 py-5">
           <QuotationSubmissionError error={summary.submissionError} />
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
             <QuotationTaxTreatmentSelect
               triggerRef={summary.keyboard.refs.taxTreatmentRef}
               onKeyDown={summary.keyboard.handleTaxTreatmentKeyDown}
@@ -47,6 +48,10 @@ function QuotationSummary({
               onPaymentNotesKeyDown={
                 summary.keyboard.handlePaymentNotesKeyDown
               }
+            />
+            <QuotationRoundOffSwitch
+              switchRef={summary.keyboard.refs.roundOffRef}
+              onKeyDown={summary.keyboard.handleRoundOffKeyDown}
             />
           </div>
           <QuotationCompanyInformation

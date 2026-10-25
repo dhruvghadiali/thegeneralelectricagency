@@ -80,6 +80,7 @@ export function toExistingProductFormValues(
 
   return {
     product: product.product || directoryProduct?.name || "",
+    productId: product.productId ?? directoryProduct?.id ?? "",
     sellingPrice: String(product.sellingPrice ?? ""),
     quantity: String(product.quantity ?? ""),
     discount: hasDiscount ? String(product.discount) : "",

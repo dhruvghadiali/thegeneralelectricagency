@@ -33,6 +33,7 @@ export function getQuotationTotals(quotation) {
     quotation?.productInformation ?? [],
     quotation?.taxTreatment,
     quotation?.gstPercentage,
+    quotation?.roundOff,
   );
 }
 
@@ -64,6 +65,7 @@ function historyProductSnapshot(entry) {
     payment_notes: entry.payment_notes ?? entry.paymentNotes,
     tax_type: entry.tax_type ?? entry.taxType,
     gst: entry.gst ?? entry.gstPercentage,
+    round_off: entry.round_off ?? entry.roundOff,
     notes: entry.notes,
     created_at: entry.created_at ?? entry.createdAt,
     created_by: entry.created_by ?? entry.createdBy,
@@ -223,6 +225,12 @@ export function getQuotationChanges(current, previous) {
     current.paymentNotes,
     previous.paymentNotes,
     "Payment notes",
+  );
+  compareField(
+    "roundOff",
+    current.roundOff,
+    previous.roundOff,
+    "Round off total",
   );
   compareField("notes", current.notes, previous.notes, "Notes");
 

@@ -174,6 +174,7 @@ export const createQuotationDetails = createAsyncThunk(
       gstPercentage: quotation.gstPercentage,
       deliveryNotes: quotation.deliveryNotes,
       paymentNotes: quotation.paymentNotes,
+      roundOff: quotation.roundOff,
       productInformation: quotation.productInformation,
     });
 
@@ -209,6 +210,7 @@ export const updateQuotationDetails = createAsyncThunk(
       gstPercentage: quotation.gstPercentage,
       deliveryNotes: quotation.deliveryNotes,
       paymentNotes: quotation.paymentNotes,
+      roundOff: quotation.roundOff,
       productInformation: quotation.productInformation,
     });
 
