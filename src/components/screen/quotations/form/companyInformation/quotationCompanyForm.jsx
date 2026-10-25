@@ -8,6 +8,7 @@ import { CREATE_QUOTATION_INITIAL_VALUES } from "@screenComponent/quotations/for
 import { createQuotationValidationSchema } from "@screenComponent/quotations/form/quotationForm.validation.schema";
 import {
   selectQuotationCompanySearch,
+  selectQuotationPendingUnsavedCompanyInformation,
   selectQuotationSelectedCompany,
 } from "@Redux/quotation/quotation.selector";
 import {
@@ -15,15 +16,21 @@ import {
   quotationCompanySearchChanged,
   quotationCompanySelected,
   quotationStepChanged,
+  quotationUnsavedCompanyConfirmationClosed,
+  quotationUnsavedCompanyConfirmationRequested,
 } from "@Redux/quotation/quotation.slice";
 
 import QuotationCompanyInformation from "@screenComponent/quotations/form/companyInformation";
 import useCompanyKeyboardShortcuts from "@screenComponent/quotations/keyboardShortcuts/companyForm";
+import QuotationUnsavedCompanyDialog from "@screenComponent/quotations/dialogs/quotationUnsavedCompanyDialog";
 
 function QuotationCompanyForm() {
   const dispatch = useDispatch();
   const companySearch = useSelector(selectQuotationCompanySearch);
   const selectedCompany = useSelector(selectQuotationSelectedCompany);
+  const pendingCompanyInformation = useSelector(
+    selectQuotationPendingUnsavedCompanyInformation,
+  );
   const companyInputRef = useRef(null);
   const addressInputRef = useRef(null);
   const emailInputRef = useRef(null);
@@ -41,6 +48,12 @@ function QuotationCompanyForm() {
     companyDirectoryRef,
   };
   const keyboard = useCompanyKeyboardShortcuts(companyFieldRefs);
+
+  const saveCompanyInformation = (companyInformation) => {
+    dispatch(quotationCompanyInformationSaved(companyInformation));
+    dispatch(quotationStepChanged(CREATE_QUOTATION_STEPS.PRODUCT_INFORMATION));
+  };
+  
   const formik = useFormik({
     initialValues: selectedCompany
       ? toQuotationCompanyFormValues(selectedCompany)
@@ -50,12 +63,16 @@ function QuotationCompanyForm() {
         },
     validationSchema: createQuotationValidationSchema,
     onSubmit: (values) => {
-      dispatch(
-        quotationCompanyInformationSaved(
-          createQuotationValidationSchema.cast(values),
-        ),
-      );
-      dispatch(quotationStepChanged(CREATE_QUOTATION_STEPS.PRODUCT_INFORMATION));
+      const companyInformation = createQuotationValidationSchema.cast(values);
+
+      if (!selectedCompany?.id) {
+        dispatch(
+          quotationUnsavedCompanyConfirmationRequested(companyInformation),
+        );
+        return;
+      }
+
+      saveCompanyInformation(companyInformation);
     },
   });
 
@@ -96,17 +113,35 @@ function QuotationCompanyForm() {
     dispatch(quotationCompanySelected(null));
     formik.resetForm({ values: { ...CREATE_QUOTATION_INITIAL_VALUES } });
   };
+  const cancelUnsavedCompany = () => {
+    dispatch(quotationUnsavedCompanyConfirmationClosed());
+  };
+  const proceedWithUnsavedCompany = () => {
+    if (!pendingCompanyInformation) return;
+
+    const companyInformation = pendingCompanyInformation;
+
+    saveCompanyInformation(companyInformation);
+  };
 
   return (
-    <QuotationCompanyInformation
-      formik={formik}
-      fieldError={fieldError}
-      fieldRefs={companyFieldRefs}
-      keyboard={keyboard}
-      onCompanyNameChange={changeCompanyName}
-      onCompanySelect={selectCompany}
-      onCompanyClear={clearCompany}
-    />
+    <>
+      <QuotationCompanyInformation
+        formik={formik}
+        fieldError={fieldError}
+        fieldRefs={companyFieldRefs}
+        keyboard={keyboard}
+        onCompanyNameChange={changeCompanyName}
+        onCompanySelect={selectCompany}
+        onCompanyClear={clearCompany}
+      />
+      <QuotationUnsavedCompanyDialog
+        companyName={pendingCompanyInformation?.companyName}
+        open={Boolean(pendingCompanyInformation)}
+        onCancel={cancelUnsavedCompany}
+        onProceed={proceedWithUnsavedCompany}
+      />
+    </>
   );
 }
 

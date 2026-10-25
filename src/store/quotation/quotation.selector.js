@@ -2,6 +2,7 @@ export {
   selectQuotationCompanies,
   selectQuotationCompanyInformation,
   selectQuotationCompanyPagination,
+  selectQuotationPendingUnsavedCompanyInformation,
   selectQuotationCompanyRequest,
   selectQuotationCompanySearch,
   selectQuotationSelectedCompany,

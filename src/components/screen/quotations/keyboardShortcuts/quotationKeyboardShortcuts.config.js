@@ -121,6 +121,11 @@ export const QUOTATION_KEYBOARD_SHORTCUTS = Object.freeze({
       context: "PDF discount dialog",
       action: "Include or hide the discount-percentage column",
     },
+    {
+      keys: "Y / N",
+      context: "Unsaved company dialog",
+      action: "Proceed with or return from the unsaved company",
+    },
   ],
   viewQuotationInformation: [
     { keys: "Escape", action: "Return to the quotation list" },

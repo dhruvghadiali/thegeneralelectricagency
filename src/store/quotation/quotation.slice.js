@@ -43,6 +43,8 @@ export const {
   quotationCompanyDirectorySearchChanged,
   quotationCompanySearchChanged,
   quotationCompanySelected,
+  quotationUnsavedCompanyConfirmationClosed,
+  quotationUnsavedCompanyConfirmationRequested,
   quotationDeliveryNotesChanged,
   quotationExitCancelled,
   quotationExitRequested,

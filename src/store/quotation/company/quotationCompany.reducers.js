@@ -16,11 +16,18 @@ export const quotationCompanyReducers = {
   },
   quotationCompanyInformationSaved(state, action) {
     state.companyInformation = action.payload;
+    state.pendingUnsavedCompanyInformation = null;
     state.taxTreatment = action.payload?.address
       ?.toLocaleLowerCase()
       .includes("gujarat")
       ? QUOTATION_TAX_TREATMENTS.GUJARAT
       : QUOTATION_TAX_TREATMENTS.OUT_OF_GUJARAT;
+  },
+  quotationUnsavedCompanyConfirmationRequested(state, action) {
+    state.pendingUnsavedCompanyInformation = action.payload;
+  },
+  quotationUnsavedCompanyConfirmationClosed(state) {
+    state.pendingUnsavedCompanyInformation = null;
   },
 };
 

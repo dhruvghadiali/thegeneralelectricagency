@@ -14,6 +14,9 @@ export const selectQuotationSelectedCompany = (state) =>
 export const selectQuotationCompanyInformation = (state) =>
   selectQuotationState(state).companyInformation;
 
+export const selectQuotationPendingUnsavedCompanyInformation = (state) =>
+  selectQuotationState(state).pendingUnsavedCompanyInformation;
+
 export const selectQuotationCompanyPagination = (state) =>
   selectQuotationState(state).companyPagination;
 

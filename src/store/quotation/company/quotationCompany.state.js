@@ -6,6 +6,7 @@ export const createQuotationCompanyState = () => ({
   companySearch: "",
   selectedCompany: null,
   companyInformation: null,
+  pendingUnsavedCompanyInformation: null,
   companyPagination: {
     page: QUOTATION_COMPANY_PAGE,
     limit: QUOTATION_COMPANY_LIMIT,
