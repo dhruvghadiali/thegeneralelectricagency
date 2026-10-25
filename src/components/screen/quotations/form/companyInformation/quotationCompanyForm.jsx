@@ -1,10 +1,11 @@
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 
 import { CREATE_QUOTATION_STEPS } from "@Enums";
 import { toQuotationCompanyFormValues } from "@Redux/quotation/quotation-company-directory.api-response";
 import { CREATE_QUOTATION_INITIAL_VALUES } from "@screenComponent/quotations/form/quotationForm.initialValues";
+import { CREATE_QUOTATION_NEW_COMPANY_ADDRESS_PATTERN } from "@screenComponent/quotations/form/quotationForm.validation.constants";
 import { createQuotationValidationSchema } from "@screenComponent/quotations/form/quotationForm.validation.schema";
 import {
   selectQuotationCompanyInformation,
@@ -34,6 +35,14 @@ function QuotationCompanyForm() {
   const selectedCompany = useSelector(selectQuotationSelectedCompany);
   const pendingCompanyInformation = useSelector(
     selectQuotationPendingUnsavedCompanyInformation,
+  );
+  const isUnsavedCompany = !selectedCompany?.id;
+  const companyValidationSchema = useMemo(
+    () =>
+      createQuotationValidationSchema({
+        requireFormattedAddress: isUnsavedCompany,
+      }),
+    [isUnsavedCompany],
   );
   const companyInputRef = useRef(null);
   const addressInputRef = useRef(null);
@@ -70,9 +79,9 @@ function QuotationCompanyForm() {
             ...CREATE_QUOTATION_INITIAL_VALUES,
             companyName: companySearch,
           },
-    validationSchema: createQuotationValidationSchema,
+    validationSchema: companyValidationSchema,
     onSubmit: (values) => {
-      const companyInformation = createQuotationValidationSchema.cast(values);
+      const companyInformation = companyValidationSchema.cast(values);
 
       if (!selectedCompany?.id) {
         dispatch(
@@ -86,9 +95,7 @@ function QuotationCompanyForm() {
   });
 
   const fieldError = (field) =>
-    formik.touched[field] && formik.errors[field]
-      ? formik.errors[field]
-      : null;
+    formik.touched[field] && formik.errors[field] ? formik.errors[field] : null;
 
   const changeCompanyName = (event) => {
     formik.handleChange(event);
@@ -132,6 +139,15 @@ function QuotationCompanyForm() {
 
     saveCompanyInformation(companyInformation);
   };
+  const hasValidUnsavedCompanyAddress =
+    CREATE_QUOTATION_NEW_COMPANY_ADDRESS_PATTERN.test(
+      formik.values.address.trim(),
+    );
+  const showAddressFormatGuide = Boolean(
+    formik.values.companyName.trim() &&
+      isUnsavedCompany &&
+      !hasValidUnsavedCompanyAddress,
+  );
 
   return (
     <>
@@ -140,6 +156,7 @@ function QuotationCompanyForm() {
         fieldError={fieldError}
         fieldRefs={companyFieldRefs}
         keyboard={keyboard}
+        showAddressFormatGuide={showAddressFormatGuide}
         onCompanyNameChange={changeCompanyName}
         onCompanySelect={selectCompany}
         onCompanyClear={clearCompany}

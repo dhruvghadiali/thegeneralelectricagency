@@ -8,6 +8,7 @@ import {
   CREATE_QUOTATION_EMAIL_MAX_LENGTH,
   CREATE_QUOTATION_EMAIL_MIN_LENGTH,
   CREATE_QUOTATION_GST_PATTERN,
+  CREATE_QUOTATION_NEW_COMPANY_ADDRESS_PATTERN,
   CREATE_QUOTATION_PHONE_PATTERN,
   QUOTATION_PRODUCT_DESCRIPTION_MAX_LENGTH,
   QUOTATION_PRODUCT_DISCOUNT_MIN,
@@ -29,7 +30,32 @@ const formNumber = (typeError) =>
     )
     .typeError(typeError);
 
-export const createQuotationValidationSchema = Yup.object({
+const companyAddressSchema = (requireFormattedAddress) => {
+  let schema = Yup.string()
+    .trim()
+    .min(
+      CREATE_QUOTATION_ADDRESS_MIN_LENGTH,
+      CREATE_QUOTATION_VALIDATION_MESSAGES.ADDRESS_MIN,
+    )
+    .max(
+      CREATE_QUOTATION_ADDRESS_MAX_LENGTH,
+      CREATE_QUOTATION_VALIDATION_MESSAGES.ADDRESS_MAX,
+    )
+    .required(CREATE_QUOTATION_VALIDATION_MESSAGES.ADDRESS_REQUIRED);
+
+  if (requireFormattedAddress) {
+    schema = schema.matches(CREATE_QUOTATION_NEW_COMPANY_ADDRESS_PATTERN, {
+      message: CREATE_QUOTATION_VALIDATION_MESSAGES.ADDRESS_FORMAT,
+      excludeEmptyString: true,
+    });
+  }
+
+  return schema;
+};
+
+export const createQuotationValidationSchema = ({
+  requireFormattedAddress = false,
+} = {}) => Yup.object({
   companyName: Yup.string()
     .trim()
     .min(
@@ -41,17 +67,7 @@ export const createQuotationValidationSchema = Yup.object({
       CREATE_QUOTATION_VALIDATION_MESSAGES.COMPANY_NAME_MAX,
     )
     .required(CREATE_QUOTATION_VALIDATION_MESSAGES.COMPANY_NAME_REQUIRED),
-  address: Yup.string()
-    .trim()
-    .min(
-      CREATE_QUOTATION_ADDRESS_MIN_LENGTH,
-      CREATE_QUOTATION_VALIDATION_MESSAGES.ADDRESS_MIN,
-    )
-    .max(
-      CREATE_QUOTATION_ADDRESS_MAX_LENGTH,
-      CREATE_QUOTATION_VALIDATION_MESSAGES.ADDRESS_MAX,
-    )
-    .required(CREATE_QUOTATION_VALIDATION_MESSAGES.ADDRESS_REQUIRED),
+  address: companyAddressSchema(requireFormattedAddress),
   email: Yup.string()
     .trim()
     .transform((value) => (value === "" ? undefined : value))
