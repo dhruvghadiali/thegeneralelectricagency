@@ -16,6 +16,12 @@ function submissionFulfilled(state, action) {
   state.createdQuotation = action.payload;
 }
 
+export const quotationSubmissionReducers = {
+  quotationSubmissionErrorCleared(state) {
+    state.submitError = null;
+  },
+};
+
 export function addQuotationSubmissionExtraReducers(builder) {
   builder
     .addCase(createQuotationDetails.pending, (state) => {
