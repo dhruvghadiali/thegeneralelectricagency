@@ -1,5 +1,11 @@
 import _ from "lodash";
-import { Building2, CalendarClock, FileText, UserRound } from "lucide-react";
+import {
+  Building2,
+  CalendarClock,
+  FileKey,
+  FileText,
+  UserRound,
+} from "lucide-react";
 
 import { COLUMN_TYPES, MOBILE_SLOTS } from "@Enums";
 
@@ -24,6 +30,17 @@ export const QUOTATION_TABLE_COLUMNS = [
     mobile: MOBILE_SLOTS.SECONDARY,
     mobileIcon: FileText,
     width: "220px",
+  },
+  {
+    key: "protectedKey",
+    header: "Protected key",
+    field: "protectedKey",
+    type: COLUMN_TYPES.TEXT,
+    className: "whitespace-nowrap font-mono",
+    mobile: MOBILE_SLOTS.META,
+    mobileIcon: FileKey,
+    mobileLabel: "Protected key",
+    width: "120px",
   },
   {
     key: "createdBy",

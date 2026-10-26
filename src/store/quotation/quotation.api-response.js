@@ -211,6 +211,7 @@ export const fromQuotationResponse = (quotation = {}) => {
         quotation.company_gst_number ?? quotation.companyGstNumber ?? "",
     },
     quotationNumber,
+    protectedKey: quotation.protected_key ?? quotation.protectedKey ?? "",
     quotationVersion,
     taxTreatment: quotation.tax_type ?? quotation.taxType ?? null,
     gstPercentage: String(
