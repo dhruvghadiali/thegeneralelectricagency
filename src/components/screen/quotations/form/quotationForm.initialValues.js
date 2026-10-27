@@ -14,4 +14,5 @@ export const QUOTATION_PRODUCT_INITIAL_VALUES = Object.freeze({
   discountPercentage: "",
   discount: "",
   description: "",
+  productDeliveryNotes: "",
 });

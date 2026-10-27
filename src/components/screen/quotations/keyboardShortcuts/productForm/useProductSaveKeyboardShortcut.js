@@ -3,17 +3,22 @@ import { useCallback } from "react";
 import handlePreviousFieldKeyboardNavigation from "@screenComponent/quotations/keyboardShortcuts/shared/handlePreviousFieldKeyboardNavigation";
 
 function useProductSaveKeyboardShortcut({
-  descriptionInputRef,
+  productDeliveryNotesInputRef,
   productInputRef,
 }) {
   return useCallback(
     (event) => {
-      if (handlePreviousFieldKeyboardNavigation(event, descriptionInputRef))
+      if (
+        handlePreviousFieldKeyboardNavigation(
+          event,
+          productDeliveryNotesInputRef,
+        )
+      )
         return;
 
       if (event.altKey && event.key === "ArrowUp") {
         event.preventDefault();
-        descriptionInputRef.current?.focus();
+        productDeliveryNotesInputRef.current?.focus();
         return;
       }
 
@@ -26,7 +31,7 @@ function useProductSaveKeyboardShortcut({
       event.preventDefault();
       productInputRef.current?.focus();
     },
-    [descriptionInputRef, productInputRef],
+    [productDeliveryNotesInputRef, productInputRef],
   );
 }
 

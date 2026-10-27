@@ -23,5 +23,7 @@ export function toQuotationProductFormValues(product = {}) {
         ? ""
         : String(product.salePrice),
     description: product.description ?? "",
+    productDeliveryNotes:
+      product.productDeliveryNotes ?? product.product_delivery_notes ?? "",
   };
 }

@@ -61,7 +61,8 @@ export function hasQuotationProductFormData(values = {}) {
       _.trim(String(values.quantity ?? "")) ||
       hasDiscount ||
       hasDiscountPercentage ||
-      _.trim(values.description),
+      _.trim(values.description) ||
+      _.trim(values.productDeliveryNotes),
   );
 }
 
@@ -94,5 +95,6 @@ export function toExistingProductFormValues(
         : String(product.discountPercentage)
       : "",
     description: product.description ?? directoryProduct?.description ?? "",
+    productDeliveryNotes: product.productDeliveryNotes ?? "",
   };
 }

@@ -210,6 +210,24 @@ function QuotationProductForm({
           className="min-h-28 resize-y"
         />
       </ProductInformationField>
+
+      <ProductInformationField
+        id="quotation-productDeliveryNotes"
+        label="Delivery Notes"
+        error={fieldError("productDeliveryNotes")}
+      >
+        <Input
+          ref={fieldRefs.productDeliveryNotesInputRef}
+          id="quotation-productDeliveryNotes"
+          type="text"
+          {...fieldProps(
+            "productDeliveryNotes",
+            "quotation-productDeliveryNotes",
+          )}
+          onKeyDown={keyboard.handleProductDeliveryNotesKeyDown}
+          placeholder="Enter product delivery notes"
+        />
+      </ProductInformationField>
     </form>
   );
 }

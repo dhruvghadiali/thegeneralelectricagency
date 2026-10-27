@@ -76,6 +76,7 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
   const discountPercentageInputRef = useRef(null);
   const discountInputRef = useRef(null);
   const descriptionInputRef = useRef(null);
+  const productDeliveryNotesInputRef = useRef(null);
   const saveButtonRef = useRef(null);
   const productDirectoryRef = useRef(null);
   const [pendingDiscardDestination, setPendingDiscardDestination] =
@@ -87,6 +88,7 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
     discountPercentageInputRef,
     discountInputRef,
     descriptionInputRef,
+    productDeliveryNotesInputRef,
     saveButtonRef,
     productDirectoryRef,
   };
@@ -484,6 +486,7 @@ function useQuotationProductInformation({ canNavigateToCompanyInformation }) {
         discountPercentage: "",
         discount: "",
         description: "",
+        productDeliveryNotes: "",
       },
       true,
     );

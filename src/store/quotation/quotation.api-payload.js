@@ -36,6 +36,7 @@ export function toQuotationProductPayload(
     ...productReference,
     quotation_version: quotationVersion,
     description: nullableText(product.description),
+    product_delivery_notes: nullableText(product.productDeliveryNotes),
     qty: Math.max(numberOrZero(product.quantity), 0),
     unit_price: unitPrice,
     discount: discountAmount,

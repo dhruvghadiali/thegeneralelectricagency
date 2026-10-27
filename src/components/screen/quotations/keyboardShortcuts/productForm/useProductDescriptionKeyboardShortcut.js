@@ -62,7 +62,7 @@ export function useProductDescriptionUndoKeyboardShortcut({
 
 function useProductDescriptionKeyboardShortcut({
   discountInputRef,
-  saveButtonRef,
+  productDeliveryNotesInputRef,
 }) {
   return useCallback(
     (event) => {
@@ -74,17 +74,17 @@ function useProductDescriptionKeyboardShortcut({
         return;
       }
 
-      const shouldFocusSave =
+      const shouldFocusDeliveryNotes =
         (event.altKey && event.key === "ArrowDown") ||
         (event.altKey && event.key === "Enter") ||
         (event.key === "Tab" && !event.shiftKey);
 
-      if (!shouldFocusSave) return;
+      if (!shouldFocusDeliveryNotes) return;
 
       event.preventDefault();
-      saveButtonRef.current?.focus();
+      productDeliveryNotesInputRef.current?.focus();
     },
-    [discountInputRef, saveButtonRef],
+    [discountInputRef, productDeliveryNotesInputRef],
   );
 }
 
