@@ -19,7 +19,9 @@ export function drawQuotationFooter(doc, page, pageCount) {
   );
   const footerTextY = PDF_PAGE.footerY + 4.5;
 
-  drawPdfText(doc, PDF_BRAND.email, 16, footerTextY, { size: 6.5 });
+  drawPdfText(doc, PDF_BRAND.emails.join("  |  "), 16, footerTextY, {
+    size: 6.5,
+  });
   drawPdfText(doc, `Page ${page} of ${pageCount}`, 194, footerTextY, {
     size: 6.5,
     align: "right",
