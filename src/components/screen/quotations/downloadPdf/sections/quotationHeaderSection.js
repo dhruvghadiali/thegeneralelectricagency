@@ -58,10 +58,17 @@ export function drawBrandHeader(doc, logoDataUrl, enquiryContact = {}) {
   });
   drawPdfText(
     doc,
-    `${PDF_BRAND.email}  |  ${PDF_BRAND.phone}  |  GSTIN: ${PDF_BRAND.gst}`,
+    PDF_BRAND.emails.join("  |  "),
     43,
-    46.2,
-    { color: PDF_COLORS.muted, maxWidth: 106, size: 6.2 },
+    45.5,
+    { color: PDF_COLORS.muted, maxWidth: 106, size: 5.5 },
+  );
+  drawPdfText(
+    doc,
+    `${PDF_BRAND.phone}  |  GSTIN: ${PDF_BRAND.gst}`,
+    43,
+    48.5,
+    { color: PDF_COLORS.muted, maxWidth: 106, size: 5.5 },
   );
 
   drawPdfText(doc, "FOR ANY ENQUIRY", 194, 39.2, {
