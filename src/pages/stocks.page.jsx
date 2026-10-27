@@ -1,7 +1,5 @@
-import Stocks from "@screenComponent/stocks";
-
 function StocksPage() {
-  return <Stocks />;
+  return <main>stocks management</main>;
 }
 
 export default StocksPage;

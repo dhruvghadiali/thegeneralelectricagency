@@ -42,6 +42,7 @@ export const SIDEBAR_NAV_ITEMS_BY_ROLE = {
     // { title: "EUOB", url: ROUTES.PURCHASE_CREDITS, icon: HandCoins },
     { title: "Products", url: ROUTES.PRODUCTS, icon: Boxes },
     { title: "Companies", url: ROUTES.COMPANIES, icon: Building2 },
+    { title: "Stocks", url: ROUTES.STOCKS, icon: TrendingUp },
     {
       title: "Quotation",
       url: ROUTES.QUOTATIONS,
@@ -51,7 +52,6 @@ export const SIDEBAR_NAV_ITEMS_BY_ROLE = {
   ],
   [ROLE_PATHS.WAREHOUSE_MANAGER]: [
     { title: "Dashboard", url: ROUTES.DASHBOARD, icon: LucideHome },
-    { title: "Stocks", url: ROUTES.STOCKS, icon: TrendingUp },
     { title: "Settings", url: ROUTES.SETTINGS, icon: Settings },
   ],
 };

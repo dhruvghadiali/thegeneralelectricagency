@@ -4,6 +4,7 @@ import {
   FileText,
   LayoutDashboard,
   Settings,
+  TrendingUp,
 } from "lucide-react";
 
 import { ROLE_PATHS } from "@Enums";
@@ -49,6 +50,16 @@ export const GLOBAL_KEYBOARD_COMMANDS = Object.freeze([
     route: ROUTES.COMPANIES,
     roles: [ROLE_PATHS.EMPLOYEE],
     icon: Building2,
+  },
+  {
+    id: "open-stocks",
+    label: "Open Stocks",
+    description: "View the stocks management workspace",
+    shortcut: "Alt+K",
+    shortcutKey: "k",
+    route: ROUTES.STOCKS,
+    roles: [ROLE_PATHS.EMPLOYEE],
+    icon: TrendingUp,
   },
   {
     id: "open-quotations",

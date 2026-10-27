@@ -129,7 +129,11 @@ const router = createBrowserRouter(
           <Route path={ROUTES.PRODUCT_NEW} element={<ProductDetailsPage />} />
           <Route path={ROUTES.PRODUCT_EDIT} element={<ProductDetailsPage />} />
         </Route>
-        <Route path={ROUTES.STOCKS} element={<StocksPage />} />
+        <Route
+          element={<RoleRoute allowedRoles={[ROLE_PATHS.EMPLOYEE]} />}
+        >
+          <Route path={ROUTES.STOCKS} element={<StocksPage />} />
+        </Route>
         <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
       </Route>
 
