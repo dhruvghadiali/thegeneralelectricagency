@@ -1,7 +1,8 @@
 import { useCallback } from "react";
 
 import {
-  selectFieldValueForReplacement,
+  focusNextFormField,
+  selectFieldValueWithoutBackwardNavigation,
   shouldNavigateBackwardFromSelectedField,
 } from "@screenComponent/quotations/keyboardShortcuts/shared/handlePreviousFieldKeyboardNavigation";
 
@@ -13,7 +14,7 @@ function useProductNameKeyboardShortcut({
   onOpenProductSummary,
 }) {
   const handleProductNameFocus = useCallback((event) => {
-    selectFieldValueForReplacement(event.currentTarget);
+    selectFieldValueWithoutBackwardNavigation(event.currentTarget);
   }, []);
 
   const handleProductNameKeyDown = useCallback(
@@ -59,7 +60,7 @@ function useProductNameKeyboardShortcut({
       if (!shouldFocusQuantity) return;
 
       event.preventDefault();
-      quantityInputRef.current?.focus();
+      focusNextFormField(event, quantityInputRef);
     },
     [
       hasProductSummary,

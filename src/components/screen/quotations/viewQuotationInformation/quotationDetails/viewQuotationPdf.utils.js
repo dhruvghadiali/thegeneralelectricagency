@@ -77,6 +77,7 @@ export function createViewQuotationPdfInput(
       agency: product.agency,
       modelNumber: product.modelNumber,
       description: product.description,
+      productDeliveryNotes: product.productDeliveryNotes,
     })),
     taxTreatment: quotation?.taxTreatment,
     gstPercentage: quotation?.gstPercentage,

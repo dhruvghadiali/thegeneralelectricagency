@@ -1,7 +1,9 @@
 import { useCallback, useEffect } from "react";
 
 import { isAltShortcut } from "@keyboard/keyboard.utils";
-import handlePreviousFieldKeyboardNavigation from "@screenComponent/quotations/keyboardShortcuts/shared/handlePreviousFieldKeyboardNavigation";
+import handlePreviousFieldKeyboardNavigation, {
+  focusNextFormField,
+} from "@screenComponent/quotations/keyboardShortcuts/shared/handlePreviousFieldKeyboardNavigation";
 import { addQuotationKeyboardListener } from "@screenComponent/quotations/keyboardShortcuts/shared/quotationKeyboardListener";
 
 const OPTION_Z_TEXT_VALUES = new Set(["ˀ", "Ω"]);
@@ -62,11 +64,16 @@ export function useProductDescriptionUndoKeyboardShortcut({
 
 function useProductDescriptionKeyboardShortcut({
   discountInputRef,
-  saveButtonRef,
+  productDeliveryNotesInputRef,
 }) {
   return useCallback(
     (event) => {
-      if (handlePreviousFieldKeyboardNavigation(event, discountInputRef)) return;
+      if (
+        handlePreviousFieldKeyboardNavigation(event, discountInputRef, {
+          requireTabNavigation: true,
+        })
+      )
+        return;
 
       if (event.altKey && event.key === "ArrowUp") {
         event.preventDefault();
@@ -74,17 +81,17 @@ function useProductDescriptionKeyboardShortcut({
         return;
       }
 
-      const shouldFocusSave =
+      const shouldFocusDeliveryNotes =
         (event.altKey && event.key === "ArrowDown") ||
         (event.altKey && event.key === "Enter") ||
         (event.key === "Tab" && !event.shiftKey);
 
-      if (!shouldFocusSave) return;
+      if (!shouldFocusDeliveryNotes) return;
 
       event.preventDefault();
-      saveButtonRef.current?.focus();
+      focusNextFormField(event, productDeliveryNotesInputRef);
     },
-    [discountInputRef, saveButtonRef],
+    [discountInputRef, productDeliveryNotesInputRef],
   );
 }
 

@@ -641,11 +641,12 @@ A new revision is created when:
 - GST percentage changes.
 - Product count changes.
 - Product order changes.
-- A product line changes in line ID, product ID, product source, quantity, selling price, or discount.
+- A product line changes in product ID, product source, quantity, selling price, or discount.
 
 A new revision is **not** created by the current comparison when only these values change:
 
 - Product description
+- Product delivery notes
 - Tax treatment
 - Delivery notes
 - Payment notes
@@ -836,7 +837,10 @@ Create product lines use quotation version `V1` and select either `product` or `
 
 ### Update payload
 
-The update payload has the same top-level shape and uses the resolved quotation version for every product line.
+The update payload has the same top-level shape. When a revision-sensitive
+change exists, every product line receives the newly resolved quotation
+version. For metadata-only updates, `quotation_version` is omitted from each
+product line so the backend leaves the stored version unchanged.
 
 Current behavior explicitly passes `product` as the product reference field during update, even when a normalized source product originated from `tally_product`.
 

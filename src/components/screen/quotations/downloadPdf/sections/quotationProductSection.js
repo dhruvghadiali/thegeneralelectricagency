@@ -35,6 +35,15 @@ const PRODUCT_TABLE_LAYOUTS = Object.freeze({
   }),
 });
 
+const PRODUCT_TEXT_LAYOUT = Object.freeze({
+  nameLineHeight: 2.8,
+  detailLineHeight: 2.5,
+  detailGap: 1,
+  horizontalPadding: 6,
+  minimumRowHeight: 9,
+  verticalPadding: 3,
+});
+
 function getProductTableLayout(showDiscountPercentage) {
   return showDiscountPercentage
     ? PRODUCT_TABLE_LAYOUTS.withDiscount
@@ -56,24 +65,41 @@ function drawTableHeader(doc, lines, x, y, width) {
 }
 
 function productRowLayout(doc, item, columns) {
+  const textWidth = columns[1] - PRODUCT_TEXT_LAYOUT.horizontalPadding;
+
   doc.setFont("helvetica", "bold");
   doc.setFontSize(6.5);
   const nameLines = doc.splitTextToSize(
     _.toUpper(item.product.name) || "-",
-    columns[1] - 6,
+    textWidth,
   );
   doc.setFont("helvetica", "normal");
   doc.setFontSize(5.8);
   const descriptionLines = doc.splitTextToSize(
     item.product.description || titleCase(item.product.category),
-    columns[1] - 6,
+    textWidth,
   );
-  const contentHeight = nameLines.length * 2.8 + descriptionLines.length * 2.5;
+  const productDeliveryNotes = _.trim(item.product.productDeliveryNotes);
+  const deliveryNoteLines = productDeliveryNotes
+    ? doc.splitTextToSize(`Delivery notes: ${productDeliveryNotes}`, textWidth)
+    : [];
+  const deliveryNotesHeight = deliveryNoteLines.length
+    ? PRODUCT_TEXT_LAYOUT.detailGap +
+      deliveryNoteLines.length * PRODUCT_TEXT_LAYOUT.detailLineHeight
+    : 0;
+  const contentHeight =
+    nameLines.length * PRODUCT_TEXT_LAYOUT.nameLineHeight +
+    descriptionLines.length * PRODUCT_TEXT_LAYOUT.detailLineHeight +
+    deliveryNotesHeight;
 
   return {
     nameLines,
     descriptionLines,
-    height: Math.max(9, contentHeight + 3),
+    deliveryNoteLines,
+    height: Math.max(
+      PRODUCT_TEXT_LAYOUT.minimumRowHeight,
+      contentHeight + PRODUCT_TEXT_LAYOUT.verticalPadding,
+    ),
   };
 }
 
@@ -165,9 +191,24 @@ export function drawProductSection(
       doc,
       layout.descriptionLines,
       27,
-      rowY + 3.6 + layout.nameLines.length * 2.8,
+      rowY +
+        3.6 +
+        layout.nameLines.length * PRODUCT_TEXT_LAYOUT.nameLineHeight,
       { color: PDF_COLORS.muted, size: 5.8 },
     );
+    if (layout.deliveryNoteLines.length) {
+      drawPdfText(
+        doc,
+        layout.deliveryNoteLines,
+        27,
+        rowY +
+          3.6 +
+          layout.nameLines.length * PRODUCT_TEXT_LAYOUT.nameLineHeight +
+          layout.descriptionLines.length * PRODUCT_TEXT_LAYOUT.detailLineHeight +
+          PRODUCT_TEXT_LAYOUT.detailGap,
+        { color: PDF_COLORS.muted, size: 5.8 },
+      );
+    }
     drawPdfText(
       doc,
       _.toUpper(item.product.hsnCode) || "-",

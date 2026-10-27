@@ -1,5 +1,7 @@
 import { useCallback } from "react";
 
+import { focusNextFormField } from "@screenComponent/quotations/keyboardShortcuts/shared/handlePreviousFieldKeyboardNavigation";
+
 function useCompanyNameKeyboardShortcut({
   addressInputRef,
   companyDirectoryRef,
@@ -43,7 +45,7 @@ function useCompanyNameKeyboardShortcut({
       if (!shouldFocusAddress) return;
 
       event.preventDefault();
-      addressInputRef.current?.focus();
+      focusNextFormField(event, addressInputRef);
     },
     [addressInputRef, companyDirectoryRef],
   );

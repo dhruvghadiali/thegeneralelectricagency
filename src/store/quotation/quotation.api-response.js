@@ -141,6 +141,8 @@ const fromQuotationProductResponse = (item = {}) => {
     discount: String(discount),
     discountPercentage: discountPercentageFromAmount(discount, sellingPrice),
     description: item.description ?? "",
+    productDeliveryNotes:
+      item.product_delivery_notes ?? item.productDeliveryNotes ?? "",
     finalPrice: String(item.final_price ?? item.finalPrice ?? ""),
     hsnCode:
       product.hsn_code ??

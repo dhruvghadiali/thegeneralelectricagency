@@ -1,19 +1,27 @@
 import { useCallback } from "react";
 
-import handlePreviousFieldKeyboardNavigation from "@screenComponent/quotations/keyboardShortcuts/shared/handlePreviousFieldKeyboardNavigation";
+import handlePreviousFieldKeyboardNavigation, {
+  focusNextFormField,
+} from "@screenComponent/quotations/keyboardShortcuts/shared/handlePreviousFieldKeyboardNavigation";
 
 function useProductSaveKeyboardShortcut({
-  descriptionInputRef,
+  productDeliveryNotesInputRef,
   productInputRef,
 }) {
   return useCallback(
     (event) => {
-      if (handlePreviousFieldKeyboardNavigation(event, descriptionInputRef))
+      if (
+        handlePreviousFieldKeyboardNavigation(
+          event,
+          productDeliveryNotesInputRef,
+          { requireTabNavigation: true },
+        )
+      )
         return;
 
       if (event.altKey && event.key === "ArrowUp") {
         event.preventDefault();
-        descriptionInputRef.current?.focus();
+        productDeliveryNotesInputRef.current?.focus();
         return;
       }
 
@@ -24,9 +32,9 @@ function useProductSaveKeyboardShortcut({
       if (!shouldFocusProduct) return;
 
       event.preventDefault();
-      productInputRef.current?.focus();
+      focusNextFormField(event, productInputRef);
     },
-    [descriptionInputRef, productInputRef],
+    [productDeliveryNotesInputRef, productInputRef],
   );
 }
 

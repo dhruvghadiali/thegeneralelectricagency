@@ -2,6 +2,7 @@ import { withDesktopKeyboardShortcut } from "@keyboard/keyboard.utils";
 import useProductDescriptionKeyboardShortcut, {
   useProductDescriptionUndoKeyboardShortcut,
 } from "@screenComponent/quotations/keyboardShortcuts/productForm/useProductDescriptionKeyboardShortcut";
+import useProductDeliveryNotesKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/productForm/useProductDeliveryNotesKeyboardShortcut";
 import useProductDirectoryKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/productForm/useProductDirectoryKeyboardShortcut";
 import useProductDiscountKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/productForm/useProductDiscountKeyboardShortcut";
 import useProductNameKeyboardShortcut from "@screenComponent/quotations/keyboardShortcuts/productForm/useProductNameKeyboardShortcut";
@@ -16,6 +17,7 @@ function useProductKeyboardShortcuts({
   discountPercentageInputRef,
   discountInputRef,
   descriptionInputRef,
+  productDeliveryNotesInputRef,
   saveButtonRef,
   productDirectoryRef,
   hasProductSummary,
@@ -50,10 +52,15 @@ function useProductKeyboardShortcuts({
   });
   const handleDescriptionKeyDown = useProductDescriptionKeyboardShortcut({
     discountInputRef,
-    saveButtonRef,
+    productDeliveryNotesInputRef,
   });
+  const handleProductDeliveryNotesKeyDown =
+    useProductDeliveryNotesKeyboardShortcut({
+      descriptionInputRef,
+      saveButtonRef,
+    });
   const handleSaveKeyDown = useProductSaveKeyboardShortcut({
-    descriptionInputRef,
+    productDeliveryNotesInputRef,
     productInputRef,
   });
   const handleProductOptionKeyDown = useProductDirectoryKeyboardShortcut({
@@ -81,6 +88,9 @@ function useProductKeyboardShortcuts({
     ),
     handleDescriptionKeyDown: withDesktopKeyboardShortcut(
       handleDescriptionKeyDown,
+    ),
+    handleProductDeliveryNotesKeyDown: withDesktopKeyboardShortcut(
+      handleProductDeliveryNotesKeyDown,
     ),
     handleSaveKeyDown: withDesktopKeyboardShortcut(handleSaveKeyDown),
     handleProductOptionKeyDown: withDesktopKeyboardShortcut(
