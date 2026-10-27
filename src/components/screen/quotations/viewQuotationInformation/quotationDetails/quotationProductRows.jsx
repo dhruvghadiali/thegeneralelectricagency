@@ -40,6 +40,11 @@ function QuotationProductRows({ products, changes }) {
             {product.category && <span>Category: {product.category}</span>}
             {product.agency && <span>Agency: {product.agency}</span>}
             {product.hsnCode && <span>HSN: {product.hsnCode}</span>}
+            {product.productDeliveryNotes && (
+              <span className="basis-full break-words whitespace-pre-line">
+                Delivery notes: {product.productDeliveryNotes}
+              </span>
+            )}
           </div>
           {productChange?.fields.length > 0 && (
             <p className="mt-1 text-xs font-medium text-amber-800">

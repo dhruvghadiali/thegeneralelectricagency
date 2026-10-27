@@ -33,6 +33,10 @@ function createProductSections(
         category: savedProduct.category ?? directoryProduct.category ?? "",
         description:
           savedProduct.description ?? directoryProduct.description ?? "",
+        productDeliveryNotes:
+          savedProduct.productDeliveryNotes ??
+          directoryProduct.productDeliveryNotes ??
+          "",
       },
       pricing: {
         quantity: savedProduct.quantity,
