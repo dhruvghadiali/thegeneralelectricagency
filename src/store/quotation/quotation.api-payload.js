@@ -12,6 +12,16 @@ function nullableText(value) {
   return normalizedValue || null;
 }
 
+function normalizedQuotationVersion(value, quotationReference = "") {
+  const versionMatch = String(value ?? "").match(/^V(\d+)$/i);
+
+  if (versionMatch) return `V${Number(versionMatch[1])}`;
+
+  const referenceMatch = String(quotationReference).match(/\/R(\d+)\//i);
+
+  return `V${Number(referenceMatch?.[1]) || 1}`;
+}
+
 export function toQuotationProductPayload(
   product = {},
   quotationVersion = "V1",
@@ -34,7 +44,7 @@ export function toQuotationProductPayload(
 
   return {
     ...productReference,
-    quotation_version: quotationVersion,
+    quotation_version: normalizedQuotationVersion(quotationVersion),
     description: nullableText(product.description),
     product_delivery_notes: nullableText(product.productDeliveryNotes),
     qty: Math.max(numberOrZero(product.quantity), 0),
@@ -86,6 +96,11 @@ export function toQuotationDetailsUpdatePayload({
   roundOff = false,
   productInformation = [],
 }) {
+  const resolvedQuotationVersion = normalizedQuotationVersion(
+    quotationVersion,
+    quotationRefId,
+  );
+
   return {
     quotation_ref_id: quotationRefId,
     company: nullableText(selectedCompany?.id),
@@ -100,7 +115,7 @@ export function toQuotationDetailsUpdatePayload({
     payment_notes: nullableText(paymentNotes),
     round_off: Boolean(roundOff),
     products: productInformation.map((product) =>
-      toQuotationProductPayload(product, quotationVersion, "product"),
+      toQuotationProductPayload(product, resolvedQuotationVersion, "product"),
     ),
   };
 }

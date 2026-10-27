@@ -1,6 +1,8 @@
 import { useCallback } from "react";
 
-import handlePreviousFieldKeyboardNavigation from "@screenComponent/quotations/keyboardShortcuts/shared/handlePreviousFieldKeyboardNavigation";
+import handlePreviousFieldKeyboardNavigation, {
+  focusNextFormField,
+} from "@screenComponent/quotations/keyboardShortcuts/shared/handlePreviousFieldKeyboardNavigation";
 
 function useProductSaveKeyboardShortcut({
   productDeliveryNotesInputRef,
@@ -12,6 +14,7 @@ function useProductSaveKeyboardShortcut({
         handlePreviousFieldKeyboardNavigation(
           event,
           productDeliveryNotesInputRef,
+          { requireTabNavigation: true },
         )
       )
         return;
@@ -29,7 +32,7 @@ function useProductSaveKeyboardShortcut({
       if (!shouldFocusProduct) return;
 
       event.preventDefault();
-      productInputRef.current?.focus();
+      focusNextFormField(event, productInputRef);
     },
     [productDeliveryNotesInputRef, productInputRef],
   );

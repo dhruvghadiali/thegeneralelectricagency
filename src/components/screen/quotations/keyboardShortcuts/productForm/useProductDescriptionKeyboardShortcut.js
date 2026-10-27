@@ -1,7 +1,9 @@
 import { useCallback, useEffect } from "react";
 
 import { isAltShortcut } from "@keyboard/keyboard.utils";
-import handlePreviousFieldKeyboardNavigation from "@screenComponent/quotations/keyboardShortcuts/shared/handlePreviousFieldKeyboardNavigation";
+import handlePreviousFieldKeyboardNavigation, {
+  focusNextFormField,
+} from "@screenComponent/quotations/keyboardShortcuts/shared/handlePreviousFieldKeyboardNavigation";
 import { addQuotationKeyboardListener } from "@screenComponent/quotations/keyboardShortcuts/shared/quotationKeyboardListener";
 
 const OPTION_Z_TEXT_VALUES = new Set(["ˀ", "Ω"]);
@@ -66,7 +68,12 @@ function useProductDescriptionKeyboardShortcut({
 }) {
   return useCallback(
     (event) => {
-      if (handlePreviousFieldKeyboardNavigation(event, discountInputRef)) return;
+      if (
+        handlePreviousFieldKeyboardNavigation(event, discountInputRef, {
+          requireTabNavigation: true,
+        })
+      )
+        return;
 
       if (event.altKey && event.key === "ArrowUp") {
         event.preventDefault();
@@ -82,7 +89,7 @@ function useProductDescriptionKeyboardShortcut({
       if (!shouldFocusDeliveryNotes) return;
 
       event.preventDefault();
-      productDeliveryNotesInputRef.current?.focus();
+      focusNextFormField(event, productDeliveryNotesInputRef);
     },
     [discountInputRef, productDeliveryNotesInputRef],
   );

@@ -1,6 +1,8 @@
 import { useCallback } from "react";
 
-import handlePreviousFieldKeyboardNavigation from "@screenComponent/quotations/keyboardShortcuts/shared/handlePreviousFieldKeyboardNavigation";
+import handlePreviousFieldKeyboardNavigation, {
+  focusNextFormField,
+} from "@screenComponent/quotations/keyboardShortcuts/shared/handlePreviousFieldKeyboardNavigation";
 
 function useCompanyAddressKeyboardShortcut({
   companyInputRef,
@@ -8,7 +10,12 @@ function useCompanyAddressKeyboardShortcut({
 }) {
   return useCallback(
     (event) => {
-      if (handlePreviousFieldKeyboardNavigation(event, companyInputRef)) return;
+      if (
+        handlePreviousFieldKeyboardNavigation(event, companyInputRef, {
+          requireTabNavigation: true,
+        })
+      )
+        return;
 
       if (event.altKey && event.key === "ArrowUp") {
         event.preventDefault();
@@ -24,7 +31,7 @@ function useCompanyAddressKeyboardShortcut({
       if (!shouldFocusEmail) return;
 
       event.preventDefault();
-      emailInputRef.current?.focus();
+      focusNextFormField(event, emailInputRef);
     },
     [companyInputRef, emailInputRef],
   );

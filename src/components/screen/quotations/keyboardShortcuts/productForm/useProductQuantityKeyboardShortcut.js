@@ -1,6 +1,8 @@
 import { useCallback } from "react";
 
-import handlePreviousFieldKeyboardNavigation from "@screenComponent/quotations/keyboardShortcuts/shared/handlePreviousFieldKeyboardNavigation";
+import handlePreviousFieldKeyboardNavigation, {
+  focusNextFormField,
+} from "@screenComponent/quotations/keyboardShortcuts/shared/handlePreviousFieldKeyboardNavigation";
 
 function useProductQuantityKeyboardShortcut({
   productInputRef,
@@ -8,7 +10,12 @@ function useProductQuantityKeyboardShortcut({
 }) {
   return useCallback(
     (event) => {
-      if (handlePreviousFieldKeyboardNavigation(event, productInputRef)) return;
+      if (
+        handlePreviousFieldKeyboardNavigation(event, productInputRef, {
+          requireTabNavigation: true,
+        })
+      )
+        return;
 
       if (event.altKey && event.key === "ArrowUp") {
         event.preventDefault();
@@ -24,7 +31,7 @@ function useProductQuantityKeyboardShortcut({
       if (!shouldFocusSellingPrice) return;
 
       event.preventDefault();
-      sellingPriceInputRef.current?.focus();
+      focusNextFormField(event, sellingPriceInputRef);
     },
     [productInputRef, sellingPriceInputRef],
   );

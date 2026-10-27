@@ -41,7 +41,8 @@ export const QUOTATION_KEYBOARD_SHORTCUTS = Object.freeze({
     },
     {
       keys: "Backspace / Delete",
-      action: "Move to the previous company field before editing",
+      action:
+        "Immediately after Tab, move to the previous company field; otherwise edit normally",
     },
   ],
   productForm: [
@@ -76,7 +77,8 @@ export const QUOTATION_KEYBOARD_SHORTCUTS = Object.freeze({
     },
     {
       keys: "Backspace / Delete",
-      action: "Move to the previous product field before editing",
+      action:
+        "Immediately after Tab, move to the previous product field; otherwise edit normally",
     },
   ],
   productSummary: [

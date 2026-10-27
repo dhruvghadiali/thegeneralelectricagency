@@ -2,9 +2,8 @@ const VERSION_PATTERN = /^V(\d+)$/i;
 const REFERENCE_REVISION_PATTERN = /\/R(\d+)\//i;
 
 function revisionProduct(product = {}) {
-  // Description remains editable metadata and must not create a new revision.
+  // Backend line IDs, descriptions, and delivery notes are non-versioned metadata.
   return {
-    lineId: product.lineId ?? null,
     productId: product.productId ?? null,
     productSource: product.productSource ?? "product",
     quantity: Number(product.quantity) || 0,
