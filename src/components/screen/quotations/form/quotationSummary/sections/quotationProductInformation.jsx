@@ -62,6 +62,14 @@ function QuotationProductInformation({ products, sectionRef, onKeyDown }) {
                 </dd>
               </div>
             </dl>
+            {_.trim(product.productDeliveryNotes) && (
+              <p className="whitespace-pre-wrap break-words text-xs text-muted-foreground">
+                <span className="font-medium text-foreground">
+                  Delivery notes:
+                </span>{" "}
+                {product.productDeliveryNotes}
+              </p>
+            )}
           </article>
         ))}
       </div>
