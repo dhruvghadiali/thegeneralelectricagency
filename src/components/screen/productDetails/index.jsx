@@ -67,23 +67,8 @@ function ProductDetailsScreen() {
     }
   };
 
-  const title = isEdit ? "Edit product" : "Add product";
-
   return (
-    <main className="mx-auto w-full max-w-6xl space-y-6 pb-8">
-      <section className="space-y-5">
-        <div className="max-w-3xl">
-          <p className="text-sm font-medium text-primary">Product catalogue</p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
-            {title}
-          </h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Enter the product identity, classification, pricing, tax, and
-            discount information.
-          </p>
-        </div>
-      </section>
-
+    <main className="mx-auto w-full max-w-6xl pb-8">
       <Card className="shadow-none">
         <CardHeader className="border-b">
           <CardTitle>Product details</CardTitle>
