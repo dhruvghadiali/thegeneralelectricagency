@@ -1,57 +1,27 @@
 {
-    "compilerOptions": {
-        "ignoreDeprecations": "6.0",
-        "baseUrl": "./",
-        "paths": {
-            "@/*": [
-                "./src/*"
-            ],
-            "@shadcnComponent/*": [
-                "./src/components/ui/*"
-            ],
-            "@commonComponent/*": [
-                "./src/components/common/*"
-            ],
-            "@screenComponent/*": [
-                "./src/components/screen/*"
-            ],
-            "@Assets/*": [
-                "./src/assets/*"
-            ],
-            "@Redux/*": [
-                "./src/store/*"
-            ],
-            "@utils/*": [
-                "./src/utils/*"
-            ],
-            "@keyboard/*": [
-                "./src/keyboard/*"
-            ],
-            "@Enums/*": [
-                "./src/enums/*"
-            ],
-            "@Enums": [
-                "./src/enums/index.js"
-            ],
-            "@Forms/*": [
-                "./src/forms/*"
-            ],
-            "@Tables/*": [
-                "./src/tables/*"
-            ],
-            "@Api/*": [
-                "./src/api/*"
-            ],
-            "@Api": [
-                "./src/api/index.js"
-            ],
-            "@Tally/*": [
-                "./src/tally/*"
-            ],
-            "@Tally": [
-                "./src/tally/index.js"
-            ],
-        }
-    },
-    "include": ["./src/**/*"]
+  "compilerOptions": {
+    "ignoreDeprecations": "6.0",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@shadcnComponent/*": ["./src/components/ui/*"],
+      "@commonComponent/*": ["./src/components/common/*"],
+      "@screenComponent/*": ["./src/components/screen/*"],
+      "@Assets/*": ["./src/assets/*"],
+      "@Redux/*": ["./src/store/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@keyboard/*": ["./src/keyboard/*"],
+      "@Enums/*": ["./src/enums/*"],
+      "@Enums": ["./src/enums/index.js"],
+      "@Forms/*": ["./src/forms/*"],
+      "@Tables/*": ["./src/tables/*"],
+      "@Api/*": ["./src/api/*"],
+      "@Api": ["./src/api/index.js"],
+      "@Tally/*": ["./src/tally/*"],
+      "@Tally": ["./src/tally/index.js"],
+      "@routes/*": ["./src/routes/*"],
+      "@pages/*": ["./src/pages/*"]
+    }
+  },
+  "include": ["./src/**/*"]
 }
