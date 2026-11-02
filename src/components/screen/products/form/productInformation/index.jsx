@@ -1,6 +1,8 @@
 import { useFormik } from "formik";
+import { useSelector } from "react-redux";
 
-import { PRODUCT_INFORMATION_FIELDS } from "@Enums";
+import { selectMigrateFromTallyFormValues } from "@Redux/product/migrateFromTally/migrateFromTally.selector";
+
 import ProductCompanySelect from "@screenComponent/products/form/productInformation/productCompanySelect";
 import ProductCategorySelect from "@screenComponent/products/form/productInformation/productCategorySelect";
 import ProductInformationField from "@screenComponent/products/form/productInformation/productInformationField";
@@ -23,25 +25,14 @@ import {
   PRODUCT_INFORMATION_NAME_MIN_LENGTH,
 } from "@screenComponent/products/form/productInformation/productInformation.validation.constants";
 
-
-
-import { toProductFormValues } from "@Forms/product/productDetails/productDetails-frontend.payload";
-
-const toProductInformationValues = (product) => {
-  const values = toProductFormValues(product);
-
-  return PRODUCT_INFORMATION_FIELDS.reduce(
-    (productInformation, field) => ({
-      ...productInformation,
-      [field]: values[field] ?? "",
-    }),
-    {},
+function ProductInformation() {
+  const productInformationFormValues = useSelector(
+    selectMigrateFromTallyFormValues,
   );
-};
 
-function ProductInformation({ product }) {
   const formik = useFormik({
-    initialValues: toProductInformationValues(product),
+    initialValues: productInformationFormValues,
+    enableReinitialize: true,
     validationSchema: productInformationValidationSchema,
     onSubmit: (_values, { setSubmitting }) => setSubmitting(false),
   });

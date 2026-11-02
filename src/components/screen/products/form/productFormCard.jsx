@@ -10,7 +10,7 @@ import {
   CardHeader,
 } from "@shadcnComponent/card";
 
-function ProductFormCard({ product }) {
+function ProductFormCard() {
   return (
     <Tabs
       defaultValue={PRODUCT_FORM_TABS.PRODUCT_INFORMATION}
@@ -22,7 +22,7 @@ function ProductFormCard({ product }) {
         </CardHeader>
         <div className="border-b" aria-hidden="true" />
         <CardContent className="flex min-h-0 flex-1 overflow-hidden px-4 pb-4 pt-2 sm:px-6 sm:pb-6 sm:pt-3">
-          <ProductFormTabs product={product} />
+          <ProductFormTabs />
         </CardContent>
       </Card>
     </Tabs>

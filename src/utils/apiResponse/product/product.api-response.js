@@ -4,6 +4,8 @@ import { fromProductDiscountRangeApiResponse } from "@utils/apiResponse/product/
 import { fromProductReservedStockApiResponse } from "@utils/apiResponse/product/productReservedStock.api-response";
 
 export function fromProductApiResponse(product = {}) {
+  const tallyCollectionRecord =
+    product.is_tally_collection_record ?? product.isTallyCollectionRecord;
   const agencySource = product.agency ?? product.company ?? "";
   const agency = _.isObject(agencySource)
     ? (agencySource._id ?? agencySource.id ?? "")
@@ -18,6 +20,12 @@ export function fromProductApiResponse(product = {}) {
   return {
     id: product._id ?? product.id ?? null,
     systemId: product.system_id ?? product.systemId,
+    productMasterId:
+      product.product_master_id ?? product.productMasterId ?? "",
+    isTallyCollectionRecord: _.includes(
+      [true, 1, "true", "1"],
+      tallyCollectionRecord,
+    ),
     productCode: product.product_code ?? product.productCode ?? "",
     hsnCode: product.hsn_code ?? product.hsnCode ?? "",
     name: product.name ?? "",

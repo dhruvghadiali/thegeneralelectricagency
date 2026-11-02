@@ -3,19 +3,20 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import DataTable from "@commonComponent/dataTable";
-import ProductTableActions from "@screenComponent/products/table/productTableActions";
 import useProductTable from "@screenComponent/products/table/useProductTable";
+import ProductTableActions from "@screenComponent/products/table/productTableActions";
+
+import { ROUTE_BUILDERS } from "@routes/navigate";
+import { PRODUCT_TABLE_CONFIG } from "@Tables/product";
 import { selectCanManageProducts } from "@Redux/product/product.selector";
+
 // import {
 //   selectSelectedProductIds,
 //   selectSelectedProducts,
 // } from "@Redux/product/product.selector";
 // import { productRowSelectionChanged } from "@Redux/product/product.slice";
-import { ROUTE_BUILDERS } from "@routes/navigate";
-import { PRODUCT_TABLE_CONFIG } from "@Tables/product";
 
 function ProductTable() {
-  // const dispatch = useDispatch();
   const navigate = useNavigate();
   const table = useProductTable();
   const canManage = useSelector(selectCanManageProducts);
