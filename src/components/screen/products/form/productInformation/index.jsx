@@ -1,17 +1,23 @@
 import { useFormik } from "formik";
-import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
-import { selectMigrateFromTallyFormValues } from "@Redux/product/migrateFromTally/migrateFromTally.selector";
-
+import FormErrorAlert from "@commonComponent/alert/formErrorAlert";
 import ProductCompanySelect from "@screenComponent/products/form/productInformation/productCompanySelect";
 import ProductCategorySelect from "@screenComponent/products/form/productInformation/productCategorySelect";
 import ProductInformationField from "@screenComponent/products/form/productInformation/productInformationField";
 import GenerateProductCodeButton from "@screenComponent/products/form/productInformation/generateProductCodeButton";
 
-import { Button } from "@shadcnComponent/button";
+import { ROUTES } from "@routes/navigate";
 import { Input } from "@shadcnComponent/input";
+import { Button } from "@shadcnComponent/button";
 import { Textarea } from "@shadcnComponent/textarea";
+import { migrateProductFromTally } from "@Redux/product/migrateFromTally/migrateFromTally.action";
 import { productInformationValidationSchema } from "@screenComponent/products/form/productInformation/productInformation.validation.schema";
+import {
+  selectMigrateFromTallyFormValues,
+  selectMigrateFromTallySubmitState,
+} from "@Redux/product/migrateFromTally/migrateFromTally.selector";
 import {
   PRODUCT_INFORMATION_CODE_MAX_LENGTH,
   PRODUCT_INFORMATION_CODE_MIN_LENGTH,
@@ -26,16 +32,39 @@ import {
 } from "@screenComponent/products/form/productInformation/productInformation.validation.constants";
 
 function ProductInformation() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const productInformationFormValues = useSelector(
     selectMigrateFromTallyFormValues,
   );
+  const {
+    tallyProductId,
+    isSubmitting: isMigrating,
+    error: migrationError,
+  } = useSelector(selectMigrateFromTallySubmitState);
 
   const formik = useFormik({
     initialValues: productInformationFormValues,
     enableReinitialize: true,
     validationSchema: productInformationValidationSchema,
-    onSubmit: (_values, { setSubmitting }) => setSubmitting(false),
+    onSubmit: async (values, { setSubmitting }) => {
+      if (!tallyProductId) {
+        setSubmitting(false);
+        return;
+      }
+
+      try {
+        await dispatch(migrateProductFromTally(values)).unwrap();
+        navigate(ROUTES.PRODUCTS, { replace: true });
+      } catch {
+        // The migration slice exposes the display-ready request error below.
+      } finally {
+        setSubmitting(false);
+      }
+    },
   });
+
+  const isSubmitting = formik.isSubmitting || isMigrating;
 
   const fieldError = (field) =>
     formik.touched[field] && formik.errors[field] ? formik.errors[field] : null;
@@ -55,6 +84,8 @@ function ProductInformation() {
       className="flex h-full min-h-0 flex-col pl-1"
       noValidate
     >
+      <FormErrorAlert message={migrationError} />
+
       <section className="min-h-0 flex-1 space-y-5 overflow-y-auto pb-4 pr-1 pl-1">
         <div className="grid gap-5 sm:grid-cols-2">
           <ProductInformationField
@@ -169,17 +200,17 @@ function ProductInformation() {
           type="button"
           variant="outline"
           className="w-full sm:w-auto"
-          disabled={formik.isSubmitting}
-          onClick={() => formik.resetForm()}
+          disabled={isSubmitting}
+          onClick={() => navigate(ROUTES.PRODUCTS)}
         >
           Cancel
         </Button>
         <Button
           type="submit"
           className="w-full sm:w-auto"
-          disabled={formik.isSubmitting}
+          disabled={isSubmitting || !tallyProductId}
         >
-          {formik.isSubmitting ? "Saving..." : "Save changes"}
+          {isSubmitting ? "Saving..." : "Save changes"}
         </Button>
       </div>
     </form>

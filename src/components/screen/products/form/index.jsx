@@ -6,11 +6,13 @@ import { ROUTES } from "@routes/navigate";
 import { productTableSelectors } from "@Redux/product/product.selector";
 import {
   isTallyCollectionProduct,
+  toMigrateFromTallyProductId,
   toProductInformationFormValues,
 } from "@Redux/product/migrateFromTally/migrateFromTally.form-payload";
 import {
   migrateFromTallyFormValuesCleared,
   migrateFromTallyFormValuesSet,
+  migrateFromTallyProductIdSet,
 } from "@Redux/product/migrateFromTally/migrateFromTally.slice";
 
 import ProductFormCard from "@screenComponent/products/form/productFormCard";
@@ -26,6 +28,11 @@ function ProductFormScreen() {
 
   useEffect(() => {
     if (isTallyCollectionProduct(product)) {
+      dispatch(
+        migrateFromTallyProductIdSet(
+          toMigrateFromTallyProductId(product),
+        ),
+      );
       dispatch(
         migrateFromTallyFormValuesSet(
           toProductInformationFormValues(product),

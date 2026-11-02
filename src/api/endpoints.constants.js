@@ -29,6 +29,7 @@ export const ENDPOINTS = {
   },
   PRODUCT: {
     BASE: "products",
+    MIGRATE_FROM_TALLY: "migrate-from-tally",
     TALLY_PRODUCTS: "tally-products",
   },
   STOCK: {

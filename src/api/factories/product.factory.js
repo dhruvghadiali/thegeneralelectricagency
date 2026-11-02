@@ -4,6 +4,8 @@ import { apiClient } from "@Api/client.api";
 import { ENDPOINTS } from "@Api/endpoints.constants";
 
 const productsPath = (rolePath) => `/${rolePath}/${ENDPOINTS.PRODUCT.BASE}`;
+const migrateFromTallyPath = (rolePath) =>
+  `${productsPath(rolePath)}/${ENDPOINTS.PRODUCT.MIGRATE_FROM_TALLY}`;
 const tallyProductsPath = (rolePath) =>
   `/${rolePath}/${ENDPOINTS.PRODUCT.TALLY_PRODUCTS}`;
 
@@ -31,6 +33,19 @@ export function createTallyProductListApi(rolePath) {
         params,
         ...config,
       });
+
+      return unwrapPayload(data);
+    },
+  };
+}
+
+export function createProductMigrateFromTallyApi(rolePath) {
+  return {
+    migrateProductFromTally: async (payload) => {
+      const { data } = await apiClient.post(
+        migrateFromTallyPath(rolePath),
+        payload,
+      );
 
       return unwrapPayload(data);
     },
