@@ -87,6 +87,12 @@ const discountPercentageFromAmount = (discount, sellingPrice) => {
 const booleanFromResponse = (value) =>
   value === true || value === 1 || String(value).toLowerCase() === "true";
 
+const fromAgencyResponse = (agency) => {
+  if (!_.isObject(agency)) return agency ?? "";
+
+  return agency.company_name ?? agency.companyName ?? agency.name ?? "";
+};
+
 const fromQuotationProductResponse = (item = {}) => {
   const productReferences = [item.product, item.product_id, item.productId];
   const tallyProductReferences = [
@@ -153,7 +159,7 @@ const fromQuotationProductResponse = (item = {}) => {
     productCode:
       product.product_code ?? product.productCode ?? item.product_code ?? "",
     category: product.category ?? item.category ?? "",
-    agency: product.agency ?? item.agency ?? "",
+    agency: fromAgencyResponse(product.agency ?? item.agency),
     modelNumber:
       product.model_number ?? product.modelNumber ?? item.model_number ?? "",
   };
