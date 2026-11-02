@@ -6,14 +6,19 @@ import { ROUTES } from "@routes/navigate";
 import { productTableSelectors } from "@Redux/product/product.selector";
 import {
   isTallyCollectionProduct,
+  toMigrateFromTallyFormValues,
   toMigrateFromTallyProductId,
-  toProductInformationFormValues,
 } from "@Redux/product/migrateFromTally/migrateFromTally.form-payload";
 import {
   migrateFromTallyFormValuesCleared,
   migrateFromTallyFormValuesSet,
   migrateFromTallyProductIdSet,
 } from "@Redux/product/migrateFromTally/migrateFromTally.slice";
+import { toProductInformationFormValues } from "@Redux/product/productInformation/productInformation.form-payload";
+import {
+  productInformationFormValuesCleared,
+  productInformationFormValuesSet,
+} from "@Redux/product/productInformation/productInformation.slice";
 
 import ProductFormCard from "@screenComponent/products/form/productFormCard";
 
@@ -28,6 +33,7 @@ function ProductFormScreen() {
 
   useEffect(() => {
     if (isTallyCollectionProduct(product)) {
+      dispatch(productInformationFormValuesCleared());
       dispatch(
         migrateFromTallyProductIdSet(
           toMigrateFromTallyProductId(product),
@@ -35,14 +41,22 @@ function ProductFormScreen() {
       );
       dispatch(
         migrateFromTallyFormValuesSet(
-          toProductInformationFormValues(product),
+          toMigrateFromTallyFormValues(product),
         ),
       );
     } else {
       dispatch(migrateFromTallyFormValuesCleared());
+      dispatch(
+        productInformationFormValuesSet(
+          toProductInformationFormValues(product),
+        ),
+      );
     }
 
-    return () => dispatch(migrateFromTallyFormValuesCleared());
+    return () => {
+      dispatch(migrateFromTallyFormValuesCleared());
+      dispatch(productInformationFormValuesCleared());
+    };
   }, [dispatch, product]);
 
   if (!product) {

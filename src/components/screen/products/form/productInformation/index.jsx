@@ -13,6 +13,7 @@ import { Input } from "@shadcnComponent/input";
 import { Button } from "@shadcnComponent/button";
 import { Textarea } from "@shadcnComponent/textarea";
 import { migrateProductFromTally } from "@Redux/product/migrateFromTally/migrateFromTally.action";
+import { selectProductInformationFormValues } from "@Redux/product/productInformation/productInformation.selector";
 import { productInformationValidationSchema } from "@screenComponent/products/form/productInformation/productInformation.validation.schema";
 import {
   selectMigrateFromTallyFormValues,
@@ -34,14 +35,20 @@ import {
 function ProductInformation() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const productInformationFormValues = useSelector(
+  const migrateFromTallyFormValues = useSelector(
     selectMigrateFromTallyFormValues,
+  );
+  const standardProductFormValues = useSelector(
+    selectProductInformationFormValues,
   );
   const {
     tallyProductId,
     isSubmitting: isMigrating,
     error: migrationError,
   } = useSelector(selectMigrateFromTallySubmitState);
+  const productInformationFormValues = tallyProductId
+    ? migrateFromTallyFormValues
+    : standardProductFormValues;
 
   const formik = useFormik({
     initialValues: productInformationFormValues,

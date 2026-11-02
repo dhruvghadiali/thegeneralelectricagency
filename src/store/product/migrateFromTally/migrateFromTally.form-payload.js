@@ -18,7 +18,7 @@ export const isTallyCollectionProduct = (product = {}) =>
 export const toMigrateFromTallyProductId = (product = {}) =>
   _.toString(_.get(product, "_id") ?? _.get(product, "id"));
 
-export function toProductInformationFormValues(product = {}) {
+export function toMigrateFromTallyFormValues(product = {}) {
   const emptyValues = createMigrateFromTallyFormValues();
 
   return {
