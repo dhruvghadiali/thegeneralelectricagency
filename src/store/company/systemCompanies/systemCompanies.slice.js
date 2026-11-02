@@ -8,6 +8,9 @@ const systemCompaniesSlice = createSlice({
   name: "systemCompanies",
   initialState: createSystemCompaniesState(),
   reducers: {
+    systemCompanySelected(state, action) {
+      state.selectedCompany = action.payload;
+    },
     systemCompanyPageChanged(state, action) {
       state.page = action.payload;
     },
@@ -66,6 +69,7 @@ export const {
   systemCompaniesReset,
   systemCompanyPageChanged,
   systemCompanySearchChanged,
+  systemCompanySelected,
 } = systemCompaniesSlice.actions;
 
 export default systemCompaniesSlice.reducer;

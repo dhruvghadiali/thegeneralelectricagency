@@ -11,6 +11,7 @@ export const selectSystemCompanyOptions = createSelector(
     loadError: systemCompanies.error,
     page: systemCompanies.page,
     search: systemCompanies.search,
+    selectedCompany: systemCompanies.selectedCompany,
     totalPages: systemCompanies.pagination.totalPages,
   }),
 );

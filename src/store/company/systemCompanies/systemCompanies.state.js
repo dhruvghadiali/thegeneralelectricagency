@@ -3,6 +3,7 @@ import { COMPANY_TABLE_DEFAULTS } from "@Tables/company/companyTable.defaults";
 
 export const createSystemCompaniesState = () => ({
   items: [],
+  selectedCompany: null,
   pagination: {
     page: TABLE_DEFAULTS.PAGE,
     limit: COMPANY_TABLE_DEFAULTS.limit,

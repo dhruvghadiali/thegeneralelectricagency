@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Check, ChevronsUpDown, Loader2, Search, X } from "lucide-react";
+import { Check, ChevronsUpDown, Loader2, Search } from "lucide-react";
+
+import _ from "lodash";
 
 import { TABLE_DEFAULTS } from "@Enums";
 import { Input } from "@shadcnComponent/input";
@@ -11,12 +13,14 @@ import {
   systemCompaniesReset,
   systemCompanyPageChanged,
   systemCompanySearchChanged,
+  systemCompanySelected,
 } from "@Redux/company/systemCompanies/systemCompanies.slice";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@shadcnComponent/popover";
+
 function ProductCompanySelect({ formik, error }) {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
@@ -26,8 +30,27 @@ function ProductCompanySelect({ formik, error }) {
     loadError,
     page,
     search,
+    selectedCompany: storedSelectedCompany,
     totalPages,
   } = useSelector(selectSystemCompanyOptions);
+  const selectedCompany =
+    _.find(companies, { id: formik.values.agency }) ??
+    (storedSelectedCompany?.id === formik.values.agency
+      ? storedSelectedCompany
+      : null) ??
+    (formik.values.agency
+      ? {
+          id: formik.values.agency,
+          name: formik.values.agencyName || formik.values.agency,
+          addresses: [],
+        }
+      : null);
+  const companyOptions = selectedCompany
+    ? [
+        selectedCompany,
+        ..._.reject(companies, { id: selectedCompany.id }),
+      ]
+    : companies;
 
   useEffect(() => {
     if (!open) return undefined;
@@ -49,17 +72,12 @@ function ProductCompanySelect({ formik, error }) {
   );
 
   const selectCompany = (company) => {
-    formik.setFieldValue("agency", company.id, true);
-    formik.setFieldValue("agencyName", company.name, false);
-    formik.setFieldTouched("agency", true, false);
-    dispatch(systemCompanySearchChanged(""));
-    setOpen(false);
-  };
+    const isSelected = formik.values.agency === company.id;
 
-  const clearCompany = () => {
-    formik.setFieldValue("agency", "", true);
-    formik.setFieldValue("agencyName", "", false);
+    formik.setFieldValue("agency", isSelected ? "" : company.id, true);
+    formik.setFieldValue("agencyName", isSelected ? "" : company.name, false);
     formik.setFieldTouched("agency", true, false);
+    dispatch(systemCompanySelected(isSelected ? null : company));
     dispatch(systemCompanySearchChanged(""));
     setOpen(false);
   };
@@ -103,9 +121,9 @@ function ProductCompanySelect({ formik, error }) {
 
       <PopoverContent
         align="start"
-        className="w-[var(--radix-popover-trigger-width)] p-0"
+        className="flex max-h-[min(24rem,var(--radix-popover-content-available-height))] w-[var(--radix-popover-trigger-width)] flex-col overflow-hidden p-0"
       >
-        <div className="border-b p-2">
+        <div className="shrink-0 border-b p-2">
           <div className="relative">
             <Search
               className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
@@ -124,22 +142,11 @@ function ProductCompanySelect({ formik, error }) {
           </div>
         </div>
 
-        {(formik.values.agency || formik.values.agencyName) && (
-          <div className="border-b p-1">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={clearCompany}
-              className="h-auto w-full justify-start gap-2 px-3 py-2 text-muted-foreground"
-            >
-              <X className="size-4" aria-hidden="true" />
-              Clear selection
-            </Button>
-          </div>
-        )}
-
-        <div className="max-h-64 overflow-y-auto p-1">
-          {isLoading && companies.length === 0 ? (
+        <div
+          className="min-h-0 flex-1 touch-pan-y overflow-y-auto overscroll-contain p-1 [scrollbar-gutter:stable]"
+          onWheelCapture={(event) => event.stopPropagation()}
+        >
+          {isLoading && companyOptions.length === 0 ? (
             <div className="flex items-center justify-center gap-2 px-3 py-8 text-sm text-muted-foreground">
               <Loader2 className="size-4 animate-spin" aria-hidden="true" />
               Loading companies...
@@ -148,12 +155,12 @@ function ProductCompanySelect({ formik, error }) {
             <p className="px-3 py-8 text-center text-sm text-destructive">
               {loadError}
             </p>
-          ) : companies.length === 0 ? (
+          ) : companyOptions.length === 0 ? (
             <p className="px-3 py-8 text-center text-sm text-muted-foreground">
               No active company found.
             </p>
           ) : (
-            companies.map((company) => (
+            companyOptions.map((company) => (
               <Button
                 key={company.id}
                 type="button"
@@ -186,7 +193,7 @@ function ProductCompanySelect({ formik, error }) {
         </div>
 
         {page < totalPages && (
-          <div className="border-t p-2">
+          <div className="shrink-0 border-t p-2">
             <Button
               type="button"
               variant="ghost"
