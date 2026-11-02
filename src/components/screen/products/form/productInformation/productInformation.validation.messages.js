@@ -1,0 +1,31 @@
+import {
+  PRODUCT_INFORMATION_CODE_MAX_LENGTH,
+  PRODUCT_INFORMATION_CODE_MIN_LENGTH,
+  PRODUCT_INFORMATION_DESCRIPTION_MAX_LENGTH,
+  PRODUCT_INFORMATION_DESCRIPTION_MIN_LENGTH,
+  PRODUCT_INFORMATION_HSN_CODE_MAX_LENGTH,
+  PRODUCT_INFORMATION_HSN_CODE_MIN_LENGTH,
+  PRODUCT_INFORMATION_MODEL_NUMBER_MAX_LENGTH,
+  PRODUCT_INFORMATION_MODEL_NUMBER_MIN_LENGTH,
+  PRODUCT_INFORMATION_NAME_MAX_LENGTH,
+  PRODUCT_INFORMATION_NAME_MIN_LENGTH,
+} from "@screenComponent/products/form/productInformation/productInformation.validation.constants";
+
+export const PRODUCT_INFORMATION_VALIDATION_MESSAGES = Object.freeze({
+  PRODUCT_CODE_REQUIRED: "Product code is required",
+  PRODUCT_CODE_MIN: `Product code must be at least ${PRODUCT_INFORMATION_CODE_MIN_LENGTH} characters`,
+  PRODUCT_CODE_MAX: `Product code must be ${PRODUCT_INFORMATION_CODE_MAX_LENGTH} characters or fewer`,
+  PRODUCT_NAME_REQUIRED: "Product name is required",
+  PRODUCT_NAME_MIN: `Product name must be at least ${PRODUCT_INFORMATION_NAME_MIN_LENGTH} characters`,
+  PRODUCT_NAME_MAX: `Product name must be ${PRODUCT_INFORMATION_NAME_MAX_LENGTH} characters or fewer`,
+  CATEGORY_REQUIRED: "Category is required",
+  CATEGORY_INVALID: "Select a supported category",
+  AGENCY_REQUIRED: "Company is required",
+  MODEL_NUMBER_MIN: `Model number must be at least ${PRODUCT_INFORMATION_MODEL_NUMBER_MIN_LENGTH} characters`,
+  MODEL_NUMBER_MAX: `Model number must be ${PRODUCT_INFORMATION_MODEL_NUMBER_MAX_LENGTH} characters or fewer`,
+  HSN_CODE_REQUIRED: "HSN code is required",
+  HSN_CODE_MIN: `HSN code must be at least ${PRODUCT_INFORMATION_HSN_CODE_MIN_LENGTH} characters`,
+  HSN_CODE_MAX: `HSN code must be ${PRODUCT_INFORMATION_HSN_CODE_MAX_LENGTH} characters or fewer`,
+  DESCRIPTION_MIN: `Description must be at least ${PRODUCT_INFORMATION_DESCRIPTION_MIN_LENGTH} characters`,
+  DESCRIPTION_MAX: `Description must be ${PRODUCT_INFORMATION_DESCRIPTION_MAX_LENGTH.toLocaleString()} characters or fewer`,
+});

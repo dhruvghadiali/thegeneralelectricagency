@@ -1,51 +1,25 @@
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@shadcnComponent/tabs";
+import { TabsContent } from "@shadcnComponent/tabs";
+import { PRODUCT_FORM_TABS } from "@Enums";
 
 import ProductCommercialInformation from "@screenComponent/products/form/commercialInformation";
+import ProductInformation from "@screenComponent/products/form/productInformation";
 
-const PRODUCT_FORM_TABS = Object.freeze({
-  INFORMATION: "product-information",
-  COMMERCIAL: "commercial-values",
-});
-
-function ProductFormTabs() {
+function ProductFormTabs({ product }) {
   return (
-    <Tabs
-      defaultValue={PRODUCT_FORM_TABS.INFORMATION}
-      className="flex min-h-0 w-full flex-1 flex-col"
-    >
-      <TabsList className="grid h-auto w-full grid-cols-2 sm:w-fit">
-        <TabsTrigger
-          value={PRODUCT_FORM_TABS.INFORMATION}
-          className="h-full whitespace-normal px-2 py-2 text-center sm:px-3"
-        >
-          Product information
-        </TabsTrigger>
-        <TabsTrigger
-          value={PRODUCT_FORM_TABS.COMMERCIAL}
-          className="h-full whitespace-normal px-2 py-2 text-center sm:px-3"
-        >
-          Commercial information
-        </TabsTrigger>
-      </TabsList>
-
+    <>
       <TabsContent
-        value={PRODUCT_FORM_TABS.INFORMATION}
-        className="min-h-0 flex-1 pt-4 text-sm text-muted-foreground"
+        value={PRODUCT_FORM_TABS.PRODUCT_INFORMATION}
+        className="mt-0 min-h-0 flex-1 overflow-hidden data-[state=active]:flex data-[state=active]:flex-col"
       >
-        Product information
+        <ProductInformation product={product} />
       </TabsContent>
       <TabsContent
-        value={PRODUCT_FORM_TABS.COMMERCIAL}
-        className="min-h-0 flex-1 pt-4 data-[state=active]:flex data-[state=active]:flex-col"
+        value={PRODUCT_FORM_TABS.COMMERCIAL_INFORMATION}
+        className="mt-0 min-h-0 flex-1 data-[state=active]:flex data-[state=active]:flex-col"
       >
         <ProductCommercialInformation />
       </TabsContent>
-    </Tabs>
+    </>
   );
 }
 

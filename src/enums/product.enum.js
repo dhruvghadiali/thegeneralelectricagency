@@ -14,6 +14,22 @@ export const PRODUCT_TABS = Object.freeze({
   SYNC_PENDING: "Sync Pending",
 });
 
+export const PRODUCT_FORM_TABS = Object.freeze({
+  PRODUCT_INFORMATION: "product-information",
+  COMMERCIAL_INFORMATION: "commercial-information",
+});
+
+export const PRODUCT_INFORMATION_FIELDS = Object.freeze([
+  "productCode",
+  "name",
+  "category",
+  "agency",
+  "agencyName",
+  "modelNumber",
+  "hsnCode",
+  "description",
+]);
+
 export const TAX_TREATMENTS = Object.freeze([
   Object.freeze({
     value: "gujarat",
