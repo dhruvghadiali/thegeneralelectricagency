@@ -64,7 +64,7 @@ function ProductInformation({ product }) {
       className="flex h-full min-h-0 flex-col pl-1"
       noValidate
     >
-      <section className="min-h-0 flex-1 space-y-5 overflow-y-auto pb-4 pr-1">
+      <section className="min-h-0 flex-1 space-y-5 overflow-y-auto pb-4 pr-1 pl-1">
         <div className="grid gap-5 sm:grid-cols-2">
           <ProductInformationField
             id="product-code"

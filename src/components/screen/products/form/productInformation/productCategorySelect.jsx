@@ -1,3 +1,5 @@
+import { X } from "lucide-react";
+
 import { PRODUCT_CATEGORY_OPTIONS } from "@Enums";
 import {
   Select,
@@ -7,11 +9,19 @@ import {
   SelectValue,
 } from "@shadcnComponent/select";
 
+const CLEAR_CATEGORY_VALUE = "clear-category-selection";
+
 function ProductCategorySelect({ formik, error }) {
   return (
     <Select
       value={formik.values.category || ""}
-      onValueChange={(value) => formik.setFieldValue("category", value, true)}
+      onValueChange={(value) =>
+        formik.setFieldValue(
+          "category",
+          value === CLEAR_CATEGORY_VALUE ? "" : value,
+          true,
+        )
+      }
       onOpenChange={(open) =>
         !open && formik.setFieldTouched("category", true, true)
       }
@@ -25,6 +35,14 @@ function ProductCategorySelect({ formik, error }) {
         <SelectValue placeholder="Select a category" />
       </SelectTrigger>
       <SelectContent>
+        {formik.values.category && (
+          <SelectItem value={CLEAR_CATEGORY_VALUE}>
+            <span className="flex items-center gap-2 text-muted-foreground">
+              <X className="size-3.5" aria-hidden="true" />
+              Clear selection
+            </span>
+          </SelectItem>
+        )}
         {PRODUCT_CATEGORY_OPTIONS.map((option) => (
           <SelectItem key={option.value} value={option.value}>
             {option.label}

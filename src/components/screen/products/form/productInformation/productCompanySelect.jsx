@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, ChevronsUpDown, Loader2, Search } from "lucide-react";
+import { Check, ChevronsUpDown, Loader2, Search, X } from "lucide-react";
 
 import { Input } from "@shadcnComponent/input";
 import { Button } from "@shadcnComponent/button";
@@ -26,6 +26,14 @@ function ProductCompanySelect({ formik, error }) {
   const selectCompany = (company) => {
     formik.setFieldValue("agency", company.id, true);
     formik.setFieldValue("agencyName", company.name, false);
+    formik.setFieldTouched("agency", true, false);
+    setSearch("");
+    setOpen(false);
+  };
+
+  const clearCompany = () => {
+    formik.setFieldValue("agency", "", true);
+    formik.setFieldValue("agencyName", "", false);
     formik.setFieldTouched("agency", true, false);
     setSearch("");
     setOpen(false);
@@ -88,6 +96,20 @@ function ProductCompanySelect({ formik, error }) {
             />
           </div>
         </div>
+
+        {(formik.values.agency || formik.values.agencyName) && (
+          <div className="border-b p-1">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={clearCompany}
+              className="h-auto w-full justify-start gap-2 px-3 py-2 text-muted-foreground"
+            >
+              <X className="size-4" aria-hidden="true" />
+              Clear selection
+            </Button>
+          </div>
+        )}
 
         <div className="max-h-64 overflow-y-auto p-1">
           {isLoading && companies.length === 0 ? (
