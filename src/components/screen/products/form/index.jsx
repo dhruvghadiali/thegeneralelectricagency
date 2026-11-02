@@ -14,10 +14,14 @@ import {
   migrateFromTallyFormValuesSet,
   migrateFromTallyProductIdSet,
 } from "@Redux/product/migrateFromTally/migrateFromTally.slice";
-import { toProductInformationFormValues } from "@Redux/product/productInformation/productInformation.form-payload";
+import {
+  toProductInformationFormValues,
+  toProductInformationProductId,
+} from "@Redux/product/productInformation/productInformation.form-payload";
 import {
   productInformationFormValuesCleared,
   productInformationFormValuesSet,
+  productInformationProductIdSet,
 } from "@Redux/product/productInformation/productInformation.slice";
 
 import ProductFormCard from "@screenComponent/products/form/productFormCard";
@@ -46,6 +50,11 @@ function ProductFormScreen() {
       );
     } else {
       dispatch(migrateFromTallyFormValuesCleared());
+      dispatch(
+        productInformationProductIdSet(
+          toProductInformationProductId(product),
+        ),
+      );
       dispatch(
         productInformationFormValuesSet(
           toProductInformationFormValues(product),

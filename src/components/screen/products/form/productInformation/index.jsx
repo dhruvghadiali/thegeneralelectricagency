@@ -13,8 +13,12 @@ import { Input } from "@shadcnComponent/input";
 import { Button } from "@shadcnComponent/button";
 import { Textarea } from "@shadcnComponent/textarea";
 import { migrateProductFromTally } from "@Redux/product/migrateFromTally/migrateFromTally.action";
-import { selectProductInformationFormValues } from "@Redux/product/productInformation/productInformation.selector";
+import { updateProductInformation } from "@Redux/product/productInformation/productInformation.action";
 import { productInformationValidationSchema } from "@screenComponent/products/form/productInformation/productInformation.validation.schema";
+import {
+  selectProductInformationFormValues,
+  selectProductInformationSubmitState,
+} from "@Redux/product/productInformation/productInformation.selector";
 import {
   selectMigrateFromTallyFormValues,
   selectMigrateFromTallySubmitState,
@@ -46,6 +50,11 @@ function ProductInformation() {
     isSubmitting: isMigrating,
     error: migrationError,
   } = useSelector(selectMigrateFromTallySubmitState);
+  const {
+    productId,
+    isSubmitting: isUpdating,
+    error: updateError,
+  } = useSelector(selectProductInformationSubmitState);
   const productInformationFormValues = tallyProductId
     ? migrateFromTallyFormValues
     : standardProductFormValues;
@@ -55,23 +64,28 @@ function ProductInformation() {
     enableReinitialize: true,
     validationSchema: productInformationValidationSchema,
     onSubmit: async (values, { setSubmitting }) => {
-      if (!tallyProductId) {
+      if (!tallyProductId && !productId) {
         setSubmitting(false);
         return;
       }
 
       try {
-        await dispatch(migrateProductFromTally(values)).unwrap();
+        const saveAction = tallyProductId
+          ? migrateProductFromTally(values)
+          : updateProductInformation(values);
+
+        await dispatch(saveAction).unwrap();
         navigate(ROUTES.PRODUCTS, { replace: true });
       } catch {
-        // The migration slice exposes the display-ready request error below.
+        // The active product slice exposes the display-ready request error.
       } finally {
         setSubmitting(false);
       }
     },
   });
 
-  const isSubmitting = formik.isSubmitting || isMigrating;
+  const isSubmitting = formik.isSubmitting || isMigrating || isUpdating;
+  const submitError = tallyProductId ? migrationError : updateError;
 
   const fieldError = (field) =>
     formik.touched[field] && formik.errors[field] ? formik.errors[field] : null;
@@ -91,7 +105,7 @@ function ProductInformation() {
       className="flex h-full min-h-0 flex-col pl-1"
       noValidate
     >
-      <FormErrorAlert message={migrationError} />
+      <FormErrorAlert message={submitError} />
 
       <section className="min-h-0 flex-1 space-y-5 overflow-y-auto pb-4 pr-1 pl-1">
         <div className="grid gap-5 sm:grid-cols-2">
@@ -215,7 +229,7 @@ function ProductInformation() {
         <Button
           type="submit"
           className="w-full sm:w-auto"
-          disabled={isSubmitting || !tallyProductId}
+          disabled={isSubmitting || (!tallyProductId && !productId)}
         >
           {isSubmitting ? "Saving..." : "Save changes"}
         </Button>

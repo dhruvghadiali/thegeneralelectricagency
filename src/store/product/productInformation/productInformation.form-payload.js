@@ -26,6 +26,9 @@ const agencyValues = (product) => {
   };
 };
 
+export const toProductInformationProductId = (product = {}) =>
+  _.toString(_.get(product, "_id") ?? _.get(product, "id"));
+
 export function toProductInformationFormValues(product = {}) {
   return {
     ...createProductInformationFormValues(),
