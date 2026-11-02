@@ -1,7 +1,7 @@
-import ProductDetailsScreen from "@screenComponent/productDetails";
+import ProductFormScreen from "@screenComponent/products/form";
 
 function EditProductPage() {
-  return <ProductDetailsScreen />;
+  return <ProductFormScreen />;
 }
 
 export default EditProductPage;

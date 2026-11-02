@@ -4,12 +4,23 @@ import { useProductDetailsForm } from "@Forms/product/productDetails/hooks/usePr
 import { Button } from "@shadcnComponent/button";
 import { DialogFooter } from "@shadcnComponent/dialog";
 
-function ProductDetailsForm({ product, onSubmit, onCancel, submitLabel, isSubmitting }) {
+function ProductDetailsForm({
+  product,
+  onSubmit,
+  onCancel,
+  submitLabel,
+  isSubmitting,
+}) {
   const { fieldError, formik, inputProps, isBusy, updateCommercialValues } =
     useProductDetailsForm({ product, onSubmit, isSubmitting });
+  const FormContainer = onSubmit ? "form" : "div";
 
   return (
-    <form onSubmit={formik.handleSubmit} className="space-y-8" noValidate>
+    <FormContainer
+      onSubmit={onSubmit ? formik.handleSubmit : undefined}
+      className="space-y-8"
+      noValidate={onSubmit ? true : undefined}
+    >
       <ProductInformationSection
         formik={formik}
         fieldError={fieldError}
@@ -22,15 +33,22 @@ function ProductDetailsForm({ product, onSubmit, onCancel, submitLabel, isSubmit
         inputProps={inputProps}
         updateCommercialValues={updateCommercialValues}
       />
-      <DialogFooter className="border-t pt-6">
-        <Button type="button" variant="outline" disabled={isBusy} onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button type="submit" disabled={isBusy}>
-          {isBusy ? "Saving..." : submitLabel}
-        </Button>
-      </DialogFooter>
-    </form>
+      {onSubmit && (
+        <DialogFooter className="border-t pt-6">
+          <Button
+            type="button"
+            variant="outline"
+            disabled={isBusy}
+            onClick={onCancel}
+          >
+            Cancel
+          </Button>
+          <Button type="submit" disabled={isBusy}>
+            {isBusy ? "Saving..." : submitLabel}
+          </Button>
+        </DialogFooter>
+      )}
+    </FormContainer>
   );
 }
 

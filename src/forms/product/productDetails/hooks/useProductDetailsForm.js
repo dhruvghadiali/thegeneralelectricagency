@@ -12,7 +12,7 @@ export function useProductDetailsForm({ product, onSubmit, isSubmitting }) {
   const formik = useFormik({
     initialValues: toProductFormValues(product),
     validationSchema: productValidationSchema,
-    onSubmit: (values) => onSubmit(productValidationSchema.cast(values)),
+    onSubmit: (values) => onSubmit?.(productValidationSchema.cast(values)),
   });
   const isBusy = isSubmitting || formik.isSubmitting;
   const fieldError = (field) =>
