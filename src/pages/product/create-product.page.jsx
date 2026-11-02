@@ -1,7 +1,7 @@
 import ProductDetailsScreen from "@screenComponent/productDetails";
 
-function ProductDetailsPage() {
+function CreateProductPage() {
   return <ProductDetailsScreen />;
 }
 
-export default ProductDetailsPage;
+export default CreateProductPage;

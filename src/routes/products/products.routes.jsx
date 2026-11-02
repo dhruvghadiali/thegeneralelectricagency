@@ -2,10 +2,11 @@ import { ROLE_PATHS } from "@Enums";
 import { ROUTES } from "@routes/navigate";
 
 import RoleRoute from "@routes/role.route";
-import ProductsPage from "@pages/products.page";
+import ProductsPage from "@pages/product/products.page";
 import ProductsScreen from "@Tally/pages/products";
-import ProductDetailsPage from "@pages/product-details.page";
-import ProductSyncPendingPage from "@pages/product-sync-pending.page";
+import CreateProductPage from "@pages/product/create-product.page";
+import EditProductPage from "@pages/product/edit-product.page";
+import ProductSyncPendingPage from "@pages/product/product-sync-pending.page";
 
 export const productRoutes = [
   {
@@ -25,8 +26,8 @@ export const productRoutes = [
         path: ROUTES.PRODUCT_SYNC_PENDING,
         Component: ProductSyncPendingPage,
       },
-      { path: ROUTES.PRODUCT_NEW, Component: ProductDetailsPage },
-      { path: ROUTES.PRODUCT_EDIT, Component: ProductDetailsPage },
+      { path: ROUTES.PRODUCT_NEW, Component: CreateProductPage },
+      { path: ROUTES.PRODUCT_EDIT, Component: EditProductPage },
     ],
   },
 ];
