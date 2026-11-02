@@ -6,9 +6,9 @@ import {
   CardTitle,
 } from "@shadcnComponent/card";
 
-import ProductDetailsForm from "@Forms/product/productDetails/productDetailsForm";
+import ProductFormTabs from "@screenComponent/products/form/tab";
 
-function ProductFormCard({ product }) {
+function ProductFormCard() {
   return (
     <Card className="shadow-none">
       <CardHeader className="border-b">
@@ -16,7 +16,7 @@ function ProductFormCard({ product }) {
         <CardDescription>Review the product information below.</CardDescription>
       </CardHeader>
       <CardContent>
-        <ProductDetailsForm key={product.id} product={product} />
+        <ProductFormTabs />
       </CardContent>
     </Card>
   );

@@ -20,7 +20,7 @@ function ProductFormScreen() {
 
   return (
     <main className="mx-auto w-full max-w-6xl pb-8">
-      <ProductFormCard product={product} />
+      <ProductFormCard />
     </main>
   );
 }
