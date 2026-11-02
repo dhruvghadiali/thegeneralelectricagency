@@ -1,16 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Check, ChevronsUpDown, Loader2, Search, X } from "lucide-react";
 
+import { TABLE_DEFAULTS } from "@Enums";
 import { Input } from "@shadcnComponent/input";
 import { Button } from "@shadcnComponent/button";
-import { useCompanyOptions } from "@Forms/product/productDetails/hooks/useCompanyOptions";
+import { fetchSystemCompanies } from "@Redux/company/systemCompanies/systemCompanies.action";
+import { selectSystemCompanyOptions } from "@Redux/company/systemCompanies/systemCompanies.selector";
+import {
+  systemCompaniesReset,
+  systemCompanyPageChanged,
+  systemCompanySearchChanged,
+} from "@Redux/company/systemCompanies/systemCompanies.slice";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@shadcnComponent/popover";
-
 function ProductCompanySelect({ formik, error }) {
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const {
     companies,
@@ -18,16 +26,33 @@ function ProductCompanySelect({ formik, error }) {
     loadError,
     page,
     search,
-    setPage,
-    setSearch,
     totalPages,
-  } = useCompanyOptions(open);
+  } = useSelector(selectSystemCompanyOptions);
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    let request;
+    const timeoutId = window.setTimeout(() => {
+      request = dispatch(fetchSystemCompanies({ page, search }));
+    }, TABLE_DEFAULTS.SEARCH_DEBOUNCE_MS);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      request?.abort();
+    };
+  }, [dispatch, open, page, search]);
+
+  useEffect(
+    () => () => dispatch(systemCompaniesReset()),
+    [dispatch],
+  );
 
   const selectCompany = (company) => {
     formik.setFieldValue("agency", company.id, true);
     formik.setFieldValue("agencyName", company.name, false);
     formik.setFieldTouched("agency", true, false);
-    setSearch("");
+    dispatch(systemCompanySearchChanged(""));
     setOpen(false);
   };
 
@@ -35,7 +60,7 @@ function ProductCompanySelect({ formik, error }) {
     formik.setFieldValue("agency", "", true);
     formik.setFieldValue("agencyName", "", false);
     formik.setFieldTouched("agency", true, false);
-    setSearch("");
+    dispatch(systemCompanySearchChanged(""));
     setOpen(false);
   };
 
@@ -88,7 +113,9 @@ function ProductCompanySelect({ formik, error }) {
             />
             <Input
               value={search}
-              onChange={(event) => setSearch(event.target.value)}
+              onChange={(event) =>
+                dispatch(systemCompanySearchChanged(event.target.value))
+              }
               placeholder="Search company name..."
               aria-label="Search company by name"
               className="pl-9"
@@ -142,7 +169,17 @@ function ProductCompanySelect({ formik, error }) {
                   }`}
                   aria-hidden="true"
                 />
-                <span className="truncate">{company.name}</span>
+                <span className="flex min-w-0 flex-1 flex-col items-start gap-0.5">
+                  <span className="w-full truncate">{company.name}</span>
+                  {company.addresses.length > 0 && (
+                    <span className="w-full truncate text-xs text-muted-foreground">
+                      {company.addresses
+                        .map((address) => address.address)
+                        .filter(Boolean)
+                        .join(" • ")}
+                    </span>
+                  )}
+                </span>
               </Button>
             ))
           )}
@@ -155,7 +192,9 @@ function ProductCompanySelect({ formik, error }) {
               variant="ghost"
               size="sm"
               disabled={isLoading}
-              onClick={() => setPage((current) => current + 1)}
+              onClick={() =>
+                dispatch(systemCompanyPageChanged(page + 1))
+              }
               className="w-full"
             >
               {isLoading && (

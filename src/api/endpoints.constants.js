@@ -18,6 +18,7 @@ export const ENDPOINTS = {
   COMPANY: {
     BASE: "companies",
     RESTORE: "restore",
+    SYSTEM: "system",
   },
   COMPANY_CONTACT: {
     BASE: "company-contacts",

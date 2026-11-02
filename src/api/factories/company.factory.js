@@ -5,6 +5,8 @@ import { ENDPOINTS } from "@Api/endpoints.constants";
 
 const companiesPath = (rolePath) =>
   `/${rolePath}/${ENDPOINTS.COMPANY.BASE}`;
+const systemCompaniesPath = (rolePath) =>
+  `${companiesPath(rolePath)}/${ENDPOINTS.COMPANY.SYSTEM}`;
 const companyContactsPath = (rolePath) =>
   `/${rolePath}/${ENDPOINTS.COMPANY_CONTACT.BASE}`;
 const companyAddressesPath = (rolePath) =>
@@ -18,6 +20,19 @@ export function createCompanyListApi(rolePath) {
   return {
     getCompanies: async (params = {}, config = {}) => {
       const { data } = await apiClient.get(companiesPath(rolePath), {
+        params,
+        ...config,
+      });
+
+      return unwrapPayload(data);
+    },
+  };
+}
+
+export function createSystemCompanyListApi(rolePath) {
+  return {
+    getSystemCompanies: async (params = {}, config = {}) => {
+      const { data } = await apiClient.get(systemCompaniesPath(rolePath), {
         params,
         ...config,
       });
