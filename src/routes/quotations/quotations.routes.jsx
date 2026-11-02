@@ -2,10 +2,10 @@ import { ROLE_PATHS } from "@Enums";
 import { ROUTES } from "@routes/navigate";
 
 import RoleRoute from "@routes/role.route";
-import QuotationsPage from "@pages/quotations.page";
-import EditQuotationPage from "@pages/edit-quotation.page";
-import ViewQuotationPage from "@pages/view-quotation.page";
-import CreateQuotationPage from "@pages/create-quotation.page";
+import QuotationsPage from "@pages/quotation/quotations.page";
+import EditQuotationPage from "@pages/quotation/edit-quotation.page";
+import ViewQuotationPage from "@pages/quotation/view-quotation.page";
+import CreateQuotationPage from "@pages/quotation/create-quotation.page";
 
 export const quotationRoutes = [
   {

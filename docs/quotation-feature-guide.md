@@ -100,7 +100,7 @@ Update all of the following when a route path or parameter changes:
 
 ### Entry points
 
-- Page: `src/pages/quotations.page.jsx`
+- Page: `src/pages/quotation/quotations.page.jsx`
 - Screen: `src/components/screen/quotations/index.jsx`
 - Table hook: `src/components/screen/quotations/table/useQuotationTable.js`
 - Table configuration: `src/components/screen/quotations/table/quotationTable.config.js`
@@ -148,7 +148,7 @@ Editing is blocked when any raw quotation product lacks a recognized product or 
 
 ### Entry points
 
-- Page: `src/pages/create-quotation.page.jsx`
+- Page: `src/pages/quotation/create-quotation.page.jsx`
 - Screen: `src/components/screen/quotations/create/index.jsx`
 - Step renderer: `src/components/screen/quotations/form/createQuotationForm.jsx`
 
@@ -488,7 +488,7 @@ The same `QuotationPdfDiscountDialog` is used by create, edit, current-view, and
 
 ### Entry points
 
-- Page: `src/pages/view-quotation.page.jsx`
+- Page: `src/pages/quotation/view-quotation.page.jsx`
 - Screen: `src/components/screen/quotations/viewQuotationInformation/index.jsx`
 - Current view: `viewQuotationInformation/currentVersion/currentQuotationDetails.jsx`
 - Shared details: `viewQuotationInformation/quotationDetails/quotationDetails.jsx`
@@ -602,7 +602,7 @@ The first available value is used:
 
 ### Entry points
 
-- Page: `src/pages/edit-quotation.page.jsx`
+- Page: `src/pages/quotation/edit-quotation.page.jsx`
 - Screen: `src/components/screen/quotations/edit/index.jsx`
 - Hydration hook: `edit/hooks/useEditQuotation.js`
 - Update hook: `edit/hooks/useUpdateQuotationPdf.js`
@@ -1160,10 +1160,10 @@ Financial, revision, and normalization changes currently depend heavily on manua
 
 | Purpose | File |
 | --- | --- |
-| List page | `src/pages/quotations.page.jsx` |
-| Create page | `src/pages/create-quotation.page.jsx` |
-| View page | `src/pages/view-quotation.page.jsx` |
-| Edit page | `src/pages/edit-quotation.page.jsx` |
+| List page | `src/pages/quotation/quotations.page.jsx` |
+| Create page | `src/pages/quotation/create-quotation.page.jsx` |
+| View page | `src/pages/quotation/view-quotation.page.jsx` |
+| Edit page | `src/pages/quotation/edit-quotation.page.jsx` |
 | List screen | `src/components/screen/quotations/index.jsx` |
 | Create screen | `src/components/screen/quotations/create/index.jsx` |
 | Edit screen | `src/components/screen/quotations/edit/index.jsx` |
