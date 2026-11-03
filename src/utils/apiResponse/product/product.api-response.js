@@ -3,6 +3,26 @@ import _ from "lodash";
 import { fromProductDiscountRangeApiResponse } from "@utils/apiResponse/product/productDiscountRange.api-response";
 import { fromProductReservedStockApiResponse } from "@utils/apiResponse/product/productReservedStock.api-response";
 
+const fromPersonApiResponse = (person = {}) => {
+  if (_.isString(person)) {
+    return { name: person };
+  }
+
+  return {
+    id: person._id ?? person.id ?? null,
+    employeeId: person.emp_id ?? person.employeeId ?? "",
+    username: person.username ?? "",
+    name:
+      person.name ??
+      [
+        person.first_name ?? person.firstName,
+        person.last_name ?? person.lastName,
+      ]
+        .filter(Boolean)
+        .join(" "),
+  };
+};
+
 export function fromProductApiResponse(product = {}) {
   const tallyCollectionRecord =
     product.is_tally_collection_record ?? product.isTallyCollectionRecord;
@@ -55,7 +75,9 @@ export function fromProductApiResponse(product = {}) {
       ? true
       : Boolean(product.is_active ?? product.isActive),
     createdAt: product.created_at ?? product.createdAt ?? null,
+    createdBy: fromPersonApiResponse(product.created_by ?? product.createdBy),
     updatedAt: product.updated_at ?? product.updatedAt ?? null,
+    updatedBy: fromPersonApiResponse(product.updated_by ?? product.updatedBy),
   };
 }
 
