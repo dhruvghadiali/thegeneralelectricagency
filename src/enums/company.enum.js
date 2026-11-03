@@ -20,17 +20,11 @@ export const COMPANY_FIELDS = Object.freeze([
 export const COMPANY_TYPES = Object.freeze({
   SUPPLIER: "supplier",
   CUSTOMER: "customer",
-  MANUFACTURER: "manufacturer",
-  DEALER: "dealer",
-  BOTH: "both",
 });
 
 export const COMPANY_TYPE_OPTIONS = Object.freeze([
   { value: COMPANY_TYPES.SUPPLIER, label: "Supplier" },
   { value: COMPANY_TYPES.CUSTOMER, label: "Customer" },
-  { value: COMPANY_TYPES.MANUFACTURER, label: "Manufacturer" },
-  { value: COMPANY_TYPES.DEALER, label: "Dealer" },
-  { value: COMPANY_TYPES.BOTH, label: "Supplier & customer" },
 ]);
 
 export const COMPANY_STATUS_OPTIONS = Object.freeze([
