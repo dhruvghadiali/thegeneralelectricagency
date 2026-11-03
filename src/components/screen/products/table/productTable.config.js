@@ -5,7 +5,7 @@ import { PRODUCT_TABLE_COLUMNS } from "@screenComponent/products/table/productTa
 export const PRODUCT_TABLE_CONFIG = Object.freeze({
   columns: PRODUCT_TABLE_COLUMNS,
   rowKey: (product) => product.id,
-  searchPlaceholder: "Search by product code, name, model, or company...",
+  searchPlaceholder: "Search by product name",
   rowNoun: "products",
   emptyIcon: Boxes,
   emptyTitle: "No products found",
