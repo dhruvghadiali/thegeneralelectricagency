@@ -10,7 +10,7 @@ import {
   tableFetchCases,
   TABLE_REDUCERS,
 } from "@Redux/factories/table.factory";
-import { COMPANY_TABLE_DEFAULTS } from "@Tables/company/companyTable.defaults";
+import { COMPANY_TABLE_DEFAULTS } from "@Redux/company/companyTable.defaults";
 
 const COMPANY_DETAILS_FORM_INITIAL_STATE = {
   saveError: null,

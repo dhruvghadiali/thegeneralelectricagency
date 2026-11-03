@@ -1,6 +1,6 @@
 import { COMPANY_TYPES } from "@Enums";
 import { Badge } from "@shadcnComponent/badge";
-import { companyTypeLabel } from "@Tables/company/companyTable.utils";
+import { companyTypeLabel } from "@Tables/companyContact/companyContactTable.utils";
 
 const COMPANY_TYPE_BADGE_CLASSES = Object.freeze({
   [COMPANY_TYPES.SUPPLIER]:

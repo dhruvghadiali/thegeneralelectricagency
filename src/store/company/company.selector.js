@@ -1,8 +1,15 @@
 import { createSelector } from "@reduxjs/toolkit";
 
+import { ROLE_PATHS } from "@Enums";
 import { createTableSelectors } from "@Redux/factories/table.factory";
 
 const selectCompanyState = (state) => state.companies;
+const selectAuthRole = (state) => state.auth.role;
+
+export const isEmployeeCanManageCompanies = createSelector(
+  selectAuthRole,
+  (role) => role === ROLE_PATHS.EMPLOYEE,
+);
 
 export const companyTableSelectors = createTableSelectors(selectCompanyState);
 

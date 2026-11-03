@@ -1,5 +1,5 @@
 import { TABLE_DEFAULTS } from "@Enums";
-import { COMPANY_TABLE_DEFAULTS } from "@Tables/company/companyTable.defaults";
+import { COMPANY_TABLE_DEFAULTS } from "@Redux/company/companyTable.defaults";
 import { buildListQueryParams } from "@/utils/listQuery.util";
 
 export function toCompanyListParams({

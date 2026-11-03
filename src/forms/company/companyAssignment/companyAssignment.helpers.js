@@ -1,6 +1,6 @@
 import { TABLE_DEFAULTS } from "@Enums";
-import { COMPANY_TABLE_DEFAULTS } from "@Tables/company";
-import { toCompanyListParams } from "@Tables/company/companyTable.api-payload";
+import { toCompanyListParams } from "@Redux/company/companyTable.api-payload";
+import { COMPANY_TABLE_DEFAULTS } from "@Redux/company/companyTable.defaults";
 
 export const activeCompanyListParams = (options) => ({
   ...toCompanyListParams(options),

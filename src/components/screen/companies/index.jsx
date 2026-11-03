@@ -1,5 +1,5 @@
-import CompanyDirectory from "@screenComponent/companies/company/companyDirectory";
 import CompanySummaryPopover from "@screenComponent/companies/company/header/companySummaryPopover";
+import CompanyTable from "@screenComponent/companies/company/table";
 
 function Companies() {
   return (
@@ -14,7 +14,7 @@ function Companies() {
         </div>
       </div>
 
-      <CompanyDirectory />
+      <CompanyTable />
     </main>
   );
 }

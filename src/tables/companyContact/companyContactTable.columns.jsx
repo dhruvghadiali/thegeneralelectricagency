@@ -11,8 +11,8 @@ import { Badge } from "@shadcnComponent/badge";
 import {
   companyStatusLabel,
   companyStatusVariant,
-} from "@Tables/company/companyTable.utils";
-import CompanyTypeBadge from "@Tables/company/companyTypeBadge";
+} from "@Tables/companyContact/companyContactTable.utils";
+import CompanyTypeBadge from "@Tables/companyContact/companyTypeBadge";
 import ContactPositionBadge from "@Tables/companyContact/contactPositionBadge";
 
 export const COMPANY_CONTACT_TABLE_COLUMNS = [

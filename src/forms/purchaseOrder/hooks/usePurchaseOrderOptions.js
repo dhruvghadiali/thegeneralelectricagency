@@ -7,7 +7,7 @@ import {
 } from "@Api";
 import { COMPANY_TYPES } from "@Enums";
 import { fromProductListResponse } from "@Redux/product/getProductList/getProductList.api-response";
-import { fromCompanyListResponse } from "@Tables/company/companyTable.frontend-payload";
+import { fromCompanyListResponse } from "@Redux/company/companyTable.frontend-payload";
 
 const SEARCH_DELAY_MS = 350;
 const OPTION_LIMIT = 30;

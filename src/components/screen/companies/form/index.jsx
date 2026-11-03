@@ -14,7 +14,7 @@ import {
   updateCompanyContact,
 } from "@Redux/company/company.action";
 
-function CompanyDetailsPage() {
+function CompanyFormScreen() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -68,4 +68,4 @@ function CompanyDetailsPage() {
   );
 }
 
-export default CompanyDetailsPage;
+export default CompanyFormScreen;

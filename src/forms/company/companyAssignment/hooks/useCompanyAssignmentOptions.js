@@ -9,7 +9,7 @@ import {
   FIRST_COMPANY_PAGE,
 } from "@Forms/company/companyAssignment/companyAssignment.helpers";
 import { contactCompanyOptionsLoaded } from "@Redux/companyContact/companyContact.slice";
-import { fromCompanyListResponse } from "@Tables/company/companyTable.frontend-payload";
+import { fromCompanyListResponse } from "@Redux/company/companyTable.frontend-payload";
 
 export function useCompanyAssignmentOptions({
   assignment,

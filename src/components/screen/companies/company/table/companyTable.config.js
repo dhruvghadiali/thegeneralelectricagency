@@ -1,11 +1,11 @@
 import { Building2 } from "lucide-react";
 
-import { COMPANY_TABLE_COLUMNS } from "@Tables/company/companyTable.columns";
+import { COMPANY_TABLE_COLUMNS } from "@screenComponent/companies/company/table/companyTable.columns";
 
 export const COMPANY_TABLE_CONFIG = Object.freeze({
   columns: COMPANY_TABLE_COLUMNS,
   rowKey: (company) => company.id,
-  searchPlaceholder: "Search by company, email, phone, GST, or PAN...",
+  searchPlaceholder: "Search by company",
   rowNoun: "companies",
   emptyIcon: Building2,
   emptyTitle: "No companies found",

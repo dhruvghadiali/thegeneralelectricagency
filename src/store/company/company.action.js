@@ -13,8 +13,8 @@ import {
 } from "@Forms/company/companyDetails/companyDetails-api.payload";
 import { fromCompanyCreateError } from "@Forms/company/companyDetails/companyDetails-frontend.payload";
 import { toCompanyRestorePayload } from "@Forms/company/restoreCompany/restoreCompany-api.payload";
-import { toCompanyListParams } from "@Tables/company/companyTable.api-payload";
-import { fromCompanyListResponse } from "@Tables/company/companyTable.frontend-payload";
+import { toCompanyListParams } from "@Redux/company/companyTable.api-payload";
+import { fromCompanyListResponse } from "@Redux/company/companyTable.frontend-payload";
 
 const companyListApiByRole = {
   [ROLE_PATHS.EMPLOYEE]: employeeCompanyApi,

@@ -1,8 +1,8 @@
-import { fetchCompanies } from "@Redux/company/company.action";
 import { useDataTable } from "@commonComponent/dataTable/useDataTable";
-import { companyTableActions } from "@Redux/company/company.slice";
+import { fetchCompanies } from "@Redux/company/company.action";
 import { companyTableSelectors } from "@Redux/company/company.selector";
-import { COMPANY_TABLE_COLUMNS } from "@Tables/company/companyTable.columns";
+import { companyTableActions } from "@Redux/company/company.slice";
+import { COMPANY_TABLE_COLUMNS } from "@screenComponent/companies/company/table/companyTable.columns";
 
 const fetchCompanyList = () => fetchCompanies(COMPANY_TABLE_COLUMNS);
 

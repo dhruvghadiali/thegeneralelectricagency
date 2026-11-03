@@ -11,7 +11,7 @@ import {
   FIRST_COMPANY_PAGE,
 } from "@Forms/company/companyAssignment/companyAssignment.helpers";
 import { contactAssignmentReset } from "@Redux/companyContact/companyContact.slice";
-import { fromCompanyListResponse } from "@Tables/company/companyTable.frontend-payload";
+import { fromCompanyListResponse } from "@Redux/company/companyTable.frontend-payload";
 
 export function useCurrentCompanyAssignment({
   contact,
