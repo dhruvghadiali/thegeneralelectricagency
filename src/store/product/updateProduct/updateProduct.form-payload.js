@@ -1,6 +1,6 @@
 import _ from "lodash";
 
-import { createProductInformationFormValues } from "@Redux/product/productInformation/productInformation.state";
+import { createProductUpdateFormValues } from "@Redux/product/updateProduct/updateProduct.state";
 
 const productValue = (product, camelCaseField, snakeCaseField) =>
   _.get(product, camelCaseField) ?? _.get(product, snakeCaseField);
@@ -31,7 +31,7 @@ export const toProductInformationProductId = (product = {}) =>
 
 export function toProductInformationFormValues(product = {}) {
   return {
-    ...createProductInformationFormValues(),
+    ...createProductUpdateFormValues(),
     productCode: _.toString(
       productValue(product, "productCode", "product_code"),
     ),

@@ -71,6 +71,7 @@ export {
   PRODUCT_STATUS_OPTIONS,
   PRODUCT_TABS,
   TAX_TREATMENTS,
+  UPDATE_PRODUCT_ERROR_MESSAGES,
 } from "./product.enum";
 
 export {

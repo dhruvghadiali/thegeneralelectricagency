@@ -39,6 +39,12 @@ export const CREATE_PRODUCT_ERROR_MESSAGES = Object.freeze({
   permission: "Only employees can create products.",
 });
 
+export const UPDATE_PRODUCT_ERROR_MESSAGES = Object.freeze({
+  update: "Unable to update the product.",
+  permission: "You do not have permission to update products.",
+  missingProductId: "The product ID is missing.",
+});
+
 export const TAX_TREATMENTS = Object.freeze([
   Object.freeze({
     value: "gujarat",

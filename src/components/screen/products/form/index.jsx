@@ -11,10 +11,10 @@ import {
   migrateFromTallyProductIdSet,
 } from "@Redux/product/migrateFromTally/migrateFromTally.slice";
 import {
-  productInformationFormValuesCleared,
-  productInformationFormValuesSet,
-  productInformationProductIdSet,
-} from "@Redux/product/productInformation/productInformation.slice";
+  productUpdateFormValuesSet,
+  productUpdateProductIdSet,
+  productUpdateStateCleared,
+} from "@Redux/product/updateProduct/updateProduct.slice";
 import {
   checkIsTallyCollectionProduct,
   toMigrateFromTallyFormValues,
@@ -23,7 +23,7 @@ import {
 import {
   toProductInformationFormValues,
   toProductInformationProductId,
-} from "@Redux/product/productInformation/productInformation.form-payload";
+} from "@Redux/product/updateProduct/updateProduct.form-payload";
 
 import ProductFormCard from "@screenComponent/products/form/productFormCard";
 
@@ -49,7 +49,7 @@ function ProductFormScreen(props) {
     dispatch(productCreateStateCleared());
 
     if (isTallyCollectionProduct === true) {
-      dispatch(productInformationFormValuesCleared());
+      dispatch(productUpdateStateCleared());
       dispatch(
         migrateFromTallyProductIdSet(toMigrateFromTallyProductId(product)),
       );
@@ -59,12 +59,12 @@ function ProductFormScreen(props) {
     } else {
       dispatch(migrateFromTallyFormValuesCleared());
       dispatch(
-        productInformationProductIdSet(
+        productUpdateProductIdSet(
           product ? toProductInformationProductId(product) : productId,
         ),
       );
       dispatch(
-        productInformationFormValuesSet(
+        productUpdateFormValuesSet(
           product ? toProductInformationFormValues(product) : {},
         ),
       );
@@ -73,7 +73,7 @@ function ProductFormScreen(props) {
     return () => {
       dispatch(productCreateStateCleared());
       dispatch(migrateFromTallyFormValuesCleared());
-      dispatch(productInformationFormValuesCleared());
+      dispatch(productUpdateStateCleared());
     };
   }, [dispatch, isTallyCollectionProduct, product, productId]);
 

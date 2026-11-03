@@ -15,12 +15,12 @@ import { Textarea } from "@shadcnComponent/textarea";
 import { createProduct } from "@Redux/product/createProduct/createProduct.action";
 import { selectProductCreateSubmitState } from "@Redux/product/createProduct/createProduct.selector";
 import { migrateProductFromTally } from "@Redux/product/migrateFromTally/migrateFromTally.action";
-import { updateProductInformation } from "@Redux/product/productInformation/productInformation.action";
+import { updateProduct } from "@Redux/product/updateProduct/updateProduct.action";
 import { productInformationValidationSchema } from "@screenComponent/products/form/productInformation/productInformation.validation.schema";
 import {
-  selectProductInformationFormValues,
-  selectProductInformationSubmitState,
-} from "@Redux/product/productInformation/productInformation.selector";
+  selectProductUpdateFormValues,
+  selectProductUpdateSubmitState,
+} from "@Redux/product/updateProduct/updateProduct.selector";
 import {
   selectMigrateFromTallyFormValues,
   selectMigrateFromTallySubmitState,
@@ -46,7 +46,7 @@ function ProductInformation() {
     selectMigrateFromTallyFormValues,
   );
   const standardProductFormValues = useSelector(
-    selectProductInformationFormValues,
+    selectProductUpdateFormValues,
   );
   const {
     tallyProductId,
@@ -55,9 +55,9 @@ function ProductInformation() {
   } = useSelector(selectMigrateFromTallySubmitState);
   const {
     productId,
-    isSubmitting: isUpdating,
-    error: updateError,
-  } = useSelector(selectProductInformationSubmitState);
+    isUpdateProductSubmitting,
+    updateProductError,
+  } = useSelector(selectProductUpdateSubmitState);
   const { isCreateProductSubmitting, createProductError } = useSelector(
     selectProductCreateSubmitState,
   );
@@ -75,7 +75,7 @@ function ProductInformation() {
         const saveAction = tallyProductId
           ? migrateProductFromTally(values)
           : productId
-            ? updateProductInformation(values)
+            ? updateProduct(values)
             : createProduct(values);
 
         await dispatch(saveAction).unwrap();
@@ -92,11 +92,11 @@ function ProductInformation() {
     formik.isSubmitting ||
     isCreateProductSubmitting ||
     isMigrating ||
-    isUpdating;
+    isUpdateProductSubmitting;
   const submitError = tallyProductId
     ? migrationError
     : productId
-      ? updateError
+      ? updateProductError
       : createProductError;
 
   const fieldError = (field) =>

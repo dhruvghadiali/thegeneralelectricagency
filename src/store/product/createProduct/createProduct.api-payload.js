@@ -1,19 +1,15 @@
 import _ from "lodash";
 
 export function toProductInformationCreatePayload(values = {}) {
-  const payload = {
-    product_code: _.trim(values.productCode ?? ""),
-    hsn_code: _.trim(values.hsnCode ?? ""),
-    name: _.trim(values.name ?? ""),
-    category: values.category ?? "",
-    agency: values.agency ?? "",
+  const nullableText = (value) => _.trim(value) || null;
+
+  return {
+    product_code: _.trim(values.productCode),
+    name: _.trim(values.name),
+    category: _.trim(values.category),
+    agency: _.trim(values.agency),
+    model_number: nullableText(values.modelNumber),
+    hsn_code: _.trim(values.hsnCode),
+    description: nullableText(values.description),
   };
-
-  const modelNumber = _.trim(values.modelNumber ?? "");
-  const description = _.trim(values.description ?? "");
-
-  if (modelNumber) payload.model_number = modelNumber;
-  if (description) payload.description = description;
-
-  return payload;
 }

@@ -8,7 +8,7 @@ import stockReducer from "@Redux/stock/stock.slice";
 import productListReducer from "@Redux/product/getProductList/getProductList.slice";
 import productCreateReducer from "@Redux/product/createProduct/createProduct.slice";
 import productMigrateFromTallyReducer from "@Redux/product/migrateFromTally/migrateFromTally.slice";
-import productInformationReducer from "@Redux/product/productInformation/productInformation.slice";
+import productUpdateReducer from "@Redux/product/updateProduct/updateProduct.slice";
 import companiesReducer from "@Redux/company/systemCompanies/systemCompanies.slice";
 import quotationReducer from "@Redux/quotation/quotation.slice";
 import purchaseReducer from "@Redux/purchase/purchase.slice";
@@ -35,7 +35,7 @@ const appReducer = combineReducers({
     productList: productListReducer,
     productCreate: productCreateReducer,
     productMigrateFromTally: productMigrateFromTallyReducer,
-    productInformation: productInformationReducer,
+    productUpdate: productUpdateReducer,
     companiesReducer: companiesReducer,
     quotation: quotationReducer,
     purchases: purchaseReducer,
