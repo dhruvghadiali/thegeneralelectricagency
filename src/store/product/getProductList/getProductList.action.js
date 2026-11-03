@@ -1,11 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { ROLE_PATHS } from "@Enums";
 import { extractErrorMessage } from "@Api/client.api";
 import { employeeProductApi, superAdminProductApi } from "@Api";
-import { PRODUCT_ERROR_MESSAGES } from "@Redux/product/product.defaults";
-import { fromProductListResponse } from "@Redux/product/product.api-response";
-import { toProductListParams } from "@Redux/product/product.api-payload";
+import { GET_PRODUCT_LIST_ERROR_MESSAGES, ROLE_PATHS } from "@Enums";
+import { toProductListParams } from "@Redux/product/getProductList/getProductList.api-payload";
+import { fromProductListResponse } from "@Redux/product/getProductList/getProductList.api-response";
 
 const productListApiByRole = {
   [ROLE_PATHS.EMPLOYEE]: employeeProductApi,
@@ -13,15 +12,15 @@ const productListApiByRole = {
 };
 
 export const getProductList = createAsyncThunk(
-  "products/getProductList",
+  "productList/getProductList",
   async (_, { getState, signal, rejectWithValue }) => {
     const state = getState();
     const { page, limit, searchQuery, sort, appliedFilters } =
-      state.products.productTable;
+      state.productList.productTable;
     const productApi = productListApiByRole[state.auth.role];
 
     if (!productApi) {
-      return rejectWithValue(PRODUCT_ERROR_MESSAGES.viewPermission);
+      return rejectWithValue(GET_PRODUCT_LIST_ERROR_MESSAGES.permission);
     }
 
     try {

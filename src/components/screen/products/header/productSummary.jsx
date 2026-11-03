@@ -3,7 +3,7 @@ import { Boxes, ChevronDown, PackageCheck, PackageX } from "lucide-react";
 
 import { Button } from "@shadcnComponent/button";
 import { Separator } from "@shadcnComponent/separator";
-import { selectProductSummary } from "@Redux/product/product.selector";
+import { selectProductSummary } from "@Redux/product/getProductList/getProductList.selector";
 import {
   Popover,
   PopoverContent,

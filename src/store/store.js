@@ -5,7 +5,7 @@ import employeeReducer from "@Redux/employee/employee.slice";
 import companyReducer from "@Redux/company/company.slice";
 import companyContactReducer from "@Redux/companyContact/companyContact.slice";
 import stockReducer from "@Redux/stock/stock.slice";
-import productReducer from "@Redux/product/product.slice";
+import productListReducer from "@Redux/product/getProductList/getProductList.slice";
 import productCreateReducer from "@Redux/product/createProduct/createProduct.slice";
 import productMigrateFromTallyReducer from "@Redux/product/migrateFromTally/migrateFromTally.slice";
 import productInformationReducer from "@Redux/product/productInformation/productInformation.slice";
@@ -32,7 +32,7 @@ const appReducer = combineReducers({
     companies: companyReducer,
     companyContacts: companyContactReducer,
     stocks: stockReducer,
-    products: productReducer,
+    productList: productListReducer,
     productCreate: productCreateReducer,
     productMigrateFromTally: productMigrateFromTallyReducer,
     productInformation: productInformationReducer,

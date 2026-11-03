@@ -1,5 +1,4 @@
-import { TABLE_DEFAULTS } from "@Enums";
-import { PRODUCT_LIST_DEFAULTS } from "@Redux/product/product.defaults";
+import { PRODUCT_LIST_DEFAULTS, TABLE_DEFAULTS } from "@Enums";
 import { fromProductApiResponse } from "@utils/apiResponse/product/product.api-response";
 import { fromProductListApiResponse } from "@utils/apiResponse/product/productList.api-response";
 

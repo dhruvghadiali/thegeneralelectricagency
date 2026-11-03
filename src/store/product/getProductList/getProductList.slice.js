@@ -1,25 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { PRODUCT_TABS } from "@Enums";
-import { getProductList } from "@Redux/product/product.action";
-import { PRODUCT_ERROR_MESSAGES } from "@Redux/product/product.defaults";
-import {
-  createProductState,
-  createQuotationOptionsState,
-} from "@Redux/product/product.state";
+import { GET_PRODUCT_LIST_ERROR_MESSAGES } from "@Enums";
+import { getProductList } from "@Redux/product/getProductList/getProductList.action";
+import { createGetProductListState } from "@Redux/product/getProductList/getProductList.state";
 import {
   tableFetchCases,
   TABLE_REDUCERS,
 } from "@Redux/factories/table.factory";
 
-const initialState = createProductState();
-
 const reduceProductTable = (reducer) => (state, action) =>
   reducer(state.productTable, action);
 
-const productSlice = createSlice({
-  name: "products",
-  initialState,
+const productListSlice = createSlice({
+  name: "productList",
+  initialState: createGetProductListState(),
   reducers: {
     productColumnFilterChanged: reduceProductTable(
       TABLE_REDUCERS.columnFilterChanged,
@@ -31,26 +25,6 @@ const productSlice = createSlice({
     productSearchChanged: reduceProductTable(TABLE_REDUCERS.searchChanged),
     productSearchCommitted: reduceProductTable(TABLE_REDUCERS.searchCommitted),
     productSortChanged: reduceProductTable(TABLE_REDUCERS.sortChanged),
-    productTabChanged(state, action) {
-      if (Object.values(PRODUCT_TABS).includes(action.payload)) {
-        state.activeTab = action.payload;
-      }
-    },
-    productRowSelectionChanged(state, action) {
-      const { product, checked } = action.payload;
-      const selectedIndex = state.selectedProducts.findIndex(
-        (selectedProduct) => selectedProduct.id === product.id,
-      );
-
-      if (checked && selectedIndex === -1) {
-        state.selectedProducts.push(product);
-      } else if (!checked && selectedIndex !== -1) {
-        state.selectedProducts.splice(selectedIndex, 1);
-      }
-    },
-    quotationProductOptionsReset(state) {
-      state.quotationOptions = createQuotationOptionsState();
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -65,7 +39,7 @@ const productSlice = createSlice({
         tableFetchCases.rejected(
           state.productTable,
           action,
-          PRODUCT_ERROR_MESSAGES.list,
+          GET_PRODUCT_LIST_ERROR_MESSAGES.list,
         ),
       );
   },
@@ -77,13 +51,10 @@ export const {
   productFiltersCleared,
   productLimitChanged,
   productPageChanged,
-  productRowSelectionChanged,
   productSearchChanged,
   productSearchCommitted,
   productSortChanged,
-  productTabChanged,
-  quotationProductOptionsReset,
-} = productSlice.actions;
+} = productListSlice.actions;
 
 export const productTableActions = {
   columnFilterChanged: productColumnFilterChanged,
@@ -96,4 +67,4 @@ export const productTableActions = {
   sortChanged: productSortChanged,
 };
 
-export default productSlice.reducer;
+export default productListSlice.reducer;

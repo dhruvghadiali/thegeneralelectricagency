@@ -1,4 +1,8 @@
-import { COLUMN_TYPES } from "./dataTable.enum";
+import {
+  COLUMN_TYPES,
+  SORT_ORDERS,
+  TABLE_DEFAULTS,
+} from "./dataTable.enum";
 
 export const PRODUCT_CATEGORIES = Object.freeze({
   MOTOR: "motor",
@@ -57,6 +61,27 @@ export const SYNC_PENDING_LIST_FILTER_COLUMNS = Object.freeze([
   Object.freeze({ type: COLUMN_TYPES.TEXT, filterKey: "name" }),
   Object.freeze({ type: COLUMN_TYPES.TEXT, filterKey: "hsn_code" }),
 ]);
+
+export const PRODUCT_LIST_FILTER_COLUMNS = Object.freeze([
+  Object.freeze({ type: COLUMN_TYPES.TEXT, filterKey: "name" }),
+  Object.freeze({ type: COLUMN_TYPES.TEXT, filterKey: "hsn_code" }),
+  Object.freeze({ type: COLUMN_TYPES.TEXT, filterKey: "description" }),
+  Object.freeze({ type: COLUMN_TYPES.TEXT, filterKey: "product_code" }),
+  Object.freeze({ type: COLUMN_TYPES.DATE_TIME, filterKey: "created" }),
+]);
+
+export const PRODUCT_LIST_DEFAULTS = Object.freeze({
+  limit: TABLE_DEFAULTS.LIMIT,
+  sort: Object.freeze([
+    Object.freeze({ field: "name", order: SORT_ORDERS.ASC }),
+  ]),
+  filters: Object.freeze({ is_active: "true" }),
+});
+
+export const GET_PRODUCT_LIST_ERROR_MESSAGES = Object.freeze({
+  list: "Unable to load products.",
+  permission: "You do not have permission to view products.",
+});
 
 export const AGENCIES = Object.freeze({
   CG: "CG",
