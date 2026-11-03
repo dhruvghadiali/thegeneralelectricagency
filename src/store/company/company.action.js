@@ -7,24 +7,10 @@ import {
   toCompanyAddressUpdatePayload,
   toCompanyContactCreatePayload,
   toCompanyContactUpdatePayload,
-  toCompanyCreatePayload,
   toCompanyUpdatePayload,
 } from "@Forms/company/companyDetails/companyDetails-api.payload";
 import { fromCompanyCreateError } from "@Forms/company/companyDetails/companyDetails-frontend.payload";
 import { toCompanyRestorePayload } from "@Forms/company/restoreCompany/restoreCompany-api.payload";
-
-export const createCompany = createAsyncThunk(
-  "companies/createCompany",
-  async (values, { rejectWithValue }) => {
-    try {
-      return await employeeCompanyApi.createCompany(
-        toCompanyCreatePayload(values),
-      );
-    } catch (error) {
-      return rejectWithValue(fromCompanyCreateError(error));
-    }
-  },
-);
 
 export const updateCompany = createAsyncThunk(
   "companies/updateCompany",

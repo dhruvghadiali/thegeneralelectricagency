@@ -1,6 +1,12 @@
 import { useFormik } from "formik";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import { COMPANY_INFORMATION_INITIAL_VALUES } from "@Forms/company/companyInformation/companyInformation.initialValues";
+import FormErrorAlert from "@commonComponent/alert/formErrorAlert";
+import { ROUTES } from "@routes/navigate";
+import { createCompany } from "@Redux/company/createCompany/createCompany.action";
+import { selectCompanyCreateSubmitState } from "@Redux/company/createCompany/createCompany.selector";
 import { Button } from "@shadcnComponent/button";
 import { Input } from "@shadcnComponent/input";
 import { Textarea } from "@shadcnComponent/textarea";
@@ -11,11 +17,27 @@ import CompanyTypeSelect from "@screenComponent/companies/company/form/companyIn
 import { companyInformationValidationSchema } from "@screenComponent/companies/company/form/companyInformation/companyInformation.validation.schema";
 
 function CompanyInformation() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isCreateCompanySubmitting, createCompanyError } = useSelector(
+    selectCompanyCreateSubmitState,
+  );
+
   const formik = useFormik({
     initialValues: COMPANY_INFORMATION_INITIAL_VALUES,
     validationSchema: companyInformationValidationSchema,
-    onSubmit: (_, helpers) => helpers.setSubmitting(false),
+    onSubmit: async (values, { setSubmitting }) => {
+      try {
+        await dispatch(createCompany(values)).unwrap();
+        navigate(ROUTES.COMPANIES, { replace: true });
+      } catch {
+        // The create-company slice exposes the display-ready request error.
+      } finally {
+        setSubmitting(false);
+      }
+    },
   });
+  const isSubmitting = formik.isSubmitting || isCreateCompanySubmitting;
   const fieldError = (field) =>
     formik.touched[field] && formik.errors[field] ? formik.errors[field] : null;
   const inputProps = (field, id) => ({
@@ -33,6 +55,8 @@ function CompanyInformation() {
       onSubmit={formik.handleSubmit}
       noValidate
     >
+      <FormErrorAlert message={createCompanyError} />
+
       <section className="min-h-0 flex-1 space-y-5 overflow-y-auto pb-4 pl-1 pr-1">
         <div className="grid gap-5 sm:grid-cols-2">
           <CompanyInformationField
@@ -183,11 +207,21 @@ function CompanyInformation() {
       </section>
 
       <div className="flex shrink-0 flex-col-reverse gap-2 border-t pt-4 sm:flex-row sm:justify-end">
-        <Button type="button" variant="outline" className="w-full sm:w-auto">
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full sm:w-auto"
+          disabled={isSubmitting}
+          onClick={() => navigate(ROUTES.COMPANIES)}
+        >
           Cancel
         </Button>
-        <Button type="submit" className="w-full sm:w-auto">
-          Save company
+        <Button
+          type="submit"
+          className="w-full sm:w-auto"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Adding..." : "Add company"}
         </Button>
       </div>
     </form>

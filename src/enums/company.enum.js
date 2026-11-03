@@ -49,6 +49,11 @@ export const GET_COMPANY_LIST_ERROR_MESSAGES = Object.freeze({
   permission: "You do not have permission to view companies.",
 });
 
+export const CREATE_COMPANY_ERROR_MESSAGES = Object.freeze({
+  create: "Unable to add company.",
+  permission: "Only employees can create companies.",
+});
+
 export const CONTACT_PERSON_POSITIONS = Object.freeze({
   OWNER: "owner",
   DIRECTOR: "director",
