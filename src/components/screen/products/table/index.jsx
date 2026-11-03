@@ -2,13 +2,13 @@
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
+import { ROUTE_BUILDERS } from "@routes/navigate";
+import { selectCanManageProducts } from "@Redux/product/product.selector";
+import { PRODUCT_TABLE_CONFIG } from "@screenComponent/products/table/productTable.config";
+
 import DataTable from "@commonComponent/dataTable";
 import useProductTable from "@screenComponent/products/table/useProductTable";
 import ProductTableActions from "@screenComponent/products/table/productTableActions";
-
-import { ROUTE_BUILDERS } from "@routes/navigate";
-import { PRODUCT_TABLE_CONFIG } from "@Tables/product";
-import { selectCanManageProducts } from "@Redux/product/product.selector";
 
 // import {
 //   selectSelectedProductIds,
