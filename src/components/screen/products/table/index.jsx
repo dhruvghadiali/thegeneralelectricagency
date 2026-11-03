@@ -1,4 +1,3 @@
-// import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -10,30 +9,10 @@ import DataTable from "@commonComponent/dataTable";
 import useProductTable from "@screenComponent/products/table/useProductTable";
 import ProductTableActions from "@screenComponent/products/table/productTableActions";
 
-// import {
-//   selectSelectedProductIds,
-//   selectSelectedProducts,
-// } from "@Redux/product/product.selector";
-// import { productRowSelectionChanged } from "@Redux/product/product.slice";
-
 function ProductTable() {
   const navigate = useNavigate();
   const table = useProductTable();
   const canManage = useSelector(selectCanManageProducts);
-  // const selectedProducts = useSelector(selectSelectedProducts);
-  // const selectedProductIds = useSelector(selectSelectedProductIds);
-
-  // const displayedProducts = useMemo(() => {
-  //   if (selectedProducts.length === 0) return table.rows;
-
-  //   return [
-  //     ...selectedProducts,
-  //     ...table.rows.filter((product) => !selectedProductIds.has(product.id)),
-  //   ];
-  // }, [selectedProductIds, selectedProducts, table.rows]);
-
-  // const changeProductSelection = (product, checked) =>
-  //   dispatch(productRowSelectionChanged({ product, checked }));
 
   const editProduct = (product) =>
     navigate(ROUTE_BUILDERS.productEdit(product.id), {
@@ -45,9 +24,6 @@ function ProductTable() {
       {...PRODUCT_TABLE_CONFIG}
       rows={table.rows}
       rowKey={(product) => product.id}
-      // selectedRowKeys={[...selectedProductIds]}
-      // onRowSelectionChange={canManage ? changeProductSelection : undefined}
-      // selectionLabel={(product) => `Select ${product.name} for quotation`}
       search={table.search}
       sort={table.sort}
       columnFilters={table.columnFilters}

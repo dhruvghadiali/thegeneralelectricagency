@@ -1,5 +1,5 @@
-import ProductHeader from "@screenComponent/products/header/productHeader";
 import ProductTable from "@screenComponent/products/table";
+import ProductHeader from "@screenComponent/products/header/productHeader";
 
 function Products() {
   return (
