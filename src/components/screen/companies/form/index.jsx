@@ -1,71 +1,10 @@
-import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-
-import CompanyDetailsForm from "@Forms/company/companyDetails/companyDetailsForm";
-import { ROUTES } from "@routes/navigate";
-import {
-  createCompany,
-  createCompanyAddress,
-  createCompanyContact,
-  deleteCompanyAddress,
-  deleteCompanyContact,
-  updateCompany,
-  updateCompanyAddress,
-  updateCompanyContact,
-} from "@Redux/company/company.action";
-import { companyTableSelectors } from "@Redux/company/getCompanyList/getCompanyList.selector";
+import CompanyFormCard from "@screenComponent/companies/company/form/companyFormCard";
 
 function CompanyFormScreen() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { companyId } = useParams();
-  const companies = useSelector(companyTableSelectors.selectItems);
-  const isEditing = Boolean(companyId);
-  const company =
-    location.state?.company ??
-    companies.find((item) => String(item.id) === String(companyId));
-
-  const submitCompany = async (values) => {
-    if (isEditing) {
-      await dispatch(
-        updateCompany({ id: company?.id ?? companyId, values }),
-      ).unwrap();
-    } else {
-      await dispatch(createCompany(values)).unwrap();
-    }
-
-    navigate(ROUTES.COMPANIES, { replace: true });
-  };
-
   return (
-    <CompanyDetailsForm
-      company={company}
-      companyId={companyId}
-      isEditing={isEditing}
-      onSubmit={submitCompany}
-      onCreateAddress={(id, values) =>
-        dispatch(createCompanyAddress({ companyId: id, values })).unwrap()
-      }
-      onUpdateAddress={(address) =>
-        dispatch(
-          updateCompanyAddress({ id: address.id, values: address }),
-        ).unwrap()
-      }
-      onDeleteAddress={(id) => dispatch(deleteCompanyAddress(id)).unwrap()}
-      onCreateContact={(id, addressId, values) =>
-        dispatch(
-          createCompanyContact({ companyId: id, addressId, values }),
-        ).unwrap()
-      }
-      onUpdateContact={(contact) =>
-        dispatch(
-          updateCompanyContact({ id: contact.id, values: contact }),
-        ).unwrap()
-      }
-      onDeleteContact={(id) => dispatch(deleteCompanyContact(id)).unwrap()}
-      onCancel={() => navigate(ROUTES.COMPANIES, { replace: true })}
-    />
+    <main className="mx-auto flex h-full min-h-0 w-full max-w-6xl flex-1 pb-2">
+      <CompanyFormCard />
+    </main>
   );
 }
 

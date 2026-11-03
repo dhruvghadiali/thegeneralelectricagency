@@ -6,6 +6,11 @@ import {
   TABLE_DEFAULTS,
 } from "./dataTable.enum";
 
+export const COMPANY_FORM_TABS = Object.freeze({
+  COMPANY_INFORMATION: "company-information",
+  COMPANY_CONTACT_PERSONS: "company-contact-persons",
+});
+
 export const COMPANY_FIELDS = Object.freeze([
   Object.freeze({ key: "email", label: "Email", icon: Mail }),
   Object.freeze({ key: "phoneNumber", label: "Phone", icon: Phone }),
