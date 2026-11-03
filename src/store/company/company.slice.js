@@ -2,15 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import {
   deleteCompany,
-  fetchCompanies,
   restoreCompany,
 } from "@Redux/company/company.action";
-import {
-  createTableState,
-  tableFetchCases,
-  TABLE_REDUCERS,
-} from "@Redux/factories/table.factory";
-import { COMPANY_TABLE_DEFAULTS } from "@Redux/company/companyTable.defaults";
 
 const COMPANY_DETAILS_FORM_INITIAL_STATE = {
   saveError: null,
@@ -27,11 +20,6 @@ const COMPANY_DETAILS_FORM_INITIAL_STATE = {
 };
 
 const initialState = {
-  ...createTableState({
-    limit: COMPANY_TABLE_DEFAULTS.limit,
-    sort: COMPANY_TABLE_DEFAULTS.sort,
-    columnFilters: COMPANY_TABLE_DEFAULTS.filters,
-  }),
   selectedCompany: null,
   companyToDelete: null,
   isDeleting: false,
@@ -41,18 +29,12 @@ const initialState = {
   restoreError: null,
   directoryView: "companies",
   companyDetailsForm: { ...COMPANY_DETAILS_FORM_INITIAL_STATE },
-  summary: {
-    totalCompanies: 0,
-    activeCompanies: 0,
-    inactiveCompanies: 0,
-  },
 };
 
 const companySlice = createSlice({
   name: "companies",
   initialState,
   reducers: {
-    ...TABLE_REDUCERS,
     companyDetailsOpened(state, action) {
       state.selectedCompany = action.payload;
     },
@@ -87,14 +69,6 @@ const companySlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCompanies.pending, tableFetchCases.pending)
-      .addCase(fetchCompanies.fulfilled, (state, action) => {
-        tableFetchCases.fulfilled(state, action);
-        state.summary = action.payload.summary;
-      })
-      .addCase(fetchCompanies.rejected, (state, action) =>
-        tableFetchCases.rejected(state, action, "Unable to load companies."),
-      )
       .addCase(deleteCompany.pending, (state) => {
         state.isDeleting = true;
         state.deleteError = null;
@@ -125,7 +99,6 @@ const companySlice = createSlice({
 });
 
 export const {
-  columnFilterChanged,
   companyDeleteClosed,
   companyDeleteOpened,
   companyRestoreClosed,
@@ -135,24 +108,6 @@ export const {
   companyDetailsFormChanged,
   companyDetailsFormReset,
   companyDetailsOpened,
-  filtersApplied,
-  filtersCleared,
-  limitChanged,
-  pageChanged,
-  searchChanged,
-  searchCommitted,
-  sortChanged,
 } = companySlice.actions;
-
-export const companyTableActions = {
-  columnFilterChanged,
-  filtersApplied,
-  filtersCleared,
-  limitChanged,
-  pageChanged,
-  searchChanged,
-  searchCommitted,
-  sortChanged,
-};
 
 export default companySlice.reducer;

@@ -1,17 +1,19 @@
-import { TABLE_DEFAULTS } from "@Enums";
-import { COMPANY_TABLE_DEFAULTS } from "@Redux/company/companyTable.defaults";
+import {
+  COMPANY_LIST_DEFAULTS,
+  COMPANY_LIST_FILTER_COLUMNS,
+  TABLE_DEFAULTS,
+} from "@Enums";
 import { buildListQueryParams } from "@/utils/listQuery.util";
 
 export function toCompanyListParams({
-  columns = [],
   page = TABLE_DEFAULTS.PAGE,
-  limit = COMPANY_TABLE_DEFAULTS.limit,
+  limit = COMPANY_LIST_DEFAULTS.limit,
   search = "",
   sort = [],
   filters = {},
 } = {}) {
   return buildListQueryParams({
-    columns,
+    columns: COMPANY_LIST_FILTER_COLUMNS,
     page,
     limit,
     search,

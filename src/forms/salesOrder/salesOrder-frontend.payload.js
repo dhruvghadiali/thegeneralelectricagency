@@ -2,7 +2,7 @@ import {
   SALES_ORDER_CUSTOMER_COMPANY_TYPES,
   SALES_ORDER_SUPPLIER_COMPANY_TYPES,
 } from "@Forms/salesOrder/salesOrder.options";
-import { fromCompanyListResponse } from "@Redux/company/companyTable.frontend-payload";
+import { fromCompanyListResponse } from "@Redux/company/getCompanyList/getCompanyList.api-response";
 import { fromProductListResponse } from "@Redux/product/getProductList/getProductList.api-response";
 
 function companiesForTypes(companies, allowedTypes) {

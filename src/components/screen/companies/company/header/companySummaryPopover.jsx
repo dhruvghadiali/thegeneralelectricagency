@@ -1,7 +1,7 @@
 import { Building2, CheckCircle2, ChevronDown, XCircle } from "lucide-react";
 import { useSelector } from "react-redux";
 
-import { selectCompanySummary } from "@Redux/company/company.selector";
+import { selectCompanySummary } from "@Redux/company/getCompanyList/getCompanyList.selector";
 import { Button } from "@shadcnComponent/button";
 import {
   Popover,

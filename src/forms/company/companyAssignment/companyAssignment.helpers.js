@@ -1,6 +1,5 @@
-import { TABLE_DEFAULTS } from "@Enums";
-import { toCompanyListParams } from "@Redux/company/companyTable.api-payload";
-import { COMPANY_TABLE_DEFAULTS } from "@Redux/company/companyTable.defaults";
+import { COMPANY_LIST_DEFAULTS, TABLE_DEFAULTS } from "@Enums";
+import { toCompanyListParams } from "@Redux/company/getCompanyList/getCompanyList.api-payload";
 
 export const activeCompanyListParams = (options) => ({
   ...toCompanyListParams(options),
@@ -9,9 +8,9 @@ export const activeCompanyListParams = (options) => ({
 
 export const companyListRequestOptions = ({ search, page }) => ({
   page,
-  limit: COMPANY_TABLE_DEFAULTS.limit,
+  limit: COMPANY_LIST_DEFAULTS.limit,
   search,
-  sort: COMPANY_TABLE_DEFAULTS.sort,
+  sort: COMPANY_LIST_DEFAULTS.sort,
 });
 
 export function findContactAddress(company, contact) {

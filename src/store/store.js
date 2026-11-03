@@ -3,6 +3,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer, { loggedOut } from "@Redux/auth/auth.slice";
 import employeeReducer from "@Redux/employee/employee.slice";
 import companyReducer from "@Redux/company/company.slice";
+import companyListReducer from "@Redux/company/getCompanyList/getCompanyList.slice";
 import companyContactReducer from "@Redux/companyContact/companyContact.slice";
 import stockReducer from "@Redux/stock/stock.slice";
 import productListReducer from "@Redux/product/getProductList/getProductList.slice";
@@ -30,6 +31,7 @@ const appReducer = combineReducers({
     auth: authReducer,
     employees: employeeReducer,
     companies: companyReducer,
+    companyList: companyListReducer,
     companyContacts: companyContactReducer,
     stocks: stockReducer,
     productList: productListReducer,

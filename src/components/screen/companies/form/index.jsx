@@ -13,13 +13,14 @@ import {
   updateCompanyAddress,
   updateCompanyContact,
 } from "@Redux/company/company.action";
+import { companyTableSelectors } from "@Redux/company/getCompanyList/getCompanyList.selector";
 
 function CompanyFormScreen() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const { companyId } = useParams();
-  const companies = useSelector((state) => state.companies.items);
+  const companies = useSelector(companyTableSelectors.selectItems);
   const isEditing = Boolean(companyId);
   const company =
     location.state?.company ??

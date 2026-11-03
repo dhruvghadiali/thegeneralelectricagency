@@ -1,7 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { PRODUCT_LIST_DEFAULTS, ROLE_PATHS } from "@Enums";
-import { COMPANY_TABLE_DEFAULTS } from "@Redux/company/companyTable.defaults";
+import {
+  COMPANY_LIST_DEFAULTS,
+  PRODUCT_LIST_DEFAULTS,
+  ROLE_PATHS,
+} from "@Enums";
 import {
   QUOTATION_COMPANY_LIMIT,
   QUOTATION_COMPANY_PAGE,
@@ -10,7 +13,7 @@ import {
 } from "@Redux/quotation/quotation.state";
 
 import { toProductListParams } from "@Redux/product/getProductList/getProductList.api-payload";
-import { toCompanyListParams } from "@Redux/company/companyTable.api-payload";
+import { toCompanyListParams } from "@Redux/company/getCompanyList/getCompanyList.api-payload";
 import { fromQuotationListResponse } from "@Redux/quotation/quotation.api-response";
 import { toQuotationListParams } from "@screenComponent/quotations/table/quotationTable.api-payload";
 import { fromQuotationCompanyDirectoryResponse } from "@Redux/quotation/quotation-company-directory.api-response";
@@ -81,7 +84,7 @@ export const fetchQuotationCompanies = createAsyncThunk(
           ...toCompanyListParams({
             ...requestedPagination,
             search: state.quotation.companySearch,
-            sort: COMPANY_TABLE_DEFAULTS.sort,
+            sort: COMPANY_LIST_DEFAULTS.sort,
           }),
           is_active: true,
         },

@@ -1,12 +1,11 @@
-import { TABLE_DEFAULTS } from "@Enums";
-import { COMPANY_TABLE_DEFAULTS } from "@Redux/company/companyTable.defaults";
+import { COMPANY_LIST_DEFAULTS, TABLE_DEFAULTS } from "@Enums";
 
 export const createSystemCompaniesState = () => ({
   items: [],
   selectedCompany: null,
   pagination: {
     page: TABLE_DEFAULTS.PAGE,
-    limit: COMPANY_TABLE_DEFAULTS.limit,
+    limit: COMPANY_LIST_DEFAULTS.limit,
     total: 0,
     totalPages: 0,
   },

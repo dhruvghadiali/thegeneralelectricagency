@@ -9,7 +9,7 @@ import {
   superAdminProductApi,
 } from "@Api";
 import { COMPANY_TYPES, ROLE_PATHS } from "@Enums";
-import { fromCompanyListResponse } from "@Redux/company/companyTable.frontend-payload";
+import { fromCompanyListResponse } from "@Redux/company/getCompanyList/getCompanyList.api-response";
 import { fromProductListResponse } from "@Redux/product/getProductList/getProductList.api-response";
 
 const SEARCH_DELAY_MS = 350;

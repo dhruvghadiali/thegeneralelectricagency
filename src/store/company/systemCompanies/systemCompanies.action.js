@@ -1,10 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { employeeCompanyApi, extractErrorMessage } from "@Api";
-import { ROLE_PATHS } from "@Enums";
-import { toCompanyListParams } from "@Redux/company/companyTable.api-payload";
-import { COMPANY_TABLE_DEFAULTS } from "@Redux/company/companyTable.defaults";
-import { fromCompanyListResponse } from "@Redux/company/companyTable.frontend-payload";
+import { COMPANY_LIST_DEFAULTS, ROLE_PATHS } from "@Enums";
+import { toCompanyListParams } from "@Redux/company/getCompanyList/getCompanyList.api-payload";
+import { fromCompanyListResponse } from "@Redux/company/getCompanyList/getCompanyList.api-response";
 
 export const fetchSystemCompanies = createAsyncThunk(
   "companySystemCompanies/fetchCompanies",
@@ -15,7 +14,7 @@ export const fetchSystemCompanies = createAsyncThunk(
       );
     }
 
-    const limit = COMPANY_TABLE_DEFAULTS.limit;
+    const limit = COMPANY_LIST_DEFAULTS.limit;
 
     try {
       const response = await employeeCompanyApi.getSystemCompanies(
@@ -23,7 +22,7 @@ export const fetchSystemCompanies = createAsyncThunk(
           page,
           limit,
           search,
-          sort: COMPANY_TABLE_DEFAULTS.sort,
+          sort: COMPANY_LIST_DEFAULTS.sort,
         }),
         { signal },
       );

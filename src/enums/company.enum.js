@@ -1,5 +1,11 @@
 import { Mail, Phone, ReceiptText } from "lucide-react";
 
+import {
+  COLUMN_TYPES,
+  SORT_ORDERS,
+  TABLE_DEFAULTS,
+} from "./dataTable.enum";
+
 export const COMPANY_FIELDS = Object.freeze([
   Object.freeze({ key: "email", label: "Email", icon: Mail }),
   Object.freeze({ key: "phoneNumber", label: "Phone", icon: Phone }),
@@ -26,6 +32,23 @@ export const COMPANY_STATUS_OPTIONS = Object.freeze([
   { value: "true", label: "Active" },
   { value: "false", label: "Inactive" },
 ]);
+
+export const COMPANY_LIST_FILTER_COLUMNS = Object.freeze([
+  Object.freeze({ type: COLUMN_TYPES.TEXT, filterKey: "company_name" }),
+]);
+
+export const COMPANY_LIST_DEFAULTS = Object.freeze({
+  limit: TABLE_DEFAULTS.LIMIT,
+  sort: Object.freeze([
+    Object.freeze({ field: "company_name", order: SORT_ORDERS.ASC }),
+  ]),
+  filters: Object.freeze({ is_active: "true" }),
+});
+
+export const GET_COMPANY_LIST_ERROR_MESSAGES = Object.freeze({
+  list: "Unable to load companies.",
+  permission: "You do not have permission to view companies.",
+});
 
 export const CONTACT_PERSON_POSITIONS = Object.freeze({
   OWNER: "owner",

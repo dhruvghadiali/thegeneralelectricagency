@@ -1,8 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { employeeCompanyApi, superAdminCompanyApi } from "@Api";
+import { employeeCompanyApi } from "@Api";
 import { extractErrorMessage } from "@Api/client.api";
-import { ROLE_PATHS } from "@Enums";
 import {
   toCompanyAddressCreatePayload,
   toCompanyAddressUpdatePayload,
@@ -13,47 +12,6 @@ import {
 } from "@Forms/company/companyDetails/companyDetails-api.payload";
 import { fromCompanyCreateError } from "@Forms/company/companyDetails/companyDetails-frontend.payload";
 import { toCompanyRestorePayload } from "@Forms/company/restoreCompany/restoreCompany-api.payload";
-import { toCompanyListParams } from "@Redux/company/companyTable.api-payload";
-import { fromCompanyListResponse } from "@Redux/company/companyTable.frontend-payload";
-
-const companyListApiByRole = {
-  [ROLE_PATHS.EMPLOYEE]: employeeCompanyApi,
-  [ROLE_PATHS.SUPER_ADMIN]: superAdminCompanyApi,
-};
-
-export const fetchCompanies = createAsyncThunk(
-  "companies/fetchCompanies",
-  async (columns = [], { getState, signal, rejectWithValue }) => {
-    const state = getState();
-    const { page, limit, searchQuery, sort, appliedFilters } = state.companies;
-    const requested = { page, limit };
-    const companyApi = companyListApiByRole[state.auth.role];
-
-    if (!companyApi) {
-      return rejectWithValue(
-        "You do not have permission to view the company directory.",
-      );
-    }
-
-    try {
-      const response = await companyApi.getCompanies(
-        toCompanyListParams({
-          columns,
-          page,
-          limit,
-          search: searchQuery,
-          sort,
-          filters: appliedFilters,
-        }),
-        { signal },
-      );
-
-      return fromCompanyListResponse(response, requested);
-    } catch (error) {
-      return rejectWithValue(extractErrorMessage(error));
-    }
-  },
-);
 
 export const createCompany = createAsyncThunk(
   "companies/createCompany",
