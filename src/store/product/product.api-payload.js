@@ -66,7 +66,3 @@ function toProductPayload(values = {}) {
 export function toProductCreatePayload(values = {}) {
   return toProductPayload(values);
 }
-
-export function toProductUpdatePayload(values = {}) {
-  return toProductPayload(values);
-}
