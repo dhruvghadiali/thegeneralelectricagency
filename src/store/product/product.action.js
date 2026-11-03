@@ -3,16 +3,16 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { ROLE_PATHS } from "@Enums";
 import { extractErrorMessage } from "@Api/client.api";
 import { employeeProductApi, superAdminProductApi } from "@Api";
-import { toProductListParams } from "@Redux/product/product.api-payload";
+import {
+  toProductCreatePayload,
+  toProductListParams,
+  toProductUpdatePayload,
+} from "@Redux/product/product.api-payload";
 import {
   PRODUCT_ERROR_MESSAGES,
   PRODUCT_LIST_DEFAULTS,
 } from "@Redux/product/product.defaults";
 import { fromProductListResponse } from "@Redux/product/product.api-response";
-import {
-  toProductCreatePayload,
-  toProductUpdatePayload,
-} from "@Forms/product/productDetails/productDetails-api.payload";
 
 const productListApiByRole = {
   [ROLE_PATHS.EMPLOYEE]: employeeProductApi,
