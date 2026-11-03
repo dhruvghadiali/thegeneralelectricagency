@@ -16,7 +16,7 @@ export const selectActiveProductTab = createSelector(
   (products) => products.activeTab,
 );
 
-export const selectCanManageProducts = createSelector(
+export const isEmployeeCanManageProducts = createSelector(
   selectAuthRole,
   (role) => role === ROLE_PATHS.EMPLOYEE,
 );
@@ -39,17 +39,4 @@ export const selectSelectedProductIds = createSelector(
 export const selectQuotationProductOptions = createSelector(
   selectProductState,
   (products) => products.quotationOptions,
-);
-
-export const selectProductDialogState = createSelector(
-  selectProductState,
-  ({ dialog, operations }) => ({
-    dialog,
-    isCreating: operations.create.isLoading,
-    createError: operations.create.error,
-    isUpdating: operations.update.isLoading,
-    updateError: operations.update.error,
-    isDeleting: operations.delete.isLoading,
-    deleteError: operations.delete.error,
-  }),
 );

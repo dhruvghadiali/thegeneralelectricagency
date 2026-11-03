@@ -11,9 +11,7 @@ export const PRODUCT_LIST_DEFAULTS = Object.freeze({
 export const PRODUCT_ERROR_MESSAGES = Object.freeze({
   list: "Unable to load products.",
   quotationList: "Unable to load products. Try searching again.",
-  create: "Unable to add product.",
   update: "Unable to update product.",
   delete: "Unable to delete product.",
   viewPermission: "You do not have permission to view products.",
-  managePermission: "Only employees can manage products.",
 });

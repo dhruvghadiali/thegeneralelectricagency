@@ -4,6 +4,7 @@ import { Navigate, useLocation, useParams } from "react-router-dom";
 
 import { ROUTES } from "@routes/navigate";
 import { productTableSelectors } from "@Redux/product/product.selector";
+import { productCreateStateCleared } from "@Redux/product/createProduct/createProduct.slice";
 import {
   migrateFromTallyFormValuesCleared,
   migrateFromTallyFormValuesSet,
@@ -45,6 +46,8 @@ function ProductFormScreen(props) {
     : initialIsTallyCollectionProduct;
 
   useEffect(() => {
+    dispatch(productCreateStateCleared());
+
     if (isTallyCollectionProduct === true) {
       dispatch(productInformationFormValuesCleared());
       dispatch(
@@ -68,6 +71,7 @@ function ProductFormScreen(props) {
     }
 
     return () => {
+      dispatch(productCreateStateCleared());
       dispatch(migrateFromTallyFormValuesCleared());
       dispatch(productInformationFormValuesCleared());
     };

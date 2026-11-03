@@ -12,8 +12,8 @@ import { ROUTES } from "@routes/navigate";
 import { Input } from "@shadcnComponent/input";
 import { Button } from "@shadcnComponent/button";
 import { Textarea } from "@shadcnComponent/textarea";
-import { createProduct } from "@Redux/product/product.action";
-import { selectProductDialogState } from "@Redux/product/product.selector";
+import { createProduct } from "@Redux/product/createProduct/createProduct.action";
+import { selectProductCreateSubmitState } from "@Redux/product/createProduct/createProduct.selector";
 import { migrateProductFromTally } from "@Redux/product/migrateFromTally/migrateFromTally.action";
 import { updateProductInformation } from "@Redux/product/productInformation/productInformation.action";
 import { productInformationValidationSchema } from "@screenComponent/products/form/productInformation/productInformation.validation.schema";
@@ -41,7 +41,7 @@ import {
 function ProductInformation() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   const migrateFromTallyFormValues = useSelector(
     selectMigrateFromTallyFormValues,
   );
@@ -58,7 +58,9 @@ function ProductInformation() {
     isSubmitting: isUpdating,
     error: updateError,
   } = useSelector(selectProductInformationSubmitState);
-  const { isCreating, createError } = useSelector(selectProductDialogState);
+  const { isCreateProductSubmitting, createProductError } = useSelector(
+    selectProductCreateSubmitState,
+  );
   const productInformationFormValues = tallyProductId
     ? migrateFromTallyFormValues
     : standardProductFormValues;
@@ -87,12 +89,15 @@ function ProductInformation() {
   });
 
   const isSubmitting =
-    formik.isSubmitting || isCreating || isMigrating || isUpdating;
+    formik.isSubmitting ||
+    isCreateProductSubmitting ||
+    isMigrating ||
+    isUpdating;
   const submitError = tallyProductId
     ? migrationError
     : productId
       ? updateError
-      : createError;
+      : createProductError;
 
   const fieldError = (field) =>
     formik.touched[field] && formik.errors[field] ? formik.errors[field] : null;

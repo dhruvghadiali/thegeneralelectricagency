@@ -2,11 +2,6 @@ import { PRODUCT_TABS, TABLE_DEFAULTS } from "@Enums";
 import { createTableState } from "@Redux/factories/table.factory";
 import { PRODUCT_LIST_DEFAULTS } from "@Redux/product/product.defaults";
 
-const createOperationState = () => ({
-  isLoading: false,
-  error: null,
-});
-
 export const createQuotationOptionsState = () => ({
   items: [],
   pagination: {
@@ -28,17 +23,11 @@ export const createProductState = () => ({
     columnFilters: PRODUCT_LIST_DEFAULTS.filters,
   }),
   activeTab: PRODUCT_TABS.PRODUCTS,
-  dialog: null,
   selectedProducts: [],
   quotationOptions: createQuotationOptionsState(),
   summary: {
     totalProducts: 0,
     activeProducts: 0,
     inactiveProducts: 0,
-  },
-  operations: {
-    create: createOperationState(),
-    update: createOperationState(),
-    delete: createOperationState(),
   },
 });

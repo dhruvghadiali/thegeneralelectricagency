@@ -4,12 +4,8 @@ import { ROLE_PATHS } from "@Enums";
 import { extractErrorMessage } from "@Api/client.api";
 import { employeeProductApi, superAdminProductApi } from "@Api";
 import { PRODUCT_ERROR_MESSAGES } from "@Redux/product/product.defaults";
-import { selectCanManageProducts } from "@Redux/product/product.selector";
 import { fromProductListResponse } from "@Redux/product/product.api-response";
-import {
-  toProductCreatePayload,
-  toProductListParams,
-} from "@Redux/product/product.api-payload";
+import { toProductListParams } from "@Redux/product/product.api-payload";
 
 const productListApiByRole = {
   [ROLE_PATHS.EMPLOYEE]: employeeProductApi,
@@ -48,23 +44,6 @@ export const getProductList = createAsyncThunk(
         throw abortError;
       }
 
-      return rejectWithValue(extractErrorMessage(error));
-    }
-  },
-);
-
-export const createProduct = createAsyncThunk(
-  "products/createProduct",
-  async (values, { getState, rejectWithValue }) => {
-    if (!selectCanManageProducts(getState())) {
-      return rejectWithValue(PRODUCT_ERROR_MESSAGES.managePermission);
-    }
-
-    try {
-      return await employeeProductApi.createProduct(
-        toProductCreatePayload(values),
-      );
-    } catch (error) {
       return rejectWithValue(extractErrorMessage(error));
     }
   },

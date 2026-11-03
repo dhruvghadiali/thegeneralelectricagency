@@ -30,6 +30,11 @@ export const PRODUCT_INFORMATION_FIELDS = Object.freeze([
   "description",
 ]);
 
+export const CREATE_PRODUCT_ERROR_MESSAGES = Object.freeze({
+  create: "Unable to add product.",
+  permission: "Only employees can create products.",
+});
+
 export const TAX_TREATMENTS = Object.freeze([
   Object.freeze({
     value: "gujarat",

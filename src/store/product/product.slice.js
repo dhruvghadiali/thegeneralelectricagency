@@ -1,10 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { PRODUCT_TABS } from "@Enums";
-import {
-  createProduct,
-  getProductList,
-} from "@Redux/product/product.action";
+import { getProductList } from "@Redux/product/product.action";
 import { PRODUCT_ERROR_MESSAGES } from "@Redux/product/product.defaults";
 import {
   createProductState,
@@ -16,27 +13,6 @@ import {
 } from "@Redux/factories/table.factory";
 
 const initialState = createProductState();
-
-function clearOperationErrors(state) {
-  state.operations.create.error = null;
-  state.operations.update.error = null;
-  state.operations.delete.error = null;
-}
-
-function setOperationPending(operation) {
-  operation.isLoading = true;
-  operation.error = null;
-}
-
-function setOperationFulfilled(operation) {
-  operation.isLoading = false;
-  operation.error = null;
-}
-
-function setOperationRejected(operation, action, fallbackMessage) {
-  operation.isLoading = false;
-  operation.error = action.payload ?? fallbackMessage;
-}
 
 const reduceProductTable = (reducer) => (state, action) =>
   reducer(state.productTable, action);
@@ -59,14 +35,6 @@ const productSlice = createSlice({
       if (Object.values(PRODUCT_TABS).includes(action.payload)) {
         state.activeTab = action.payload;
       }
-    },
-    productDialogOpened(state, action) {
-      state.dialog = action.payload;
-      clearOperationErrors(state);
-    },
-    productDialogClosed(state) {
-      state.dialog = null;
-      clearOperationErrors(state);
     },
     productRowSelectionChanged(state, action) {
       const { product, checked } = action.payload;
@@ -99,28 +67,12 @@ const productSlice = createSlice({
           action,
           PRODUCT_ERROR_MESSAGES.list,
         ),
-      )
-      .addCase(createProduct.pending, (state) => {
-        setOperationPending(state.operations.create);
-      })
-      .addCase(createProduct.fulfilled, (state) => {
-        setOperationFulfilled(state.operations.create);
-        state.dialog = null;
-      })
-      .addCase(createProduct.rejected, (state, action) => {
-        setOperationRejected(
-          state.operations.create,
-          action,
-          PRODUCT_ERROR_MESSAGES.create,
-        );
-      });
+      );
   },
 });
 
 export const {
   productColumnFilterChanged,
-  productDialogClosed,
-  productDialogOpened,
   productFiltersApplied,
   productFiltersCleared,
   productLimitChanged,

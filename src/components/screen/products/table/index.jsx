@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { ROUTE_BUILDERS } from "@routes/navigate";
-import { selectCanManageProducts } from "@Redux/product/product.selector";
+import { isEmployeeCanManageProducts } from "@Redux/product/product.selector";
 import { PRODUCT_TABLE_CONFIG } from "@screenComponent/products/table/productTable.config";
 
 import DataTable from "@commonComponent/dataTable";
@@ -12,7 +12,7 @@ import ProductTableActions from "@screenComponent/products/table/productTableAct
 function ProductTable() {
   const navigate = useNavigate();
   const table = useProductTable();
-  const canManage = useSelector(selectCanManageProducts);
+  const canCreate = useSelector(isEmployeeCanManageProducts);
 
   const editProduct = (product) =>
     navigate(ROUTE_BUILDERS.productEdit(product.id), {
@@ -46,7 +46,7 @@ function ProductTable() {
         <ProductTableActions product={product} onEdit={editProduct} />
       )}
       emptyDescription={
-        canManage
+        canCreate
           ? "Add your first product to start building the catalogue."
           : "Products will appear here when an employee adds them."
       }
