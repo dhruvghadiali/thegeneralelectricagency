@@ -12,6 +12,8 @@ import { ROUTES } from "@routes/navigate";
 import { Input } from "@shadcnComponent/input";
 import { Button } from "@shadcnComponent/button";
 import { Textarea } from "@shadcnComponent/textarea";
+import { createProduct } from "@Redux/product/product.action";
+import { selectProductDialogState } from "@Redux/product/product.selector";
 import { migrateProductFromTally } from "@Redux/product/migrateFromTally/migrateFromTally.action";
 import { updateProductInformation } from "@Redux/product/productInformation/productInformation.action";
 import { productInformationValidationSchema } from "@screenComponent/products/form/productInformation/productInformation.validation.schema";
@@ -39,6 +41,7 @@ import {
 function ProductInformation() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  
   const migrateFromTallyFormValues = useSelector(
     selectMigrateFromTallyFormValues,
   );
@@ -55,24 +58,23 @@ function ProductInformation() {
     isSubmitting: isUpdating,
     error: updateError,
   } = useSelector(selectProductInformationSubmitState);
+  const { isCreating, createError } = useSelector(selectProductDialogState);
   const productInformationFormValues = tallyProductId
     ? migrateFromTallyFormValues
     : standardProductFormValues;
+  const isNewProduct = !tallyProductId && !productId;
 
   const formik = useFormik({
     initialValues: productInformationFormValues,
     enableReinitialize: true,
     validationSchema: productInformationValidationSchema,
     onSubmit: async (values, { setSubmitting }) => {
-      if (!tallyProductId && !productId) {
-        setSubmitting(false);
-        return;
-      }
-
       try {
         const saveAction = tallyProductId
           ? migrateProductFromTally(values)
-          : updateProductInformation(values);
+          : productId
+            ? updateProductInformation(values)
+            : createProduct(values);
 
         await dispatch(saveAction).unwrap();
         navigate(ROUTES.PRODUCTS, { replace: true });
@@ -84,8 +86,13 @@ function ProductInformation() {
     },
   });
 
-  const isSubmitting = formik.isSubmitting || isMigrating || isUpdating;
-  const submitError = tallyProductId ? migrationError : updateError;
+  const isSubmitting =
+    formik.isSubmitting || isCreating || isMigrating || isUpdating;
+  const submitError = tallyProductId
+    ? migrationError
+    : productId
+      ? updateError
+      : createError;
 
   const fieldError = (field) =>
     formik.touched[field] && formik.errors[field] ? formik.errors[field] : null;
@@ -229,9 +236,15 @@ function ProductInformation() {
         <Button
           type="submit"
           className="w-full sm:w-auto"
-          disabled={isSubmitting || (!tallyProductId && !productId)}
+          disabled={isSubmitting}
         >
-          {isSubmitting ? "Saving..." : "Save changes"}
+          {isSubmitting
+            ? isNewProduct
+              ? "Adding..."
+              : "Saving..."
+            : isNewProduct
+              ? "Add product"
+              : "Save changes"}
         </Button>
       </div>
     </form>

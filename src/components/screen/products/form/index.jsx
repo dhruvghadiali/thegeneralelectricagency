@@ -5,59 +5,64 @@ import { Navigate, useLocation, useParams } from "react-router-dom";
 import { ROUTES } from "@routes/navigate";
 import { productTableSelectors } from "@Redux/product/product.selector";
 import {
-  isTallyCollectionProduct,
-  toMigrateFromTallyFormValues,
-  toMigrateFromTallyProductId,
-} from "@Redux/product/migrateFromTally/migrateFromTally.form-payload";
-import {
   migrateFromTallyFormValuesCleared,
   migrateFromTallyFormValuesSet,
   migrateFromTallyProductIdSet,
 } from "@Redux/product/migrateFromTally/migrateFromTally.slice";
 import {
-  toProductInformationFormValues,
-  toProductInformationProductId,
-} from "@Redux/product/productInformation/productInformation.form-payload";
-import {
   productInformationFormValuesCleared,
   productInformationFormValuesSet,
   productInformationProductIdSet,
 } from "@Redux/product/productInformation/productInformation.slice";
+import {
+  checkIsTallyCollectionProduct,
+  toMigrateFromTallyFormValues,
+  toMigrateFromTallyProductId,
+} from "@Redux/product/migrateFromTally/migrateFromTally.form-payload";
+import {
+  toProductInformationFormValues,
+  toProductInformationProductId,
+} from "@Redux/product/productInformation/productInformation.form-payload";
 
 import ProductFormCard from "@screenComponent/products/form/productFormCard";
 
-function ProductFormScreen() {
+function ProductFormScreen(props) {
+  const { initialProductId = null, initialIsTallyCollectionProduct = null } =
+    props;
+
   const dispatch = useDispatch();
   const location = useLocation();
-  const { productId } = useParams();
+  const { productId: routeProductId } = useParams();
   const products = useSelector(productTableSelectors.selectItems);
-  const product =
-    location.state?.product ??
-    products.find((item) => item.id === productId);
+
+  const productId = initialProductId ?? routeProductId ?? null;
+  const product = productId
+    ? (location.state?.product ??
+      products.find((item) => item.id === productId))
+    : null;
+  const isTallyCollectionProduct = product
+    ? checkIsTallyCollectionProduct(product)
+    : initialIsTallyCollectionProduct;
 
   useEffect(() => {
-    if (isTallyCollectionProduct(product)) {
+    if (isTallyCollectionProduct === true) {
       dispatch(productInformationFormValuesCleared());
       dispatch(
-        migrateFromTallyProductIdSet(
-          toMigrateFromTallyProductId(product),
-        ),
+        migrateFromTallyProductIdSet(toMigrateFromTallyProductId(product)),
       );
       dispatch(
-        migrateFromTallyFormValuesSet(
-          toMigrateFromTallyFormValues(product),
-        ),
+        migrateFromTallyFormValuesSet(toMigrateFromTallyFormValues(product)),
       );
     } else {
       dispatch(migrateFromTallyFormValuesCleared());
       dispatch(
         productInformationProductIdSet(
-          toProductInformationProductId(product),
+          product ? toProductInformationProductId(product) : productId,
         ),
       );
       dispatch(
         productInformationFormValuesSet(
-          toProductInformationFormValues(product),
+          product ? toProductInformationFormValues(product) : {},
         ),
       );
     }
@@ -66,9 +71,9 @@ function ProductFormScreen() {
       dispatch(migrateFromTallyFormValuesCleared());
       dispatch(productInformationFormValuesCleared());
     };
-  }, [dispatch, product]);
+  }, [dispatch, isTallyCollectionProduct, product, productId]);
 
-  if (!product) {
+  if (productId && !product) {
     return <Navigate to={ROUTES.PRODUCTS} replace />;
   }
 

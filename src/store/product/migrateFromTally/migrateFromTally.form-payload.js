@@ -5,7 +5,7 @@ import { createMigrateFromTallyFormValues } from "@Redux/product/migrateFromTall
 const productValue = (product, camelCaseField, snakeCaseField) =>
   _.get(product, camelCaseField) ?? _.get(product, snakeCaseField);
 
-export const isTallyCollectionProduct = (product = {}) =>
+export const checkIsTallyCollectionProduct = (product = {}) =>
   _.includes(
     [true, 1, "true", "1"],
     productValue(

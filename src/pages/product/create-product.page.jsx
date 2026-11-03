@@ -1,7 +1,12 @@
-import ProductDetailsScreen from "@screenComponent/productDetails";
+import ProductFormScreen from "@screenComponent/products/form";
 
 function CreateProductPage() {
-  return <ProductDetailsScreen />;
+  return (
+    <ProductFormScreen
+      initialProductId={null}
+      initialIsTallyCollectionProduct={null}
+    />
+  );
 }
 
 export default CreateProductPage;

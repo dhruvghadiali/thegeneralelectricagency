@@ -1,14 +1,9 @@
-
 import ProductFormTabs from "@screenComponent/products/form/tab";
 import ProductFormTabList from "@screenComponent/products/form/tab/productFormTabList";
 
 import { PRODUCT_FORM_TABS } from "@Enums";
 import { Tabs } from "@shadcnComponent/tabs";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from "@shadcnComponent/card";
+import { Card, CardContent, CardHeader } from "@shadcnComponent/card";
 
 function ProductFormCard() {
   return (

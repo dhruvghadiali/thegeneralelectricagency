@@ -1,5 +1,5 @@
-import { TabsContent } from "@shadcnComponent/tabs";
 import { PRODUCT_FORM_TABS } from "@Enums";
+import { TabsContent } from "@shadcnComponent/tabs";
 
 import ProductCommercialInformation from "@screenComponent/products/form/commercialInformation";
 import ProductInformation from "@screenComponent/products/form/productInformation";
