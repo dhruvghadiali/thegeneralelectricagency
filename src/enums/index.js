@@ -42,11 +42,6 @@ export {
 } from "./company.enum";
 
 export {
-  STOCK_CATEGORY_OPTIONS,
-  STOCK_TABLE_DEFAULTS,
-} from "./stock.enum";
-
-export {
   PAYMENT_MODES,
   PAYMENT_MODE_OPTIONS,
   PAYMENT_STATUSES,

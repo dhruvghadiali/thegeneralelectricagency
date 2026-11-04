@@ -47,6 +47,7 @@ export const SIDEBAR_NAV_ITEMS_BY_ROLE = {
       url: ROUTES.QUOTATIONS,
       icon: FileText,
     },
+    { title: "Stocks", url: ROUTES.STOCKS, icon: TrendingUp },
     { title: "Settings", url: ROUTES.SETTINGS, icon: Settings },
   ],
   [ROLE_PATHS.WAREHOUSE_MANAGER]: [
