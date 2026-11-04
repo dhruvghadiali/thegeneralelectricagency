@@ -11,6 +11,8 @@ const companyContactsPath = (rolePath) =>
   `/${rolePath}/${ENDPOINTS.COMPANY_CONTACT.BASE}`;
 const companyAddressesPath = (rolePath) =>
   `/${rolePath}/${ENDPOINTS.COMPANY_ADDRESS.BASE}`;
+const migrateCompanyFromTallyPath = (rolePath) =>
+  `${companiesPath(rolePath)}/${ENDPOINTS.COMPANY.MIGRATE_FROM_TALLY}`;
 
 function unwrapPayload(data) {
   return _.isArray(data) && data.length > 0 ? data[0] : (data ?? {});
@@ -55,68 +57,12 @@ export function createCompanyContactListApi(rolePath) {
   };
 }
 
-export function createCompanyContactMutationApi(rolePath) {
-  return {
-    createCompanyContact: async (payload) => {
-      const { data } = await apiClient.post(
-        companyContactsPath(rolePath),
-        payload,
-      );
-
-      return unwrapPayload(data);
-    },
-
-    updateCompanyContact: async (contactId, payload) => {
-      const { data } = await apiClient.patch(
-        `${companyContactsPath(rolePath)}/${contactId}`,
-        payload,
-      );
-
-      return unwrapPayload(data);
-    },
-
-    reassignCompanyContact: async (contactId, payload) => {
-      const { data } = await apiClient.patch(
-        `${companyContactsPath(rolePath)}/${contactId}/${ENDPOINTS.COMPANY_CONTACT.REASSIGN}`,
-        payload,
-      );
-
-      return unwrapPayload(data);
-    },
-
-    deleteCompanyContact: async (contactId) => {
-      const { data } = await apiClient.delete(
-        `${companyContactsPath(rolePath)}/${contactId}`,
-      );
-
-      return unwrapPayload(data);
-    },
-  };
-}
-
 export function createCompanyAddressMutationApi(rolePath) {
   return {
-    createCompanyAddress: async (payload) => {
-      const { data } = await apiClient.post(
-        companyAddressesPath(rolePath),
-        payload,
-      );
-
-      return unwrapPayload(data);
-    },
-
     updateCompanyAddress: async (addressId, payload) => {
       const { data } = await apiClient.patch(
         `${companyAddressesPath(rolePath)}/${addressId}`,
         payload,
-      );
-
-      return unwrapPayload(data);
-    },
-
-    deleteCompanyAddress: async (addressId) => {
-      const { data } = await apiClient.delete(
-        `${companyAddressesPath(rolePath)}/${addressId}`,
       );
 
       return unwrapPayload(data);
@@ -141,9 +87,9 @@ export function createCompanyMutationApi(rolePath) {
       return unwrapPayload(data);
     },
 
-    restoreCompany: async (companyId, payload) => {
-      const { data } = await apiClient.patch(
-        `${companiesPath(rolePath)}/${companyId}/${ENDPOINTS.COMPANY.RESTORE}`,
+    migrateCompanyFromTally: async (payload) => {
+      const { data } = await apiClient.post(
+        migrateCompanyFromTallyPath(rolePath),
         payload,
       );
 

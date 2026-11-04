@@ -20,6 +20,10 @@ function findSystemAddressRecord(value) {
 }
 
 export function fromCompanyApiResponse(company = {}) {
+  const isTallyCollectionRecord = _.includes(
+    [true, 1, "true", "1"],
+    company.is_tally_collection_record ?? company.isTallyCollectionRecord,
+  );
   const systemId = company.system_id ?? company.systemId;
   const hasSystemId = !_.isNil(systemId) && String(systemId).trim() !== "";
   const systemCompany =
@@ -45,6 +49,7 @@ export function fromCompanyApiResponse(company = {}) {
 
   return {
     id: company._id ?? company.id ?? null,
+    isTallyCollectionRecord,
     name: company.company_name ?? company.name ?? "",
     type: company.company_type ?? company.type ?? "",
     isActive: company.is_active !== false,

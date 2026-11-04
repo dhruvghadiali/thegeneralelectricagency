@@ -11,6 +11,19 @@ export const COMPANY_FORM_TABS = Object.freeze({
   COMPANY_CONTACT_PERSONS: "company-contact-persons",
 });
 
+export const COMPANY_INFORMATION_FIELDS = Object.freeze([
+  "companyName",
+  "companyType",
+  "email",
+  "phoneNumber",
+  "gstNumber",
+  "panNumber",
+  "website",
+  "address",
+  "state",
+  "pincode",
+]);
+
 export const COMPANY_FIELDS = Object.freeze([
   Object.freeze({ key: "email", label: "Email", icon: Mail }),
   Object.freeze({ key: "phoneNumber", label: "Phone", icon: Phone }),
@@ -52,6 +65,19 @@ export const GET_COMPANY_LIST_ERROR_MESSAGES = Object.freeze({
 export const CREATE_COMPANY_ERROR_MESSAGES = Object.freeze({
   create: "Unable to add company.",
   permission: "Only employees can create companies.",
+});
+
+export const UPDATE_COMPANY_ERROR_MESSAGES = Object.freeze({
+  update: "Unable to update company information.",
+  permission: "Only employees can update companies.",
+  missingCompanyId: "The company ID is missing.",
+  missingAddressId: "The company address ID is missing.",
+});
+
+export const MIGRATE_COMPANY_ERROR_MESSAGES = Object.freeze({
+  migrate: "Unable to migrate the Tally company.",
+  permission: "Only employees can migrate Tally companies.",
+  missingTallyCompanyId: "The Tally company ID is missing.",
 });
 
 export const CONTACT_PERSON_POSITIONS = Object.freeze({

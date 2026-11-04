@@ -1,4 +1,4 @@
-import CompanyFormScreen from "@screenComponent/companies/form";
+import CompanyFormScreen from "@screenComponent/companies/company/form";
 
 function EditCompanyPage() {
   return <CompanyFormScreen />;

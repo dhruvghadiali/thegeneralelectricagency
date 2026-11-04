@@ -15,6 +15,7 @@ function CompanyStateSelect({ formik, error }) {
   const [search, setSearch] = useState("");
   const normalizedSearch = search.trim().toLowerCase();
   const value = formik.values.state;
+  const normalizedValue = value.trim().toLowerCase();
   const options = useMemo(
     () => {
       const matchingOptions = normalizedSearch
@@ -23,7 +24,7 @@ function CompanyStateSelect({ formik, error }) {
           )
         : INDIAN_STATE_AND_UNION_TERRITORY_OPTIONS;
       const selectedOption = INDIAN_STATE_AND_UNION_TERRITORY_OPTIONS.find(
-        (option) => option.value === value,
+        (option) => option.value.toLowerCase() === normalizedValue,
       );
 
       return selectedOption
@@ -35,13 +36,13 @@ function CompanyStateSelect({ formik, error }) {
           ]
         : matchingOptions;
     },
-    [normalizedSearch, value],
+    [normalizedSearch, normalizedValue],
   );
 
   const toggleState = (option) => {
     formik.setFieldValue(
       "state",
-      value === option.value ? "" : option.value,
+      option.value.toLowerCase() === normalizedValue ? "" : option.value,
       true,
     );
     formik.setFieldTouched("state", true, false);
@@ -116,13 +117,17 @@ function CompanyStateSelect({ formik, error }) {
                   type="button"
                   variant="ghost"
                   role="option"
-                  aria-selected={value === option.value}
+                  aria-selected={
+                    option.value.toLowerCase() === normalizedValue
+                  }
                   onClick={() => toggleState(option)}
                   className="h-auto w-full justify-start gap-2 px-3 py-2 text-left font-normal"
                 >
                   <Check
                     className={`size-4 shrink-0 ${
-                      value === option.value ? "opacity-100" : "opacity-0"
+                      option.value.toLowerCase() === normalizedValue
+                        ? "opacity-100"
+                        : "opacity-0"
                     }`}
                     aria-hidden="true"
                   />

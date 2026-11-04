@@ -17,12 +17,11 @@ export const ENDPOINTS = {
   },
   COMPANY: {
     BASE: "companies",
-    RESTORE: "restore",
+    MIGRATE_FROM_TALLY: "migrate-from-tally",
     SYSTEM: "system",
   },
   COMPANY_CONTACT: {
     BASE: "company-contacts",
-    REASSIGN: "reassign",
   },
   COMPANY_ADDRESS: {
     BASE: "company-addresses",

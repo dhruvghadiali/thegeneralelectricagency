@@ -11,12 +11,13 @@ import {
 
 function CompanyTypeSelect({ formik, error }) {
   const [open, setOpen] = useState(false);
+  const normalizedValue = formik.values.companyType.trim().toLowerCase();
   const selectedType = COMPANY_TYPE_OPTIONS.find(
-    (option) => option.value === formik.values.companyType,
+    (option) => option.value.toLowerCase() === normalizedValue,
   );
 
   const toggleType = (option) => {
-    const isSelected = formik.values.companyType === option.value;
+    const isSelected = option.value.toLowerCase() === normalizedValue;
 
     formik.setFieldValue("companyType", isSelected ? "" : option.value, true);
     formik.setFieldTouched("companyType", true, false);
@@ -66,13 +67,13 @@ function CompanyTypeSelect({ formik, error }) {
               type="button"
               variant="ghost"
               role="option"
-              aria-selected={formik.values.companyType === option.value}
+              aria-selected={option.value.toLowerCase() === normalizedValue}
               onClick={() => toggleType(option)}
               className="h-auto w-full justify-start gap-2 px-3 py-2.5 text-left font-normal"
             >
               <Check
                 className={`size-4 shrink-0 ${
-                  formik.values.companyType === option.value
+                  option.value.toLowerCase() === normalizedValue
                     ? "opacity-100"
                     : "opacity-0"
                 }`}

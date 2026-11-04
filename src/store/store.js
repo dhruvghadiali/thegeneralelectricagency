@@ -4,6 +4,8 @@ import authReducer, { loggedOut } from "@Redux/auth/auth.slice";
 import employeeReducer from "@Redux/employee/employee.slice";
 import companyReducer from "@Redux/company/company.slice";
 import companyCreateReducer from "@Redux/company/createCompany/createCompany.slice";
+import companyMigrateFromTallyReducer from "@Redux/company/migrateFromTally/migrateFromTally.slice";
+import companyUpdateReducer from "@Redux/company/updateCompany/updateCompany.slice";
 import companyListReducer from "@Redux/company/getCompanyList/getCompanyList.slice";
 import companyContactReducer from "@Redux/companyContact/companyContact.slice";
 import stockReducer from "@Redux/stock/stock.slice";
@@ -33,6 +35,8 @@ const appReducer = combineReducers({
     employees: employeeReducer,
     companies: companyReducer,
     companyCreate: companyCreateReducer,
+    companyMigrateFromTally: companyMigrateFromTallyReducer,
+    companyUpdate: companyUpdateReducer,
     companyList: companyListReducer,
     companyContacts: companyContactReducer,
     stocks: stockReducer,

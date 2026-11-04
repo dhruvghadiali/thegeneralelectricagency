@@ -2,11 +2,20 @@ import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { COMPANY_INFORMATION_INITIAL_VALUES } from "@Forms/company/companyInformation/companyInformation.initialValues";
 import FormErrorAlert from "@commonComponent/alert/formErrorAlert";
 import { ROUTES } from "@routes/navigate";
 import { createCompany } from "@Redux/company/createCompany/createCompany.action";
 import { selectCompanyCreateSubmitState } from "@Redux/company/createCompany/createCompany.selector";
+import { migrateCompanyFromTally } from "@Redux/company/migrateFromTally/migrateFromTally.action";
+import {
+  selectCompanyMigrateFormValues,
+  selectCompanyMigrateSubmitState,
+} from "@Redux/company/migrateFromTally/migrateFromTally.selector";
+import { updateCompanyInformation } from "@Redux/company/updateCompany/updateCompany.action";
+import {
+  selectCompanyUpdateFormValues,
+  selectCompanyUpdateSubmitState,
+} from "@Redux/company/updateCompany/updateCompany.selector";
 import { Button } from "@shadcnComponent/button";
 import { Input } from "@shadcnComponent/input";
 import { Textarea } from "@shadcnComponent/textarea";
@@ -19,25 +28,57 @@ import { companyInformationValidationSchema } from "@screenComponent/companies/c
 function CompanyInformation() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const migrateFormValues = useSelector(selectCompanyMigrateFormValues);
+  const updateFormValues = useSelector(selectCompanyUpdateFormValues);
+  const {
+    tallyCompanyId,
+    isSubmitting: isMigrating,
+    error: migrationError,
+  } = useSelector(selectCompanyMigrateSubmitState);
+  const {
+    companyId,
+    isUpdateCompanySubmitting,
+    updateCompanyError,
+  } = useSelector(selectCompanyUpdateSubmitState);
   const { isCreateCompanySubmitting, createCompanyError } = useSelector(
     selectCompanyCreateSubmitState,
   );
+  const companyInformationFormValues = tallyCompanyId
+    ? migrateFormValues
+    : updateFormValues;
+  const isNewCompany = !tallyCompanyId && !companyId;
 
   const formik = useFormik({
-    initialValues: COMPANY_INFORMATION_INITIAL_VALUES,
+    initialValues: companyInformationFormValues,
+    enableReinitialize: true,
     validationSchema: companyInformationValidationSchema,
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        await dispatch(createCompany(values)).unwrap();
+        const saveAction = tallyCompanyId
+          ? migrateCompanyFromTally(values)
+          : companyId
+            ? updateCompanyInformation(values)
+            : createCompany(values);
+
+        await dispatch(saveAction).unwrap();
         navigate(ROUTES.COMPANIES, { replace: true });
       } catch {
-        // The create-company slice exposes the display-ready request error.
+        // The active company slice exposes the display-ready request error.
       } finally {
         setSubmitting(false);
       }
     },
   });
-  const isSubmitting = formik.isSubmitting || isCreateCompanySubmitting;
+  const isSubmitting =
+    formik.isSubmitting ||
+    isCreateCompanySubmitting ||
+    isMigrating ||
+    isUpdateCompanySubmitting;
+  const submitError = tallyCompanyId
+    ? migrationError
+    : companyId
+      ? updateCompanyError
+      : createCompanyError;
   const fieldError = (field) =>
     formik.touched[field] && formik.errors[field] ? formik.errors[field] : null;
   const inputProps = (field, id) => ({
@@ -55,7 +96,7 @@ function CompanyInformation() {
       onSubmit={formik.handleSubmit}
       noValidate
     >
-      <FormErrorAlert message={createCompanyError} />
+      <FormErrorAlert message={submitError} />
 
       <section className="min-h-0 flex-1 space-y-5 overflow-y-auto pb-4 pl-1 pr-1">
         <div className="grid gap-5 sm:grid-cols-2">
@@ -221,7 +262,13 @@ function CompanyInformation() {
           className="w-full sm:w-auto"
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Adding..." : "Add company"}
+          {isSubmitting
+            ? isNewCompany
+              ? "Adding..."
+              : "Saving..."
+            : isNewCompany
+              ? "Add company"
+              : "Save changes"}
         </Button>
       </div>
     </form>
