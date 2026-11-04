@@ -1,5 +1,5 @@
 function Stocks() {
-  return <h1>Stocks</h1>;
+  return <h1>Stocks screen</h1>;
 }
 
 export default Stocks;
