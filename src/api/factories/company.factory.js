@@ -7,8 +7,6 @@ const companiesPath = (rolePath) =>
   `/${rolePath}/${ENDPOINTS.COMPANY.BASE}`;
 const systemCompaniesPath = (rolePath) =>
   `${companiesPath(rolePath)}/${ENDPOINTS.COMPANY.SYSTEM}`;
-const companyContactsPath = (rolePath) =>
-  `/${rolePath}/${ENDPOINTS.COMPANY_CONTACT.BASE}`;
 const companyAddressesPath = (rolePath) =>
   `/${rolePath}/${ENDPOINTS.COMPANY_ADDRESS.BASE}`;
 const migrateCompanyFromTallyPath = (rolePath) =>
@@ -35,19 +33,6 @@ export function createSystemCompanyListApi(rolePath) {
   return {
     getSystemCompanies: async (params = {}, config = {}) => {
       const { data } = await apiClient.get(systemCompaniesPath(rolePath), {
-        params,
-        ...config,
-      });
-
-      return unwrapPayload(data);
-    },
-  };
-}
-
-export function createCompanyContactListApi(rolePath) {
-  return {
-    getCompanyContacts: async (params = {}, config = {}) => {
-      const { data } = await apiClient.get(companyContactsPath(rolePath), {
         params,
         ...config,
       });

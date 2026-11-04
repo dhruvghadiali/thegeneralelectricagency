@@ -1,7 +1,7 @@
 import { Phone } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@shadcnComponent/avatar";
-import ContactPositionBadge from "@Tables/companyContact/contactPositionBadge";
+import ContactPositionBadge from "@screenComponent/companies/company/sheet/contactPositionBadge";
 
 function contactInitials(name = "") {
   return name

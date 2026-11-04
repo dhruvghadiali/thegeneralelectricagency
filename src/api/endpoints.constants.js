@@ -20,9 +20,6 @@ export const ENDPOINTS = {
     MIGRATE_FROM_TALLY: "migrate-from-tally",
     SYSTEM: "system",
   },
-  COMPANY_CONTACT: {
-    BASE: "company-contacts",
-  },
   COMPANY_ADDRESS: {
     BASE: "company-addresses",
   },

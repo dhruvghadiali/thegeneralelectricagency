@@ -1,11 +1,8 @@
 import {
   CONTACT_PERSON_POSITIONS,
+  CONTACT_POSITION_LABELS,
 } from "@Enums";
 import { Badge } from "@shadcnComponent/badge";
-import {
-  contactPositionLabel,
-  normalizedContactPosition,
-} from "@Tables/companyContact/companyContactTable.utils";
 
 const CONTACT_POSITION_BADGE_CLASSES = Object.freeze({
   [CONTACT_PERSON_POSITIONS.OWNER]:
@@ -30,6 +27,12 @@ const CONTACT_POSITION_BADGE_CLASSES = Object.freeze({
     "border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-300",
 });
 
+function normalizedContactPosition(position) {
+  return CONTACT_POSITION_LABELS[position]
+    ? position
+    : CONTACT_PERSON_POSITIONS.OTHER;
+}
+
 function ContactPositionBadge({ position, className }) {
   const normalizedPosition = normalizedContactPosition(position);
 
@@ -38,7 +41,7 @@ function ContactPositionBadge({ position, className }) {
       variant="outline"
       className={`${CONTACT_POSITION_BADGE_CLASSES[normalizedPosition]} ${className ?? ""}`}
     >
-      {contactPositionLabel(normalizedPosition)}
+      {CONTACT_POSITION_LABELS[normalizedPosition]}
     </Badge>
   );
 }
