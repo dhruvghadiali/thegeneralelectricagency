@@ -6,6 +6,8 @@ export const PRODUCT_TABLE_CONFIG = Object.freeze({
   columns: PRODUCT_TABLE_COLUMNS,
   rowKey: (product) => product.id,
   searchPlaceholder: "Search by product name",
+  searchAutoFocus: true,
+  keyboardRowNavigation: true,
   rowNoun: "products",
   emptyIcon: Boxes,
   emptyTitle: "No products found",
